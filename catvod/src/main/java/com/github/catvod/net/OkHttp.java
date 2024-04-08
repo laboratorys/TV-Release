@@ -9,13 +9,14 @@ import com.github.catvod.bean.Doh;
 import com.github.catvod.utils.Path;
 
 import java.net.ProxySelector;
-import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
@@ -144,8 +145,10 @@ public class OkHttp {
 
     private static SSLContext getSSLContext() {
         try {
-            return SSLContext.getInstance("TLS");
-        } catch (NoSuchAlgorithmException e) {
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, new TrustManager[]{trustAllCertificates()}, new SecureRandom());
+            return context;
+        } catch (Throwable e) {
             return null;
         }
     }
