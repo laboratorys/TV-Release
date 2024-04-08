@@ -1,7 +1,5 @@
 package com.xunlei.downloadlib.android;
 
-import android.util.Base64;
-
 import java.util.Random;
 import java.util.UUID;
 
@@ -30,18 +28,5 @@ public class XLUtil {
 
     public static String getGuid() {
         return getIMEI() + "_" + getMAC();
-    }
-
-    public static String generateAppKey(String str, short s, byte b) {
-        int length = str.length();
-        int i = length + 1;
-        byte[] bArr = new byte[(i + 2 + 1)];
-        byte[] bytes = str.getBytes();
-        System.arraycopy(bytes, 0, bArr, 0, bytes.length);
-        bArr[length] = 0;
-        bArr[i] = (byte) (s & 255);
-        bArr[length + 2] = (byte) ((s >> 8) & 255);
-        bArr[length + 3] = b;
-        return new String(Base64.encode(bArr, 0)).trim();
     }
 }
