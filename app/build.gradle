@@ -10,8 +10,8 @@ android {
         applicationId "com.fongmi.android.tv"
         minSdk 21
         targetSdk 28
-        versionCode 231
-        versionName "tangsan-0408"
+        versionCode 232
+        versionName "2.3.2"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
