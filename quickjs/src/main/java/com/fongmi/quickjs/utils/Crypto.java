@@ -2,6 +2,8 @@ package com.fongmi.quickjs.utils;
 
 import android.util.Base64;
 
+import com.github.catvod.utils.Util;
+
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PublicKey;
@@ -14,7 +16,6 @@ import java.util.Arrays;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import com.github.catvod.utils.Util;
 
 public class Crypto {
 
@@ -26,7 +27,6 @@ public class Crypto {
             return "";
         }
     }
-
 
     public static String aes(String mode, boolean encrypt, String input, boolean inBase64, String key, String iv, boolean outBase64) {
         try {

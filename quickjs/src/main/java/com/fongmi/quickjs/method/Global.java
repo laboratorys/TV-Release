@@ -150,8 +150,8 @@ public class Global {
     @Keep
     @JSMethod
     public String md5X(String text) {
-        String  result =  Crypto.md5(text);
-        Logger.t("md5X").d("text:%s\nresult:\n%s" , text, result);
+        String result = Crypto.md5(text);
+        Logger.t("md5X").d("text:%s\nresult:\n%s", text, result);
         return result;
     }
 
