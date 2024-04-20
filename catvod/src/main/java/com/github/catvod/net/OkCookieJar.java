@@ -2,6 +2,7 @@ package com.github.catvod.net;
 
 import android.text.TextUtils;
 import android.webkit.CookieManager;
+import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
@@ -17,9 +18,24 @@ public class OkCookieJar implements CookieJar {
 
     private CookieManager manager;
 
-    public OkCookieJar() {
+    private static class Loader {
+        static volatile OkCookieJar INSTANCE = new OkCookieJar();
+    }
+
+    public static OkCookieJar get() {
+        return Loader.INSTANCE;
+    }
+
+    private OkCookieJar() {
         try {
             manager = CookieManager.getInstance();
+        } catch (Throwable ignored) {
+        }
+    }
+
+    public static void setAcceptThirdPartyCookies(WebView view) {
+        try {
+            get().manager.setAcceptThirdPartyCookies(view, true);
         } catch (Throwable ignored) {
         }
     }
@@ -27,7 +43,7 @@ public class OkCookieJar implements CookieJar {
     public static void sync(String url, String cookie) {
         try {
             if (TextUtils.isEmpty(cookie)) return;
-            for (String split : cookie.split(";")) CookieManager.getInstance().setCookie(url, split);
+            for (String split : cookie.split(";")) get().manager.setCookie(url, split);
         } catch (Throwable ignored) {
         }
     }

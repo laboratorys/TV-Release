@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.text.TextUtils;
 import android.view.ViewGroup;
-import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -74,7 +73,6 @@ public class CustomWebView extends WebView {
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
         getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        CookieManager.getInstance().setAcceptThirdPartyCookies(this, true);
         setWebViewClient(webViewClient());
     }
 
@@ -90,6 +88,7 @@ public class CustomWebView extends WebView {
     }
 
     private void start(String url, Map<String, String> headers) {
+        OkCookieJar.setAcceptThirdPartyCookies(this);
         checkHeader(url, headers);
         loadUrl(url, headers);
     }
@@ -111,7 +110,7 @@ public class CustomWebView extends WebView {
                 if (TextUtils.isEmpty(host) || VodConfig.get().getAds().contains(host)) return empty;
                 if (url.contains("challenges.cloudflare.com/cdn-cgi")) App.post(() -> showDialog());
                 if (detect && url.contains("player/?url=")) onParseAdd(headers, url);
-                else if (isVideoFormat(url)) interrupt(headers, url);
+                else if (isVideoFormat(url)) onParseSuccess(headers, url);
                 return super.shouldInterceptRequest(view, request);
             }
 
@@ -178,12 +177,6 @@ public class CustomWebView extends WebView {
         } catch (Exception ignored) {
             return Sniffer.isVideoFormat(url);
         }
-    }
-
-    private void interrupt(Map<String, String> headers, String url) {
-        String cookie = CookieManager.getInstance().getCookie(url);
-        if (cookie != null) headers.put(HttpHeaders.COOKIE, cookie);
-        onParseSuccess(headers, url);
     }
 
     private void onParseAdd(Map<String, String> headers, String url) {
