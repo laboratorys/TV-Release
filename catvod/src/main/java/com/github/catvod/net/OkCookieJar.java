@@ -25,9 +25,10 @@ public class OkCookieJar implements CookieJar {
     }
 
     public static void sync(String url, String cookie) {
-        if (TextUtils.isEmpty(cookie)) return;
-        for (String split : cookie.split(";")) {
-            CookieManager.getInstance().setCookie(url, split);
+        try {
+            if (TextUtils.isEmpty(cookie)) return;
+            for (String split : cookie.split(";")) CookieManager.getInstance().setCookie(url, split);
+        } catch (Throwable ignored) {
         }
     }
 

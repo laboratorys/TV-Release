@@ -26,7 +26,6 @@ import okhttp3.Response;
 public class Connect {
 
     public static Call to(String url, Req req) {
-        OkCookieJar.sync(url, req.getHeader().get(HttpHeaders.COOKIE));
         OkHttpClient client = OkHttp.client(req.isRedirect(), req.getTimeout());
         return client.newCall(getRequest(url, req, Headers.of(req.getHeader())));
     }
