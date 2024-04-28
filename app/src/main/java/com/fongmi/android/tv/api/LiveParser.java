@@ -2,6 +2,8 @@ package com.fongmi.android.tv.api;
 
 import android.util.Base64;
 
+import androidx.media3.common.MimeTypes;
+
 import com.fongmi.android.tv.bean.Catchup;
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.ClearKey;
@@ -132,6 +134,7 @@ public class LiveParser {
         private String key;
         private String type;
         private String click;
+        private String format;
         private String origin;
         private String referer;
         private Integer parse;
@@ -160,6 +163,7 @@ public class LiveParser {
             else if (line.startsWith("#EXTVLCOPT:http-referrer")) referer(line);
             else if (line.startsWith("#KODIPROP:inputstream.adaptive.license_key")) key(line);
             else if (line.startsWith("#KODIPROP:inputstream.adaptive.license_type")) type(line);
+            else if (line.startsWith("#KODIPROP:inputstream.adaptive.manifest_type")) format(line);
             else if (line.startsWith("#KODIPROP:inputstream.adaptive.stream_headers")) headers(line);
         }
 
@@ -167,6 +171,7 @@ public class LiveParser {
             if (ua != null) channel.setUa(ua);
             if (parse != null) channel.setParse(parse);
             if (click != null) channel.setClick(click);
+            if (format != null) channel.setFormat(format);
             if (origin != null) channel.setOrigin(origin);
             if (referer != null) channel.setReferer(referer);
             if (player != null) channel.setPlayerType(player);
@@ -213,6 +218,16 @@ public class LiveParser {
                 player = Integer.parseInt(line.split("player=")[1].trim());
             } catch (Exception e) {
                 player = null;
+            }
+        }
+
+        private void format(String line) {
+            try {
+                String type = line.split("manifest_type=")[1].trim();
+                if ("mpd".equals(type)) format = MimeTypes.APPLICATION_MPD;
+                else if ("hls".equals(type)) format = MimeTypes.APPLICATION_M3U8;
+            } catch (Exception e) {
+                format = null;
             }
         }
 
@@ -285,6 +300,7 @@ public class LiveParser {
             click = null;
             player = null;
             header = null;
+            format = null;
             origin = null;
             referer = null;
         }

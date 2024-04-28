@@ -123,7 +123,7 @@ public class ExoUtil {
     }
 
     public static MediaSource getSource(Channel channel, int errorCode) {
-        return getSource(channel.getHeaders(), channel.getUrl(), null, Collections.emptyList(), null, channel.getDrm(), errorCode);
+        return getSource(channel.getHeaders(), channel.getUrl(), channel.getFormat(), Collections.emptyList(), null, channel.getDrm(), errorCode);
     }
 
     public static MediaSource getSource(Map<String, String> headers, String url, Sub sub, int errorCode) {

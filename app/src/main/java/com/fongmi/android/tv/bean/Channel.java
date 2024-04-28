@@ -35,6 +35,8 @@ public class Channel {
     private String ua;
     @SerializedName("click")
     private String click;
+    @SerializedName("format")
+    private String format;
     @SerializedName("origin")
     private String origin;
     @SerializedName("referer")
@@ -140,6 +142,14 @@ public class Channel {
 
     public void setClick(String click) {
         this.click = click;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     public String getOrigin() {
@@ -339,6 +349,7 @@ public class Channel {
         setHeader(item.getHeader());
         setNumber(item.getNumber());
         setOrigin(item.getOrigin());
+        setFormat(item.getFormat());
         setParse(item.getParse());
         setClick(item.getClick());
         setLogo(item.getLogo());
