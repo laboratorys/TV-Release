@@ -146,7 +146,7 @@ public class LiveParser {
         }
 
         public boolean find(String line) {
-            return line.startsWith("ua") || line.startsWith("parse") || line.startsWith("click") || line.startsWith("player") || line.startsWith("header") || line.startsWith("origin") || line.startsWith("referer") || line.startsWith("#EXTHTTP:") || line.startsWith("#EXTVLCOPT:") || line.startsWith("#KODIPROP:");
+            return line.startsWith("ua") || line.startsWith("parse") || line.startsWith("click") || line.startsWith("player") || line.startsWith("header") || line.startsWith("format") || line.startsWith("origin") || line.startsWith("referer") || line.startsWith("#EXTHTTP:") || line.startsWith("#EXTVLCOPT:") || line.startsWith("#KODIPROP:");
         }
 
         public void check(String line) {
@@ -155,6 +155,7 @@ public class LiveParser {
             else if (line.startsWith("click")) click(line);
             else if (line.startsWith("player")) player(line);
             else if (line.startsWith("header")) header(line);
+            else if (line.startsWith("format")) format(line);
             else if (line.startsWith("origin")) origin(line);
             else if (line.startsWith("referer")) referer(line);
             else if (line.startsWith("#EXTHTTP:")) header(line);
@@ -223,9 +224,10 @@ public class LiveParser {
 
         private void format(String line) {
             try {
-                String type = line.split("manifest_type=")[1].trim();
-                if ("mpd".equals(type)) format = MimeTypes.APPLICATION_MPD;
-                else if ("hls".equals(type)) format = MimeTypes.APPLICATION_M3U8;
+                if (line.startsWith("format=")) format = line.split("format=")[1].trim();
+                if (line.contains("manifest_type=")) format = line.split("manifest_type=")[1].trim();
+                if ("mpd".equals(format)) format = MimeTypes.APPLICATION_MPD;
+                if ("hls".equals(format)) format = MimeTypes.APPLICATION_M3U8;
             } catch (Exception e) {
                 format = null;
             }
