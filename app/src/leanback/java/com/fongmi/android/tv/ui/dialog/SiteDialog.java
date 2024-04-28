@@ -61,7 +61,7 @@ public class SiteDialog implements SiteAdapter.OnClickListener {
     }
 
     private int getCount() {
-        return list() ? 1 : Math.max(1, Math.min((int) (Math.ceil(adapter.getItemCount() / 20.0f)), 3));
+        return list() ? 1 : Math.max(2, Math.min((int) (Math.ceil(adapter.getItemCount() / 20.0f)), 3));
     }
 
     private int getIcon() {

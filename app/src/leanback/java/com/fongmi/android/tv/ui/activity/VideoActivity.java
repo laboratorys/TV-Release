@@ -136,7 +136,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     private boolean initAuto;
     private boolean autoMode;
     private boolean useParse;
-    private int currentFlag;
     private int toggleCount;
     private Runnable mR1;
     private Runnable mR2;
@@ -239,11 +238,16 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private Flag getFlag() {
-        return (Flag) mFlagAdapter.get(mBinding.flag.getSelectedPosition());
+        return (Flag) mFlagAdapter.get(getFlagPosition());
     }
 
     private Episode getEpisode() {
         return (Episode) mEpisodeAdapter.get(getEpisodePosition());
+    }
+
+    private int getFlagPosition() {
+        for (int i = 0; i < mFlagAdapter.size(); i++) if (((Flag) mFlagAdapter.get(i)).isActivated()) return i;
+        return 0;
     }
 
     private int getEpisodePosition() {
@@ -577,13 +581,12 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void setEpisodeActivated(Episode item) {
+        int flagPosition = getFlagPosition();
         if (shouldEnterFullscreen(item)) return;
-        setCurrentFlag(mBinding.flag.getSelectedPosition());
-        for (int i = 0; i < mFlagAdapter.size(); i++) ((Flag) mFlagAdapter.get(i)).toggle(getCurrentFlag() == i, item);
+        if (isFullscreen()) Notify.show(getString(R.string.play_ready, item.getName()));
+        for (int i = 0; i < mFlagAdapter.size(); i++) ((Flag) mFlagAdapter.get(i)).toggle(flagPosition == i, item);
         mBinding.episode.setSelectedPosition(getEpisodePosition());
         notifyItemChanged(mBinding.episode, mEpisodeAdapter);
-        if (mEpisodeAdapter.size() == 0) return;
-        if (isFullscreen()) Notify.show(getString(R.string.play_ready, item.getName()));
         onRefresh();
     }
 
@@ -670,7 +673,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mBinding.video.requestFocus();
         mBinding.video.setForeground(null);
         mBinding.video.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-        mBinding.flag.setSelectedPosition(getCurrentFlag());
+        mBinding.flag.setSelectedPosition(getFlagPosition());
         setSubtitle(Setting.getSubtitle());
         mKeyDown.setFull(true);
         setFullscreen(true);
@@ -1224,7 +1227,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void checkFlag() {
-        int position = isGone(mBinding.flag) ? -1 : mBinding.flag.getSelectedPosition();
+        int position = isGone(mBinding.flag) ? -1 : getFlagPosition();
         if (position == mFlagAdapter.size() - 1) checkSearch(false);
         else nextFlag(position);
     }
@@ -1373,14 +1376,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     public void setUseParse(boolean useParse) {
         this.useParse = useParse;
-    }
-
-    public int getCurrentFlag() {
-        return currentFlag;
-    }
-
-    public void setCurrentFlag(int currentFlag) {
-        this.currentFlag = currentFlag;
     }
 
     public int getToggleCount() {
