@@ -24,7 +24,7 @@
             android:paddingBottom="4dp"
             app:layout_scrollFlags="scroll|enterAlways">
 
-            <com.google.android.material.imageview.ShapeableImageView
+            <ImageView
                 android:id="@+id/logo"
                 android:layout_width="24dp"
                 android:layout_height="24dp"

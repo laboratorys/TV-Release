@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
 import com.android.cast.dlna.dmr.DLNARendererService;
+import com.bumptech.glide.Glide;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Product;
 import com.fongmi.android.tv.R;
@@ -173,6 +174,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
                 getHistory();
                 getVideo();
                 setFocus();
+                setLogo();
             }
 
             @Override
@@ -199,6 +201,12 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         setLoading(false);
         App.post(() -> mBinding.title.setFocusable(true), 500);
         if (!mBinding.title.hasFocus()) mBinding.recycler.requestFocus();
+    }
+
+    private void setLogo() {
+        String logo = VodConfig.get().getConfig().getLogo();
+        mBinding.logo.setVisibility(TextUtils.isEmpty(logo) ? View.GONE : View.VISIBLE);
+        Glide.with(this).load(logo).error(R.drawable.ic_logo).circleCrop().into(mBinding.logo);
     }
 
     private void getVideo() {
@@ -368,6 +376,9 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     public void onRefreshEvent(RefreshEvent event) {
         super.onRefreshEvent(event);
         switch (event.getType()) {
+            case CONFIG:
+                setLogo();
+                break;
             case VIDEO:
                 getVideo();
                 break;
@@ -411,6 +422,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
             @Override
             public void success() {
                 RefreshEvent.history();
+                RefreshEvent.config();
                 RefreshEvent.video();
                 onCastEvent(event);
             }

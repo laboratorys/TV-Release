@@ -2,11 +2,10 @@ package com.fongmi.android.tv.ui.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,8 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.Glide;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
@@ -47,11 +45,8 @@ import com.fongmi.android.tv.ui.dialog.LinkDialog;
 import com.fongmi.android.tv.ui.dialog.ReceiveDialog;
 import com.fongmi.android.tv.ui.dialog.SiteDialog;
 import com.fongmi.android.tv.utils.FileChooser;
-import com.fongmi.android.tv.utils.ImgUtil;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Trans;
-import com.google.android.material.shape.RelativeCornerSize;
-import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.common.net.HttpHeaders;
 
 import org.greenrobot.eventbus.EventBus;
@@ -249,25 +244,9 @@ public class VodFragment extends BaseFragment implements SiteCallback, FilterCal
     }
 
     private void setLogo() {
-        ImgUtil.load(VodConfig.get().getConfig().getLogo(), R.drawable.ic_logo, new CustomTarget<>() {
-            @Override
-            public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
-                mBinding.logo.setShapeAppearanceModel(new ShapeAppearanceModel.Builder().setAllCornerSizes(new RelativeCornerSize(0.5f)).build());
-                mBinding.logo.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                mBinding.logo.setImageDrawable(drawable);
-            }
-
-            @Override
-            public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                mBinding.logo.setShapeAppearanceModel(new ShapeAppearanceModel.Builder().setAllCornerSizes(0).build());
-                mBinding.logo.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                mBinding.logo.setImageResource(R.drawable.ic_logo);
-            }
-
-            @Override
-            public void onLoadCleared(@Nullable Drawable drawable) {
-            }
-        });
+        String logo = VodConfig.get().getConfig().getLogo();
+        if (TextUtils.isEmpty(logo)) mBinding.logo.setImageResource(R.drawable.ic_logo);
+        else Glide.with(this).load(logo).error(R.drawable.ic_logo).circleCrop().into(mBinding.logo);
     }
 
     public Result getResult() {
