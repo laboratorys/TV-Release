@@ -118,23 +118,23 @@ public class MainActivity extends BaseActivity implements NavigationBarView.OnIt
             @Override
             public void error(String msg) {
                 if (TextUtils.isEmpty(msg) && AppDatabase.getBackup().exists()) showDialog();
-                else RefreshEvent.empty();
                 RefreshEvent.config();
+                RefreshEvent.empty();
                 Notify.show(msg);
             }
         };
     }
 
     private void showDialog() {
-        new MaterialAlertDialogBuilder(this).setTitle(R.string.dialog_restore).setMessage(R.string.dialog_restore_msg).setNegativeButton(R.string.dialog_negative, (dialog, which) -> RefreshEvent.empty()).setPositiveButton(R.string.dialog_positive, (dialog, which) -> onRestore()).show();
+        new MaterialAlertDialogBuilder(this).setTitle(R.string.dialog_restore).setMessage(R.string.dialog_restore_msg).setNegativeButton(R.string.dialog_negative, null).setPositiveButton(R.string.dialog_positive, (dialog, which) -> onRestore()).show();
     }
 
     private void onRestore() {
         PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> AppDatabase.restore(new Callback() {
             @Override
             public void success() {
+                if (allGranted) RefreshEvent.restore();
                 if (allGranted) initConfig();
-                else RefreshEvent.empty();
             }
         }));
     }

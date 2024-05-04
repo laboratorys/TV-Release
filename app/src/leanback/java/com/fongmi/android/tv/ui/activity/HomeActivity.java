@@ -96,6 +96,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     protected void initView() {
         DLNARendererService.Companion.start(this, R.drawable.ic_logo);
         mClock = Clock.create(mBinding.time).format("MM/dd HH:mm:ss");
+        mBinding.progressLayout.showProgress();
         Updater.get().release().start(this);
         mResult = Result.empty();
         Server.get().start();
@@ -160,7 +161,6 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         WallConfig.get().init();
         LiveConfig.get().init().load();
         VodConfig.get().init().load(getCallback());
-        mBinding.progressLayout.showProgress();
         setLoading(true);
     }
 
@@ -348,6 +348,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> AppDatabase.restore(new Callback() {
             @Override
             public void success() {
+                if (allGranted) mBinding.progressLayout.showProgress();
                 if (allGranted) initConfig();
             }
         }));
