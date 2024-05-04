@@ -222,7 +222,7 @@ public class Config {
 
     public static Config find(Config config, int type) {
         Config item = AppDatabase.get().getConfigDao().find(config.getUrl(), type);
-        return item == null ? create(type, config.getUrl(), config.getName()) : item.type(type).name(config.getName()).logo(config.getLogo());
+        return item == null ? create(type, config.getUrl(), config.getName()) : item.type(type).name(config.getName());
     }
 
     public static Config find(Depot depot, int type) {
