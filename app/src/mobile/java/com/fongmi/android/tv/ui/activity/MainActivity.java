@@ -38,6 +38,7 @@ import com.fongmi.android.tv.ui.fragment.VodFragment;
 import com.fongmi.android.tv.utils.FileChooser;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.UrlUtil;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationBarView;
 import com.permissionx.guolindev.PermissionX;
 
@@ -116,12 +117,16 @@ public class MainActivity extends BaseActivity implements NavigationBarView.OnIt
 
             @Override
             public void error(String msg) {
-                if (TextUtils.isEmpty(msg) && AppDatabase.getBackup().exists()) onRestore();
+                if (TextUtils.isEmpty(msg) && AppDatabase.getBackup().exists()) showDialog();
                 else RefreshEvent.empty();
                 RefreshEvent.config();
                 Notify.show(msg);
             }
         };
+    }
+
+    private void showDialog() {
+        new MaterialAlertDialogBuilder(this).setTitle(R.string.dialog_restore).setMessage(R.string.dialog_restore_msg).setNegativeButton(R.string.dialog_negative, (dialog, which) -> RefreshEvent.empty()).setPositiveButton(R.string.dialog_positive, (dialog, which) -> onRestore()).show();
     }
 
     private void onRestore() {
