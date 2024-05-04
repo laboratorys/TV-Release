@@ -6,11 +6,10 @@
     android:padding="24dp">
 
     <TextView
-        android:id="@+id/desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="@string/restore"
+        android:text="@string/dialog_restore_msg"
         android:textColor="@color/grey_900"
         android:textSize="16sp" />
 
