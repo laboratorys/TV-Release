@@ -31,6 +31,7 @@ import com.fongmi.android.tv.bean.Value;
 import com.fongmi.android.tv.databinding.FragmentVodBinding;
 import com.fongmi.android.tv.event.CastEvent;
 import com.fongmi.android.tv.event.RefreshEvent;
+import com.fongmi.android.tv.event.StateEvent;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.impl.FilterCallback;
 import com.fongmi.android.tv.impl.SiteCallback;
@@ -276,18 +277,24 @@ public class VodFragment extends BaseFragment implements SiteCallback, FilterCal
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
         switch (event.getType()) {
-            case EMPTY:
-                hideProgress();
-                break;
-            case RESTORE:
-                showProgress();
-                break;
             case CONFIG:
                 setLogo();
                 break;
             case VIDEO:
             case SIZE:
                 homeContent();
+                break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onStateEvent(StateEvent event) {
+        switch (event.getType()) {
+            case EMPTY:
+                hideProgress();
+                break;
+            case PROGRESS:
+                showProgress();
                 break;
         }
     }

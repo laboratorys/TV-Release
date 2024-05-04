@@ -26,6 +26,7 @@ import com.fongmi.android.tv.databinding.ActivityMainBinding;
 import com.fongmi.android.tv.db.AppDatabase;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.event.ServerEvent;
+import com.fongmi.android.tv.event.StateEvent;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.player.Source;
 import com.fongmi.android.tv.receiver.ShortcutReceiver;
@@ -119,7 +120,7 @@ public class MainActivity extends BaseActivity implements NavigationBarView.OnIt
             public void error(String msg) {
                 if (TextUtils.isEmpty(msg) && AppDatabase.getBackup().exists()) showDialog();
                 RefreshEvent.config();
-                RefreshEvent.empty();
+                StateEvent.empty();
                 Notify.show(msg);
             }
         };
@@ -133,7 +134,7 @@ public class MainActivity extends BaseActivity implements NavigationBarView.OnIt
         PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> AppDatabase.restore(new Callback() {
             @Override
             public void success() {
-                if (allGranted) RefreshEvent.restore();
+                if (allGranted) StateEvent.progress();
                 if (allGranted) initConfig();
             }
         }));

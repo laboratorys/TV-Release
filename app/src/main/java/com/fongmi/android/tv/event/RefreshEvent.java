@@ -7,14 +7,6 @@ public class RefreshEvent {
     private final Type type;
     private String path;
 
-    public static void empty() {
-        EventBus.getDefault().post(new RefreshEvent(Type.EMPTY));
-    }
-
-    public static void restore() {
-        EventBus.getDefault().post(new RefreshEvent(Type.RESTORE));
-    }
-
     public static void config() {
         EventBus.getDefault().post(new RefreshEvent(Type.CONFIG));
     }
@@ -73,6 +65,6 @@ public class RefreshEvent {
     }
 
     public enum Type {
-        EMPTY, RESTORE, CONFIG, IMAGE, VIDEO, HISTORY, KEEP, SIZE, WALL, DETAIL, PLAYER, SUBTITLE
+        CONFIG, IMAGE, VIDEO, HISTORY, KEEP, SIZE, WALL, DETAIL, PLAYER, SUBTITLE
     }
 }
