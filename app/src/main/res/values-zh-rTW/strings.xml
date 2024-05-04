@@ -128,6 +128,7 @@
 
     <!-- Hint -->
     <string name="copied">已複製</string>
+    <string name="restore">是否要還原備份資料？</string>
 
     <!-- UNIT -->
     <string name="all">全部</string>

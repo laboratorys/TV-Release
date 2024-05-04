@@ -128,6 +128,7 @@
 
     <!-- Hint -->
     <string name="copied">Copied</string>
+    <string name="restore">Do you want to restore backup data?</string>
 
     <!-- UNIT -->
     <string name="all">All</string>
