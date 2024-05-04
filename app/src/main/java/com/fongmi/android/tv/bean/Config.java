@@ -32,6 +32,8 @@ public class Config {
     private String json;
     @SerializedName("name")
     private String name;
+    @SerializedName("logo")
+    private String logo;
     @SerializedName("home")
     private String home;
     @SerializedName("parse")
@@ -79,6 +81,14 @@ public class Config {
         this.url = url;
     }
 
+    public String getJson() {
+        return json;
+    }
+
+    public void setJson(String json) {
+        this.json = json;
+    }
+
     public String getName() {
         return name;
     }
@@ -87,12 +97,12 @@ public class Config {
         this.name = name;
     }
 
-    public String getJson() {
-        return json;
+    public String getLogo() {
+        return logo;
     }
 
-    public void setJson(String json) {
-        this.json = json;
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 
     public String getHome() {
@@ -129,13 +139,18 @@ public class Config {
         return this;
     }
 
+    public Config json(String json) {
+        setJson(json);
+        return this;
+    }
+
     public Config name(String name) {
         setName(name);
         return this;
     }
 
-    public Config json(String json) {
-        setJson(json);
+    public Config logo(String logo) {
+        setLogo(logo);
         return this;
     }
 
@@ -207,7 +222,7 @@ public class Config {
 
     public static Config find(Config config, int type) {
         Config item = AppDatabase.get().getConfigDao().find(config.getUrl(), type);
-        return item == null ? create(type, config.getUrl(), config.getName()) : item.type(type).name(config.getName());
+        return item == null ? create(type, config.getUrl(), config.getName()) : item.type(type).name(config.getName()).logo(config.getLogo());
     }
 
     public static Config find(Depot depot, int type) {
