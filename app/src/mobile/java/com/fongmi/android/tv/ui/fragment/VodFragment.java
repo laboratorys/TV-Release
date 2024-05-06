@@ -253,22 +253,22 @@ public class VodFragment extends BaseFragment implements SiteCallback, FilterCal
     }
 
     private void setLogo() {
-        Glide.with(this).load(VodConfig.get().getConfig().getLogo()).circleCrop().placeholder(R.drawable.ic_logo).error(R.drawable.ic_logo).listener(getListener()).into(mBinding.logo);
+        Glide.with(this).load(VodConfig.get().getConfig().getLogo()).circleCrop().error(R.drawable.ic_logo).listener(getListener()).into(mBinding.logo);
     }
 
     private RequestListener<Drawable> getListener() {
         return new RequestListener<>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Drawable> target, boolean isFirstResource) {
-                mBinding.logo.getLayoutParams().height = ResUtil.dp2px(24);
                 mBinding.logo.getLayoutParams().width = ResUtil.dp2px(24);
+                mBinding.logo.getLayoutParams().height = ResUtil.dp2px(24);
                 return false;
             }
 
             @Override
             public boolean onResourceReady(@NonNull Drawable resource, @NonNull Object model, Target<Drawable> target, @NonNull DataSource dataSource, boolean isFirstResource) {
-                mBinding.logo.getLayoutParams().height = ResUtil.dp2px(36);
                 mBinding.logo.getLayoutParams().width = ResUtil.dp2px(36);
+                mBinding.logo.getLayoutParams().height = ResUtil.dp2px(36);
                 return false;
             }
         };
