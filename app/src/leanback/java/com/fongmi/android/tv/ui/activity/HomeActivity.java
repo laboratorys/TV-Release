@@ -2,6 +2,7 @@ package com.fongmi.android.tv.ui.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,6 +19,10 @@ import androidx.viewbinding.ViewBinding;
 
 import com.android.cast.dlna.dmr.DLNARendererService;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Product;
 import com.fongmi.android.tv.R;
@@ -204,9 +209,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void setLogo() {
-        String logo = VodConfig.get().getConfig().getLogo();
-        mBinding.logo.setVisibility(TextUtils.isEmpty(logo) ? View.GONE : View.VISIBLE);
-        Glide.with(this).load(logo).error(R.drawable.ic_logo).circleCrop().into(mBinding.logo);
+        Glide.with(this).load(VodConfig.get().getConfig().getLogo()).circleCrop().listener(getListener()).into(mBinding.logo);
     }
 
     private void getVideo() {
@@ -277,12 +280,28 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         return -1;
     }
 
-    public boolean isLoading() {
+    private boolean isLoading() {
         return loading;
     }
 
-    public void setLoading(boolean loading) {
+    private void setLoading(boolean loading) {
         this.loading = loading;
+    }
+
+    private RequestListener<Drawable> getListener() {
+        return new RequestListener<>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Drawable> target, boolean isFirstResource) {
+                mBinding.logo.setVisibility(View.GONE);
+                return true;
+            }
+
+            @Override
+            public boolean onResourceReady(@NonNull Drawable resource, @NonNull Object model, Target<Drawable> target, @NonNull DataSource dataSource, boolean isFirstResource) {
+                mBinding.logo.setVisibility(View.VISIBLE);
+                return false;
+            }
+        };
     }
 
     @Override

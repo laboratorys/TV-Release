@@ -246,7 +246,7 @@ public class VodFragment extends BaseFragment implements SiteCallback, FilterCal
     private void setLogo() {
         String logo = VodConfig.get().getConfig().getLogo();
         if (TextUtils.isEmpty(logo)) mBinding.logo.setImageResource(R.drawable.ic_logo);
-        else Glide.with(this).load(logo).error(R.drawable.ic_logo).circleCrop().into(mBinding.logo);
+        else Glide.with(this).load(logo).placeholder(R.drawable.ic_logo).error(R.drawable.ic_logo).circleCrop().into(mBinding.logo);
     }
 
     public Result getResult() {
