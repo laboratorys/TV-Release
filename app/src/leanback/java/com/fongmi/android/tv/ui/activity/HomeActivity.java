@@ -208,10 +208,6 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         if (!mBinding.title.hasFocus()) mBinding.recycler.requestFocus();
     }
 
-    private void setLogo() {
-        Glide.with(this).load(VodConfig.get().getConfig().getLogo()).circleCrop().listener(getListener()).into(mBinding.logo);
-    }
-
     private void getVideo() {
         mResult = Result.empty();
         int index = getRecommendIndex();
@@ -288,18 +284,84 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         this.loading = loading;
     }
 
+    private void setLogo() {
+        Glide.with(this).load(VodConfig.get().getConfig().getLogo()).circleCrop().listener(getListener()).into(mBinding.logo);
+    }
+
     private RequestListener<Drawable> getListener() {
         return new RequestListener<>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Drawable> target, boolean isFirstResource) {
                 mBinding.logo.setVisibility(View.GONE);
-                return true;
+                return false;
             }
 
             @Override
             public boolean onResourceReady(@NonNull Drawable resource, @NonNull Object model, Target<Drawable> target, @NonNull DataSource dataSource, boolean isFirstResource) {
                 mBinding.logo.setVisibility(View.VISIBLE);
                 return false;
+            }
+        };
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshEvent(RefreshEvent event) {
+        super.onRefreshEvent(event);
+        switch (event.getType()) {
+            case CONFIG:
+                setLogo();
+                break;
+            case VIDEO:
+                getVideo();
+                break;
+            case IMAGE:
+                int index = getRecommendIndex();
+                mAdapter.notifyArrayItemRangeChanged(index, mAdapter.size() - index);
+                break;
+            case HISTORY:
+                getHistory();
+                break;
+            case SIZE:
+                getVideo();
+                getHistory(true);
+                break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onServerEvent(ServerEvent event) {
+        switch (event.getType()) {
+            case SEARCH:
+                CollectActivity.start(this, event.getText(), true);
+                break;
+            case PUSH:
+                VideoActivity.push(this, event.getText());
+                break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCastEvent(CastEvent event) {
+        if (VodConfig.get().getConfig().equals(event.getConfig())) {
+            VideoActivity.cast(this, event.getHistory().update(VodConfig.getCid()));
+        } else {
+            VodConfig.load(event.getConfig(), getCallback(event));
+        }
+    }
+
+    private Callback getCallback(CastEvent event) {
+        return new Callback() {
+            @Override
+            public void success() {
+                RefreshEvent.history();
+                RefreshEvent.config();
+                RefreshEvent.video();
+                onCastEvent(event);
+            }
+
+            @Override
+            public void error(String msg) {
+                Notify.show(msg);
             }
         };
     }
@@ -389,68 +451,6 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     public void onChanged() {
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRefreshEvent(RefreshEvent event) {
-        super.onRefreshEvent(event);
-        switch (event.getType()) {
-            case CONFIG:
-                setLogo();
-                break;
-            case VIDEO:
-                getVideo();
-                break;
-            case IMAGE:
-                int index = getRecommendIndex();
-                mAdapter.notifyArrayItemRangeChanged(index, mAdapter.size() - index);
-                break;
-            case HISTORY:
-                getHistory();
-                break;
-            case SIZE:
-                getVideo();
-                getHistory(true);
-                break;
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onServerEvent(ServerEvent event) {
-        switch (event.getType()) {
-            case SEARCH:
-                CollectActivity.start(this, event.getText(), true);
-                break;
-            case PUSH:
-                VideoActivity.push(this, event.getText());
-                break;
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCastEvent(CastEvent event) {
-        if (VodConfig.get().getConfig().equals(event.getConfig())) {
-            VideoActivity.cast(this, event.getHistory().update(VodConfig.getCid()));
-        } else {
-            VodConfig.load(event.getConfig(), getCallback(event));
-        }
-    }
-
-    private Callback getCallback(CastEvent event) {
-        return new Callback() {
-            @Override
-            public void success() {
-                RefreshEvent.history();
-                RefreshEvent.config();
-                RefreshEvent.video();
-                onCastEvent(event);
-            }
-
-            @Override
-            public void error(String msg) {
-                Notify.show(msg);
-            }
-        };
     }
 
     @Override
