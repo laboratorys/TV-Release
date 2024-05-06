@@ -285,7 +285,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void setLogo() {
-        Glide.with(this).load(VodConfig.get().getConfig().getLogo()).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).circleCrop().listener(getListener()).into(mBinding.logo);
+        Glide.with(this).load(VodConfig.get().getConfig().getLogo()).circleCrop().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).listener(getListener()).into(mBinding.logo);
     }
 
     private RequestListener<Drawable> getListener() {
