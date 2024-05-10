@@ -45,7 +45,7 @@ public class InfoDialog {
     }
 
     public InfoDialog url(String url) {
-        this.url = url;
+        this.url = url.startsWith("data") ? url.substring(0, 128) : url;
         return this;
     }
 
