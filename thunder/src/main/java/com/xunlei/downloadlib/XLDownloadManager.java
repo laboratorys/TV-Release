@@ -33,6 +33,7 @@ public class XLDownloadManager {
     public void init() {
         InitParam param = new InitParam(context.getFilesDir().getPath());
         loader.init(context, param.mAppVersion, "", getPeerId(), getGuid(), param.mStatSavePath, param.mStatCfgSavePath, param.mLogSavePath, 9, param.mPermissionLevel);
+        loader.setUserId("Yt4vsji-qngamdRo");
         setSpeedLimit(-1, -1);
     }
 
