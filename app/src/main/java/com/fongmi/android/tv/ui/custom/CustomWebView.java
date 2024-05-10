@@ -3,7 +3,6 @@ package com.fongmi.android.tv.ui.custom;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.text.TextUtils;
@@ -115,12 +114,6 @@ public class CustomWebView extends WebView {
             }
 
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                if (dialog != null) hideDialog();
-            }
-
-            @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 if (url.equals(BLANK)) return;
@@ -144,6 +137,7 @@ public class CustomWebView extends WebView {
         if (dialog != null || App.activity() == null) return;
         if (getParent() != null) ((ViewGroup) getParent()).removeView(this);
         dialog = new AlertDialog.Builder(App.activity()).setView(this).show();
+        App.removeCallbacks(timer);
     }
 
     private void hideDialog() {
