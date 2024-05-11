@@ -1,6 +1,7 @@
 package com.xunlei.downloadlib;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.github.catvod.Init;
 import com.github.catvod.utils.Prefers;
@@ -9,6 +10,7 @@ import com.xunlei.downloadlib.parameter.BtIndexSet;
 import com.xunlei.downloadlib.parameter.BtSubTaskDetail;
 import com.xunlei.downloadlib.parameter.BtTaskParam;
 import com.xunlei.downloadlib.parameter.EmuleTaskParam;
+import com.xunlei.downloadlib.parameter.GetDownloadLibVersion;
 import com.xunlei.downloadlib.parameter.GetFileName;
 import com.xunlei.downloadlib.parameter.GetTaskId;
 import com.xunlei.downloadlib.parameter.InitParam;
@@ -32,8 +34,11 @@ public class XLDownloadManager {
 
     public void init() {
         InitParam param = new InitParam(context.getFilesDir().getPath());
-        loader.init(context, param.mAppVersion, "", getPeerId(), getGuid(), param.mStatSavePath, param.mStatCfgSavePath, param.mLogSavePath, 9, param.mPermissionLevel);
-        loader.setUserId("Yt4vsji-qngamdRo");
+        loader.init(param.getSoKey(), "com.android.providers.downloads", param.mAppVersion, "", getPeerId(), getGuid(), param.mStatSavePath, param.mStatCfgSavePath, 0, param.mPermissionLevel, param.mQueryConfOnInit);
+        getDownloadLibVersion(new GetDownloadLibVersion());
+        setOSVersion(Build.VERSION.INCREMENTAL + "_alpha");
+        setLocalProperty("PhoneModel", Build.MODEL);
+        setStatReportSwitch(false);
         setSpeedLimit(-1, -1);
     }
 
@@ -58,7 +63,7 @@ public class XLDownloadManager {
     }
 
     public void startTask(long taskId) {
-        loader.startTask(taskId, false);
+        loader.startTask(taskId);
     }
 
     public void stopTask(long taskId) {
@@ -73,6 +78,22 @@ public class XLDownloadManager {
         loader.getLocalUrl(filePath, localUrl);
     }
 
+    public void getDownloadLibVersion(GetDownloadLibVersion version) {
+        loader.getDownloadLibVersion(version);
+    }
+
+    public void setStatReportSwitch(boolean value) {
+        loader.setStatReportSwitch(value);
+    }
+
+    private void setLocalProperty(String key, String value) {
+        loader.setLocalProperty(key, value);
+    }
+
+    public void setOSVersion(String str) {
+        loader.setMiUiVersion(str);
+    }
+
     public void setOriginUserAgent(long taskId, String userAgent) {
         loader.setOriginUserAgent(taskId, userAgent);
     }
@@ -81,8 +102,8 @@ public class XLDownloadManager {
         loader.setDownloadTaskOrigin(taskId, str);
     }
 
-    public void setTaskLxState(long j, int i, int i2) {
-        loader.setTaskLxState(j, i, i2);
+    public void setTaskGsState(long j, int i, int i2) {
+        loader.setTaskGsState(j, i, i2);
     }
 
     public int createP2spTask(P2spTaskParam param, GetTaskId taskId) {
@@ -127,9 +148,5 @@ public class XLDownloadManager {
 
     public void setSpeedLimit(long min, long max) {
         loader.setSpeedLimit(min, max);
-    }
-
-    public void setAccelerateToken(long j, int i, long j2, int i2, String str) {
-        loader.setAccelerateToken(j, i, j2, i2, str);
     }
 }

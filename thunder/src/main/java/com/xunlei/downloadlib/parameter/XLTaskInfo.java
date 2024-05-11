@@ -32,6 +32,8 @@ public class XLTaskInfo {
     public long mP2PSpeed;
     public long mP2SRecvBytes;
     public long mP2SSpeed;
+    public long mScdnRecvBytes;
+    public long mScdnSpeed;
     public long mTaskId;
     public long mTotalFileCount;
 

@@ -41,7 +41,7 @@ public class XLTaskHelper {
     }
 
     private synchronized GetTaskId startTask(GetTaskId taskId, int index) {
-        getManager().setTaskLxState(taskId.getTaskId(), index, 1);
+        getManager().setTaskGsState(taskId.getTaskId(), index, 2);
         getManager().startTask(taskId.getTaskId());
         return taskId;
     }
