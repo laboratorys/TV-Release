@@ -30,6 +30,7 @@
         android:valueFrom="14"
         android:valueTo="48"
         app:thumbColor="@color/blue_500"
+        app:tickVisible="false"
         app:trackColorActive="@color/blue_500"
         app:trackColorInactive="@color/blue_50" />
 
