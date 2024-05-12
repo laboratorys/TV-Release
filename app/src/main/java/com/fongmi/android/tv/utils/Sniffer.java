@@ -41,7 +41,6 @@ public class Sniffer {
         for (String exclude : rule.getExclude()) if (Pattern.compile(exclude).matcher(url).find()) return false;
         for (String regex : rule.getRegex()) if (url.contains(regex)) return true;
         for (String regex : rule.getRegex()) if (Pattern.compile(regex).matcher(url).find()) return true;
-        if (url.contains("url=http") || url.contains("v=http") || url.contains(".css") || url.contains(".html")) return false;
         return SNIFFER.matcher(url).find();
     }
 

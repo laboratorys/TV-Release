@@ -157,7 +157,6 @@ public class ExoUtil {
         if (drm != null) builder.setDrmConfiguration(drm.get());
         builder.setAllowChunklessPreparation(Players.isHard());
         if (mimeType != null) builder.setMimeType(mimeType);
-        builder.setAds(Sniffer.getRegex(uri));
         return builder.build();
     }
 
