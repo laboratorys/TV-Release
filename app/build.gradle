@@ -4,7 +4,7 @@ plugins {
 
 android {
     compileSdk 34
-    flavorDimensions = ["mode", "api"]
+    flavorDimensions = ["mode", "api", "abi"]
 
     defaultConfig {
         applicationId "com.fongmi.android.tv"
@@ -32,6 +32,18 @@ android {
         python {
             dimension "api"
         }
+        x86 {
+            dimension "abi"
+            ndk { abiFilters "x86" }
+        }
+        arm64_v8a {
+            dimension "abi"
+            ndk { abiFilters "arm64-v8a" }
+        }
+        armeabi_v7a {
+            dimension "abi"
+            ndk { abiFilters "armeabi-v7a" }
+        }
     }
 
     buildFeatures {
@@ -46,15 +58,6 @@ android {
         }
     }
 
-    splits {
-        abi {
-            enable true
-            reset()
-            include "armeabi-v7a", "arm64-v8a"
-            universalApk false
-        }
-    }
-
     packagingOptions {
         exclude 'META-INF/beans.xml'
     }
@@ -62,6 +65,12 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
+    }
+
+    android.applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach { output ->
+            outputFileName = "${variant.productFlavors[0].name}-${variant.productFlavors[1].name}-${variant.productFlavors[2].name}.apk"
+        }
     }
 
     configurations.configureEach {
