@@ -12,6 +12,7 @@ import com.fongmi.android.tv.utils.Download;
 import com.fongmi.android.tv.utils.FileUtil;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ResUtil;
+import com.fongmi.android.tv.utils.Util;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Github;
 import com.github.catvod.utils.Path;
@@ -45,7 +46,7 @@ public class Updater implements Download.Callback {
     }
 
     private String getApk() {
-        return Github.getApk(dev, BuildConfig.FLAVOR_mode + "-" + BuildConfig.FLAVOR_api + "-" + BuildConfig.FLAVOR_abi);
+        return Github.getApk(dev, BuildConfig.FLAVOR_mode + "-" + BuildConfig.FLAVOR_api + "-" + Util.getArch());
     }
 
     public Updater force() {

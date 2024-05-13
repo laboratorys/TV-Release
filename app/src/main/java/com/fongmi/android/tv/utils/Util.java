@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -180,5 +181,16 @@ public class Util {
             }
         }
         return false;
+    }
+
+    public static String getArch() {
+        try {
+            PackageInfo info = App.get().getPackageManager().getPackageInfo(App.get().getPackageName(), 0);
+            String abi = info.applicationInfo.nativeLibraryDir;
+            if (abi.endsWith("64")) return "arm64_v8a";
+            return "armeabi_v7a";
+        } catch (Throwable e) {
+            return "armeabi_v7a";
+        }
     }
 }
