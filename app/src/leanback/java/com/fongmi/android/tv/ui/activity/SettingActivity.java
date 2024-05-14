@@ -49,6 +49,7 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
 
     private ActivitySettingBinding mBinding;
     private String[] quality;
+    private String[] backup;
     private String[] size;
     private int type;
 
@@ -85,12 +86,12 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
         mBinding.vodUrl.setText(VodConfig.getDesc());
         mBinding.liveUrl.setText(LiveConfig.getDesc());
         mBinding.wallUrl.setText(WallConfig.getDesc());
-        mBinding.backupText.setText(AppDatabase.getDate());
         mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.versionText.setText(BuildConfig.VERSION_NAME);
         mBinding.proxyText.setText(getProxy(Setting.getProxy()));
         mBinding.incognitoText.setText(getSwitch(Setting.isIncognito()));
         mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[Setting.getSize()]);
+        mBinding.backupText.setText((backup = ResUtil.getStringArray(R.array.select_backup))[Setting.getBackupMode()]);
         mBinding.qualityText.setText((quality = ResUtil.getStringArray(R.array.select_quality))[Setting.getQuality()]);
         setCacheText();
     }
@@ -119,7 +120,7 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
         mBinding.live.setOnLongClickListener(this::onLiveEdit);
         mBinding.liveHome.setOnClickListener(this::onLiveHome);
         mBinding.wall.setOnLongClickListener(this::onWallEdit);
-        mBinding.backup.setOnLongClickListener(this::onBackupAuto);
+        mBinding.backup.setOnLongClickListener(this::onBackupMode);
         mBinding.vodHistory.setOnClickListener(this::onVodHistory);
         mBinding.version.setOnLongClickListener(this::onVersionDev);
         mBinding.liveHistory.setOnClickListener(this::onLiveHistory);
@@ -346,14 +347,15 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
         PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> AppDatabase.backup(new Callback() {
             @Override
             public void success() {
-                mBinding.backupText.setText(AppDatabase.getDate());
+                Notify.show(R.string.backed);
             }
         }));
     }
 
-    private boolean onBackupAuto(View view) {
-        Setting.putBackupAuto(!Setting.isBackupAuto());
-        mBinding.backupText.setText(AppDatabase.getDate());
+    private boolean onBackupMode(View view) {
+        int index = Setting.getBackupMode();
+        Setting.putBackupMode(index = index == backup.length - 1 ? 0 : ++index);
+        mBinding.backupText.setText(backup[index]);
         return true;
     }
 }

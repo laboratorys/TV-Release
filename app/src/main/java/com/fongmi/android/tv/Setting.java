@@ -177,6 +177,14 @@ public class Setting {
         Prefers.put("site_mode", mode);
     }
 
+    public static int getBackupMode() {
+        return Prefers.getInt("backup_mode");
+    }
+
+    public static void putBackupMode(int auto) {
+        Prefers.put("backup_mode", auto);
+    }
+
     public static boolean isIncognito() {
         return Prefers.getBoolean("incognito");
     }
@@ -239,14 +247,6 @@ public class Setting {
 
     public static void putTunnel(boolean tunnel) {
         Prefers.put("exo_tunnel", tunnel);
-    }
-
-    public static boolean isBackupAuto() {
-        return Prefers.getBoolean("backup_auto");
-    }
-
-    public static void putBackupAuto(boolean auto) {
-        Prefers.put("backup_auto", auto);
     }
 
     public static float getThumbnail() {

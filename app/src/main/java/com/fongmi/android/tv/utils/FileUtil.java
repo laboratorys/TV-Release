@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import androidx.core.content.FileProvider;
 
 import com.fongmi.android.tv.App;
+import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.impl.Callback;
 import com.github.catvod.utils.Path;
 
@@ -101,7 +102,7 @@ public class FileUtil {
     }
 
     public static String byteCountToDisplaySize(long size) {
-        if (size <= 0) return "0 KB";
+        if (size <= 0) return ResUtil.getString(R.string.none);
         String[] units = new String[]{"bytes", "KB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];

@@ -71,7 +71,6 @@
     <string name="setting_proxy">Proxy</string>
     <string name="setting_cache">缓存</string>
     <string name="setting_backup">备份</string>
-    <string name="setting_backup_auto">自动</string>
     <string name="setting_version">版本</string>
     <string name="setting_storage">权限</string>
     <string name="setting_off">关</string>
@@ -128,12 +127,18 @@
 
     <!-- Hint -->
     <string name="copied">已复制</string>
+    <string name="backed">备份成功</string>
 
     <!-- UNIT -->
     <string name="all">全部</string>
     <string name="none">无</string>
     <string name="times">倍</string>
     <string name="lines">行</string>
+
+    <string-array name="select_backup">
+        <item>自动</item>
+        <item>手动</item>
+    </string-array>
 
     <string-array name="select_decode">
         <item>软解</item>
