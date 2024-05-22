@@ -1,37 +1,26 @@
 package com.fongmi.android.tv.player.extractor;
 
-import static org.schabi.newpipe.extractor.ServiceList.YouTube;
-
-import android.text.TextUtils;
 import android.util.Base64;
 
-import com.fongmi.android.tv.impl.NewPipeImpl;
 import com.fongmi.android.tv.player.Source;
-import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Json;
-import com.github.catvod.utils.Util;
-import com.google.common.net.HttpHeaders;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.github.kiulian.downloader.YoutubeDownloader;
+import com.github.kiulian.downloader.downloader.request.RequestVideoInfo;
+import com.github.kiulian.downloader.model.videos.VideoInfo;
+import com.github.kiulian.downloader.model.videos.formats.AudioFormat;
+import com.github.kiulian.downloader.model.videos.formats.Format;
+import com.github.kiulian.downloader.model.videos.formats.VideoFormat;
 
-import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager;
-import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
-import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
-import org.schabi.newpipe.extractor.stream.VideoStream;
-import org.schabi.newpipe.extractor.utils.Parser;
-
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.Headers;
-
 public class Youtube implements Source.Extractor {
 
-    private static final String MPD = "<MPD xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='urn:mpeg:dash:schema:mpd:2011' xsi:schemaLocation='urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd' type='static' mediaPresentationDuration='%s' minBufferTime='PT1.500S' profiles='urn:mpeg:dash:profile:isoff-on-demand:2011'>\n" + "<Period duration='%s' start='PT0S'>\n" + "%s\n" + "%s\n" + "</Period>\n" + "</MPD>";
-    private static final String ADAPTATION_SET = "<AdaptationSet lang='chi'>\n" + "<ContentComponent contentType='%s'/>\n" + "<Representation id='%s' bandwidth='%d' codecs='%s' mimeType='%s' %s maxPlayoutRate='1' startWithSAP='1'>\n" + "<BaseURL>%s</BaseURL>\n" + "<SegmentBase indexRange='%s'>\n" + "<Initialization range='%s'/>\n" + "</SegmentBase>\n" + "</Representation>\n" + "</AdaptationSet>";
+    private static final Pattern PATTERN = Pattern.compile("(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed\\?video_id=|&v=|\\?v=)([\\w-]{11})");
+    private static final String ADAPTATION_SET = "<AdaptationSet lang='chi'>\n" + "<ContentComponent contentType='%s'/>\n" + "<Representation id='%d' bandwidth='%d' codecs='%s' mimeType='%s' %s>\n" + "<BaseURL>%s</BaseURL>\n" + "<SegmentBase indexRange='%s'>\n" + "<Initialization range='%s'/>\n" + "</SegmentBase>\n" + "</Representation>\n" + "</AdaptationSet>";
+    private static final String MPD = "<MPD xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='urn:mpeg:dash:schema:mpd:2011' xsi:schemaLocation='urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd' type='static' mediaPresentationDuration='PT%sS' minBufferTime='PT1.500S' profiles='urn:mpeg:dash:profile:isoff-on-demand:2011'>\n" + "<Period duration='PT%sS' start='PT0S'>\n" + "%s\n" + "%s\n" + "</Period>\n" + "</MPD>";
+    private final YoutubeDownloader downloader;
 
     @Override
     public boolean match(String scheme, String host) {
@@ -39,93 +28,49 @@ public class Youtube implements Source.Extractor {
     }
 
     public Youtube() {
-        NewPipe.init(new NewPipeImpl());
+        downloader = new YoutubeDownloader();
     }
 
     @Override
     public String fetch(String url) throws Exception {
-        String id = YoutubeStreamLinkHandlerFactory.getInstance().getId(url);
-        String html = OkHttp.newCall(url, Headers.of(HttpHeaders.USER_AGENT, Util.CHROME)).execute().body().string();
-        Matcher matcher = Pattern.compile("var ytInitialPlayerResponse =(.*?\\});").matcher(html);
+        Matcher matcher = PATTERN.matcher(url);
         if (!matcher.find()) return "";
-        JsonObject streamingData = Json.parse(matcher.group(1)).getAsJsonObject().get("streamingData").getAsJsonObject();
-        //if (streamingData.has("adaptiveFormats")) return getMpdWithBase64(streamingData, id);
-        if (streamingData.has("hlsManifestUrl")) return getHlsManifestUrl(streamingData);
-        else return getNewPipeUrl(url);
+        String videoId = matcher.group();
+        RequestVideoInfo request = new RequestVideoInfo(videoId);
+        VideoInfo info = downloader.getVideoInfo(request).data();
+        return info.details().isLive() ? info.details().liveUrl() : getMpdWithBase64(info);
     }
 
-    private String getNewPipeUrl(String url) throws Exception {
-        YoutubeStreamExtractor extractor = (YoutubeStreamExtractor) YouTube.getStreamExtractor(url);
-        extractor.fetchPage();
-        VideoStream item = extractor.getVideoStreams().get(0);
-        for (VideoStream stream : extractor.getVideoStreams()) if (!stream.isVideoOnly() && stream.getHeight() >= item.getHeight()) item = stream;
-        return item.getContent();
-    }
-
-    private String getHlsManifestUrl(JsonObject streamingData) {
-        JsonElement hlsManifestUrl = streamingData.get("hlsManifestUrl");
-        if (hlsManifestUrl.isJsonArray()) return hlsManifestUrl.getAsJsonArray().get(0).getAsString();
-        return hlsManifestUrl.getAsString();
-    }
-
-    private String getMpdWithBase64(JsonObject streamingData, String videoId) {
-        String approxDurationMs = "";
+    private String getMpdWithBase64(VideoInfo info) {
         StringBuilder video = new StringBuilder();
         StringBuilder audio = new StringBuilder();
-        for (JsonElement element : streamingData.get("adaptiveFormats").getAsJsonArray()) {
-            JsonObject adaptiveFormat = element.getAsJsonObject();
-            String mimeType = adaptiveFormat.get("mimeType").getAsString();
-            if (mimeType.contains("video")) video.append(getAdaptationSet(videoId, adaptiveFormat, "video", mimeType.split(";")));
-            if (mimeType.contains("audio")) audio.append(getAdaptationSet(videoId, adaptiveFormat, "audio", mimeType.split(";")));
-            if (TextUtils.isEmpty(approxDurationMs)) approxDurationMs = adaptiveFormat.get("approxDurationMs").getAsString();
-        }
-        String duration = String.format(Locale.getDefault(), "PT%.3fS", Integer.parseInt(approxDurationMs) / 1000.0);
-        String finalMpd = String.format(Locale.getDefault(), MPD, duration, duration, video, audio);
-        return "data:application/dash+xml;base64," + Base64.encodeToString(finalMpd.getBytes(), 0);
+        List<VideoFormat> videoFormats = info.videoFormats();
+        List<AudioFormat> audioFormats = info.audioFormats();
+        for (VideoFormat format : videoFormats) video.append(getAdaptationSet(format, getVideoParam(format)));
+        for (AudioFormat format : audioFormats) audio.append(getAdaptationSet(format, getAudioParam(format)));
+        String mpd = String.format(Locale.getDefault(), MPD, info.details().lengthSeconds(), info.details().lengthSeconds(), video, audio);
+        return "data:application/dash+xml;base64," + Base64.encodeToString(mpd.getBytes(), 0);
     }
 
-    private String getAdaptationSet(String videoId, JsonObject adaptiveFormat, String contentType, String[] split) {
-        String mediaParam = "";
-        String mimeType = split[0];
-        String baseUrl = getBaseUrl(videoId, adaptiveFormat);
-        String iTag = adaptiveFormat.get("itag").getAsString();
-        int bitrate = adaptiveFormat.get("bitrate").getAsInt();
-        String codecs = split[1].split("=")[1].replace("\"", "");
-        JsonObject initRange = adaptiveFormat.get("initRange").getAsJsonObject();
-        JsonObject indexRange = adaptiveFormat.get("indexRange").getAsJsonObject();
-        String initParam = initRange.get("start").getAsString() + "-" + initRange.get("end").getAsString();
-        String indexParam = indexRange.get("start").getAsString() + "-" + indexRange.get("end").getAsString();
-
-        if (mimeType.contains("video")) {
-            int fps = adaptiveFormat.get("fps").getAsInt();
-            int width = adaptiveFormat.get("width").getAsInt();
-            int height = adaptiveFormat.get("height").getAsInt();
-            mediaParam = String.format(Locale.getDefault(), "height='%d' width='%d' frameRate='%d'", height, width, fps);
-        }
-
-        if (mimeType.contains("audio")) {
-            int audioSamplingRate = adaptiveFormat.get("audioSampleRate").getAsInt();
-            mediaParam = String.format(Locale.getDefault(), "subsegmentAlignment='true' audioSamplingRate='%d'", audioSamplingRate);
-        }
-
-        return String.format(Locale.getDefault(), ADAPTATION_SET, contentType, iTag, bitrate, codecs, mimeType, mediaParam, baseUrl, indexParam, initParam);
+    private String getVideoParam(VideoFormat format) {
+        return String.format(Locale.getDefault(), "height='%d' width='%d' frameRate='%d' maxPlayoutRate='1' startWithSAP='1'", format.height(), format.width(), format.fps());
     }
 
-    private String getBaseUrl(String videoId, JsonObject adaptiveFormat) {
-        String baseUrl;
-        if (adaptiveFormat.has("url")) baseUrl = adaptiveFormat.get("url").getAsString();
-        else baseUrl = decodeCipher(videoId, adaptiveFormat);
-        return baseUrl.replace("&", "&amp;");
+    private String getAudioParam(AudioFormat format) {
+        return String.format(Locale.getDefault(), "subsegmentAlignment='true' audioSamplingRate='%d'", format.audioSampleRate());
     }
 
-    private String decodeCipher(String videoId, JsonObject adaptiveFormat) {
-        try {
-            String cipherString = adaptiveFormat.has("cipher") ? adaptiveFormat.get("cipher").getAsString() : adaptiveFormat.get("signatureCipher").getAsString();
-            Map<String, String> cipher = Parser.compatParseMap(cipherString);
-            return cipher.get("url") + "&" + cipher.get("sp") + "=" + YoutubeJavaScriptPlayerManager.deobfuscateSignature(videoId, cipher.get("s"));
-        } catch (Exception e) {
-            return "";
-        }
+    private String getAdaptationSet(Format format, String param) {
+        if (format.initRange() == null || format.indexRange() == null) return "";
+        String mimeType = format.mimeType().split(";")[0];
+        String contentType = format.mimeType().split("/")[0];
+        int iTag = format.itag().id();
+        int bitrate = format.bitrate();
+        String url = format.url().replace("&", "&amp;");
+        String codecs = format.mimeType().split("=")[1].replace("\"", "");
+        String initRange = format.initRange().getStart() + "-" + format.initRange().getEnd();
+        String indexRange = format.indexRange().getStart() + "-" + format.indexRange().getEnd();
+        return String.format(Locale.getDefault(), ADAPTATION_SET, contentType, iTag, bitrate, codecs, mimeType, param, url, indexRange, initRange);
     }
 
     @Override
