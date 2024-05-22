@@ -17,9 +17,9 @@ import java.util.regex.Pattern;
 
 public class Youtube implements Source.Extractor {
 
-    private static final Pattern PATTERN = Pattern.compile("(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed\\?video_id=|&v=|\\?v=)([\\w-]{11})");
-    private static final String ADAPTATION_SET = "<AdaptationSet lang='chi'>\n" + "<ContentComponent contentType='%s'/>\n" + "<Representation id='%d' bandwidth='%d' codecs='%s' mimeType='%s' %s>\n" + "<BaseURL>%s</BaseURL>\n" + "<SegmentBase indexRange='%s'>\n" + "<Initialization range='%s'/>\n" + "</SegmentBase>\n" + "</Representation>\n" + "</AdaptationSet>";
     private static final String MPD = "<MPD xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='urn:mpeg:dash:schema:mpd:2011' xsi:schemaLocation='urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd' type='static' mediaPresentationDuration='PT%sS' minBufferTime='PT1.500S' profiles='urn:mpeg:dash:profile:isoff-on-demand:2011'>\n" + "<Period duration='PT%sS' start='PT0S'>\n" + "%s\n" + "%s\n" + "</Period>\n" + "</MPD>";
+    private static final String ADAPT = "<AdaptationSet lang='chi'>\n" + "<ContentComponent contentType='%s'/>\n" + "<Representation id='%d' bandwidth='%d' codecs='%s' mimeType='%s' %s>\n" + "<BaseURL>%s</BaseURL>\n" + "<SegmentBase indexRange='%s'>\n" + "<Initialization range='%s'/>\n" + "</SegmentBase>\n" + "</Representation>\n" + "</AdaptationSet>";
+    private static final Pattern PATTERN = Pattern.compile("(?<=watch\\?v=|youtu.be/|/shorts/|/live/)([\\w-]{11})");
     private final YoutubeDownloader downloader;
 
     @Override
@@ -70,7 +70,7 @@ public class Youtube implements Source.Extractor {
         String codecs = format.mimeType().split("=")[1].replace("\"", "");
         String initRange = format.initRange().getStart() + "-" + format.initRange().getEnd();
         String indexRange = format.indexRange().getStart() + "-" + format.indexRange().getEnd();
-        return String.format(Locale.getDefault(), ADAPTATION_SET, contentType, iTag, bitrate, codecs, mimeType, param, url, indexRange, initRange);
+        return String.format(Locale.getDefault(), ADAPT, contentType, iTag, bitrate, codecs, mimeType, param, url, indexRange, initRange);
     }
 
     @Override
