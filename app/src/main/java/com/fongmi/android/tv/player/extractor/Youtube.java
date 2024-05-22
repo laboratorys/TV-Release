@@ -1,5 +1,7 @@
 package com.fongmi.android.tv.player.extractor;
 
+import static org.schabi.newpipe.extractor.ServiceList.YouTube;
+
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -14,7 +16,9 @@ import com.google.gson.JsonObject;
 
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeStreamLinkHandlerFactory;
+import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.extractor.utils.Parser;
 
 import java.util.Locale;
@@ -45,9 +49,17 @@ public class Youtube implements Source.Extractor {
         Matcher matcher = Pattern.compile("var ytInitialPlayerResponse =(.*?\\});").matcher(html);
         if (!matcher.find()) return "";
         JsonObject streamingData = Json.parse(matcher.group(1)).getAsJsonObject().get("streamingData").getAsJsonObject();
+        //if (streamingData.has("adaptiveFormats")) return getMpdWithBase64(streamingData, id);
         if (streamingData.has("hlsManifestUrl")) return getHlsManifestUrl(streamingData);
-        if (streamingData.has("adaptiveFormats")) return getMpdWithBase64(streamingData, id);
-        return url;
+        else return getNewPipeUrl(url);
+    }
+
+    private String getNewPipeUrl(String url) throws Exception {
+        YoutubeStreamExtractor extractor = (YoutubeStreamExtractor) YouTube.getStreamExtractor(url);
+        extractor.fetchPage();
+        VideoStream item = extractor.getVideoStreams().get(0);
+        for (VideoStream stream : extractor.getVideoStreams()) if (!stream.isVideoOnly() && stream.getHeight() >= item.getHeight()) item = stream;
+        return item.getContent();
     }
 
     private String getHlsManifestUrl(JsonObject streamingData) {
