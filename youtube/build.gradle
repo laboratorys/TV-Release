@@ -12,5 +12,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.alibaba:fastjson:1.2.83'
+    implementation 'com.alibaba:fastjson:2.0.21.android'
 }
