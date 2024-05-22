@@ -11,7 +11,6 @@ import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
-import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.bean.Config;
 import com.fongmi.android.tv.bean.Device;
@@ -118,10 +117,6 @@ public class SyncDialog extends BaseDialog implements DeviceAdapter.OnClickListe
         dismiss();
     }
 
-    private void onError() {
-        Notify.show(R.string.device_offline);
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScanEvent(ScanEvent event) {
         ScanTask.create(this).start(event.getAddress());
@@ -152,7 +147,7 @@ public class SyncDialog extends BaseDialog implements DeviceAdapter.OnClickListe
 
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                App.post(() -> onError());
+                App.post(() -> Notify.show(e.getMessage()));
             }
         };
     }

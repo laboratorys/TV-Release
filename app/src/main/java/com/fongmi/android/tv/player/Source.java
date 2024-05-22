@@ -2,7 +2,6 @@ package com.fongmi.android.tv.player;
 
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.Result;
-import com.fongmi.android.tv.player.extractor.BiliBili;
 import com.fongmi.android.tv.player.extractor.Force;
 import com.fongmi.android.tv.player.extractor.JianPian;
 import com.fongmi.android.tv.player.extractor.Push;
@@ -30,7 +29,6 @@ public class Source {
 
     public Source() {
         extractors = new ArrayList<>();
-        extractors.add(new BiliBili());
         extractors.add(new Force());
         extractors.add(new JianPian());
         extractors.add(new Push());
