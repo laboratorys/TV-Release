@@ -1,6 +1,5 @@
 package com.github.kiulian.downloader.cipher;
 
-
 import com.github.kiulian.downloader.YoutubeException;
 
 public interface CipherFactory {

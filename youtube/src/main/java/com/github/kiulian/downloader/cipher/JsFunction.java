@@ -1,7 +1,7 @@
 package com.github.kiulian.downloader.cipher;
 
-
 public class JsFunction {
+
     private final String var;
     private final String name;
     private final String argument;

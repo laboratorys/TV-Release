@@ -1,6 +1,5 @@
 package com.github.kiulian.downloader.cipher;
 
-
 class SpliceFunction implements CipherFunction {
 
     @Override
@@ -9,8 +8,6 @@ class SpliceFunction implements CipherFunction {
         char[] spliced = new char[array.length - deleteCount];
         System.arraycopy(array, 0, spliced, 0, deleteCount);
         System.arraycopy(array, deleteCount * 2, spliced, deleteCount, spliced.length - deleteCount);
-
         return spliced;
     }
-
 }

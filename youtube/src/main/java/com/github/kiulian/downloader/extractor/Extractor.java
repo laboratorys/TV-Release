@@ -1,8 +1,5 @@
 package com.github.kiulian.downloader.extractor;
 
-
-
-
 import com.alibaba.fastjson.JSONObject;
 import com.github.kiulian.downloader.YoutubeException;
 
@@ -23,5 +20,4 @@ public interface Extractor {
     int extractIntegerFromText(String text);
 
     long extractLongFromText(String text);
-
 }

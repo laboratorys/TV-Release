@@ -1,6 +1,5 @@
 package com.github.kiulian.downloader.model.videos;
 
-
 import com.github.kiulian.downloader.model.Filter;
 import com.github.kiulian.downloader.model.subtitles.SubtitlesInfo;
 import com.github.kiulian.downloader.model.videos.formats.AudioFormat;
@@ -122,6 +121,4 @@ public class VideoInfo {
         }
         return bestFormat;
     }
-
-
 }

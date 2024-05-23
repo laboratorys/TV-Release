@@ -20,8 +20,8 @@ public abstract class Format {
     protected final Long lastModified;
     protected final Long approxDurationMs;
     protected final String clientVersion;
-    protected final Range initRange;
-    protected final Range indexRange;
+    protected Range initRange;
+    protected Range indexRange;
 
     protected Format(JSONObject json, boolean isAdaptive, String clientVersion) {
         this.isAdaptive = isAdaptive;
@@ -44,9 +44,9 @@ public abstract class Format {
         lastModified = json.getLong("lastModified");
         approxDurationMs = json.getLong("approxDurationMs");
         JSONObject range = json.getJSONObject("initRange");
-        initRange = new Range(range.getLongValue("start"), range.getLongValue("end"));
+        if (range != null) initRange = new Range(range.getLongValue("start"), range.getLongValue("end"));
         range = json.getJSONObject("indexRange");
-        indexRange = new Range(range.getLongValue("start"), range.getLongValue("end"));
+        if (range != null) indexRange = new Range(range.getLongValue("start"), range.getLongValue("end"));
 
         if (mimeType == null || mimeType.isEmpty()) {
             extension = Extension.UNKNOWN;

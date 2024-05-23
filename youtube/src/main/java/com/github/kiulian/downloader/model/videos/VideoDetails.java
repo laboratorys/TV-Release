@@ -1,6 +1,5 @@
 package com.github.kiulian.downloader.model.videos;
 
-
 import com.alibaba.fastjson.JSONObject;
 import com.github.kiulian.downloader.model.AbstractVideoDetails;
 
@@ -25,7 +24,6 @@ public class VideoDetails extends AbstractVideoDetails {
         title = json.getString("title");
         author = json.getString("author");
         isLive = json.getBooleanValue("isLive");
-
         keywords = json.containsKey("keywords") ? json.getJSONArray("keywords").toJavaList(String.class) : new ArrayList<String>();
         shortDescription = json.getString("shortDescription");
         averageRating = json.getIntValue("averageRating");

@@ -1,7 +1,7 @@
 package com.github.kiulian.downloader.model.videos.quality;
 
-
 public enum VideoQuality {
+
     unknown(0),
     noVideo(0),
     tiny(1),
@@ -25,5 +25,4 @@ public enum VideoQuality {
         if (this == quality) return 0;
         return order.compareTo(quality.order);
     }
-
 }

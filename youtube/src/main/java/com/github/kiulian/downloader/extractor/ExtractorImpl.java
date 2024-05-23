@@ -1,6 +1,5 @@
 package com.github.kiulian.downloader.extractor;
 
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -16,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ExtractorImpl implements Extractor {
+
     private static final String DEFAULT_CLIENT_VERSION = "2.20200720.00.02";
 
     private static final List<Pattern> YT_PLAYER_CONFIG_PATTERNS = Arrays.asList(
@@ -161,5 +161,4 @@ public class ExtractorImpl implements Extractor {
         }
         return 0;
     }
-
 }

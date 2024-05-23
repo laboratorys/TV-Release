@@ -1,6 +1,5 @@
 package com.github.kiulian.downloader.model;
 
-
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;

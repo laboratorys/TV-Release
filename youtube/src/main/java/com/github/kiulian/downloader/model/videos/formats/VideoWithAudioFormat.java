@@ -1,8 +1,5 @@
 package com.github.kiulian.downloader.model.videos.formats;
 
-
-
-
 import com.alibaba.fastjson.JSONObject;
 import com.github.kiulian.downloader.model.videos.quality.AudioQuality;
 
@@ -45,5 +42,4 @@ public class VideoWithAudioFormat extends VideoFormat {
     public Integer audioSampleRate() {
         return audioSampleRate;
     }
-
 }

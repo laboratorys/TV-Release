@@ -1,7 +1,7 @@
 package com.github.kiulian.downloader.model;
 
-
 public class Extension {
+
     // video
     public static final Extension MPEG4 = new Extension("mp4");
     public static final Extension WEBM = new Extension("webm");
@@ -43,7 +43,6 @@ public class Extension {
     }
 
     public boolean isSubtitle() {
-        return this.equals(SUBRIP) || this.equals(TRANSCRIPT_V1) || this.equals(TRANSCRIPT_V2)
-                || this.equals(TRANSCRIPT_V3) || this.equals(TTML) || this.equals(WEBVTT) || this.equals(JSON3);
+        return this.equals(SUBRIP) || this.equals(TRANSCRIPT_V1) || this.equals(TRANSCRIPT_V2) || this.equals(TRANSCRIPT_V3) || this.equals(TTML) || this.equals(WEBVTT) || this.equals(JSON3);
     }
 }
