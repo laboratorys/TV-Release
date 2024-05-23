@@ -48,9 +48,6 @@
 # Jianpian
 -keep class com.p2p.** { *; }
 
-# Mozilla
--keep class org.mozilla.javascript.** { *; }
-
 # Nano
 -keep class fi.iki.elonen.** { *; }
 
