@@ -1199,6 +1199,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void onError(ErrorEvent event) {
+        Track.delete(getHistoryKey());
         showError(event.getMsg());
         mClock.setCallback(null);
         mPlayers.stop();
