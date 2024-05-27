@@ -240,6 +240,10 @@ public class Players implements Player.Listener, IMediaPlayer.Listener, Analytic
         return 0;
     }
 
+    public boolean canAdjustSpeed() {
+        return isIjk() || (isExo() && !Setting.isTunnel());
+    }
+
     public boolean haveTrack(int type) {
         if (isExo() && exoPlayer != null) return ExoUtil.haveTrack(exoPlayer.getCurrentTracks(), type);
         if (isIjk() && ijkPlayer != null) return ijkPlayer.haveTrack(type);
@@ -289,7 +293,7 @@ public class Players implements Player.Listener, IMediaPlayer.Listener, Analytic
     }
 
     public String setSpeed(float speed) {
-        if (exoPlayer != null) exoPlayer.setPlaybackSpeed(speed);
+        if (exoPlayer != null && !Setting.isTunnel()) exoPlayer.setPlaybackSpeed(speed);
         if (ijkPlayer != null) ijkPlayer.setSpeed(speed);
         return getSpeedText();
     }
