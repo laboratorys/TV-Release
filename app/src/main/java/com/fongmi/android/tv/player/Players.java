@@ -89,6 +89,10 @@ public class Players implements Player.Listener, IMediaPlayer.Listener, Analytic
         return Setting.getDecode() == HARD;
     }
 
+    public static boolean isSoft() {
+        return Setting.getDecode() == SOFT;
+    }
+
     public boolean isExo() {
         return player == EXO;
     }
