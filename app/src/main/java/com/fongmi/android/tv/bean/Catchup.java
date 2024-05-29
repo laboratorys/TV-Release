@@ -32,6 +32,12 @@ public class Catchup {
         return new Catchup();
     }
 
+    public static Catchup decide(Catchup major, Catchup minor) {
+        if (!major.isEmpty()) return major;
+        if (!minor.isEmpty()) return minor;
+        return null;
+    }
+
     public String getType() {
         return TextUtils.isEmpty(type) ? "" : type;
     }
@@ -72,12 +78,24 @@ public class Catchup {
         return getSource().isEmpty();
     }
 
+    private boolean isAppend() {
+        return getType().equals("append");
+    }
+
+    private boolean isDefault() {
+        return getType().equals("default");
+    }
+
+    private String format(String url, String result) {
+        if (!TextUtils.isEmpty(Uri.parse(url).getQuery())) result = result.replace("?", "&");
+        if (url.contains("/PLTV/")) url = url.replace("/PLTV/", "/TVOD/");
+        return url + result;
+    }
+
     public String format(String url, EpgData data) {
         String result = getSource();
         Matcher matcher = Pattern.compile("(\\$\\{[^}]*\\})").matcher(result);
         while (matcher.find()) result = result.replace(matcher.group(1), data.format(matcher.group(1)));
-        if (!TextUtils.isEmpty(Uri.parse(url).getQuery())) result = result.replace("?", "&");
-        if (url.contains("/PLTV/")) url = url.replace("/PLTV/", "/TVOD/");
-        return url + result;
+        return isDefault() ? result : format(url, result);
     }
 }

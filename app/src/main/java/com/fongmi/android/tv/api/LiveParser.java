@@ -82,7 +82,10 @@ public class LiveParser {
                 channel = group.find(Channel.create(extract(line, NAME)));
                 channel.setTvgName(extract(line, TVG_NAME));
                 channel.setLogo(extract(line, TVG_LOGO));
-                channel.setCatchup(catchup);
+                Catchup unknown = Catchup.create();
+                unknown.setType(extract(line, CATCHUP));
+                unknown.setSource(extract(line, CATCHUP_SOURCE));
+                channel.setCatchup(Catchup.decide(unknown, catchup));
             } else if (!line.startsWith("#") && line.contains("://")) {
                 String[] split = line.split("\\|");
                 if (split.length > 1) setting.headers(Arrays.copyOfRange(split, 1, split.length));
