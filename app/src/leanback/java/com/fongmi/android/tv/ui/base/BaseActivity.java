@@ -47,9 +47,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
         Util.hideSystemUI(this);
         setBackCallback();
-        refreshWall();
         initView();
         initEvent();
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        refreshWall();
     }
 
     protected Activity getActivity() {
