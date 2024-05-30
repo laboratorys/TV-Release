@@ -1,6 +1,7 @@
 package com.fongmi.android.tv.ui.base;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -11,12 +12,19 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewbinding.ViewBinding;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
-import com.fongmi.android.tv.api.config.WallConfig;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.utils.FileUtil;
 import com.fongmi.android.tv.utils.ResUtil;
@@ -37,9 +45,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (transparent()) setTransparent(this);
         setContentView(getBinding().getRoot());
         EventBus.getDefault().register(this);
-        setBackCallback();
-        setWall();
         initView(savedInstanceState);
+        setBackCallback();
+        refreshWall();
         initEvent();
     }
 
@@ -105,17 +113,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
-    private void setWall() {
-        try {
-            if (!customWall()) return;
-            File file = FileUtil.getWall(Setting.getWall());
-            if (file.exists() && file.length() > 0) getWindow().setBackgroundDrawable(WallConfig.drawable(Drawable.createFromPath(file.getAbsolutePath())));
-            else getWindow().setBackgroundDrawableResource(ResUtil.getDrawable(file.getName()));
-        } catch (Exception e) {
-            getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_1);
-        }
-    }
-
     private void setTransparent(Activity activity) {
         activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -123,11 +120,39 @@ public abstract class BaseActivity extends AppCompatActivity {
         activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
+    private void refreshWall() {
+        try {
+            if (!customWall()) return;
+            File file = FileUtil.getWall(Setting.getWall());
+            if (file.exists() && file.length() > 0) loadWall(file);
+            else getWindow().setBackgroundDrawableResource(ResUtil.getDrawable(file.getName()));
+        } catch (Exception e) {
+            getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_1);
+        }
+    }
+
+    private void loadWall(File file) {
+        Glide.with(App.get()).load(file).centerCrop().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).apply(new RequestOptions().override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight())).into(new CustomTarget<Drawable>() {
+            @Override
+            public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
+                getWindow().setBackgroundDrawable(drawable);
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable drawable) {
+            }
+        });
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        if (getRequestedOrientation() != newConfig.orientation) refreshWall();
+        super.onConfigurationChanged(newConfig);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
-        if (event.getType() != RefreshEvent.Type.WALL) return;
-        WallConfig.get().setDrawable(null);
-        setWall();
+        if (event.getType() == RefreshEvent.Type.WALL) refreshWall();
     }
 
     @Override
