@@ -113,6 +113,11 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onLoadFailed(@Nullable Drawable error) {
+                getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_1);
+            }
+
+            @Override
             public void onLoadCleared(@Nullable Drawable drawable) {
             }
         });
