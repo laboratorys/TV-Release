@@ -16,7 +16,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_toStartOf="@+id/time"
+            android:layout_toStartOf="@+id/clock"
             android:letterSpacing="0.02"
             android:shadowColor="@color/grey_900"
             android:shadowDx="2"
