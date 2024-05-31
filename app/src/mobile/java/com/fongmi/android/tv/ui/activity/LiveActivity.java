@@ -158,7 +158,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     @Override
     protected void initView(Bundle savedInstanceState) {
         mKeyDown = CustomKeyDownLive.create(this, mBinding.video);
-        mClock = Clock.create(mBinding.widget.time);
+        mClock = Clock.create(mBinding.widget.clock);
         setPadding(mBinding.control.getRoot());
         setPadding(mBinding.widget.epg, true);
         setPadding(mBinding.recycler, true);
@@ -913,23 +913,18 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     private void prevLine() {
-        if (mChannel == null) return;
+        if (mChannel == null || mChannel.isOnly()) return;
         mChannel.prevLine();
         showInfo();
         fetch();
     }
 
     private void nextLine(boolean show) {
-        if (mChannel == null) return;
+        if (mChannel == null || mChannel.isOnly()) return;
         mChannel.nextLine();
         if (show) showInfo();
         else setInfo();
         fetch();
-    }
-
-    private void seekTo() {
-        mPlayers.seekTo(Constant.INTERVAL_SEEK * 3);
-        showProgress();
     }
 
     private void onPaused() {
@@ -1008,6 +1003,21 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     @Override
+    public void onSpeedUp() {
+        if (!mPlayers.isVod() || !mPlayers.isPlaying() || !mPlayers.canAdjustSpeed()) return;
+        mBinding.control.action.speed.setText(mPlayers.setSpeed(mPlayers.getSpeed() < 3 ? 3 : 5));
+        mBinding.widget.speed.startAnimation(ResUtil.getAnim(R.anim.forward));
+        mBinding.widget.speed.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onSpeedEnd() {
+        mBinding.control.action.speed.setText(mPlayers.setSpeed(1.0f));
+        mBinding.widget.speed.setVisibility(View.GONE);
+        mBinding.widget.speed.clearAnimation();
+    }
+
+    @Override
     public void onBright(int progress) {
         mBinding.widget.bright.setVisibility(View.VISIBLE);
         mBinding.widget.brightProgress.setProgress(progress);
@@ -1037,26 +1047,39 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     @Override
     public void onFlingUp() {
-        prevChannel();
+        if (!mPlayers.isVod()) prevChannel();
     }
 
     @Override
     public void onFlingDown() {
-        nextChannel();
+        if (!mPlayers.isVod()) nextChannel();
     }
 
     @Override
     public void onFlingLeft() {
-        if (mChannel == null) return;
-        if (mChannel.isOnly() && mPlayers.isVod()) App.post(this::seekTo, 250);
-        else if (!mChannel.isOnly()) prevLine();
+        if (!mPlayers.isVod()) prevLine();
     }
 
     @Override
     public void onFlingRight() {
-        if (mChannel == null) return;
-        if (mChannel.isOnly() && mPlayers.isVod()) App.post(this::seekTo, 250);
-        else if (!mChannel.isOnly()) nextLine(true);
+        if (!mPlayers.isVod()) nextLine(true);
+    }
+
+    @Override
+    public void onSeek(int time) {
+        if (!mPlayers.isVod()) return;
+        mBinding.widget.action.setImageResource(time > 0 ? R.drawable.ic_widget_forward : R.drawable.ic_widget_rewind);
+        mBinding.widget.time.setText(mPlayers.getPositionTime(time));
+        mBinding.widget.seek.setVisibility(View.VISIBLE);
+        hideProgress();
+    }
+
+    @Override
+    public void onSeekEnd(int time) {
+        mBinding.widget.seek.setVisibility(View.GONE);
+        mPlayers.seekTo(time);
+        showProgress();
+        onPlay();
     }
 
     @Override

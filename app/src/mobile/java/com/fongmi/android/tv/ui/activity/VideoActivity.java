@@ -1510,8 +1510,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     @Override
     public void onSeek(int time) {
         mBinding.widget.action.setImageResource(time > 0 ? R.drawable.ic_widget_forward : R.drawable.ic_widget_rewind);
-        mBinding.widget.seek.setVisibility(View.VISIBLE);
         mBinding.widget.time.setText(mPlayers.getPositionTime(time));
+        mBinding.widget.seek.setVisibility(View.VISIBLE);
         hideProgress();
     }
 
