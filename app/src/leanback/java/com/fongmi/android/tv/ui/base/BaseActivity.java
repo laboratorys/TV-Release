@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.signature.ObjectKey;
@@ -111,7 +110,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void loadWall(File file) {
-        Glide.with(App.get()).load(file).centerCrop().signature(new ObjectKey(file.lastModified())).apply(new RequestOptions().override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight())).into(new CustomTarget<Drawable>() {
+        Glide.with(App.get()).load(file).centerCrop().override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).signature(new ObjectKey(com.github.catvod.utils.Util.md5(file))).into(new CustomTarget<Drawable>() {
             @Override
             public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
                 getWindow().setBackgroundDrawable(drawable);

@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewbinding.ViewBinding;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.signature.ObjectKey;
@@ -28,6 +27,7 @@ import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.utils.FileUtil;
 import com.fongmi.android.tv.utils.ResUtil;
+import com.github.catvod.utils.Util;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -137,7 +137,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void loadWall(File file) {
-        Glide.with(App.get()).load(file).centerCrop().signature(new ObjectKey(file.lastModified())).apply(new RequestOptions().override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight())).into(new CustomTarget<Drawable>() {
+        Glide.with(App.get()).load(file).centerCrop().override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).signature(new ObjectKey(Util.md5(file))).into(new CustomTarget<Drawable>() {
             @Override
             public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
                 getWindow().setBackgroundDrawable(drawable);
