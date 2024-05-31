@@ -139,7 +139,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Override
     protected void initView() {
-        mClock = Clock.create(mBinding.widget.time);
+        mClock = Clock.create(mBinding.widget.clock);
         mKeyDown = CustomKeyDownLive.create(this);
         mPlayers = new Players().init(this);
         mHides = new ArrayList<>();
@@ -822,14 +822,14 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void prevLine() {
-        if (mChannel == null) return;
+        if (mChannel == null || mChannel.isOnly()) return;
         mChannel.prevLine();
         showInfo();
         fetch();
     }
 
     private void nextLine(boolean show) {
-        if (mChannel == null) return;
+        if (mChannel == null || mChannel.isOnly()) return;
         mChannel.nextLine();
         if (show) showInfo();
         else setInfo();
@@ -838,6 +838,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     private void seekTo(int time) {
         mPlayers.seekTo(time);
+        mKeyDown.resetTime();
         showProgress();
         hideCenter();
     }
@@ -907,7 +908,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Override
     public void onSeeking(int time) {
-        if (!mPlayers.isVod() || !mChannel.isOnly()) return;
+        if (!mPlayers.isVod()) return;
         mBinding.widget.exoDuration.setText(mPlayers.getDurationTime());
         mBinding.widget.exoPosition.setText(mPlayers.getPositionTime(time));
         mBinding.widget.action.setImageResource(time > 0 ? R.drawable.ic_widget_forward : R.drawable.ic_widget_rewind);
@@ -927,18 +928,14 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Override
     public void onKeyLeft(int time) {
-        if (mChannel == null) return;
-        if (mChannel.isOnly() && mPlayers.isVod()) App.post(() -> seekTo(time), 250);
-        else if (!mChannel.isOnly()) prevLine();
-        mKeyDown.resetTime();
+        if (!mPlayers.isVod()) prevLine();
+        else App.post(() -> seekTo(time), 250);
     }
 
     @Override
     public void onKeyRight(int time) {
-        if (mChannel == null) return;
-        if (mChannel.isOnly() && mPlayers.isVod()) App.post(() -> seekTo(time), 250);
-        else if (!mChannel.isOnly()) nextLine(true);
-        mKeyDown.resetTime();
+        if (!mPlayers.isVod()) nextLine(true);
+        else App.post(() -> seekTo(time), 250);
     }
 
     @Override

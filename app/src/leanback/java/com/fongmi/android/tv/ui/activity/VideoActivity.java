@@ -292,7 +292,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     @Override
     protected void initView() {
         mFrameParams = mBinding.video.getLayoutParams();
-        mClock = Clock.create(mBinding.widget.time);
+        mClock = Clock.create(mBinding.widget.clock);
         mKeyDown = CustomKeyDownVod.create(this);
         mPlayers = new Players().init(this);
         mBroken = new ArrayList<>();
@@ -1416,8 +1416,8 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     @Override
     public void onSeekTo(int time) {
-        mKeyDown.resetTime();
         mPlayers.seekTo(time);
+        mKeyDown.resetTime();
         showProgress();
         onPlay();
     }
