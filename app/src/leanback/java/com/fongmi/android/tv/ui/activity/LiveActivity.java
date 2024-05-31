@@ -918,12 +918,14 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Override
     public void onKeyUp() {
-        prevChannel();
+        if (!mPlayers.isVod()) prevChannel();
+        else showControl(mBinding.control.player);
     }
 
     @Override
     public void onKeyDown() {
-        nextChannel();
+        if (!mPlayers.isVod()) nextChannel();
+        else showControl(mBinding.control.player);
     }
 
     @Override
