@@ -454,7 +454,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         mPlayer.setOption(format, "fflags", "fastseek");
         mPlayer.setOption(format, "http-detect-range-support", 0);
         mPlayer.setOption(player, "enable-accurate-seek", 0);
-        mPlayer.setOption(player, "framedrop", 1);
+        mPlayer.setOption(player, "framedrop", 5);
         mPlayer.setOption(player, "max-buffer-size", 15 * 1024 * 1024);
         mPlayer.setOption(player, "mediacodec", 1);
         mPlayer.setOption(player, "mediacodec-hevc", 1);
@@ -474,6 +474,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
             mPlayer.setOption(format, "rtsp_flags", "prefer_tcp");
             mPlayer.setOption(format, "probesize", 512 * 1000);
             mPlayer.setOption(format, "analyzeduration", 2 * 1000 * 1000);
+            mPlayer.setOption(player, "packet-buffering", 0);
         }
     }
 
