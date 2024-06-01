@@ -798,7 +798,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
                 if (isVisible(mBinding.control.getRoot())) showControl();
                 break;
             case Player.STATE_ENDED:
-                nextEpg();
+                checkNext();
                 break;
         }
     }
@@ -905,10 +905,11 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         if (!mGroup.isEmpty()) onItemClick(mGroup.current());
     }
 
-    public void nextEpg() {
+    private void checkNext() {
+        int current = mChannel.getData().getInRange();
         int position = mChannel.getData().getSelected() + 1;
-        boolean limit = position > mEpgDataAdapter.getItemCount() - 1;
-        if (!limit) onItemClick(mChannel.getData().getList().get(position));
+        boolean hasNext = position <= current && position > 0;
+        if (hasNext) onItemClick(mChannel.getData().getList().get(position));
         else nextChannel();
     }
 

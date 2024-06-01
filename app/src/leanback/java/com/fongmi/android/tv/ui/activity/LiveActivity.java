@@ -480,7 +480,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     private void showControl(View view) {
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         mBinding.widget.top.setVisibility(View.VISIBLE);
-        view.requestFocus();
+        App.post(view::requestFocus, 25);
         setR1Callback();
         hideInfo();
         hideEpg();
@@ -732,7 +732,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
                 mBinding.widget.size.setText(mPlayers.getSizeText());
                 break;
             case Player.STATE_ENDED:
-                nextEpg();
+                checkNext();
                 break;
         }
     }
@@ -814,10 +814,11 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         if (!mGroup.isEmpty()) setChannel(mGroup.current());
     }
 
-    public void nextEpg() {
+    private void checkNext() {
+        int current = mChannel.getData().getInRange();
         int position = mChannel.getData().getSelected() + 1;
-        boolean limit = position > mEpgDataAdapter.size() - 1;
-        if (!limit) onItemClick(mChannel.getData().getList().get(position));
+        boolean hasNext = position <= current && position > 0;
+        if (hasNext) onItemClick(mChannel.getData().getList().get(position));
         else nextChannel();
     }
 
