@@ -52,7 +52,7 @@
 -keep class fi.iki.elonen.** { *; }
 
 # QuickJS
--keep class com.whl.quickjs.** { *; }
+-keep class com.fongmi.quickjs.method.** { *; }
 
 # Sardine
 -keep class com.thegrizzlylabs.sardineandroid.** { *; }
