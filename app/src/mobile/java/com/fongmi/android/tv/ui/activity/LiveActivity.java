@@ -1077,6 +1077,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     @Override
     public void onSeekEnd(int time) {
+        if (!mPlayers.isVod()) return;
         mBinding.widget.seek.setVisibility(View.GONE);
         mPlayers.seekTo(time);
         showProgress();
