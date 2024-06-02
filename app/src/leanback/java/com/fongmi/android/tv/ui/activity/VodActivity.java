@@ -110,7 +110,7 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
 
     private List<Class> getTypes(Result result) {
         List<Class> items = new ArrayList<>();
-        for (String cate : getSite().getCategories()) for (Class item : result.getTypes()) if (Trans.s2t(cate).equals(item.getTypeName())) items.add(item);
+        for (String cate : getSite().getCategories()) for (Class item : result.getTypes()) if (cate.equals(item.getTypeName())) items.add(item);
         return items;
     }
 
