@@ -1017,6 +1017,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         if (Setting.isIncognito() && mHistory.getKey().equals(getHistoryKey())) mHistory.delete();
         mBinding.control.action.opening.setText(mHistory.getOpening() == 0 ? getString(R.string.play_op) : mPlayers.stringToTime(mHistory.getOpening()));
         mBinding.control.action.ending.setText(mHistory.getEnding() == 0 ? getString(R.string.play_ed) : mPlayers.stringToTime(mHistory.getEnding()));
+        mHistory.setVodPic(item.getVodPic());
         mPlayers.setPlayer(getPlayer());
         setScale(getScale());
         setPlayerView();
@@ -1027,7 +1028,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         History history = new History();
         history.setKey(getHistoryKey());
         history.setCid(VodConfig.getCid());
-        history.setVodPic(item.getVodPic());
         history.setVodName(item.getVodName());
         history.findEpisode(item.getVodFlags());
         return history;
