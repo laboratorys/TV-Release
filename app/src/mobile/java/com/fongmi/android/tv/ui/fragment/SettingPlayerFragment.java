@@ -16,7 +16,6 @@ import com.fongmi.android.tv.databinding.FragmentSettingPlayerBinding;
 import com.fongmi.android.tv.impl.BufferCallback;
 import com.fongmi.android.tv.impl.SubtitleCallback;
 import com.fongmi.android.tv.impl.UaCallback;
-import com.fongmi.android.tv.player.Players;
 import com.fongmi.android.tv.ui.base.BaseFragment;
 import com.fongmi.android.tv.ui.dialog.BufferDialog;
 import com.fongmi.android.tv.ui.dialog.SubtitleDialog;
@@ -29,7 +28,6 @@ public class SettingPlayerFragment extends BaseFragment implements UaCallback, B
     private FragmentSettingPlayerBinding mBinding;
     private String[] background;
     private String[] caption;
-    private String[] player;
     private String[] render;
     private String[] scale;
 
@@ -51,11 +49,9 @@ public class SettingPlayerFragment extends BaseFragment implements UaCallback, B
         setVisible();
         mBinding.uaText.setText(Setting.getUa());
         mBinding.tunnelText.setText(getSwitch(Setting.isTunnel()));
-        mBinding.captionText.setText(getSwitch(Setting.isCaption()));
         mBinding.bufferText.setText(String.valueOf(Setting.getBuffer()));
         mBinding.subtitleText.setText(String.valueOf(Setting.getSubtitle()));
         mBinding.scaleText.setText((scale = ResUtil.getStringArray(R.array.select_scale))[Setting.getScale()]);
-        mBinding.playerText.setText((player = ResUtil.getStringArray(R.array.select_player))[Setting.getPlayer()]);
         mBinding.renderText.setText((render = ResUtil.getStringArray(R.array.select_render))[Setting.getRender()]);
         mBinding.captionText.setText((caption = ResUtil.getStringArray(R.array.select_caption))[Setting.isCaption() ? 1 : 0]);
         mBinding.backgroundText.setText((background = ResUtil.getStringArray(R.array.select_background))[Setting.getBackground()]);
@@ -66,7 +62,6 @@ public class SettingPlayerFragment extends BaseFragment implements UaCallback, B
         mBinding.ua.setOnClickListener(this::onUa);
         mBinding.scale.setOnClickListener(this::onScale);
         mBinding.buffer.setOnClickListener(this::onBuffer);
-        mBinding.player.setOnClickListener(this::setPlayer);
         mBinding.render.setOnClickListener(this::setRender);
         mBinding.tunnel.setOnClickListener(this::setTunnel);
         mBinding.caption.setOnClickListener(this::setCaption);
@@ -77,7 +72,6 @@ public class SettingPlayerFragment extends BaseFragment implements UaCallback, B
 
     private void setVisible() {
         mBinding.caption.setVisibility(Setting.hasCaption() ? View.VISIBLE : View.GONE);
-        mBinding.exo.setVisibility(Players.isExo(Setting.getPlayer()) ? View.VISIBLE : View.GONE);
     }
 
     private void onUa(View view) {
@@ -106,13 +100,6 @@ public class SettingPlayerFragment extends BaseFragment implements UaCallback, B
     public void setBuffer(int times) {
         mBinding.bufferText.setText(String.valueOf(times));
         Setting.putBuffer(times);
-    }
-
-    private void setPlayer(View view) {
-        int index = Setting.getPlayer();
-        Setting.putPlayer(index = index == player.length - 1 ? 0 : ++index);
-        mBinding.playerText.setText(player[index]);
-        setVisible();
     }
 
     private void setRender(View view) {

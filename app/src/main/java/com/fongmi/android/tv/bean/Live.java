@@ -82,10 +82,6 @@ public class Live {
     private JsonElement header;
 
     @Ignore
-    @SerializedName("playerType")
-    private Integer playerType;
-
-    @Ignore
     @SerializedName("channels")
     private List<Channel> channels;
 
@@ -206,10 +202,6 @@ public class Live {
 
     public JsonElement getHeader() {
         return header;
-    }
-
-    public int getPlayerType() {
-        return playerType == null ? -1 : Math.min(playerType, 2);
     }
 
     public List<Channel> getChannels() {

@@ -33,7 +33,7 @@ import java.io.File;
 @Database(entities = {Keep.class, Site.class, Live.class, Track.class, Config.class, Device.class, History.class}, version = AppDatabase.VERSION)
 public abstract class AppDatabase extends RoomDatabase {
 
-    public static final int VERSION = 30;
+    public static final int VERSION = 32;
     public static final String NAME = "tv";
     public static final String SYMBOL = "@@@";
 
@@ -80,27 +80,7 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     private static AppDatabase create(Context context) {
-        return Room.databaseBuilder(context, AppDatabase.class, NAME)
-                .addMigrations(MIGRATION_11_12)
-                .addMigrations(MIGRATION_12_13)
-                .addMigrations(MIGRATION_13_14)
-                .addMigrations(MIGRATION_14_15)
-                .addMigrations(MIGRATION_15_16)
-                .addMigrations(MIGRATION_16_17)
-                .addMigrations(MIGRATION_17_18)
-                .addMigrations(MIGRATION_18_19)
-                .addMigrations(MIGRATION_19_20)
-                .addMigrations(MIGRATION_20_21)
-                .addMigrations(MIGRATION_21_22)
-                .addMigrations(MIGRATION_22_23)
-                .addMigrations(MIGRATION_23_24)
-                .addMigrations(MIGRATION_24_25)
-                .addMigrations(MIGRATION_25_26)
-                .addMigrations(MIGRATION_26_27)
-                .addMigrations(MIGRATION_27_28)
-                .addMigrations(MIGRATION_28_29)
-                .addMigrations(MIGRATION_29_30)
-                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        return Room.databaseBuilder(context, AppDatabase.class, NAME).addMigrations(MIGRATION_11_12).addMigrations(MIGRATION_12_13).addMigrations(MIGRATION_13_14).addMigrations(MIGRATION_14_15).addMigrations(MIGRATION_15_16).addMigrations(MIGRATION_16_17).addMigrations(MIGRATION_17_18).addMigrations(MIGRATION_18_19).addMigrations(MIGRATION_19_20).addMigrations(MIGRATION_20_21).addMigrations(MIGRATION_21_22).addMigrations(MIGRATION_22_23).addMigrations(MIGRATION_23_24).addMigrations(MIGRATION_24_25).addMigrations(MIGRATION_25_26).addMigrations(MIGRATION_26_27).addMigrations(MIGRATION_27_28).addMigrations(MIGRATION_28_29).addMigrations(MIGRATION_29_30).addMigrations(MIGRATION_30_31).addMigrations(MIGRATION_31_32).allowMainThreadQueries().fallbackToDestructiveMigration().build();
     }
 
     public abstract KeepDao getKeepDao();
@@ -203,8 +183,6 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("UPDATE History SET player = 2 WHERE player = 0");
-            if (Setting.getLivePlayer() == 0) Setting.putLivePlayer(2);
-            if (Setting.getPlayer() == 0) Setting.putPlayer(2);
         }
     };
 
@@ -260,6 +238,27 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE Config ADD COLUMN logo TEXT DEFAULT NULL");
+        }
+    };
+
+    static final Migration MIGRATION_30_31 = new Migration(30, 31) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE Track_Backup (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` INTEGER NOT NULL, `group` INTEGER NOT NULL, `track` INTEGER NOT NULL, `key` TEXT, `name` TEXT, `selected` INTEGER NOT NULL, `adaptive` INTEGER NOT NULL)");
+            database.execSQL("INSERT INTO Track_Backup SELECT id, type, `group`, track, `key`, name, selected, adaptive  FROM Track");
+            database.execSQL("DROP TABLE Track");
+            database.execSQL("ALTER TABLE Track_Backup RENAME to Track");
+            database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_Track_key_type` ON `Track` (`key`, `type`)");
+        }
+    };
+
+    static final Migration MIGRATION_31_32 = new Migration(31, 32) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE History_Backup (`key` TEXT NOT NULL, `vodPic` TEXT, `vodName` TEXT, `vodFlag` TEXT, `vodRemarks` TEXT, `episodeUrl` TEXT, `revSort` INTEGER NOT NULL, `revPlay` INTEGER NOT NULL, `createTime` INTEGER NOT NULL, `opening` INTEGER NOT NULL, `ending` INTEGER NOT NULL, `position` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `speed` REAL NOT NULL, `scale` INTEGER NOT NULL, `cid` INTEGER NOT NULL, PRIMARY KEY(`key`))");
+            database.execSQL("INSERT INTO History_Backup SELECT `key`, `vodPic`, `vodName`, `vodFlag`, `vodRemarks`, `episodeUrl`, `revSort`, `revPlay`, `createTime`, `opening`, `ending`, `position`, `duration`, `speed`, `scale`, `cid` FROM History");
+            database.execSQL("DROP TABLE History");
+            database.execSQL("ALTER TABLE History_Backup RENAME to History");
         }
     };
 }

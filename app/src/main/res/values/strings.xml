@@ -30,6 +30,7 @@
     <string name="play">Play</string>
     <string name="play_op">OP</string>
     <string name="play_ed">ED</string>
+    <string name="play_exo">EXO</string>
     <string name="play_next">Next</string>
     <string name="play_prev">Prev</string>
     <string name="play_loop">Loop</string>
@@ -83,8 +84,8 @@
     <string name="player_caption">Caption style</string>
     <string name="player_subtitle">Subtitle size</string>
     <string name="player_background">Background play</string>
-    <string name="player_exo_tunnel">Tunnel mode</string>
-    <string name="player_exo_buffer">Buffer time</string>
+    <string name="player_tunnel">Tunnel mode</string>
+    <string name="player_buffer">Buffer time</string>
     <string name="player_ua">User-Agent</string>
 
     <!-- Search -->
@@ -143,12 +144,6 @@
     <string-array name="select_decode">
         <item>Soft</item>
         <item>Hard</item>
-    </string-array>
-
-    <string-array name="select_player">
-        <item>System</item>
-        <item>IJK</item>
-        <item>EXO</item>
     </string-array>
 
     <string-array name="select_render">

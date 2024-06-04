@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.media3.common.C;
 import androidx.media3.common.Format;
 import androidx.media3.common.MimeTypes;
@@ -14,8 +13,6 @@ import androidx.media3.ui.R;
 import com.fongmi.android.tv.App;
 
 import java.util.Locale;
-
-import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 
 public class TrackNameProvider {
 
@@ -38,40 +35,19 @@ public class TrackNameProvider {
         return TextUtils.isEmpty(trackName) ? resources.getString(R.string.exo_track_unknown) : joinWithSeparator(trackName, buildMimeString(format));
     }
 
-    public String getTrackName(ITrackInfo trackInfo) {
-        String trackName;
-        int trackType = trackInfo.getTrackType();
-        if (trackType == C.TRACK_TYPE_VIDEO) {
-            trackName = joinWithSeparator(buildResolutionString(trackInfo.getWidth(), trackInfo.getHeight()), buildBitrateString(trackInfo.getBitrate()));
-        } else if (trackType == C.TRACK_TYPE_AUDIO) {
-            trackName = joinWithSeparator(buildLanguageString(trackInfo.getLanguage()), buildAudioChannelString(trackInfo.getChannelCount()), buildBitrateString(trackInfo.getBitrate()));
-        } else {
-            trackName = joinWithSeparator(buildLanguageString(trackInfo.getLanguage()));
-        }
-        return TextUtils.isEmpty(trackName) ? resources.getString(R.string.exo_track_unknown) : joinWithSeparator(trackName, buildMimeString(trackInfo.getMimeType()));
-    }
-
     private String buildResolutionString(Format format) {
-        return buildResolutionString(format.width, format.height);
-    }
-
-    private String buildResolutionString(int width, int height) {
+        int width = format.width;
+        int height = format.height;
         return width == Format.NO_VALUE || height == Format.NO_VALUE ? "" : resources.getString(R.string.exo_track_resolution, width, height);
     }
 
     private String buildBitrateString(Format format) {
-        return buildBitrateString(format.bitrate);
-    }
-
-    private String buildBitrateString(int bitrate) {
-        return bitrate <= 0 ? "" : resources.getString(R.string.exo_track_bitrate, bitrate / 1000000f);
+        int bitrate = format.bitrate;
+        return bitrate == Format.NO_VALUE ? "" : resources.getString(R.string.exo_track_bitrate, bitrate / 1000000f);
     }
 
     private String buildAudioChannelString(Format format) {
-        return buildAudioChannelString(format.channelCount);
-    }
-
-    private String buildAudioChannelString(int channelCount) {
+        int channelCount = format.channelCount;
         if (channelCount < 1) return "";
         switch (channelCount) {
             case 1:
@@ -98,10 +74,7 @@ public class TrackNameProvider {
     }
 
     private String buildLanguageString(Format format) {
-        return buildLanguageString(format.language);
-    }
-
-    private String buildLanguageString(@Nullable String language) {
+        String language = format.language;
         if (TextUtils.isEmpty(language) || C.LANGUAGE_UNDETERMINED.equals(language)) return "";
         Locale languageLocale = Util.SDK_INT >= 21 ? Locale.forLanguageTag(language) : new Locale(language);
         Locale displayLocale = Util.getDefaultDisplayLocale();

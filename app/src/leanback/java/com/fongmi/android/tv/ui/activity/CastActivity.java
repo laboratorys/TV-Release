@@ -50,8 +50,6 @@ import org.fourthline.cling.support.contentdirectory.DIDLParser;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import tv.danmaku.ijk.media.player.ui.IjkVideoView;
-
 public class CastActivity extends BaseActivity implements CustomKeyDownCast.Listener, TrackDialog.Listener, RenderControl, ServiceConnection, Clock.Callback, SubtitleCallback {
 
     private ActivityCastBinding mBinding;
@@ -70,10 +68,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
 
     private PlayerView getExo() {
         return Setting.getRender() == 0 ? mBinding.surface : mBinding.texture;
-    }
-
-    private IjkVideoView getIjk() {
-        return mBinding.ijk;
     }
 
     @Override
@@ -115,7 +109,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
         mBinding.control.scale.setOnClickListener(view -> onScale());
         mBinding.control.speed.setOnClickListener(view -> onSpeed());
         mBinding.control.reset.setOnClickListener(view -> onReset());
-        mBinding.control.player.setOnClickListener(view -> onPlayer());
+        mBinding.control.player.setOnClickListener(view -> onChoose());
         mBinding.control.decode.setOnClickListener(view -> onDecode());
         mBinding.control.speed.setOnLongClickListener(view -> onSpeedLong());
         mBinding.video.setOnTouchListener((view, event) -> mKeyDown.onTouchEvent(event));
@@ -144,35 +138,28 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     }
 
     private void setVideoView() {
-        mPlayers.set(getExo(), getIjk());
-        mPlayers.setPlayer(Setting.getPlayer());
-        findViewById(R.id.timeBar).setNextFocusUpId(R.id.reset);
-        getExo().getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
-        getIjk().getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
-        mBinding.control.reset.setText(ResUtil.getStringArray(R.array.select_reset)[0]);
-        setScale(scale = Setting.getScale());
+        mPlayers.set(getExo());
         setSubtitle(Setting.getSubtitle());
-        setPlayerView();
-        setDecodeView();
-    }
-
-    private void setPlayerView() {
-        getIjk().setPlayer(mPlayers.getPlayer());
+        getExo().setVisibility(View.VISIBLE);
+        setScale(scale = Setting.getScale());
+        findViewById(R.id.timeBar).setNextFocusUpId(R.id.reset);
         mBinding.control.speed.setText(mPlayers.getSpeedText());
-        mBinding.control.player.setText(mPlayers.getPlayerText());
         mBinding.control.speed.setEnabled(mPlayers.canAdjustSpeed());
-        getExo().setVisibility(mPlayers.isExo() ? View.VISIBLE : View.GONE);
-        getIjk().setVisibility(mPlayers.isIjk() ? View.VISIBLE : View.GONE);
-        mBinding.control.decode.setVisibility(mPlayers.isExo() ? View.VISIBLE : View.GONE);
+        getExo().getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
+        mBinding.control.reset.setText(ResUtil.getStringArray(R.array.select_reset)[0]);
     }
 
-    private void setDecodeView() {
+    @Override
+    public void setSubtitle(int size) {
+        getExo().getSubtitleView().setFixedTextSize(Dimension.SP, size);
+    }
+
+    private void setDecode() {
         mBinding.control.decode.setText(mPlayers.getDecodeText());
     }
 
     private void setScale(int scale) {
         getExo().setResizeMode(scale);
-        getIjk().setResizeMode(scale);
         mBinding.control.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
     }
 
@@ -203,21 +190,19 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
         start();
     }
 
-    private void onPlayer() {
-        mPlayers.togglePlayer();
-        setPlayerView();
-        onReset();
+    private void onChoose() {
+        mPlayers.choose(this, mBinding.widget.title.getText());
     }
 
     private void onDecode() {
         mPlayers.toggleDecode();
-        mPlayers.set(getExo(), getIjk());
-        setDecodeView();
+        mPlayers.set(getExo());
+        setDecode();
         onReset();
     }
 
     private void onTrack(View view) {
-        TrackDialog.create().player(mPlayers).vod(true).type(Integer.parseInt(view.getTag().toString())).show(this);
+        TrackDialog.create().player(mPlayers).type(Integer.parseInt(view.getTag().toString())).show(this);
         hideControl();
     }
 
@@ -353,7 +338,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
         String title = mBinding.widget.title.getText().toString();
         MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
         builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, title);
-        builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, getIjk().getDefaultArtwork());
+        //builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, getIjk().getDefaultArtwork());
         builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, mPlayers.getDuration());
         mPlayers.setMetadata(builder.build());
     }
@@ -513,12 +498,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     @Override
     public void onDoubleTap() {
         onKeyCenter();
-    }
-
-    @Override
-    public void setSubtitle(int size) {
-        getExo().getSubtitleView().setFixedTextSize(Dimension.SP, size);
-        getIjk().getSubtitleView().setFixedTextSize(Dimension.SP, size);
     }
 
     @Override

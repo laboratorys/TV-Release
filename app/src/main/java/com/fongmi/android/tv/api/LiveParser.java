@@ -10,7 +10,6 @@ import com.fongmi.android.tv.bean.ClearKey;
 import com.fongmi.android.tv.bean.Drm;
 import com.fongmi.android.tv.bean.Group;
 import com.fongmi.android.tv.bean.Live;
-import com.fongmi.android.tv.player.Players;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
@@ -148,7 +147,6 @@ public class LiveParser {
         private String origin;
         private String referer;
         private Integer parse;
-        private Integer player;
         private Map<String, String> header;
 
         public static Setting create() {
@@ -156,14 +154,13 @@ public class LiveParser {
         }
 
         public boolean find(String line) {
-            return line.startsWith("ua") || line.startsWith("parse") || line.startsWith("click") || line.startsWith("player") || line.startsWith("header") || line.startsWith("format") || line.startsWith("origin") || line.startsWith("referer") || line.startsWith("#EXTHTTP:") || line.startsWith("#EXTVLCOPT:") || line.startsWith("#KODIPROP:");
+            return line.startsWith("ua") || line.startsWith("parse") || line.startsWith("click") || line.startsWith("header") || line.startsWith("format") || line.startsWith("origin") || line.startsWith("referer") || line.startsWith("#EXTHTTP:") || line.startsWith("#EXTVLCOPT:") || line.startsWith("#KODIPROP:");
         }
 
         public void check(String line) {
             if (line.startsWith("ua")) ua(line);
             else if (line.startsWith("parse")) parse(line);
             else if (line.startsWith("click")) click(line);
-            else if (line.startsWith("player")) player(line);
             else if (line.startsWith("header")) header(line);
             else if (line.startsWith("format")) format(line);
             else if (line.startsWith("origin")) origin(line);
@@ -185,7 +182,6 @@ public class LiveParser {
             if (format != null) channel.setFormat(format);
             if (origin != null) channel.setOrigin(origin);
             if (referer != null) channel.setReferer(referer);
-            if (player != null) channel.setPlayerType(player);
             if (header != null) channel.setHeader(Json.toObject(header));
             if (key != null && type != null) channel.setDrm(Drm.create(key, type));
             return this;
@@ -224,14 +220,6 @@ public class LiveParser {
             }
         }
 
-        private void player(String line) {
-            try {
-                player = Integer.parseInt(line.split("player=")[1].trim());
-            } catch (Exception e) {
-                player = null;
-            }
-        }
-
         private void format(String line) {
             try {
                 if (line.startsWith("format=")) format = line.split("format=")[1].trim();
@@ -257,8 +245,6 @@ public class LiveParser {
                 if (!key.startsWith("http")) convert();
             } catch (Exception e) {
                 key = null;
-            } finally {
-                player = Players.EXO;
             }
         }
 
@@ -267,8 +253,6 @@ public class LiveParser {
                 type = line.split("license_type=")[1].trim();
             } catch (Exception e) {
                 type = null;
-            } finally {
-                player = Players.EXO;
             }
         }
 
@@ -310,7 +294,6 @@ public class LiveParser {
             type = null;
             parse = null;
             click = null;
-            player = null;
             header = null;
             format = null;
             origin = null;

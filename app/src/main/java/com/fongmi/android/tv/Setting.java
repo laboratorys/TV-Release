@@ -73,22 +73,6 @@ public class Setting {
         Prefers.put("reset", reset);
     }
 
-    public static int getPlayer() {
-        return Prefers.getInt("player", Players.EXO);
-    }
-
-    public static void putPlayer(int player) {
-        Prefers.put("player", player);
-    }
-
-    public static int getLivePlayer() {
-        return Prefers.getInt("player_live", getPlayer());
-    }
-
-    public static void putLivePlayer(int player) {
-        Prefers.put("player_live", player);
-    }
-
     public static int getDecode() {
         return Prefers.getInt("decode", Players.HARD);
     }
@@ -154,11 +138,11 @@ public class Setting {
     }
 
     public static int getBuffer() {
-        return Math.min(Math.max(Prefers.getInt("exo_buffer"), 1), 10);
+        return Math.min(Math.max(Prefers.getInt("buffer"), 1), 10);
     }
 
     public static void putBuffer(int buffer) {
-        Prefers.put("exo_buffer", buffer);
+        Prefers.put("buffer", buffer);
     }
 
     public static int getBackground() {
@@ -242,11 +226,11 @@ public class Setting {
     }
 
     public static boolean isTunnel() {
-        return Prefers.getBoolean("exo_tunnel");
+        return Prefers.getBoolean("tunnel");
     }
 
     public static void putTunnel(boolean tunnel) {
-        Prefers.put("exo_tunnel", tunnel);
+        Prefers.put("tunnel", tunnel);
     }
 
     public static float getThumbnail() {

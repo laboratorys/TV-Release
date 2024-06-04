@@ -53,8 +53,6 @@ public class History {
     private long duration;
     @SerializedName("speed")
     private float speed;
-    @SerializedName("player")
-    private int player;
     @SerializedName("scale")
     private int scale;
     @SerializedName("cid")
@@ -73,7 +71,6 @@ public class History {
     public History() {
         this.speed = 1;
         this.scale = -1;
-        this.player = -1;
     }
 
     @NonNull
@@ -187,14 +184,6 @@ public class History {
 
     public void setSpeed(float speed) {
         this.speed = speed;
-    }
-
-    public int getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(int player) {
-        this.player = player;
     }
 
     public int getScale() {

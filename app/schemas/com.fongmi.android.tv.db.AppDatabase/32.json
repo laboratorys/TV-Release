@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 29,
-    "identityHash": "fe3a6989063bdf1f7fad4037f38f3b97",
+    "version": 32,
+    "identityHash": "23710113f88894310d2acbc92c9e5ef1",
     "entities": [
       {
         "tableName": "Keep",
@@ -126,7 +126,7 @@
       },
       {
         "tableName": "Track",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` INTEGER NOT NULL, `group` INTEGER NOT NULL, `track` INTEGER NOT NULL, `player` INTEGER NOT NULL, `key` TEXT, `name` TEXT, `selected` INTEGER NOT NULL, `adaptive` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` INTEGER NOT NULL, `group` INTEGER NOT NULL, `track` INTEGER NOT NULL, `key` TEXT, `name` TEXT, `selected` INTEGER NOT NULL, `adaptive` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -149,12 +149,6 @@
           {
             "fieldPath": "track",
             "columnName": "track",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "player",
-            "columnName": "player",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -191,22 +185,21 @@
         },
         "indices": [
           {
-            "name": "index_Track_key_player_type",
+            "name": "index_Track_key_type",
             "unique": true,
             "columnNames": [
               "key",
-              "player",
               "type"
             ],
             "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Track_key_player_type` ON `${TABLE_NAME}` (`key`, `player`, `type`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Track_key_type` ON `${TABLE_NAME}` (`key`, `type`)"
           }
         ],
         "foreignKeys": []
       },
       {
         "tableName": "Config",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` INTEGER NOT NULL, `time` INTEGER NOT NULL, `url` TEXT, `json` TEXT, `name` TEXT, `home` TEXT, `parse` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` INTEGER NOT NULL, `time` INTEGER NOT NULL, `url` TEXT, `json` TEXT, `name` TEXT, `logo` TEXT, `home` TEXT, `parse` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -241,6 +234,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "logo",
+            "columnName": "logo",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -334,7 +333,7 @@
       },
       {
         "tableName": "History",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`key` TEXT NOT NULL, `vodPic` TEXT, `vodName` TEXT, `vodFlag` TEXT, `vodRemarks` TEXT, `episodeUrl` TEXT, `revSort` INTEGER NOT NULL, `revPlay` INTEGER NOT NULL, `createTime` INTEGER NOT NULL, `opening` INTEGER NOT NULL, `ending` INTEGER NOT NULL, `position` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `speed` REAL NOT NULL, `player` INTEGER NOT NULL, `scale` INTEGER NOT NULL, `cid` INTEGER NOT NULL, PRIMARY KEY(`key`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`key` TEXT NOT NULL, `vodPic` TEXT, `vodName` TEXT, `vodFlag` TEXT, `vodRemarks` TEXT, `episodeUrl` TEXT, `revSort` INTEGER NOT NULL, `revPlay` INTEGER NOT NULL, `createTime` INTEGER NOT NULL, `opening` INTEGER NOT NULL, `ending` INTEGER NOT NULL, `position` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `speed` REAL NOT NULL, `scale` INTEGER NOT NULL, `cid` INTEGER NOT NULL, PRIMARY KEY(`key`))",
         "fields": [
           {
             "fieldPath": "key",
@@ -421,12 +420,6 @@
             "notNull": true
           },
           {
-            "fieldPath": "player",
-            "columnName": "player",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "scale",
             "columnName": "scale",
             "affinity": "INTEGER",
@@ -452,7 +445,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fe3a6989063bdf1f7fad4037f38f3b97')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '23710113f88894310d2acbc92c9e5ef1')"
     ]
   }
 }

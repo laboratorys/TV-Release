@@ -8,8 +8,10 @@
 -keep class * implements org.simpleframework.xml.core.Parameter { public *; }
 -keep interface org.simpleframework.xml.core.Extractor { public *; }
 -keep class * implements org.simpleframework.xml.core.Extractor { public *; }
--keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.Text <fields>; }
 -keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.Path <fields>; }
+-keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.Root <fields>; }
+-keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.Text <fields>; }
+-keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.Attribute <fields>; }
 -keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.ElementList <fields>; }
 
 # OkHttp

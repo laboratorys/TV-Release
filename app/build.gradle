@@ -97,7 +97,6 @@ dependencies {
     implementation project(':youtube')
     implementation project(':jianpian')
     implementation project(':forcetech')
-    implementation project(':ijkplayer')
     pythonImplementation project(':chaquo')
     implementation project(':media-lib-datasource-okhttp')
     implementation project(':media-lib-datasource-rtmp')
