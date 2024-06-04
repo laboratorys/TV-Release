@@ -13,6 +13,7 @@ import android.view.View;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
+import androidx.media3.common.VideoSize;
 import androidx.media3.ui.R;
 
 import com.fongmi.android.tv.App;
@@ -71,12 +72,14 @@ public class PiP {
         }
     }
 
-    public void enter(Activity activity, boolean four) {
+    public void enter(Activity activity, VideoSize size, int scale) {
         try {
             if (noPiP() || activity.isInPictureInPictureMode() || !Setting.isBackgroundPiP()) return;
-            builder.setAspectRatio(new Rational(four ? 4 : 16, four ? 3 : 9));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) builder.setAutoEnterEnabled(true);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) builder.setSeamlessResizeEnabled(true);
+            if (scale == 1) builder.setAspectRatio(new Rational(16, 9));
+            else if (scale == 2) builder.setAspectRatio(new Rational(4, 3));
+            else builder.setAspectRatio(new Rational(size.width, size.height));
             activity.enterPictureInPictureMode(builder.build());
         } catch (Exception e) {
             e.printStackTrace();
