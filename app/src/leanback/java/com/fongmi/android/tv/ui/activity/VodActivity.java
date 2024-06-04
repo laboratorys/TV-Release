@@ -31,7 +31,6 @@ import com.fongmi.android.tv.ui.presenter.TypePresenter;
 import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.github.catvod.utils.Prefers;
-import com.github.catvod.utils.Trans;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -77,8 +77,7 @@ public class ExoUtil {
     }
 
     public static RenderersFactory buildRenderersFactory() {
-        DefaultRenderersFactory factory = Players.isSoft() ? new NextRenderersFactory(App.get()) : new DefaultRenderersFactory(App.get());
-        return factory.setEnableDecoderFallback(true).setExtensionRendererMode(Players.isSoft() ? DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
+        return new NextRenderersFactory(App.get()).setEnableDecoderFallback(true).setExtensionRendererMode(Players.isSoft() ? DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
     }
 
     public static CaptionStyleCompat getCaptionStyle() {
