@@ -28,7 +28,6 @@ import androidx.leanback.widget.OnChildViewHolderSelectedListener;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.C;
 import androidx.media3.common.Player;
-import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
@@ -261,10 +260,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         return mHistory != null && mHistory.getScale() != -1 ? mHistory.getScale() : Setting.getScale();
     }
 
-    private PlayerView getExo() {
-        return Setting.getRender() == 0 ? mBinding.surface : mBinding.texture;
-    }
-
     private boolean isReplay() {
         return Setting.getReset() == 1;
     }
@@ -378,18 +373,18 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void setVideoView() {
-        mPlayers.set(getExo());
-        getExo().setVisibility(View.VISIBLE);
+        mPlayers.set(mBinding.exo);
+        mBinding.exo.setVisibility(View.VISIBLE);
         mBinding.control.decode.setText(mPlayers.getDecodeText());
         mBinding.control.speed.setEnabled(mPlayers.canAdjustSpeed());
-        getExo().getSubtitleView().setFixedTextSize(Dimension.SP, 16);
-        getExo().getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
+        mBinding.exo.getSubtitleView().setFixedTextSize(Dimension.SP, 16);
+        mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
         mBinding.control.reset.setText(ResUtil.getStringArray(R.array.select_reset)[Setting.getReset()]);
     }
 
     @Override
     public void setSubtitle(int size) {
-        getExo().getSubtitleView().setFixedTextSize(Dimension.SP, size);
+        mBinding.exo.getSubtitleView().setFixedTextSize(Dimension.SP, size);
     }
 
     private void setDecode() {
@@ -397,7 +392,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void setScale(int scale) {
-        getExo().setResizeMode(scale);
+        mBinding.exo.setResizeMode(scale);
         mBinding.control.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
     }
 
@@ -842,7 +837,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void onDecode() {
         mPlayers.toggleDecode();
-        mPlayers.set(getExo());
+        mPlayers.set(mBinding.exo);
         setDecode();
         onRefresh();
     }
@@ -938,13 +933,13 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         ImgUtil.load(url, R.drawable.radio, new CustomTarget<>() {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                getExo().setDefaultArtwork(resource);
+                mBinding.exo.setDefaultArtwork(resource);
                 setMetadata();
             }
 
             @Override
             public void onLoadFailed(@Nullable Drawable error) {
-                getExo().setDefaultArtwork(error);
+                mBinding.exo.setDefaultArtwork(error);
                 hideProgress();
                 setMetadata();
             }

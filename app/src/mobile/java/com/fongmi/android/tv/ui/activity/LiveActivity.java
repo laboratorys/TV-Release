@@ -19,7 +19,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.C;
 import androidx.media3.common.Player;
-import androidx.media3.ui.PlayerView;
 import androidx.viewbinding.ViewBinding;
 
 import com.bumptech.glide.request.target.CustomTarget;
@@ -112,10 +111,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         return getIntent().getBooleanExtra("empty", true);
     }
 
-    private PlayerView getExo() {
-        return Setting.getRender() == 0 ? mBinding.surface : mBinding.texture;
-    }
-
     private Group getKeep() {
         return mGroupAdapter.get(0);
     }
@@ -205,11 +200,11 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     private void setVideoView() {
-        mPlayers.set(getExo());
+        mPlayers.set(mBinding.exo);
         setScale(Setting.getLiveScale());
         setSubtitle(Setting.getSubtitle());
-        getExo().setVisibility(View.VISIBLE);
-        getExo().getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
+        mBinding.exo.setVisibility(View.VISIBLE);
+        mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
         mBinding.control.action.invert.setActivated(Setting.isInvert());
         mBinding.control.action.across.setActivated(Setting.isAcross());
         mBinding.control.action.change.setActivated(Setting.isChange());
@@ -222,7 +217,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     @Override
     public void setSubtitle(int size) {
-        getExo().getSubtitleView().setFixedTextSize(Dimension.SP, size);
+        mBinding.exo.getSubtitleView().setFixedTextSize(Dimension.SP, size);
     }
 
     private void setDecode() {
@@ -230,7 +225,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     private void setScale(int scale) {
-        getExo().setResizeMode(scale);
+        mBinding.exo.setResizeMode(scale);
         mBinding.control.action.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
     }
 
@@ -416,7 +411,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     private void onDecode() {
         mPlayers.toggleDecode();
-        mPlayers.set(getExo());
+        mPlayers.set(mBinding.exo);
         setR1Callback();
         setDecode();
         fetch();
@@ -544,13 +539,13 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         ImgUtil.load(url, R.drawable.radio, new CustomTarget<>() {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                getExo().setDefaultArtwork(resource);
+                mBinding.exo.setDefaultArtwork(resource);
                 setMetadata();
             }
 
             @Override
             public void onLoadFailed(@Nullable Drawable error) {
-                getExo().setDefaultArtwork(error);
+                mBinding.exo.setDefaultArtwork(error);
                 setMetadata();
             }
 

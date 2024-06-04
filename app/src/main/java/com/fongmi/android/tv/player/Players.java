@@ -108,6 +108,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
         player.setAudioAttributes(AudioAttributes.DEFAULT, true);
         player.addAnalyticsListener(new EventLogger());
         player.setHandleAudioBecomingNoisy(true);
+        view.setRender(Setting.getRender());
         player.addAnalyticsListener(this);
         player.setPlayWhenReady(true);
         player.addListener(this);

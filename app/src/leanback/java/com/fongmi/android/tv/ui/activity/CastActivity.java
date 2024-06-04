@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media3.common.C;
 import androidx.media3.common.Player;
-import androidx.media3.ui.PlayerView;
 import androidx.viewbinding.ViewBinding;
 
 import com.android.cast.dlna.dmr.CastAction;
@@ -65,10 +64,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     private long position;
     private long duration;
     private int scale;
-
-    private PlayerView getExo() {
-        return Setting.getRender() == 0 ? mBinding.surface : mBinding.texture;
-    }
 
     @Override
     protected ViewBinding getBinding() {
@@ -138,20 +133,20 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     }
 
     private void setVideoView() {
-        mPlayers.set(getExo());
+        mPlayers.set(mBinding.exo);
         setSubtitle(Setting.getSubtitle());
-        getExo().setVisibility(View.VISIBLE);
+        mBinding.exo.setVisibility(View.VISIBLE);
         setScale(scale = Setting.getScale());
         findViewById(R.id.timeBar).setNextFocusUpId(R.id.reset);
         mBinding.control.speed.setText(mPlayers.getSpeedText());
         mBinding.control.speed.setEnabled(mPlayers.canAdjustSpeed());
-        getExo().getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
+        mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
         mBinding.control.reset.setText(ResUtil.getStringArray(R.array.select_reset)[0]);
     }
 
     @Override
     public void setSubtitle(int size) {
-        getExo().getSubtitleView().setFixedTextSize(Dimension.SP, size);
+        mBinding.exo.getSubtitleView().setFixedTextSize(Dimension.SP, size);
     }
 
     private void setDecode() {
@@ -159,7 +154,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     }
 
     private void setScale(int scale) {
-        getExo().setResizeMode(scale);
+        mBinding.exo.setResizeMode(scale);
         mBinding.control.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
     }
 
@@ -196,7 +191,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
 
     private void onDecode() {
         mPlayers.toggleDecode();
-        mPlayers.set(getExo());
+        mPlayers.set(mBinding.exo);
         setDecode();
         onReset();
     }

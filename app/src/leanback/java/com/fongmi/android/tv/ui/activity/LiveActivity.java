@@ -17,7 +17,6 @@ import androidx.leanback.widget.OnChildViewHolderSelectedListener;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.C;
 import androidx.media3.common.Player;
-import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
@@ -99,10 +98,6 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         return getIntent().getBooleanExtra("empty", true);
     }
 
-    private PlayerView getExo() {
-        return Setting.getRender() == 0 ? mBinding.surface : mBinding.texture;
-    }
-
     private Group getKeep() {
         return (Group) mGroupAdapter.get(0);
     }
@@ -182,10 +177,10 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void setVideoView() {
-        mPlayers.set(getExo());
+        mPlayers.set(mBinding.exo);
         setScale(Setting.getLiveScale());
         setSubtitle(Setting.getSubtitle());
-        getExo().setVisibility(View.VISIBLE);
+        mBinding.exo.setVisibility(View.VISIBLE);
         findViewById(R.id.timeBar).setNextFocusUpId(R.id.player);
         mBinding.control.invert.setActivated(Setting.isInvert());
         mBinding.control.across.setActivated(Setting.isAcross());
@@ -193,13 +188,13 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mBinding.control.speed.setText(mPlayers.getSpeedText());
         mBinding.control.decode.setText(mPlayers.getDecodeText());
         mBinding.control.speed.setEnabled(mPlayers.canAdjustSpeed());
-        getExo().getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
+        mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
         mBinding.control.home.setVisibility(LiveConfig.isOnly() ? View.GONE : View.VISIBLE);
     }
 
     @Override
     public void setSubtitle(int size) {
-        getExo().getSubtitleView().setFixedTextSize(Dimension.SP, size);
+        mBinding.exo.getSubtitleView().setFixedTextSize(Dimension.SP, size);
     }
 
     private void setDecode() {
@@ -207,7 +202,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void setScale(int scale) {
-        getExo().setResizeMode(scale);
+        mBinding.exo.setResizeMode(scale);
         mBinding.control.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
     }
 
@@ -385,7 +380,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     private void onDecode() {
         mPlayers.toggleDecode();
-        mPlayers.set(getExo());
+        mPlayers.set(mBinding.exo);
         setDecode();
         fetch();
     }
@@ -503,13 +498,13 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         ImgUtil.load(url, R.drawable.radio, new CustomTarget<>() {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                getExo().setDefaultArtwork(resource);
+                mBinding.exo.setDefaultArtwork(resource);
                 setMetadata();
             }
 
             @Override
             public void onLoadFailed(@Nullable Drawable error) {
-                getExo().setDefaultArtwork(error);
+                mBinding.exo.setDefaultArtwork(error);
                 setMetadata();
             }
 
