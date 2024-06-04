@@ -80,7 +80,29 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     private static AppDatabase create(Context context) {
-        return Room.databaseBuilder(context, AppDatabase.class, NAME).addMigrations(MIGRATION_11_12).addMigrations(MIGRATION_12_13).addMigrations(MIGRATION_13_14).addMigrations(MIGRATION_14_15).addMigrations(MIGRATION_15_16).addMigrations(MIGRATION_16_17).addMigrations(MIGRATION_17_18).addMigrations(MIGRATION_18_19).addMigrations(MIGRATION_19_20).addMigrations(MIGRATION_20_21).addMigrations(MIGRATION_21_22).addMigrations(MIGRATION_22_23).addMigrations(MIGRATION_23_24).addMigrations(MIGRATION_24_25).addMigrations(MIGRATION_25_26).addMigrations(MIGRATION_26_27).addMigrations(MIGRATION_27_28).addMigrations(MIGRATION_28_29).addMigrations(MIGRATION_29_30).addMigrations(MIGRATION_30_31).addMigrations(MIGRATION_31_32).allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        return Room.databaseBuilder(context, AppDatabase.class, NAME)
+                .addMigrations(MIGRATION_11_12)
+                .addMigrations(MIGRATION_12_13)
+                .addMigrations(MIGRATION_13_14)
+                .addMigrations(MIGRATION_14_15)
+                .addMigrations(MIGRATION_15_16)
+                .addMigrations(MIGRATION_16_17)
+                .addMigrations(MIGRATION_17_18)
+                .addMigrations(MIGRATION_18_19)
+                .addMigrations(MIGRATION_19_20)
+                .addMigrations(MIGRATION_20_21)
+                .addMigrations(MIGRATION_21_22)
+                .addMigrations(MIGRATION_22_23)
+                .addMigrations(MIGRATION_23_24)
+                .addMigrations(MIGRATION_24_25)
+                .addMigrations(MIGRATION_25_26)
+                .addMigrations(MIGRATION_26_27)
+                .addMigrations(MIGRATION_27_28)
+                .addMigrations(MIGRATION_28_29)
+                .addMigrations(MIGRATION_29_30)
+                .addMigrations(MIGRATION_30_31)
+                .addMigrations(MIGRATION_31_32)
+                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
     }
 
     public abstract KeepDao getKeepDao();
