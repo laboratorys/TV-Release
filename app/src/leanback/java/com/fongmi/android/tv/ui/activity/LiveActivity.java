@@ -3,6 +3,7 @@ package com.fongmi.android.tv.ui.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.media.MediaMetadataCompat;
 import android.view.KeyEvent;
@@ -707,9 +708,10 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         String title = mBinding.widget.name.getText().toString();
         String artist = mBinding.widget.play.getText().toString();
         MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
+        BitmapDrawable drawable = ((BitmapDrawable) mBinding.exo.getDefaultArtwork());
         builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, title);
         builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist);
-        //builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, getIjk().getDefaultArtwork());
+        builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, drawable.getBitmap());
         builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, mPlayers.getDuration());
         mPlayers.setMetadata(builder.build());
     }
