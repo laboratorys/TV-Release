@@ -25,6 +25,7 @@ public class SettingPlayerActivity extends BaseActivity implements UaCallback, B
     private String[] caption;
     private String[] render;
     private String[] scale;
+    private String[] rtsp;
 
     public static void start(Activity activity) {
         activity.startActivity(new Intent(activity, SettingPlayerActivity.class));
@@ -47,6 +48,7 @@ public class SettingPlayerActivity extends BaseActivity implements UaCallback, B
         mBinding.tunnelText.setText(getSwitch(Setting.isTunnel()));
         mBinding.bufferText.setText(String.valueOf(Setting.getBuffer()));
         mBinding.subtitleText.setText(String.valueOf(Setting.getSubtitle()));
+        mBinding.rtspText.setText((rtsp = ResUtil.getStringArray(R.array.select_rtsp))[Setting.getRtsp()]);
         mBinding.scaleText.setText((scale = ResUtil.getStringArray(R.array.select_scale))[Setting.getScale()]);
         mBinding.renderText.setText((render = ResUtil.getStringArray(R.array.select_render))[Setting.getRender()]);
         mBinding.captionText.setText((caption = ResUtil.getStringArray(R.array.select_caption))[Setting.isCaption() ? 1 : 0]);
@@ -55,6 +57,7 @@ public class SettingPlayerActivity extends BaseActivity implements UaCallback, B
     @Override
     protected void initEvent() {
         mBinding.ua.setOnClickListener(this::onUa);
+        mBinding.rtsp.setOnClickListener(this::setRtsp);
         mBinding.scale.setOnClickListener(this::setScale);
         mBinding.buffer.setOnClickListener(this::onBuffer);
         mBinding.render.setOnClickListener(this::setRender);
@@ -76,6 +79,12 @@ public class SettingPlayerActivity extends BaseActivity implements UaCallback, B
     public void setUa(String ua) {
         mBinding.uaText.setText(ua);
         Setting.putUa(ua);
+    }
+
+    private void setRtsp(View view) {
+        int index = Setting.getRtsp();
+        Setting.putRtsp(index = index == rtsp.length - 1 ? 0 : ++index);
+        mBinding.rtspText.setText(rtsp[index]);
     }
 
     private void setScale(View view) {

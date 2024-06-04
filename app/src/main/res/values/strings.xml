@@ -86,6 +86,7 @@
     <string name="player_background">Background play</string>
     <string name="player_tunnel">Tunnel mode</string>
     <string name="player_buffer">Buffer time</string>
+    <string name="player_rtsp">RTSP channel</string>
     <string name="player_ua">User-Agent</string>
 
     <!-- Search -->
@@ -186,6 +187,11 @@
         <item>Select audio track</item>
         <item>Select video track</item>
         <item>Select subtitle track</item>
+    </string-array>
+
+    <string-array name="select_rtsp">
+        <item>UDP</item>
+        <item>TCP</item>
     </string-array>
 
 </resources>
