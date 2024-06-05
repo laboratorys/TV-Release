@@ -209,12 +209,12 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
         return TextUtils.isEmpty(getUrl());
     }
 
-    public boolean isVod() {
-        return player != null && !player.isCurrentMediaItemLive();
+    public boolean isLive() {
+        return getDuration() < 5 * 60 * 1000;
     }
 
-    public boolean isLive() {
-        return player != null && player.isCurrentMediaItemLive();
+    public boolean isVod() {
+        return getDuration() > 5 * 60 * 1000;
     }
 
     public boolean isPortrait() {
