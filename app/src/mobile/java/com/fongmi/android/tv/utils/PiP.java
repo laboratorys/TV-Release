@@ -79,10 +79,20 @@ public class PiP {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) builder.setSeamlessResizeEnabled(true);
             if (scale == 1) builder.setAspectRatio(new Rational(16, 9));
             else if (scale == 2) builder.setAspectRatio(new Rational(4, 3));
-            else builder.setAspectRatio(new Rational(size.width, size.height));
+            else builder.setAspectRatio(getRational(size));
             activity.enterPictureInPictureMode(builder.build());
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private Rational getRational(VideoSize size) {
+        Rational limitWide = new Rational(239, 100);
+        Rational limitTall = new Rational(100, 239);
+        Rational rational = new Rational(size.width, size.height);
+        if (rational.isInfinite()) return new Rational(16, 9);
+        if (rational.floatValue() > limitWide.floatValue()) return limitWide;
+        if (rational.floatValue() < limitTall.floatValue()) return limitTall;
+        return rational;
     }
 }
