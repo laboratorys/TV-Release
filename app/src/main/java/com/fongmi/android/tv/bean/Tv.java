@@ -60,20 +60,31 @@ public class Tv {
         @Element(name = "title")
         private String title;
 
+        @Element(name = "date", required = false)
+        private String date;
+
         public String getStart() {
-            return start;
+            return TextUtils.isEmpty(start) ? "" : start;
         }
 
         public String getStop() {
-            return stop;
+            return TextUtils.isEmpty(stop) ? "" : stop;
         }
 
         public String getChannel() {
-            return channel;
+            return TextUtils.isEmpty(channel) ? "" : channel;
         }
 
         public String getTitle() {
-            return title;
+            return TextUtils.isEmpty(title) ? "" : title;
+        }
+
+        public String getDate() {
+            return TextUtils.isEmpty(date) ? "" : date;
+        }
+
+        public boolean equals(String date) {
+            return getDate().isEmpty() || getDate().equals(date);
         }
     }
 }

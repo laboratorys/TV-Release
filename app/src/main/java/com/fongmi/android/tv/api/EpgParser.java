@@ -30,11 +30,15 @@ public class EpgParser {
     private static final SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
 
-    public static void start(Live live) throws Exception {
-        if (!live.getEpg().contains(".xml") || live.getEpg().contains("{")) return;
-        File file = Path.cache(Uri.parse(live.getEpg()).getLastPathSegment());
-        if (shouldDownload(file)) Download.create(live.getEpg(), file).start();
-        readXml(live, Path.read(file));
+    public static void start(Live live) {
+        try {
+            if (!live.getEpg().contains(".xml") || live.getEpg().contains("{")) return;
+            File file = Path.cache(Uri.parse(live.getEpg()).getLastPathSegment());
+            if (shouldDownload(file)) Download.create(live.getEpg(), file).start();
+            readXml(live, Path.read(file));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static boolean shouldDownload(File file) {
@@ -55,12 +59,14 @@ public class EpgParser {
         Set<String> exist = new HashSet<>();
         Map<String, Epg> epgMap = new HashMap<>();
         Map<String, String> mapping = new HashMap<>();
+        String today = formatDate.format(new Date());
         Tv tv = new Persister().read(Tv.class, xml);
         for (Group group : live.getGroups()) for (Channel channel : group.getChannel()) exist.add(channel.getTvgName());
         for (Tv.Channel channel : tv.getChannel()) mapping.put(channel.getId(), channel.getDisplayName());
         for (Tv.Programme programme : tv.getProgramme()) {
             String key = mapping.get(programme.getChannel());
             if (!exist.contains(key)) continue;
+            if (!programme.equals(today)) continue;
             String title = programme.getTitle();
             String start = programme.getStart();
             String stop = programme.getStop();
@@ -73,7 +79,7 @@ public class EpgParser {
             epgData.setEndTime(endDate.getTime());
             epgData.setTitle(Trans.s2t(title));
             Epg epg = epgMap.get(key);
-            if (epg == null) epgMap.put(key, epg = Epg.create(key, formatDate.format(startDate)));
+            if (epg == null) epgMap.put(key, epg = Epg.create(key, today));
             epg.getList().add(epgData);
         }
         for (Group group : live.getGroups()) {

@@ -75,9 +75,9 @@ public class LiveParser {
             if (setting.find(line)) {
                 setting.check(line);
             } else if (line.startsWith("#EXTM3U")) {
-                live.setEpg(extract(line, TVG_URL));
                 catchup.setType(extract(line, CATCHUP));
                 catchup.setSource(extract(line, CATCHUP_SOURCE));
+                if (live.getEpg().isEmpty()) live.setEpg(extract(line, TVG_URL));
             } else if (line.startsWith("#EXTINF:")) {
                 Group group = live.find(Group.create(extract(line, GROUP), live.isPass()));
                 channel = group.find(Channel.create(extract(line, NAME)));
