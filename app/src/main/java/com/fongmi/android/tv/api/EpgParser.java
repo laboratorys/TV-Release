@@ -15,7 +15,6 @@ import com.github.catvod.utils.Trans;
 import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,7 +50,7 @@ public class EpgParser {
         return calendar.get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
     }
 
-    private static Date parseDateTime(String text) throws ParseException {
+    private static Date parseDateTime(String text) throws Exception {
         return formatFull.parse(text.substring(0, 14));
     }
 
