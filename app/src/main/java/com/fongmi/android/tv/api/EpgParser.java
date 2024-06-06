@@ -10,12 +10,14 @@ import com.fongmi.android.tv.bean.Live;
 import com.fongmi.android.tv.bean.Tv;
 import com.fongmi.android.tv.utils.Download;
 import com.github.catvod.utils.Path;
+import com.github.catvod.utils.Trans;
 
 import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,13 +38,13 @@ public class EpgParser {
     }
 
     private static boolean shouldDownload(File file) {
-        return !file.exists() || isOverOneDay(file);
+        return !file.exists() || !isEqualDay(file);
     }
 
-    private static boolean isOverOneDay(File file) {
-        long lastModified = file.lastModified();
-        long currentTimeMillis = System.currentTimeMillis();
-        return currentTimeMillis - lastModified > 1000 * 60 * 60 * 24;
+    private static boolean isEqualDay(File file) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(file.lastModified());
+        return calendar.get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
     }
 
     private static Date parseDateTime(String text) throws ParseException {
@@ -69,7 +71,7 @@ public class EpgParser {
             epgData.setEnd(formatTime.format(endDate));
             epgData.setStartTime(startDate.getTime());
             epgData.setEndTime(endDate.getTime());
-            epgData.setTitle(title);
+            epgData.setTitle(Trans.s2t(title));
             Epg epg = epgMap.get(key);
             if (epg == null) epgMap.put(key, epg = Epg.create(key, formatDate.format(startDate)));
             epg.getList().add(epgData);
