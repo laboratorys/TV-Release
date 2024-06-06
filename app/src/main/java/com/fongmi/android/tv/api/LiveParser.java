@@ -27,6 +27,7 @@ public class LiveParser {
     private static final Pattern CATCHUP = Pattern.compile(".*catchup=\"(.?|.+?)\".*");
     private static final Pattern TVG_NAME = Pattern.compile(".*tvg-name=\"(.?|.+?)\".*");
     private static final Pattern TVG_LOGO = Pattern.compile(".*tvg-logo=\"(.?|.+?)\".*");
+    private static final Pattern TVG_URL = Pattern.compile(".*x-tvg-url=\"(.?|.+?)\".*");
     private static final Pattern GROUP = Pattern.compile(".*group-title=\"(.?|.+?)\".*");
     private static final Pattern NAME = Pattern.compile(".*,(.+?)$");
 
@@ -74,6 +75,7 @@ public class LiveParser {
             if (setting.find(line)) {
                 setting.check(line);
             } else if (line.startsWith("#EXTM3U")) {
+                live.setEpg(extract(line, TVG_URL));
                 catchup.setType(extract(line, CATCHUP));
                 catchup.setSource(extract(line, CATCHUP_SOURCE));
             } else if (line.startsWith("#EXTINF:")) {

@@ -442,8 +442,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         hideEpg();
     }
 
-    @Override
-    public void showEpg(Channel item) {
+    private void showEpg(Channel item) {
         if (mChannel == null || mChannel.getData().getList().isEmpty() || mEpgDataAdapter.getItemCount() == 0 || !mChannel.equals(item)) return;
         mBinding.widget.epgData.scrollToPosition(item.getData().getSelected());
         mBinding.widget.epg.setVisibility(View.VISIBLE);
@@ -570,12 +569,16 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     @Override
     public void onItemClick(Channel item) {
-        mGroup.setPosition(mChannelAdapter.setSelected(item.group(mGroup)));
-        setArtwork(item.getLogo());
-        mChannel = item;
-        showInfo();
-        hideUI();
-        fetch();
+        if (item.getData().getList().size() > 0 && item.isSelected() && mChannel != null) {
+            showEpg(item);
+        } else {
+            mGroup.setPosition(mChannelAdapter.setSelected(item.group(mGroup)));
+            setArtwork(item.getLogo());
+            mChannel = item;
+            showInfo();
+            hideUI();
+            fetch();
+        }
     }
 
     @Override
@@ -641,7 +644,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     private void setEpg(Epg epg) {
-        if (mChannel != null && mChannel.getName().equals(epg.getKey())) setEpg();
+        if (mChannel != null && mChannel.getTvgName().equals(epg.getKey())) setEpg();
     }
 
     private void fetch() {

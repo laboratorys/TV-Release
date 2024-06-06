@@ -1,3 +1,6 @@
+# TV
+-keep class com.fongmi.android.tv.bean.** { *; }
+
 # Gson
 -keep class com.google.gson.** { *; }
 
@@ -11,6 +14,7 @@
 -keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.Path <fields>; }
 -keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.Root <fields>; }
 -keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.Text <fields>; }
+-keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.Element <fields>; }
 -keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.Attribute <fields>; }
 -keepclassmembers,allowobfuscation class * { @org.simpleframework.xml.ElementList <fields>; }
 
