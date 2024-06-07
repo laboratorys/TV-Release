@@ -41,10 +41,10 @@ public class EpgParser {
     }
 
     private static boolean shouldDownload(File file) {
-        return !file.exists() || !isEqualDay(file);
+        return !file.exists() || !equalToday(file);
     }
 
-    private static boolean isEqualDay(File file) {
+    private static boolean equalToday(File file) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(file.lastModified());
         return calendar.get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
@@ -66,6 +66,7 @@ public class EpgParser {
             String key = mapping.get(programme.getChannel());
             if (!exist.contains(key)) continue;
             if (!programme.equals(today)) continue;
+            if (!epgMap.containsKey(key)) epgMap.put(key, Epg.create(key, today));
             String title = programme.getTitle();
             String start = programme.getStart();
             String stop = programme.getStop();
@@ -77,9 +78,7 @@ public class EpgParser {
             epgData.setStartTime(startDate.getTime());
             epgData.setEndTime(endDate.getTime());
             epgData.setTitle(Trans.s2t(title));
-            Epg epg = epgMap.get(key);
-            if (epg == null) epgMap.put(key, epg = Epg.create(key, today));
-            epg.getList().add(epgData);
+            epgMap.get(key).getList().add(epgData);
         }
         for (Group group : live.getGroups()) {
             for (Channel channel : group.getChannel()) {
