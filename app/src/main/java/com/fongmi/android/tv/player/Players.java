@@ -503,7 +503,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     @Override
     public void onPlayerError(@NonNull PlaybackException error) {
         setPlaybackState(PlaybackStateCompat.STATE_ERROR);
-        ErrorEvent.url(error.errorCode);
+        ErrorEvent.url(this.error = error.errorCode);
     }
 
     @Override
