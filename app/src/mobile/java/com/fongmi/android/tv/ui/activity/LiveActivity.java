@@ -778,7 +778,8 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEvent(ErrorEvent event) {
-        if (mPlayers.addRetry() > event.getRetry()) onError(event);
+        if (event.getCode() / 1000 == 4 && Players.isHard()) onDecode();
+        else if (mPlayers.addRetry() > 1) onError(event);
         else fetch();
     }
 

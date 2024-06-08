@@ -328,7 +328,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
         } else if (channel.getParse() == 1) {
             startParse(channel.result(), false);
         } else if (isIllegal(channel.getUrl())) {
-            ErrorEvent.url(0);
+            ErrorEvent.url();
         } else {
             setMediaSource(channel, timeout);
         }
@@ -340,7 +340,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
         } else if (result.getParse(1) == 1 || result.getJx() == 1) {
             startParse(result, useParse);
         } else if (isIllegal(result.getRealUrl())) {
-            ErrorEvent.url(0);
+            ErrorEvent.url();
         } else {
             setMediaSource(result, timeout);
         }
@@ -502,8 +502,8 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
 
     @Override
     public void onPlayerError(@NonNull PlaybackException error) {
-        ErrorEvent.url(ExoUtil.getRetry(this.error = error.errorCode));
         setPlaybackState(PlaybackStateCompat.STATE_ERROR);
+        ErrorEvent.url(error.errorCode);
     }
 
     @Override
