@@ -228,7 +228,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     }
 
     public String getDecodeText() {
-        return ResUtil.getStringArray(R.array.select_decode)[decode];
+        return ResUtil.getStringArray(R.array.select_decode)[getDecode()];
     }
 
     public String setSpeed(float speed) {
@@ -261,9 +261,9 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
         return setSpeed(speed);
     }
 
-    public void toggleDecode(boolean save) {
-        setDecode(decode == HARD ? SOFT : HARD);
-        if (save) Setting.putDecode(decode);
+    public void toggleDecode() {
+        setDecode(getDecode() == HARD ? SOFT : HARD);
+        Setting.putDecode(getDecode());
     }
 
     public String getPositionTime(long time) {

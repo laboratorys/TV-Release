@@ -189,11 +189,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     }
 
     private void onDecode() {
-        onDecode(true);
-    }
-
-    private void onDecode(boolean save) {
-        mPlayers.toggleDecode(save);
+        mPlayers.toggleDecode();
         mPlayers.set(mBinding.exo);
         setDecode();
         onReset();
@@ -338,7 +334,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEvent(ErrorEvent event) {
-        if (event.getCode() / 1000 == 4 && Players.isHard()) onDecode(false);
+        if (event.getCode() / 1000 == 4 && Players.isHard()) onDecode();
         else if (mPlayers.addRetry() > 1) onError(event);
         else onReset();
     }

@@ -759,11 +759,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void onDecode() {
-        onDecode(true);
-    }
-
-    private void onDecode(boolean save) {
-        mPlayers.toggleDecode(save);
+        mPlayers.toggleDecode();
         mPlayers.set(mBinding.exo);
         setR1Callback();
         setDecode();
@@ -1144,7 +1140,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEvent(ErrorEvent event) {
         if (isRedirect()) return;
-        if (event.getCode() / 1000 == 4 && Players.isHard()) onDecode(false);
+        if (event.getCode() / 1000 == 4 && Players.isHard()) onDecode();
         else if (mPlayers.addRetry() > 1) onError(event);
         else onRefresh();
     }
