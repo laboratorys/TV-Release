@@ -112,8 +112,8 @@ public class ParseJob implements ParseCallback {
         String body = OkHttp.newCall(item.getUrl() + webUrl, Headers.of(item.getHeaders())).execute().body().string();
         JsonObject object = Json.parse(body).getAsJsonObject();
         String url = Json.safeString(object, "url");
-        object = object.getAsJsonObject("data");
-        if (url.isEmpty()) url = Json.safeString(object, "url");
+        JsonObject data = object.getAsJsonObject("data");
+        if (url.isEmpty()) url = Json.safeString(data, "url");
         checkResult(getHeader(object), url, item.getName(), error);
     }
 
