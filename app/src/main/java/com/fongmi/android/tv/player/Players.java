@@ -261,9 +261,9 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
         return setSpeed(speed);
     }
 
-    public void toggleDecode() {
+    public void toggleDecode(boolean save) {
         setDecode(decode == HARD ? SOFT : HARD);
-        Setting.putDecode(decode);
+        if (save) Setting.putDecode(decode);
     }
 
     public String getPositionTime(long time) {
