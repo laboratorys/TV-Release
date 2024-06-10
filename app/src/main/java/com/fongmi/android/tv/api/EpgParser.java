@@ -21,14 +21,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 public class EpgParser {
-
-    private static final SimpleDateFormat formatFull = new SimpleDateFormat("yyyyMMddHHmmss Z");
-    private static final SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
-    private static final SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
 
     public static void start(Live live) {
         try {
@@ -66,6 +63,9 @@ public class EpgParser {
         Set<String> exist = new HashSet<>();
         Map<String, Epg> epgMap = new HashMap<>();
         Map<String, String> mapping = new HashMap<>();
+        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat formatFull = new SimpleDateFormat("yyyyMMddHHmmss Z", Locale.getDefault());
         String today = formatDate.format(new Date());
         Tv tv = new Persister().read(Tv.class, Path.read(file));
         for (Group group : live.getGroups()) for (Channel channel : group.getChannel()) exist.add(channel.getTvgName());
