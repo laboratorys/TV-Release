@@ -207,11 +207,11 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     }
 
     public boolean isLive() {
-        return getDuration() < 5 * 60 * 1000;
+        return getDuration() < 5 * 60 * 1000 || player.isCurrentMediaItemLive();
     }
 
     public boolean isVod() {
-        return getDuration() > 5 * 60 * 1000;
+        return getDuration() > 5 * 60 * 1000 && !player.isCurrentMediaItemLive();
     }
 
     public boolean isPortrait() {

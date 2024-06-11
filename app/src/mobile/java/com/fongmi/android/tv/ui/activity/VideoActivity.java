@@ -294,6 +294,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mPiP = new PiP();
         setForeground(true);
         setRecyclerView();
+        setSubtitleView();
         setVideoView();
         setViewModel();
         showProgress();
@@ -367,14 +368,18 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void setVideoView() {
         mPlayers.set(mBinding.exo);
         mBinding.exo.setVisibility(View.VISIBLE);
-        mBinding.exo.getSubtitleView().setFixedTextSize(Dimension.SP, 14);
-        mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
         mBinding.control.action.decode.setText(mPlayers.getDecodeText());
         mBinding.control.action.speed.setEnabled(mPlayers.canAdjustSpeed());
         mBinding.control.action.reset.setText(ResUtil.getStringArray(R.array.select_reset)[Setting.getReset()]);
         mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(getActivity(), view));
         if (mControlDialog != null && mControlDialog.isVisible()) mControlDialog.setPlayer();
         if (isPort() && ResUtil.isLand(this)) enterFullscreen();
+    }
+
+    private void setSubtitleView() {
+        mBinding.exo.getSubtitleView().setFixedTextSize(Dimension.SP, 14);
+        mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
+        mBinding.exo.getSubtitleView().setApplyEmbeddedStyles(!Setting.isCaption());
     }
 
     @Override

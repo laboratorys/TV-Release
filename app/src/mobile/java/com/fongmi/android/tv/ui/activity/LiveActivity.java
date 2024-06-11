@@ -157,6 +157,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         Server.get().start();
         setForeground(true);
         setRecyclerView();
+        setSubtitleView();
         setVideoView();
         setViewModel();
         checkLive();
@@ -201,9 +202,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     private void setVideoView() {
         mPlayers.set(mBinding.exo);
         setScale(Setting.getLiveScale());
-        setSubtitle(Setting.getSubtitle());
         mBinding.exo.setVisibility(View.VISIBLE);
-        mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
         mBinding.control.action.invert.setActivated(Setting.isInvert());
         mBinding.control.action.across.setActivated(Setting.isAcross());
         mBinding.control.action.change.setActivated(Setting.isChange());
@@ -212,6 +211,12 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mBinding.control.action.speed.setEnabled(mPlayers.canAdjustSpeed());
         mBinding.control.action.home.setVisibility(LiveConfig.isOnly() ? View.GONE : View.VISIBLE);
         mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(getActivity(), view));
+    }
+
+    private void setSubtitleView() {
+        setSubtitle(Setting.getSubtitle());
+        mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
+        mBinding.exo.getSubtitleView().setApplyEmbeddedStyles(!Setting.isCaption());
     }
 
     @Override
