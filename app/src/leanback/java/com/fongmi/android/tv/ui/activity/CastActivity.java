@@ -138,6 +138,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
         mBinding.exo.setVisibility(View.VISIBLE);
         findViewById(R.id.timeBar).setNextFocusUpId(R.id.reset);
         mBinding.control.speed.setText(mPlayers.getSpeedText());
+        mBinding.control.decode.setText(mPlayers.getDecodeText());
         mBinding.control.speed.setEnabled(mPlayers.canAdjustSpeed());
         mBinding.control.reset.setText(ResUtil.getStringArray(R.array.select_reset)[0]);
     }

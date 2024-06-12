@@ -18,9 +18,8 @@ import com.android.cast.dlna.dmc.control.ServiceActionCallback;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.R;
-import com.fongmi.android.tv.api.config.VodConfig;
-import com.fongmi.android.tv.utils.DLNADevice;
 import com.fongmi.android.tv.bean.CastVideo;
+import com.fongmi.android.tv.bean.Config;
 import com.fongmi.android.tv.bean.Device;
 import com.fongmi.android.tv.bean.History;
 import com.fongmi.android.tv.databinding.DialogDeviceBinding;
@@ -28,6 +27,7 @@ import com.fongmi.android.tv.event.ScanEvent;
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.ui.activity.ScanActivity;
 import com.fongmi.android.tv.ui.adapter.DeviceAdapter;
+import com.fongmi.android.tv.utils.DLNADevice;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ScanTask;
 import com.github.catvod.net.OkHttp;
@@ -69,8 +69,8 @@ public class CastDialog extends BaseDialog implements DeviceAdapter.OnClickListe
     public CastDialog() {
         body = new FormBody.Builder();
         body.add("device", Device.get().toString());
+        body.add("config", Config.vod().toString());
         client = OkHttp.client(Constant.TIMEOUT_SYNC);
-        if (VodConfig.getUrl() != null) body.add("url", VodConfig.getUrl());
     }
 
     public CastDialog history(History history) {
@@ -134,14 +134,14 @@ public class CastDialog extends BaseDialog implements DeviceAdapter.OnClickListe
         DLNACastManager.INSTANCE.registerDeviceListener(this);
     }
 
+    private void onScan() {
+        ScanActivity.start(getActivity());
+    }
+
     private void onRefresh() {
         if (fm) ScanTask.create(this).start(adapter.getIps());
         DLNACastManager.INSTANCE.search(null);
         adapter.clear();
-    }
-
-    private void onScan() {
-        ScanActivity.start(getActivity());
     }
 
     private void onCasted() {
