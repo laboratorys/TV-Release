@@ -184,7 +184,7 @@ public class Action implements Process {
         List<Keep> targets = Keep.arrayFrom(params.get("targets"));
         List<Config> configs = Config.arrayFrom(params.get("configs"));
         if (TextUtils.isEmpty(VodConfig.getUrl()) && configs.size() > 0) {
-            VodConfig.load(Config.find(configs.get(0), 0), getCallback(configs, targets));
+            VodConfig.load(Config.find(configs.get(0)), getCallback(configs, targets));
         } else {
             if (force) Keep.deleteAll();
             Keep.sync(configs, targets);
