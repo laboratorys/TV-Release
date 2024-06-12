@@ -121,7 +121,7 @@ public class SyncDialog extends BaseDialog implements DeviceAdapter.OnClickListe
             binding.mode.setImageResource(R.drawable.ic_cast_download);
         } else if (binding.mode.getTag().toString().equals("2")) {
             binding.mode.setTag("0");
-            binding.mode.setImageResource(R.drawable.ic_cast_two_way);
+            binding.mode.setImageResource(R.drawable.ic_cast_sync);
         }
     }
 
