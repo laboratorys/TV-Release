@@ -213,8 +213,10 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     private void setViewModel() {
         mViewModel = new ViewModelProvider(this).get(LiveViewModel.class);
         mViewModel.url.observe(this, result -> mPlayers.start(result, getTimeout()));
+        mViewModel.xml.observe(this, this::setEpg);
         mViewModel.epg.observe(this, this::setEpg);
         mViewModel.live.observe(this, live -> {
+            mViewModel.getXml(live);
             hideProgress();
             setGroup(live);
             setWidth(live);
@@ -603,6 +605,10 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mBinding.widget.play.setText(epg);
         setWidth(mChannel.getData());
         setMetadata();
+    }
+
+    private void setEpg(boolean success) {
+        if (mChannel != null && success) mViewModel.getEpg(mChannel);
     }
 
     private void setEpg(Epg epg) {

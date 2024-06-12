@@ -236,8 +236,10 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     private void setViewModel() {
         mViewModel = new ViewModelProvider(this).get(LiveViewModel.class);
         mViewModel.url.observeForever(mObserveUrl);
+        mViewModel.xml.observe(this, this::setEpg);
         mViewModel.epg.observeForever(mObserveEpg);
         mViewModel.live.observe(this, live -> {
+            mViewModel.getXml(live);
             hideProgress();
             setGroup(live);
             setWidth(live);
@@ -644,6 +646,10 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mEpgDataAdapter.addAll(data);
         setWidth(mChannel.getData());
         setMetadata();
+    }
+
+    private void setEpg(boolean success) {
+        if (mChannel != null && success) mViewModel.getEpg(mChannel);
     }
 
     private void setEpg(Epg epg) {
