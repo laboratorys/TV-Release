@@ -840,7 +840,11 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void onDecode() {
-        mPlayers.toggleDecode();
+        onDecode(true);
+    }
+
+    private void onDecode(boolean save) {
+        mPlayers.toggleDecode(save);
         mPlayers.set(mBinding.exo);
         setDecode();
         onRefresh();
@@ -1135,7 +1139,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEvent(ErrorEvent event) {
         if (isBackground()) return;
-        if (event.getCode() / 1000 == 4 && Players.isHard()) onDecode();
+        if (event.getCode() / 1000 == 4 && mPlayers.isHard()) onDecode(false);
         else if (mPlayers.error()) onError(event);
         else onRefresh();
     }
