@@ -1140,10 +1140,11 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setMetadata() {
+        String logo = mHistory == null ? "" : mHistory.getVodPic();
         String title = mHistory == null ? getName() : mHistory.getVodName();
         String artist = mEpisodeAdapter.isEmpty() ? "" : getEpisode().getName();
         artist = title.equals(artist) ? "" : getString(R.string.play_now, artist);
-        mPlayers.setMetadata(title, artist, mBinding.exo);
+        mPlayers.setMetadata(title, artist, logo, mBinding.exo);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

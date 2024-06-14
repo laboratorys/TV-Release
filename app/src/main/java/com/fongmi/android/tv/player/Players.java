@@ -441,13 +441,15 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
         return bundle;
     }
 
-    public void setMetadata(String title, String artist, PlayerView view) {
+    public void setMetadata(String title, String artist, String logo, PlayerView view) {
         try {
             Bitmap bitmap = ((BitmapDrawable) view.getDefaultArtwork()).getBitmap();
             MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
+            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap);
             builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, title);
             builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist);
-            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap);
+            builder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, logo);
+            builder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI, logo);
             builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, getDuration());
             session.setMetadata(builder.build());
             ActionEvent.update();

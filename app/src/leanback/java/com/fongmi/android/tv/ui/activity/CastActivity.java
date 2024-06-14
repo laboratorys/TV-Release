@@ -339,7 +339,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     }
 
     private void setMetadata() {
-        mPlayers.setMetadata(mBinding.widget.title.getText().toString(), "", mBinding.exo);
+        mPlayers.setMetadata(mBinding.widget.title.getText().toString(), "", "", mBinding.exo);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
