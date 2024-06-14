@@ -385,7 +385,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     }
 
     private void setMediaSource(Result result, int timeout) {
-        setMediaSource(result.getHeaders(), result.getRealUrl(), result.getFormat(), result.getDrm(), checkSub(result.getSubs()), timeout);
+        setMediaSource(result.getHeaders(), result.getRealUrl(), result.getFormat(), result.getDrm(), result.getSubs(), timeout);
     }
 
     private void setMediaSource(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, int timeout) {
