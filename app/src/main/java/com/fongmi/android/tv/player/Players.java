@@ -18,7 +18,6 @@ import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.exoplayer.ExoPlayer;
-import androidx.media3.exoplayer.analytics.AnalyticsListener;
 import androidx.media3.exoplayer.util.EventLogger;
 import androidx.media3.ui.PlayerView;
 
@@ -53,7 +52,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class Players implements Player.Listener, AnalyticsListener, ParseCallback {
+public class Players implements Player.Listener, ParseCallback {
 
     private static final String TAG = Players.class.getSimpleName();
 
@@ -88,6 +87,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     private void createSession(Activity activity) {
         session = new MediaSessionCompat(activity, "TV");
         session.setCallback(SessionCallback.create(this));
+        session.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         session.setSessionActivity(PendingIntent.getActivity(App.get(), 0, new Intent(App.get(), activity.getClass()), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
         MediaControllerCompat.setMediaController(activity, session.getController());
     }
@@ -103,7 +103,6 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
         player.addAnalyticsListener(new EventLogger());
         player.setHandleAudioBecomingNoisy(true);
         view.setRender(Setting.getRender());
-        player.addAnalyticsListener(this);
         player.setPlayWhenReady(true);
         player.addListener(this);
         view.setPlayer(player);
@@ -298,6 +297,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
         reset();
         session.setActive(false);
         if (player != null) player.stop();
+        if (player != null) player.clearMediaItems();
         setPlaybackState(PlaybackStateCompat.STATE_STOPPED);
     }
 
@@ -312,7 +312,6 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     private void releasePlayer() {
         if (player == null) return;
         player.removeListener(this);
-        player.clearMediaItems();
         player.release();
         player = null;
     }
@@ -513,7 +512,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
 
     @Override
     public void onEvents(@NonNull Player player, @NonNull Player.Events events) {
-        if (!events.containsAny(Player.EVENT_PLAYBACK_STATE_CHANGED, Player.EVENT_PLAY_WHEN_READY_CHANGED, Player.EVENT_IS_PLAYING_CHANGED, Player.EVENT_TIMELINE_CHANGED, Player.EVENT_PLAYBACK_PARAMETERS_CHANGED, Player.EVENT_POSITION_DISCONTINUITY, Player.EVENT_REPEAT_MODE_CHANGED, Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED, Player.EVENT_MEDIA_METADATA_CHANGED)) return;
+        if (!events.containsAny(Player.EVENT_PLAYBACK_STATE_CHANGED, Player.EVENT_PLAY_WHEN_READY_CHANGED, Player.EVENT_IS_PLAYING_CHANGED, Player.EVENT_TIMELINE_CHANGED, Player.EVENT_PLAYBACK_PARAMETERS_CHANGED, Player.EVENT_POSITION_DISCONTINUITY, Player.EVENT_MEDIA_METADATA_CHANGED)) return;
         setPlaybackState(isPlaying() ? PlaybackStateCompat.STATE_PLAYING : PlaybackStateCompat.STATE_PAUSED);
     }
 
