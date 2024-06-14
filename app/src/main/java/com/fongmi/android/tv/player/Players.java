@@ -448,6 +448,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
             builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap);
             builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, title);
             builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist);
+            builder.putString(MediaMetadataCompat.METADATA_KEY_ART_URI, logo);
             builder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, logo);
             builder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI, logo);
             builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, getDuration());
