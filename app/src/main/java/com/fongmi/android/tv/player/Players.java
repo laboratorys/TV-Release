@@ -98,7 +98,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     }
 
     private void setPlayer(PlayerView view) {
-        player = new ExoPlayer.Builder(App.get()).setLoadControl(ExoUtil.buildLoadControl()).setRenderersFactory(ExoUtil.buildRenderersFactory(getDecode())).setTrackSelector(ExoUtil.buildTrackSelector()).build();
+        player = new ExoPlayer.Builder(App.get()).setLoadControl(ExoUtil.buildLoadControl()).setRenderersFactory(ExoUtil.buildRenderersFactory(decode)).setTrackSelector(ExoUtil.buildTrackSelector()).build();
         player.setAudioAttributes(AudioAttributes.DEFAULT, true);
         player.addAnalyticsListener(new EventLogger());
         player.setHandleAudioBecomingNoisy(true);
@@ -151,6 +151,14 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
         return Util.format(builder, formatter, time);
     }
 
+    public int getVideoWidth() {
+        return player == null ? 0 : player.getVideoSize().width;
+    }
+
+    public int getVideoHeight() {
+        return player == null ? 0 : player.getVideoSize().height;
+    }
+
     public float getSpeed() {
         return player == null ? 1.0f : player.getPlaybackParameters().speed;
     }
@@ -200,7 +208,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     }
 
     public boolean isHard() {
-        return getDecode() == HARD;
+        return decode == HARD;
     }
 
     public boolean isPortrait() {
@@ -208,7 +216,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     }
 
     public String getSizeText() {
-        return getVideoWidth() + " x " + getVideoHeight();
+        return getVideoWidth() == 0 && getVideoHeight() == 0 ? "" : getVideoWidth() + " x " + getVideoHeight();
     }
 
     public String getSpeedText() {
@@ -216,7 +224,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     }
 
     public String getDecodeText() {
-        return ResUtil.getStringArray(R.array.select_decode)[getDecode()];
+        return ResUtil.getStringArray(R.array.select_decode)[decode];
     }
 
     public String setSpeed(float speed) {
@@ -331,18 +339,6 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
         } else {
             setMediaSource(result, timeout);
         }
-    }
-
-    private int getDecode() {
-        return decode;
-    }
-
-    private int getVideoWidth() {
-        return player.getVideoSize().width;
-    }
-
-    private int getVideoHeight() {
-        return player.getVideoSize().height;
     }
 
     private void startParse(Result result, boolean useParse) {
