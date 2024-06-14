@@ -494,7 +494,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mBinding.control.bottom.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
-        mBinding.control.size.setText(mPlayers.getSizeText());
         setR1Callback();
         hideInfo();
         hideEpg();
@@ -761,6 +760,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
                 mPlayers.reset();
                 setTrackVisible(true);
                 checkPlayImg(mPlayers.isPlaying());
+                mBinding.control.size.setText(mPlayers.getSizeText());
                 if (isVisible(mBinding.control.getRoot())) showControl();
                 break;
             case Player.STATE_ENDED:

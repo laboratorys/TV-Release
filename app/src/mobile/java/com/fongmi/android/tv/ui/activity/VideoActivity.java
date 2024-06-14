@@ -911,7 +911,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.control.bottom.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
-        mBinding.control.size.setText(mPlayers.getSizeText());
         checkPlayImg(mPlayers.isPlaying());
         setR1Callback();
     }
@@ -1101,6 +1100,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 setDefaultTrack();
                 setTrackVisible(true);
                 checkPlayImg(mPlayers.isPlaying());
+                mBinding.control.size.setText(mPlayers.getSizeText());
                 if (isVisible(mBinding.control.getRoot())) showControl();
                 break;
             case Player.STATE_ENDED:
