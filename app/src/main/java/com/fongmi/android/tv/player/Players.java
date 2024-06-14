@@ -67,7 +67,6 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     private ParseJob parseJob;
     private Runnable runnable;
     private ExoPlayer player;
-    private List<Sub> subs;
     private String format;
     private String url;
     private Sub sub;
@@ -78,7 +77,6 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     private int retry;
 
     public Players init(Activity activity) {
-        subs = new ArrayList<>();
         decode = Setting.getDecode();
         builder = new StringBuilder();
         runnable = ErrorEvent::timeout;
@@ -146,7 +144,6 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     public void clear() {
         headers = null;
         format = null;
-        subs = null;
         url = null;
     }
 
@@ -366,7 +363,7 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     }
 
     private List<Sub> checkSub(List<Sub> subs) {
-        if (sub == null || subs.contains(sub)) return subs;
+        if (sub == null) return subs;
         subs.add(0, sub);
         return subs;
     }
@@ -376,23 +373,23 @@ public class Players implements Player.Listener, AnalyticsListener, ParseCallbac
     }
 
     private void setMediaSource(Map<String, String> headers, String url) {
-        setMediaSource(checkUa(headers), url, null, null, checkSub(subs), Constant.TIMEOUT_PLAY);
+        setMediaSource(headers, url, null, null, new ArrayList<>(), Constant.TIMEOUT_PLAY);
     }
 
     private void setMediaSource(Map<String, String> headers, String url, String format) {
-        setMediaSource(checkUa(headers), url, format, null, checkSub(subs), Constant.TIMEOUT_PLAY);
+        setMediaSource(headers, url, format, null, new ArrayList<>(), Constant.TIMEOUT_PLAY);
     }
 
     private void setMediaSource(Channel channel, int timeout) {
-        setMediaSource(checkUa(channel.getHeaders()), channel.getUrl(), channel.getFormat(), channel.getDrm(), checkSub(subs), timeout);
+        setMediaSource(channel.getHeaders(), channel.getUrl(), channel.getFormat(), channel.getDrm(), new ArrayList<>(), timeout);
     }
 
     private void setMediaSource(Result result, int timeout) {
-        setMediaSource(checkUa(result.getHeaders()), result.getRealUrl(), result.getFormat(), result.getDrm(), checkSub(result.getSubs()), timeout);
+        setMediaSource(result.getHeaders(), result.getRealUrl(), result.getFormat(), result.getDrm(), checkSub(result.getSubs()), timeout);
     }
 
     private void setMediaSource(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, int timeout) {
-        if (player != null) player.setMediaSource(ExoUtil.getSource(this.headers = headers, this.url = url, ExoUtil.getMimeType(this.format = format, error), drm, this.subs = subs, decode), position);
+        if (player != null) player.setMediaSource(ExoUtil.getSource(this.headers = checkUa(headers), this.url = url, ExoUtil.getMimeType(this.format = format, error), drm, checkSub(subs), decode), position);
         if (player != null) player.prepare();
         Logger.t(TAG).d(error + "," + url);
         App.post(runnable, timeout);
