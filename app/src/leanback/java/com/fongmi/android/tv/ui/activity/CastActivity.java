@@ -371,6 +371,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
 
     private void onStopped() {
         setState(RenderState.STOPPED);
+        mPlayers.reset();
         mPlayers.stop();
     }
 

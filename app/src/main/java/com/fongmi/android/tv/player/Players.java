@@ -294,7 +294,6 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public void stop() {
-        reset();
         session.setActive(false);
         if (player != null) player.stop();
         if (player != null) player.clearMediaItems();
