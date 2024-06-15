@@ -96,6 +96,14 @@ public class PlaybackService extends Service {
         b1.recycle();
     }
 
+    private void setArtwork(NotificationCompat.Builder builder) {
+        if (cache.containsKey(getArtUri())) {
+            setLargeIcon(builder, cache.get(getArtUri()));
+        } else {
+            ImgUtil.load(getArtUri(), getCallback(builder));
+        }
+    }
+
     private void addAction(NotificationCompat.Builder builder) {
         builder.addAction(buildNotificationAction(R.drawable.ic_notify_prev, androidx.media3.ui.R.string.exo_controls_previous_description, ActionEvent.PREV));
         builder.addAction(getPlayPauseAction());
@@ -119,23 +127,20 @@ public class PlaybackService extends Service {
         return builder.build();
     }
 
-    private void setArtwork(NotificationCompat.Builder builder) {
-        if (cache.containsKey(getArtUri())) {
-            setLargeIcon(builder, cache.get(getArtUri()));
-        } else {
-            ImgUtil.load(getArtUri(), new CustomTarget<>() {
-                @Override
-                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                    cache.put(getArtUri(), resource);
-                    setLargeIcon(builder, resource);
-                    Notify.show(builder.build());
-                }
+    private CustomTarget<Bitmap> getCallback(NotificationCompat.Builder builder) {
+        return new CustomTarget<>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                cache.put(getArtUri(), resource);
+                setLargeIcon(builder, resource);
+                Notify.show(builder.build());
+            }
 
-                @Override
-                public void onLoadCleared(@Nullable Drawable placeholder) {
-                }
-            });
-        }
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+            }
+        };
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
