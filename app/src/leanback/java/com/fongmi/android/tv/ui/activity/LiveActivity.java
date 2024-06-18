@@ -528,7 +528,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Override
     public void onItemClick(Channel item) {
-        if (item.getData().getList().size() > 0 && item.isSelected() && mChannel != null && mChannel.equals(item)) {
+        if (item.getData().getList().size() > 0 && item.isSelected() && item.equals(mChannel)) {
             showEpg(item);
         } else {
             mGroup.setPosition(mBinding.channel.getSelectedPosition());
@@ -549,14 +549,13 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Override
     public void onItemClick(EpgData item) {
-        if (item.isFuture() || !mChannel.hasCatchup()) return;
-        Notify.show(getString(R.string.play_ready, item.getTitle()));
-        mViewModel.getUrl(mChannel, item);
-        setActivated(item);
-        mPlayers.clear();
-        mPlayers.stop();
-        showProgress();
-        hideEpg();
+        if (item.isSelected()) {
+            fetch(item);
+        } else if (mChannel.hasCatchup()) {
+            Notify.show(getString(R.string.play_ready, item.getTitle()));
+            setActivated(item);
+            fetch(item);
+        }
     }
 
     private void addKeep(Channel item) {
@@ -610,6 +609,14 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     private void setEpg(Epg epg) {
         if (mChannel != null && mChannel.getTvgName().equals(epg.getKey())) setEpg();
+    }
+
+    private void fetch(EpgData item) {
+        if (mChannel == null) return;
+        mViewModel.getUrl(mChannel, item);
+        mPlayers.clear();
+        mPlayers.stop();
+        hideEpg();
     }
 
     private void fetch() {
