@@ -14,7 +14,7 @@ android {
         //noinspection ExpiredTargetSdkVersion
         targetSdk 28
         versionCode 239
-        versionName "0618"
+        versionName "0618v2"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -111,7 +111,7 @@ dependencies {
     implementation 'androidx.media:media:1.7.0'
     implementation 'androidx.room:room-runtime:2.6.1'
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
-    implementation ('com.github.anilbeesetti.nextlib:nextlib-media3ext:0.7.1') { exclude group: 'androidx.media3', module: 'media3-exoplayer' }
+    implementation('com.github.anilbeesetti.nextlib:nextlib-media3ext:0.7.1') { exclude group: 'androidx.media3', module: 'media3-exoplayer' }
     implementation 'com.github.bassaer:materialdesigncolors:1.0.0'
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     implementation 'com.github.bumptech.glide:annotations:4.16.0'
