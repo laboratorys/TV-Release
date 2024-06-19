@@ -14,7 +14,7 @@ android {
         //noinspection ExpiredTargetSdkVersion
         targetSdk 28
         versionCode 239
-        versionName "0619v2"
+        versionName "0619v3"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -100,6 +100,7 @@ dependencies {
     pythonImplementation project(':chaquo')
     implementation project(':media-lib-datasource-okhttp')
     implementation project(':media-lib-datasource-rtmp')
+    implementation project(':media-lib-decoder-ffmpeg')
     implementation project(':media-lib-decoder-av1')
     implementation project(':media-lib-exoplayer')
     implementation project(':media-lib-exoplayer-dash')
