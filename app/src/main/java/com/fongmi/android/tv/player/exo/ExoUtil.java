@@ -96,9 +96,8 @@ public class ExoUtil {
         return errorCode >= PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED && errorCode <= PlaybackException.ERROR_CODE_PARSING_MANIFEST_UNSUPPORTED ? 2 : errorCode > 999 ? 1 : 0;
     }
 
-    public static MediaItem getMediaItem(Map<String, String> headers, Uri uri, String mimeType, Drm drm, List<Sub> subs, int decode) {
+    public static MediaItem getMediaItem(Map<String, String> headers, Uri uri, String mimeType, Drm drm, List<Sub> subs) {
         MediaItem.Builder builder = new MediaItem.Builder().setUri(uri);
-        builder.setAllowChunklessPreparation(Players.isHard(decode));
         builder.setRequestMetadata(getRequestMetadata(headers, uri));
         builder.setSubtitleConfigurations(getSubtitleConfigs(subs));
         if (drm != null) builder.setDrmConfiguration(drm.get());
