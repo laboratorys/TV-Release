@@ -254,6 +254,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         List<Group> items = new ArrayList<>();
         items.add(Group.create(R.string.keep));
         for (Group group : live.getGroups()) (group.isHidden() ? mHides : items).add(group);
+        LiveConfig.get().setKeep(items);
         mGroupAdapter.setItems(items, null);
         setPosition(LiveConfig.get().find(items));
     }
@@ -284,8 +285,8 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     private void setPosition(int[] position) {
         if (position[0] == -1) return;
-        if (mGroupAdapter.size() == 1) return;
-        if (position[0] >= mGroupAdapter.size()) return;
+        int size = mGroupAdapter.size();
+        if (size == 1 || position[0] >= size) return;
         mGroup = (Group) mGroupAdapter.get(position[0]);
         mBinding.group.setSelectedPosition(position[0]);
         mGroup.setPosition(position[1]);
