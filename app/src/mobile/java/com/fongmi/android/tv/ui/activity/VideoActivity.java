@@ -376,7 +376,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setSubtitleView() {
-        mBinding.exo.getSubtitleView().setFixedTextSize(Dimension.SP, 14);
+        setSubtitle(Setting.getSubtitle());
         mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
         mBinding.exo.getSubtitleView().setApplyEmbeddedStyles(!Setting.isCaption());
     }
@@ -839,7 +839,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         setRequestedOrientation(mPlayers.isPortrait() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         mBinding.control.full.setVisibility(View.GONE);
         setRotate(mPlayers.isPortrait(), true);
-        setSubtitle(Setting.getSubtitle());
         Util.hideSystemUI(this);
         App.post(mR3, 2000);
         hideControl();
@@ -853,7 +852,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.video.setLayoutParams(mFrameParams);
         setRotate(false, false);
         App.post(mR3, 2000);
-        setSubtitle(14);
         hideControl();
     }
 
@@ -1503,6 +1501,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         } else {
             setForeground(true);
             PlaybackService.stop();
+            setSubtitle(Setting.getSubtitle());
             if (isStop()) finish();
         }
     }
