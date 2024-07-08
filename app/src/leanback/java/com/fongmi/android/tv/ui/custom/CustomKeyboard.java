@@ -22,6 +22,7 @@ public class CustomKeyboard implements KeyboardAdapter.OnClickListener {
     }
 
     private void initView() {
+        binding.keyboard.setItemAnimator(null);
         binding.keyboard.setHasFixedSize(true);
         binding.keyboard.addItemDecoration(new SpaceItemDecoration(6, 8));
         binding.keyboard.setAdapter(adapter = new KeyboardAdapter(this));
