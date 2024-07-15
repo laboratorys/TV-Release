@@ -81,6 +81,6 @@ public class Media implements Process {
     }
 
     private float getSpeed() {
-        return getPlaybackState() == null ? 1 : getPlaybackState().getPlaybackSpeed();
+        return getPlaybackState() == null ? -1 : getPlaybackState().getPlaybackSpeed();
     }
 }
