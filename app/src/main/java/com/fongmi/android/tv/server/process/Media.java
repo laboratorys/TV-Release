@@ -26,13 +26,13 @@ public class Media implements Process {
         if (isNull()) return Nano.success("{}");
         JsonObject result = new JsonObject();
         result.addProperty("url", getUrl());
+        result.addProperty("state", getState());
+        result.addProperty("speed", getSpeed());
         result.addProperty("title", getTitle());
         result.addProperty("artist", getArtist());
         result.addProperty("artwork", getArtUri());
         result.addProperty("duration", getDuration());
         result.addProperty("position", getPosition());
-        result.addProperty("speed", getSpeed());
-        result.addProperty("state", getState());
         return Nano.success(result.toString());
     }
 
