@@ -146,8 +146,8 @@ public class Players implements Player.Listener, ParseCallback {
         this.position = position;
     }
 
-    public int addCount() {
-        return ++count;
+    public boolean canToggle() {
+        return ++count <= 2;
     }
 
     public void reset() {
@@ -193,7 +193,7 @@ public class Players implements Player.Listener, ParseCallback {
         return exoPlayer == null ? 0 : exoPlayer.getBufferedPosition();
     }
 
-    public boolean error() {
+    public boolean retried() {
         return ++retry > ExoUtil.getRetry(error);
     }
 
