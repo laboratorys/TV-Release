@@ -278,7 +278,6 @@ public class Players implements Player.Listener, ParseCallback {
     public void toggleDecode(PlayerView exo) {
         Setting.putDecode(decode = isHard() ? SOFT : HARD);
         setup(exo);
-        reset();
     }
 
     public String getPositionTime(long time) {
