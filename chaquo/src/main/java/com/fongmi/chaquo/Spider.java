@@ -18,8 +18,8 @@ public class Spider extends com.github.catvod.crawler.Spider {
 
     private final PyObject app;
     private final PyObject obj;
-    private final Gson gson;
     private final String api;
+    private final Gson gson;
 
     public Spider(PyObject app, PyObject obj, String api) {
         this.gson = new Gson();
