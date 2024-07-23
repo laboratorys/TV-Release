@@ -43,6 +43,7 @@ class Spider(metaclass=ABCMeta):
     def searchContent(self, key, quick):
         pass
 
+    @abstractmethod
     def searchContentPage(self, key, quick, pg):
         pass
 
@@ -66,6 +67,7 @@ class Spider(metaclass=ABCMeta):
     def getName(self):
         pass
 
+    @abstractmethod
     def destroy(self):
         pass
 
