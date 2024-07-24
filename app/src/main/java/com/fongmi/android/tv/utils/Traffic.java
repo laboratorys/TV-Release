@@ -32,7 +32,7 @@ public class Traffic {
         long speed = (nowTotalRxBytes - lastTotalRxBytes) * 1000 / Math.max(nowTimeStamp - lastTimeStamp, 1);
         lastTimeStamp = nowTimeStamp;
         lastTotalRxBytes = nowTotalRxBytes;
-        return speed < 1000 ? speed + UNIT_KB : format.format(speed / 1000f) + UNIT_MB;
+        return speed < 1000 ? speed + UNIT_KB : format.format(speed / 1024f) + UNIT_MB;
     }
 
     public static void reset() {
