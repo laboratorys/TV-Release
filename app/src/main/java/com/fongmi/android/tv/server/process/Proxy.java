@@ -23,7 +23,6 @@ public class Proxy implements Process {
             Map<String, String> params = session.getParms();
             params.putAll(session.getHeaders());
             Object[] rs = VodConfig.get().proxyLocal(params);
-            if (rs[0] instanceof Response) return (Response) rs[0];
             Response response = Response.newChunkedResponse(Status.lookup((Integer) rs[0]), (String) rs[1], (InputStream) rs[2]);
             if (rs.length > 3 && rs[3] != null) for (Map.Entry<String, String> entry : ((Map<String, String>) rs[3]).entrySet()) response.addHeader(entry.getKey(), entry.getValue());
             return response;
