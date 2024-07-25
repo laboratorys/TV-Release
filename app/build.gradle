@@ -99,6 +99,7 @@ dependencies {
     implementation project(':youtube')
     implementation project(':jianpian')
     implementation project(':forcetech')
+    implementation project(':nanohttpd')
     pythonImplementation project(':chaquo')
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.media:media:1.7.0'
@@ -125,7 +126,6 @@ dependencies {
     implementation 'org.fourthline.cling:cling-core:2.1.2-SNAPSHOT'
     implementation 'org.fourthline.cling:cling-support:2.1.2-SNAPSHOT'
     implementation 'org.greenrobot:eventbus:3.3.1'
-    implementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation('org.simpleframework:simple-xml:2.7.1') { exclude group: 'stax', module: 'stax-api' exclude group: 'xpp3', module: 'xpp3' }
     implementation(ext: 'aar', name: 'dlna-core-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'dlna-dmc-release', group: 'fongmi', version: 'release')
