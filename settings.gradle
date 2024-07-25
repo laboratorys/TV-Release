@@ -30,4 +30,5 @@ include ':thunder'
 include ':youtube'
 include ':jianpian'
 include ':forcetech'
+include ':nanohttpd'
 rootProject.name = "TV"
