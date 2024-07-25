@@ -21,14 +21,7 @@ dependencyResolutionManagement {
     }
 }
 include ':app'
-include ':hook'
-include ':tvbus'
 include ':catvod'
 include ':chaquo'
 include ':quickjs'
-include ':thunder'
-include ':youtube'
-include ':jianpian'
-include ':forcetech'
-include ':nanohttpd'
 rootProject.name = "TV"

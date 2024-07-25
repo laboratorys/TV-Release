@@ -91,15 +91,8 @@ android {
 }
 
 dependencies {
-    implementation project(':hook')
-    implementation project(':tvbus')
     implementation project(':catvod')
     implementation project(':quickjs')
-    implementation project(':thunder')
-    implementation project(':youtube')
-    implementation project(':jianpian')
-    implementation project(':forcetech')
-    implementation project(':nanohttpd')
     pythonImplementation project(':chaquo')
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.media:media:1.7.0'
@@ -121,8 +114,8 @@ dependencies {
     implementation 'javax.servlet:javax.servlet-api:3.1.0'
     implementation 'org.chromium.net:cronet-embedded:76.3809.111'
     implementation 'org.eclipse.jetty:jetty-client:8.1.22.v20160922'
-    implementation 'org.eclipse.jetty:jetty-server:8.1.22.v20160922'
-    implementation 'org.eclipse.jetty:jetty-servlet:8.1.22.v20160922'
+    implementation('org.eclipse.jetty:jetty-server:8.1.22.v20160922') { exclude group: 'org.eclipse.jetty.orbit', module: 'javax.servlet' }
+    implementation('org.eclipse.jetty:jetty-servlet:8.1.22.v20160922') { exclude group: 'org.eclipse.jetty.orbit', module: 'javax.servlet' }
     implementation 'org.fourthline.cling:cling-core:2.1.2-SNAPSHOT'
     implementation 'org.fourthline.cling:cling-support:2.1.2-SNAPSHOT'
     implementation 'org.greenrobot:eventbus:3.3.1'
@@ -130,6 +123,13 @@ dependencies {
     implementation(ext: 'aar', name: 'dlna-core-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'dlna-dmc-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'dlna-dmr-release', group: 'fongmi', version: 'release')
+    implementation(ext: 'aar', name: 'forcetech-release', group: 'fongmi', version: 'release')
+    implementation(ext: 'aar', name: 'hook-release', group: 'fongmi', version: 'release')
+    implementation(ext: 'aar', name: 'jianpian-release', group: 'fongmi', version: 'release')
+    implementation(ext: 'aar', name: 'nanohttpd-release', group: 'fongmi', version: 'release')
+    implementation(ext: 'aar', name: 'thunder-release', group: 'fongmi', version: 'release')
+    implementation(ext: 'aar', name: 'tvbus-release', group: 'fongmi', version: 'release')
+    implementation(ext: 'aar', name: 'youtube-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-common-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-container-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-database-release', group: 'fongmi', version: 'release')
