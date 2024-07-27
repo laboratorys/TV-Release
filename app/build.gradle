@@ -137,8 +137,6 @@ dependencies {
     implementation(ext: 'aar', name: 'lib-datasource-okhttp-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-datasource-rtmp-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-decoder-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-decoder-av1-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-decoder-ffmpeg-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-exoplayer-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-exoplayer-dash-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-exoplayer-hls-release', group: 'fongmi', version: 'release')
