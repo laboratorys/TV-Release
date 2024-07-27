@@ -98,7 +98,8 @@ public class ExoUtil {
 
     public static int getRetry(int errorCode) {
         if (errorCode == PlaybackException.ERROR_CODE_IO_UNSPECIFIED) return 2;
-        if (errorCode >= PlaybackException.ERROR_CODE_DECODER_INIT_FAILED && errorCode <= PlaybackException.ERROR_CODE_DECODING_FORMAT_UNSUPPORTED) return 2;
+        if (errorCode == PlaybackException.ERROR_CODE_DECODER_INIT_FAILED) return 1;
+        if (errorCode >= PlaybackException.ERROR_CODE_DECODER_QUERY_FAILED && errorCode <= PlaybackException.ERROR_CODE_DECODING_FORMAT_UNSUPPORTED) return 2;
         if (errorCode >= PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED && errorCode <= PlaybackException.ERROR_CODE_PARSING_MANIFEST_UNSUPPORTED) return 2;
         return 1;
     }

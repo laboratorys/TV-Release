@@ -15,6 +15,7 @@ import androidx.leanback.widget.ItemBridgeAdapter;
 import androidx.leanback.widget.OnChildViewHolderSelectedListener;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.C;
+import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
@@ -177,7 +178,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void setVideoView() {
-        mPlayers.setup(mBinding.exo);
+        mPlayers.init(mBinding.exo);
         setScale(Setting.getLiveScale());
         findViewById(R.id.timeBar).setNextFocusUpId(R.id.player);
         mBinding.control.invert.setActivated(Setting.isInvert());
@@ -727,8 +728,15 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEvent(ErrorEvent event) {
         if (mPlayers.retried()) onError(event);
-        else if (event.isDecode()) onDecode();
+        else if (event.isDecode()) onCheck(event);
         else fetch();
+    }
+
+    private void onCheck(ErrorEvent event) {
+        if (event.getCode() == PlaybackException.ERROR_CODE_DECODER_INIT_FAILED) mPlayers.init(mBinding.exo);
+        else mPlayers.toggleDecode(mBinding.exo);
+        setDecode();
+        fetch();
     }
 
     private void onError(ErrorEvent event) {

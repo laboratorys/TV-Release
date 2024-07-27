@@ -106,12 +106,12 @@ public class Players implements Player.Listener, ParseCallback {
         MediaControllerCompat.setMediaController(activity, session.getController());
     }
 
-    public void setup(PlayerView exo) {
+    public void init(PlayerView exo) {
         releasePlayer();
-        setupExo(exo);
+        initExo(exo);
     }
 
-    private void setupExo(PlayerView exo) {
+    private void initExo(PlayerView exo) {
         exoPlayer = new ExoPlayer.Builder(App.get()).setLoadControl(ExoUtil.buildLoadControl()).setTrackSelector(ExoUtil.buildTrackSelector()).setRenderersFactory(ExoUtil.buildRenderersFactory(decode)).setMediaSourceFactory(ExoUtil.buildMediaSourceFactory()).build();
         exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, true);
         exoPlayer.addAnalyticsListener(new EventLogger());
@@ -273,7 +273,7 @@ public class Players implements Player.Listener, ParseCallback {
 
     public void toggleDecode(PlayerView exo) {
         Setting.putDecode(decode = isHard() ? SOFT : HARD);
-        setup(exo);
+        init(exo);
     }
 
     public String getPositionTime(long time) {

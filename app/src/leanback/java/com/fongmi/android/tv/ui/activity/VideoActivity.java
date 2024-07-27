@@ -27,6 +27,7 @@ import androidx.leanback.widget.ItemBridgeAdapter;
 import androidx.leanback.widget.OnChildViewHolderSelectedListener;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.C;
+import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
@@ -373,7 +374,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void setVideoView() {
-        mPlayers.setup(mBinding.exo);
+        mPlayers.init(mBinding.exo);
         mBinding.control.decode.setText(mPlayers.getDecodeText());
         mBinding.control.speed.setEnabled(mPlayers.canAdjustSpeed());
         mBinding.control.reset.setText(ResUtil.getStringArray(R.array.select_reset)[Setting.getReset()]);
@@ -1135,8 +1136,15 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     public void onErrorEvent(ErrorEvent event) {
         if (isBackground()) return;
         if (mPlayers.retried()) onError(event);
-        else if (event.isDecode()) onDecode();
+        else if (event.isDecode()) onCheck(event);
         else onRefresh();
+    }
+
+    private void onCheck(ErrorEvent event) {
+        if (event.getCode() == PlaybackException.ERROR_CODE_DECODER_INIT_FAILED) mPlayers.init(mBinding.exo);
+        else mPlayers.toggleDecode(mBinding.exo);
+        setDecode();
+        onRefresh();
     }
 
     private void onError(ErrorEvent event) {
