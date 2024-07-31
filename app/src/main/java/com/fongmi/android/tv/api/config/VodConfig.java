@@ -21,7 +21,6 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderNull;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
-import com.github.catvod.utils.Util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -253,12 +252,6 @@ public class VodConfig {
         if (js) jsLoader.setRecent(site.getKey());
         else if (py) pyLoader.setRecent(site.getKey());
         else if (csp) jarLoader.setRecent(site.getJar());
-    }
-
-    public void setRecent(String jar) {
-        if (jarLoader == null) jarLoader = new JarLoader();
-        jarLoader.parseJar(Util.md5(jar), jar);
-        jarLoader.setRecent(jar);
     }
 
     public Object[] proxyLocal(Map<String, String> params) {

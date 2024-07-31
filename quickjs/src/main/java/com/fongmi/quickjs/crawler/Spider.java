@@ -109,6 +109,11 @@ public class Spider extends com.github.catvod.crawler.Spider {
     }
 
     @Override
+    public String liveContent() throws Exception {
+        return (String) call("live");
+    }
+
+    @Override
     public boolean manualVideoCheck() throws Exception {
         return (Boolean) call("sniffer");
     }

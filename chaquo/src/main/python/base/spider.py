@@ -41,15 +41,15 @@ class Spider(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def searchContent(self, key, quick):
-        pass
-
-    @abstractmethod
-    def searchContentPage(self, key, quick, pg):
+    def searchContent(self, key, quick, pg="1"):
         pass
 
     @abstractmethod
     def playerContent(self, flag, id, vipFlags):
+        pass
+
+    @abstractmethod
+    def liveContent(self):
         pass
 
     @abstractmethod
@@ -65,11 +65,10 @@ class Spider(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def getName(self):
+    def destroy(self):
         pass
 
-    @abstractmethod
-    def destroy(self):
+    def getName(self):
         pass
 
     def getDependence(self):

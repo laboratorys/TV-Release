@@ -4,6 +4,7 @@ import android.util.Base64;
 
 import androidx.media3.common.MimeTypes;
 
+import com.fongmi.android.tv.api.config.LiveConfig;
 import com.fongmi.android.tv.bean.Catchup;
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.ClearKey;
@@ -11,6 +12,7 @@ import com.fongmi.android.tv.bean.Drm;
 import com.fongmi.android.tv.bean.Group;
 import com.fongmi.android.tv.bean.Live;
 import com.fongmi.android.tv.utils.UrlUtil;
+import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Path;
@@ -37,11 +39,11 @@ public class LiveParser {
         return "";
     }
 
-    public static void start(Live live) {
+    public static void start(Live live) throws Exception {
         if (live.getGroups().size() > 0) return;
         if (live.getType() == 0) text(live, getText(live));
         if (live.getType() == 1) json(live, getText(live));
-        if (live.getType() == 2) proxy(live, getText(live));
+        if (live.getType() == 3) spider(live, getText(live));
     }
 
     public static void text(Live live, String text) {
@@ -64,6 +66,13 @@ public class LiveParser {
                 channel.live(live);
             }
         }
+    }
+
+    private static void spider(Live live, String text) throws Exception {
+        Spider spider = LiveConfig.get().getSpider(live);
+        if (text.isEmpty()) text = spider.liveContent();
+        if (Json.valid(text)) json(live, text);
+        else text(live, text);
     }
 
     private static void m3u(Live live, String text) {
@@ -111,18 +120,6 @@ public class LiveParser {
                 Channel channel = group.find(Channel.create(split[0]));
                 channel.addUrls(line.substring(index).split("#"));
                 setting.copy(channel);
-            }
-        }
-    }
-
-    private static void proxy(Live live, String text) {
-        int number = 0;
-        for (Live item : Live.arrayFrom(text)) {
-            Group group = live.find(Group.create(item.getGroup(), live.isPass()));
-            for (Channel channel : item.getChannels()) {
-                channel.setNumber(++number);
-                channel.live(live);
-                group.add(channel);
             }
         }
     }
