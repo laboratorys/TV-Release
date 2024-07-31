@@ -85,8 +85,8 @@ public class Global {
 
     @Keep
     @JSMethod
-    public String js2Proxy(Boolean dynamic, Integer siteType, String siteKey, String url, JSObject headers, Boolean live) {
-        return getProxy(!dynamic) + "&live=" + live + catvod(siteType, siteKey, url, headers);
+    public String js2Proxy(Boolean dynamic, Integer siteType, String siteKey, String url, JSObject headers, String param) {
+        return getProxy(!dynamic) + param + catvod(siteType, siteKey, url, headers);
     }
 
     @Keep
