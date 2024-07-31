@@ -91,6 +91,12 @@ public class Global {
 
     @Keep
     @JSMethod
+    public String js2Proxy(Boolean dynamic, Integer siteType, String siteKey, String url, JSObject headers, Boolean live) {
+        return js2Proxy(dynamic, siteType, siteKey, url, headers) + "&live=" + live;
+    }
+
+    @Keep
+    @JSMethod
     public Object setTimeout(JSFunction func, Integer delay) {
         func.hold();
         schedule(func, delay);
