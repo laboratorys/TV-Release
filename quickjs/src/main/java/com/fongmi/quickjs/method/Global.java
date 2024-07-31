@@ -85,14 +85,14 @@ public class Global {
 
     @Keep
     @JSMethod
-    public String js2Proxy(Boolean dynamic, Integer siteType, String siteKey, String url, JSObject headers) {
-        return getProxy(!dynamic) + "&from=catvod" + "&siteType=" + siteType + "&siteKey=" + siteKey + "&header=" + URLEncoder.encode(headers.stringify()) + "&url=" + URLEncoder.encode(url);
+    public String js2Proxy(Boolean dynamic, Integer siteType, String siteKey, String url, JSObject headers, Boolean live) {
+        return js2Proxy(dynamic, siteType, siteKey, url, headers) + "&live=" + live;
     }
 
     @Keep
     @JSMethod
-    public String js2Proxy(Boolean dynamic, Integer siteType, String siteKey, String url, JSObject headers, Boolean live) {
-        return js2Proxy(dynamic, siteType, siteKey, url, headers) + "&live=" + live;
+    public String js2Proxy(Boolean dynamic, Integer siteType, String siteKey, String url, JSObject headers) {
+        return getProxy(!dynamic) + "&from=catvod" + "&siteType=" + siteType + "&siteKey=" + siteKey + "&header=" + URLEncoder.encode(headers.stringify()) + "&url=" + URLEncoder.encode(url);
     }
 
     @Keep
