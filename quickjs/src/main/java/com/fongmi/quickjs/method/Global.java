@@ -86,13 +86,13 @@ public class Global {
     @Keep
     @JSMethod
     public String js2Proxy(Boolean dynamic, Integer siteType, String siteKey, String url, JSObject headers, Boolean live) {
-        return getProxy(!dynamic) + "&live=" + live + "&from=catvod" + "&siteType=" + siteType + "&siteKey=" + siteKey + "&header=" + URLEncoder.encode(headers.stringify()) + "&url=" + URLEncoder.encode(url);
+        return getProxy(!dynamic) + "&live=" + live + catvod(siteType, siteKey, url, headers);
     }
 
     @Keep
     @JSMethod
     public String js2Proxy(Boolean dynamic, Integer siteType, String siteKey, String url, JSObject headers) {
-        return getProxy(!dynamic) + "&from=catvod" + "&siteType=" + siteType + "&siteKey=" + siteKey + "&header=" + URLEncoder.encode(headers.stringify()) + "&url=" + URLEncoder.encode(url);
+        return getProxy(!dynamic) + catvod(siteType, siteKey, url, headers);
     }
 
     @Keep
@@ -185,6 +185,10 @@ public class Global {
         String result = Crypto.rsa(mode, pub, encrypt, input, inBase64, key, outBase64);
         Logger.t("rsaX").d("mode:%s\npub:%s\nencrypt:%s\ninBase64:%s\noutBase64:%s\nkey:\n%s\ninput:\n%s\nresult:\n%s", mode, pub, encrypt, inBase64, outBase64, key, input, result);
         return result;
+    }
+
+    private String catvod(Integer siteType, String siteKey, String url, JSObject headers) {
+        return String.format("&from=catvod&siteType=%s&siteKey=%s&header=%s&url=%s", siteType, siteKey, URLEncoder.encode(headers.stringify()), URLEncoder.encode(url));
     }
 
     private Callback getCallback(JSFunction complete, Req req) {
