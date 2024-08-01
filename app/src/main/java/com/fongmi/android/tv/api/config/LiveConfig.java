@@ -7,7 +7,6 @@ import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.api.Decoder;
 import com.fongmi.android.tv.api.LiveParser;
-import com.fongmi.android.tv.api.loader.BaseLoader;
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.Config;
 import com.fongmi.android.tv.bean.Depot;
@@ -44,10 +43,6 @@ public class LiveConfig {
 
     public static LiveConfig get() {
         return Loader.INSTANCE;
-    }
-
-    public static int getCid() {
-        return get().getConfig().getId();
     }
 
     public static String getUrl() {
@@ -162,7 +157,6 @@ public class LiveConfig {
         try {
             initLive(object);
             initOther(object);
-            BaseLoader.get().parseJar(object);
         } catch (Throwable e) {
             e.printStackTrace();
         } finally {
@@ -171,11 +165,13 @@ public class LiveConfig {
     }
 
     private void initLive(JsonObject object) {
+        String spider = Json.safeString(object, "spider");
         for (JsonElement element : Json.safeListElement(object, "lives")) {
             Live live = Live.objectFrom(element);
             if (lives.contains(live)) continue;
             live.setApi(parseApi(live.getApi()));
             live.setExt(parseExt(live.getExt()));
+            live.setJar(parseJar(live, spider));
             lives.add(live.sync());
         }
         for (Live live : lives) {
@@ -200,6 +196,11 @@ public class LiveConfig {
         if (ext.startsWith("file") || ext.startsWith("assets")) return UrlUtil.convert(ext);
         if (ext.startsWith("img+")) return Decoder.getExt(ext);
         return ext;
+    }
+
+    private String parseJar(Live live, String spider) {
+        if (live.getJar().isEmpty() && live.getApi().startsWith("csp_")) return spider;
+        return live.getJar();
     }
 
     private void bootLive() {

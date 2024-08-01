@@ -80,10 +80,6 @@ public class JarLoader {
         }
     }
 
-    public void parseJar(String jar) {
-        parseJar("", jar);
-    }
-
     public void parseJar(String key, String jar) {
         if (loaders.containsKey(key)) return;
         String[] texts = jar.split(";md5;");
@@ -100,11 +96,6 @@ public class JarLoader {
         } else if (jar.startsWith("assets")) {
             parseJar(key, UrlUtil.convert(jar));
         }
-    }
-
-    public DexClassLoader getLoader(String key, String jar) {
-        if (!loaders.containsKey(key)) parseJar(key, jar);
-        return loaders.get(key);
     }
 
     public Spider getSpider(String key, String api, String ext, String jar) {

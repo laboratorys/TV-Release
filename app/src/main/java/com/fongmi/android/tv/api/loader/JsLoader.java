@@ -7,22 +7,17 @@ import com.github.catvod.crawler.SpiderNull;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import dalvik.system.DexClassLoader;
-
 public class JsLoader {
 
     private final ConcurrentHashMap<String, Spider> spiders;
-    private final JarLoader jarLoader;
     private String recent;
 
     public JsLoader() {
-        jarLoader = new JarLoader();
         spiders = new ConcurrentHashMap<>();
     }
 
     public void clear() {
         for (Spider spider : spiders.values()) App.execute(spider::destroy);
-        jarLoader.clear();
         spiders.clear();
     }
 
@@ -30,18 +25,10 @@ public class JsLoader {
         this.recent = recent;
     }
 
-    private DexClassLoader dex(String key, String jar) {
-        try {
-            return jar.isEmpty() ? null : jarLoader.getLoader(key, jar);
-        } catch (Throwable e) {
-            return null;
-        }
-    }
-
-    public Spider getSpider(String key, String api, String ext, String jar) {
+    public Spider getSpider(String key, String api, String ext) {
         try {
             if (spiders.containsKey(key)) return spiders.get(key);
-            Spider spider = new com.fongmi.quickjs.crawler.Spider(key, api, dex(key, jar));
+            Spider spider = new com.fongmi.quickjs.crawler.Spider(key, api);
             spider.init(App.get(), ext);
             spiders.put(key, spider);
             return spider;

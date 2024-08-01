@@ -105,6 +105,7 @@ public class VodConfig {
         this.flags.clear();
         this.parses.clear();
         this.loadLive = true;
+        BaseLoader.get().clear();
         return this;
     }
 
@@ -151,7 +152,6 @@ public class VodConfig {
             initSite(object);
             initParse(object);
             initOther(object);
-            BaseLoader.get().parseJar(object);
             if (loadLive && object.has("lives")) initLive(object);
             config.logo(Json.safeString(object, "logo"));
             config.json(object.toString()).update();
@@ -167,11 +167,13 @@ public class VodConfig {
             initSite(object.getAsJsonObject("video"));
             return;
         }
+        String spider = Json.safeString(object, "spider");
         for (JsonElement element : Json.safeListElement(object, "sites")) {
             Site site = Site.objectFrom(element);
             if (sites.contains(site)) continue;
             site.setApi(parseApi(site.getApi()));
             site.setExt(parseExt(site.getExt()));
+            site.setJar(parseJar(site, spider));
             sites.add(site.trans().sync());
         }
         for (Site site : sites) {
@@ -215,6 +217,11 @@ public class VodConfig {
         if (ext.startsWith("file") || ext.startsWith("assets")) return UrlUtil.convert(ext);
         if (ext.startsWith("img+")) return Decoder.getExt(ext);
         return ext;
+    }
+
+    private String parseJar(Site site, String spider) {
+        if (site.getJar().isEmpty() && site.getApi().startsWith("csp_")) return spider;
+        return site.getJar();
     }
 
     public List<Doh> getDoh() {

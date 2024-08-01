@@ -175,6 +175,10 @@ public class Live {
         return TextUtils.isEmpty(jar) ? "" : jar;
     }
 
+    public void setJar(String jar) {
+        this.jar = jar;
+    }
+
     public String getClick() {
         return TextUtils.isEmpty(click) ? "" : click;
     }

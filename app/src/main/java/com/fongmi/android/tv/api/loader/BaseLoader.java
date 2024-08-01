@@ -4,8 +4,6 @@ import com.fongmi.android.tv.api.config.LiveConfig;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderNull;
-import com.github.catvod.utils.Json;
-import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
@@ -44,7 +42,7 @@ public class BaseLoader {
         boolean py = api.contains(".py");
         boolean csp = api.startsWith("csp_");
         if (py) return pyLoader.getSpider(key, api, ext);
-        else if (js) return jsLoader.getSpider(key, api, ext, jar);
+        else if (js) return jsLoader.getSpider(key, api, ext);
         else if (csp) return jarLoader.getSpider(key, api, ext, jar);
         else return new SpiderNull();
     }
@@ -75,10 +73,6 @@ public class BaseLoader {
         } else {
             return jarLoader.proxyInvoke(params);
         }
-    }
-
-    public void parseJar(JsonObject object) {
-        jarLoader.parseJar(Json.safeString(object, "spider"));
     }
 
     public JSONObject jsonExt(String key, LinkedHashMap<String, String> jxs, String url) throws Throwable {
