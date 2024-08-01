@@ -4,7 +4,6 @@ import android.util.Base64;
 
 import androidx.media3.common.MimeTypes;
 
-import com.fongmi.android.tv.api.config.LiveConfig;
 import com.fongmi.android.tv.bean.Catchup;
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.ClearKey;
@@ -12,7 +11,6 @@ import com.fongmi.android.tv.bean.Drm;
 import com.fongmi.android.tv.bean.Group;
 import com.fongmi.android.tv.bean.Live;
 import com.fongmi.android.tv.utils.UrlUtil;
-import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Path;
@@ -69,8 +67,7 @@ public class LiveParser {
     }
 
     private static void spider(Live live, String text) throws Exception {
-        Spider spider = LiveConfig.get().getSpider(live);
-        if (text.isEmpty()) text = spider.liveContent();
+        if (text.isEmpty()) text = live.spider().liveContent();
         if (Json.valid(text)) json(live, text);
         else text(live, text);
     }

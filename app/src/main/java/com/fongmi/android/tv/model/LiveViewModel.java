@@ -60,9 +60,8 @@ public class LiveViewModel extends ViewModel {
 
     public void getLive(Live item) {
         execute(LIVE, () -> {
-            LiveConfig.get().setRecent(item);
+            LiveParser.start(item.recent());
             setTimeZone(item.getEpg());
-            LiveParser.start(item);
             verify(item);
             return item;
         });

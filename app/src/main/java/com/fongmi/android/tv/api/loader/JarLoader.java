@@ -80,6 +80,10 @@ public class JarLoader {
         }
     }
 
+    public void parseJar(String jar) {
+        parseJar("", jar);
+    }
+
     public void parseJar(String key, String jar) {
         if (loaders.containsKey(key)) return;
         String[] texts = jar.split(";md5;");

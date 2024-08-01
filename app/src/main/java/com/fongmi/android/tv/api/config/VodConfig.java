@@ -5,9 +5,7 @@ import android.text.TextUtils;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.Decoder;
-import com.fongmi.android.tv.api.loader.JarLoader;
-import com.fongmi.android.tv.api.loader.JsLoader;
-import com.fongmi.android.tv.api.loader.PyLoader;
+import com.fongmi.android.tv.api.loader.BaseLoader;
 import com.fongmi.android.tv.bean.Config;
 import com.fongmi.android.tv.bean.Depot;
 import com.fongmi.android.tv.bean.Parse;
@@ -17,21 +15,14 @@ import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Doh;
-import com.github.catvod.crawler.Spider;
-import com.github.catvod.crawler.SpiderNull;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class VodConfig {
 
@@ -41,9 +32,6 @@ public class VodConfig {
     private List<Parse> parses;
     private List<String> flags;
     private List<String> ads;
-    private JarLoader jarLoader;
-    private PyLoader pyLoader;
-    private JsLoader jsLoader;
     private boolean loadLive;
     private Config config;
     private Parse parse;
@@ -97,9 +85,6 @@ public class VodConfig {
         this.sites = new ArrayList<>();
         this.flags = new ArrayList<>();
         this.parses = new ArrayList<>();
-        this.jarLoader = new JarLoader();
-        this.pyLoader = new PyLoader();
-        this.jsLoader = new JsLoader();
         this.loadLive = false;
         return this;
     }
@@ -119,9 +104,6 @@ public class VodConfig {
         this.sites.clear();
         this.flags.clear();
         this.parses.clear();
-        this.jarLoader.clear();
-        this.pyLoader.clear();
-        this.jsLoader.clear();
         this.loadLive = true;
         return this;
     }
@@ -169,8 +151,8 @@ public class VodConfig {
             initSite(object);
             initParse(object);
             initOther(object);
+            BaseLoader.get().parseJar(object);
             if (loadLive && object.has("lives")) initLive(object);
-            jarLoader.parseJar("", Json.safeString(object, "spider"));
             config.logo(Json.safeString(object, "logo"));
             config.json(object.toString()).update();
             App.post(callback::success);
@@ -233,43 +215,6 @@ public class VodConfig {
         if (ext.startsWith("file") || ext.startsWith("assets")) return UrlUtil.convert(ext);
         if (ext.startsWith("img+")) return Decoder.getExt(ext);
         return ext;
-    }
-
-    public Spider getSpider(Site site) {
-        boolean js = site.getApi().contains(".js");
-        boolean py = site.getApi().contains(".py");
-        boolean csp = site.getApi().startsWith("csp_");
-        if (py) return pyLoader.getSpider(site.getKey(), site.getApi(), site.getExt());
-        else if (js) return jsLoader.getSpider(site.getKey(), site.getApi(), site.getExt(), site.getJar());
-        else if (csp) return jarLoader.getSpider(site.getKey(), site.getApi(), site.getExt(), site.getJar());
-        else return new SpiderNull();
-    }
-
-    public void setRecent(Site site) {
-        boolean js = site.getApi().contains(".js");
-        boolean py = site.getApi().contains(".py");
-        boolean csp = site.getApi().startsWith("csp_");
-        if (js) jsLoader.setRecent(site.getKey());
-        else if (py) pyLoader.setRecent(site.getKey());
-        else if (csp) jarLoader.setRecent(site.getJar());
-    }
-
-    public Object[] proxyLocal(Map<String, String> params) {
-        if ("js".equals(params.get("do"))) {
-            return jsLoader.proxyInvoke(params);
-        } else if ("py".equals(params.get("do"))) {
-            return pyLoader.proxyInvoke(params);
-        } else {
-            return jarLoader.proxyInvoke(params);
-        }
-    }
-
-    public JSONObject jsonExt(String key, LinkedHashMap<String, String> jxs, String url) throws Throwable {
-        return jarLoader.jsonExt(key, jxs, url);
-    }
-
-    public JSONObject jsonExtMix(String flag, String key, String name, LinkedHashMap<String, HashMap<String, String>> jxs, String url) throws Throwable {
-        return jarLoader.jsonExtMix(flag, key, name, jxs, url);
     }
 
     public List<Doh> getDoh() {

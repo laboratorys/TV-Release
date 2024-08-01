@@ -3,8 +3,6 @@ package com.fongmi.android.tv.api.loader;
 import android.content.Context;
 
 import com.fongmi.android.tv.App;
-import com.fongmi.android.tv.api.config.LiveConfig;
-import com.fongmi.android.tv.api.config.VodConfig;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderNull;
 
@@ -53,18 +51,10 @@ public class PyLoader {
         }
     }
 
-    private Spider find(Map<String, String> params) {
-        if (!params.containsKey("siteKey")) return spiders.get(recent);
-        boolean live = params.containsKey("live") && "true".equals(params.get("live"));
-        boolean vod = !params.containsKey("live") || "false".equals(params.get("live"));
-        if (vod) return VodConfig.get().getSpider(VodConfig.get().getSite(params.get("siteKey")));
-        if (live) return LiveConfig.get().getSpider(LiveConfig.get().getLive(params.get("siteKey")));
-        return new SpiderNull();
-    }
-
     public Object[] proxyInvoke(Map<String, String> params) {
         try {
-            return find(params).proxyLocal(params);
+            if (!params.containsKey("siteKey")) return spiders.get(recent).proxyLocal(params);
+            return BaseLoader.get().getSpider(params).proxyLocal(params);
         } catch (Throwable e) {
             e.printStackTrace();
             return null;

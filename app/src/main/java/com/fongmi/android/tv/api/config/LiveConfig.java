@@ -7,9 +7,7 @@ import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.api.Decoder;
 import com.fongmi.android.tv.api.LiveParser;
-import com.fongmi.android.tv.api.loader.JarLoader;
-import com.fongmi.android.tv.api.loader.JsLoader;
-import com.fongmi.android.tv.api.loader.PyLoader;
+import com.fongmi.android.tv.api.loader.BaseLoader;
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.Config;
 import com.fongmi.android.tv.bean.Depot;
@@ -22,8 +20,6 @@ import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.ui.activity.LiveActivity;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.UrlUtil;
-import com.github.catvod.crawler.Spider;
-import com.github.catvod.crawler.SpiderNull;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
 import com.google.gson.JsonElement;
@@ -32,16 +28,12 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class LiveConfig {
 
     private List<Live> lives;
     private List<Rule> rules;
     private List<String> ads;
-    private JarLoader jarLoader;
-    private PyLoader pyLoader;
-    private JsLoader jsLoader;
     private Config config;
     private boolean sync;
     private Live home;
@@ -52,6 +44,10 @@ public class LiveConfig {
 
     public static LiveConfig get() {
         return Loader.INSTANCE;
+    }
+
+    public static int getCid() {
+        return get().getConfig().getId();
     }
 
     public static String getUrl() {
@@ -91,9 +87,6 @@ public class LiveConfig {
         this.ads = new ArrayList<>();
         this.rules = new ArrayList<>();
         this.lives = new ArrayList<>();
-        this.jarLoader = new JarLoader();
-        this.pyLoader = new PyLoader();
-        this.jsLoader = new JsLoader();
         return config(Config.live());
     }
 
@@ -109,9 +102,6 @@ public class LiveConfig {
         this.ads.clear();
         this.rules.clear();
         this.lives.clear();
-        this.jarLoader.clear();
-        this.pyLoader.clear();
-        this.jsLoader.clear();
         return this;
     }
 
@@ -172,6 +162,7 @@ public class LiveConfig {
         try {
             initLive(object);
             initOther(object);
+            BaseLoader.get().parseJar(object);
         } catch (Throwable e) {
             e.printStackTrace();
         } finally {
@@ -209,35 +200,6 @@ public class LiveConfig {
         if (ext.startsWith("file") || ext.startsWith("assets")) return UrlUtil.convert(ext);
         if (ext.startsWith("img+")) return Decoder.getExt(ext);
         return ext;
-    }
-
-    public Spider getSpider(Live live) {
-        boolean js = live.getApi().contains(".js");
-        boolean py = live.getApi().contains(".py");
-        boolean csp = live.getApi().startsWith("csp_");
-        if (py) return pyLoader.getSpider(live.getName(), live.getApi(), live.getExt());
-        else if (js) return jsLoader.getSpider(live.getName(), live.getApi(), live.getExt(), live.getJar());
-        else if (csp) return jarLoader.getSpider(live.getName(), live.getApi(), live.getExt(), live.getJar());
-        else return new SpiderNull();
-    }
-
-    public void setRecent(Live live) {
-        boolean js = live.getApi().contains(".js");
-        boolean py = live.getApi().contains(".py");
-        boolean csp = live.getApi().startsWith("csp_");
-        if (js) jsLoader.setRecent(live.getName());
-        else if (py) pyLoader.setRecent(live.getName());
-        else if (csp) jarLoader.setRecent(live.getJar());
-    }
-
-    public Object[] proxyLocal(Map<String, String> params) {
-        if ("js".equals(params.get("do"))) {
-            return jsLoader.proxyInvoke(params);
-        } else if ("py".equals(params.get("do"))) {
-            return pyLoader.proxyInvoke(params);
-        } else {
-            return jarLoader.proxyInvoke(params);
-        }
     }
 
     private void bootLive() {
