@@ -70,8 +70,10 @@ public class Players implements Player.Listener, ParseCallback {
     private MediaSessionCompat session;
     private ExoPlayer exoPlayer;
     private ParseJob parseJob;
+    private List<Sub> subs;
     private String format;
     private String url;
+    private Drm drm;
     private Sub sub;
 
     private long position;
@@ -122,25 +124,29 @@ public class Players implements Player.Listener, ParseCallback {
         exo.setPlayer(exoPlayer);
     }
 
-    public void setSub(Sub sub) {
-        this.sub = sub;
-        setMediaItem();
-    }
-
     public ExoPlayer get() {
         return exoPlayer;
     }
 
-    public Map<String, String> getHeaders() {
-        return headers == null ? new HashMap<>() : headers;
+    public MediaSessionCompat getSession() {
+        return session;
     }
 
     public String getUrl() {
         return url;
     }
 
-    public MediaSessionCompat getSession() {
-        return session;
+    public Map<String, String> getHeaders() {
+        return headers == null ? new HashMap<>() : headers;
+    }
+
+    public void setSub(Sub sub) {
+        this.sub = sub;
+        setMediaItem();
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     public void setPosition(long position) {
@@ -158,6 +164,8 @@ public class Players implements Player.Listener, ParseCallback {
     public void clear() {
         headers = null;
         format = null;
+        subs = null;
+        drm = null;
         url = null;
     }
 
@@ -375,8 +383,8 @@ public class Players implements Player.Listener, ParseCallback {
         return subs;
     }
 
-    private void setMediaItem() {
-        setMediaItem(headers, url, format, null, new ArrayList<>(), Constant.TIMEOUT_PLAY);
+    public void setMediaItem() {
+        setMediaItem(headers, url, format, drm, subs, Constant.TIMEOUT_PLAY);
     }
 
     public void setMediaItem(String url) {
@@ -396,7 +404,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     private void setMediaItem(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, int timeout) {
-        if (exoPlayer != null) exoPlayer.setMediaItem(ExoUtil.getMediaItem(this.headers = checkUa(headers), UrlUtil.uri(this.url = url), ExoUtil.getMimeType(this.format = format, error), drm, checkSub(subs), decode), position);
+        if (exoPlayer != null) exoPlayer.setMediaItem(ExoUtil.getMediaItem(this.headers = checkUa(headers), UrlUtil.uri(this.url = url), this.format = format, this.drm = drm, checkSub(this.subs = subs), decode), position);
         if (exoPlayer != null) exoPlayer.prepare();
         Logger.t(TAG).d(error + "," + url);
         App.post(runnable, timeout);

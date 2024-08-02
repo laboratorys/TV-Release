@@ -53,8 +53,8 @@ public class ErrorEvent {
         return code;
     }
 
-    public boolean isDecode() {
-        return code / 1000 == 4;
+    public boolean isExo() {
+        return code / 1000 == 3 || code / 1000 == 4;
     }
 
     public String getMsg() {
