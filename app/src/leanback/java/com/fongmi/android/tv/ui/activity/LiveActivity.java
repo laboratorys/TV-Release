@@ -749,12 +749,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     private void startFlow() {
         if (!Setting.isChange()) return;
-        if (!mChannel.isLast()) {
-            nextLine(true);
-        } else if (isGone(mBinding.recycler)) {
-            mChannel.setLine(0);
-            nextChannel();
-        }
+        if (!mChannel.isLast()) nextLine(true);
     }
 
     private void prevChannel() {

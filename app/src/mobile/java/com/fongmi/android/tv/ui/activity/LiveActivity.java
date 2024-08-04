@@ -808,12 +808,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     private void startFlow() {
         if (!Setting.isChange()) return;
-        if (!mChannel.isLast()) {
-            nextLine(true);
-        } else if (isGone(mBinding.recycler)) {
-            mChannel.setLine(0);
-            nextChannel();
-        }
+        if (!mChannel.isLast()) nextLine(true);
     }
 
     private boolean prevGroup() {
