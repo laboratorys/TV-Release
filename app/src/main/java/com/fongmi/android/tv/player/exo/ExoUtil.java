@@ -95,14 +95,6 @@ public class ExoUtil {
         return null;
     }
 
-    public static int getRetry(int errorCode) {
-        if (errorCode == PlaybackException.ERROR_CODE_IO_UNSPECIFIED) return 2;
-        if (errorCode == PlaybackException.ERROR_CODE_DECODER_INIT_FAILED) return 2;
-        if (errorCode >= PlaybackException.ERROR_CODE_DECODER_QUERY_FAILED && errorCode <= PlaybackException.ERROR_CODE_DECODING_FORMAT_UNSUPPORTED) return 2;
-        if (errorCode >= PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED && errorCode <= PlaybackException.ERROR_CODE_PARSING_MANIFEST_UNSUPPORTED) return 2;
-        return 1;
-    }
-
     public static MediaItem getMediaItem(Map<String, String> headers, Uri uri, String mimeType, Drm drm, List<Sub> subs, int decode) {
         MediaItem.Builder builder = new MediaItem.Builder().setUri(uri);
         builder.setAllowChunklessPreparation(Players.isHard(decode));

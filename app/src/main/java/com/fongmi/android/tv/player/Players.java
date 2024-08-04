@@ -78,7 +78,6 @@ public class Players implements Player.Listener, ParseCallback {
 
     private long position;
     private int decode;
-    private int error;
     private int retry;
 
     public static Players create(Activity activity) {
@@ -157,7 +156,6 @@ public class Players implements Player.Listener, ParseCallback {
         position = C.TIME_UNSET;
         removeTimeoutCheck();
         stopParse();
-        error = 0;
         retry = 0;
     }
 
@@ -198,7 +196,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public boolean retried() {
-        return ++retry > ExoUtil.getRetry(error);
+        return ++retry > 2;
     }
 
     public boolean canAdjustSpeed() {
@@ -406,10 +404,10 @@ public class Players implements Player.Listener, ParseCallback {
     private void setMediaItem(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, int timeout) {
         if (exoPlayer != null) exoPlayer.setMediaItem(ExoUtil.getMediaItem(this.headers = checkUa(headers), UrlUtil.uri(this.url = url), this.format = format, this.drm = drm, checkSub(this.subs = subs), decode), position);
         if (exoPlayer != null) exoPlayer.prepare();
-        Logger.t(TAG).d(error + "," + url);
         App.post(runnable, timeout);
         session.setActive(true);
         PlayerEvent.prepare();
+        Logger.t(TAG).d(url);
     }
 
     private void removeTimeoutCheck() {
@@ -532,7 +530,8 @@ public class Players implements Player.Listener, ParseCallback {
     @Override
     public void onPlayerError(@NonNull PlaybackException error) {
         setPlaybackState(PlaybackStateCompat.STATE_ERROR);
-        ErrorEvent.url(this.error = error.errorCode);
+        Logger.t(TAG).e(error.errorCode + "," + url);
+        ErrorEvent.url(error.errorCode);
     }
 
     @Override
