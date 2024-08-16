@@ -154,7 +154,7 @@ public class ParseJob implements ParseCallback {
     }
 
     private void checkResult(Map<String, String> headers, String url, String from, boolean error) {
-        if (isPass(headers, url)) {
+        if (url.length() > 40) {
             onParseSuccess(headers, url, from);
         } else if (error) {
             onParseError();
@@ -166,16 +166,6 @@ public class ParseJob implements ParseCallback {
         if (result.getUrl().isEmpty()) onParseError();
         else if (result.getParse() == 1) startWeb(result.getHeaders(), UrlUtil.convert(result.getUrl().v()));
         else onParseSuccess(result.getHeaders(), result.getUrl().v(), result.getJxFrom());
-    }
-
-    private boolean isPass(Map<String, String> headers, String url) {
-        try {
-            if (url.length() < 40) return false;
-            int code = OkHttp.newCall(url, Headers.of(headers)).execute().code();
-            return code == 200 || code == 302;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     private void startWeb(List<Parse> items, String webUrl) {
