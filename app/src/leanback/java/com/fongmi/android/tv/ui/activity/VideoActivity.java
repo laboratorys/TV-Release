@@ -843,7 +843,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void onDecode() {
-        mPlayers.toggleDecode(mBinding.exo);
+        mPlayers.toggleDecode();
         setDecode();
         onRefresh();
     }
@@ -1143,7 +1143,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     private void onCheck(ErrorEvent event) {
         if (event.getCode() >= PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED && event.getCode() <= PlaybackException.ERROR_CODE_PARSING_MANIFEST_UNSUPPORTED) mPlayers.setFormat(ExoUtil.getMimeType(event.getCode()));
         else if (event.getCode() == PlaybackException.ERROR_CODE_DECODER_INIT_FAILED) mPlayers.init(mBinding.exo);
-        else mPlayers.toggleDecode(mBinding.exo);
+        else mPlayers.toggleDecode();
         mPlayers.setMediaItem();
         setDecode();
     }
