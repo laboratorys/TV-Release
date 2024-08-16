@@ -171,7 +171,8 @@ public class ParseJob implements ParseCallback {
     private boolean isPass(Map<String, String> headers, String url) {
         try {
             if (url.length() < 40) return false;
-            return OkHttp.newCall(url, Headers.of(headers)).execute().code() == 200;
+            int code = OkHttp.newCall(url, Headers.of(headers)).execute().code();
+            return code == 200 || code == 302;
         } catch (Exception e) {
             return false;
         }
@@ -197,7 +198,7 @@ public class ParseJob implements ParseCallback {
 
     private Map<String, String> getHeader(JsonObject object) {
         Map<String, String> headers = new HashMap<>();
-        for (Map.Entry<String, JsonElement> entry : object.entrySet()) if (entry.getKey().equalsIgnoreCase(HttpHeaders.USER_AGENT) || entry.getKey().equalsIgnoreCase(HttpHeaders.REFERER) || entry.getKey().equalsIgnoreCase("ua")) headers.put(UrlUtil.fixHeader(entry.getKey()), object.get(entry.getKey()).getAsString());
+        for (Map.Entry<String, JsonElement> entry : object.entrySet()) if (!entry.getValue().isJsonNull() && (entry.getKey().equalsIgnoreCase(HttpHeaders.USER_AGENT) || entry.getKey().equalsIgnoreCase(HttpHeaders.REFERER) || entry.getKey().equalsIgnoreCase("ua"))) headers.put(UrlUtil.fixHeader(entry.getKey()), entry.getValue().getAsString());
         if (headers.isEmpty()) return parse.getHeaders();
         return headers;
     }
