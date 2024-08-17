@@ -26,5 +26,5 @@ public class Constant {
     //同步超時時間
     public static final int TIMEOUT_SYNC = 2 * 1000;
     //搜尋線程數量
-    public static final int THREAD_POOL = 5;
+    public static final int THREAD_POOL = 10;
 }
