@@ -146,7 +146,7 @@ dependencies {
     implementation(ext: 'aar', name: 'lib-extractor-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-ui-release', group: 'fongmi', version: 'release')
     leanbackImplementation 'androidx.leanback:leanback:1.2.0-alpha04'
-    leanbackImplementation 'me.jessyan:autosize:1.2.1'
+    leanbackImplementation 'com.github.JessYanCoding:AndroidAutoSize:1.2.1'
     mobileImplementation 'androidx.biometric:biometric:1.1.0'
     mobileImplementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     mobileImplementation 'com.google.android.flexbox:flexbox:3.0.0'
