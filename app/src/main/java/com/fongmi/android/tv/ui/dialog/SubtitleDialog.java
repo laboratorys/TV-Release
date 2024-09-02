@@ -1,6 +1,5 @@
 package com.fongmi.android.tv.ui.dialog;
 
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import androidx.media3.ui.SubtitleView;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.databinding.DialogSubtitleBinding;
-import com.fongmi.android.tv.player.Players;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -21,7 +19,6 @@ public final class SubtitleDialog extends BaseDialog {
 
     private DialogSubtitleBinding binding;
     private SubtitleView subtitleView;
-    private Players player;
 
     public static SubtitleDialog create() {
         return new SubtitleDialog();
@@ -29,11 +26,6 @@ public final class SubtitleDialog extends BaseDialog {
 
     public SubtitleDialog view(SubtitleView subtitleView) {
         this.subtitleView = subtitleView;
-        return this;
-    }
-
-    public SubtitleDialog player(Players player) {
-        this.player = player;
         return this;
     }
 
@@ -45,11 +37,6 @@ public final class SubtitleDialog extends BaseDialog {
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         return binding = DialogSubtitleBinding.inflate(inflater, container, false);
-    }
-
-    @Override
-    protected void initView() {
-        player.pause();
     }
 
     @Override
@@ -80,12 +67,6 @@ public final class SubtitleDialog extends BaseDialog {
     private void onReset(View view) {
         subtitleView.setUserDefaultTextSize();
         subtitleView.setBottomPaddingFraction(SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION);
-    }
-
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
-        player.play();
     }
 
     @Override
