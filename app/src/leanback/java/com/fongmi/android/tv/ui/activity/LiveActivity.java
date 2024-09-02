@@ -147,6 +147,10 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mBinding.control.text.setOnClickListener(this::onTrack);
         mBinding.control.audio.setOnClickListener(this::onTrack);
         mBinding.control.video.setOnClickListener(this::onTrack);
+        mBinding.control.speed.setUpListener(this::onSpeedAdd);
+        mBinding.control.speed.setDownListener(this::onSpeedSub);
+        mBinding.control.text.setUpListener(this::onSubtitleClick);
+        mBinding.control.text.setDownListener(this::onSubtitleClick);
         mBinding.control.home.setOnClickListener(view -> onHome());
         mBinding.control.line.setOnClickListener(view -> onLine());
         mBinding.control.scale.setOnClickListener(view -> onScale());
@@ -344,6 +348,14 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     private void onSpeed() {
         mBinding.control.speed.setText(mPlayers.addSpeed());
+    }
+
+    private void onSpeedAdd() {
+        mBinding.control.speed.setText(mPlayers.addSpeed(0.25f));
+    }
+
+    private void onSpeedSub() {
+        mBinding.control.speed.setText(mPlayers.subSpeed(0.25f));
     }
 
     private boolean onSpeedLong() {
@@ -634,6 +646,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Override
     public void onSubtitleClick() {
+        App.post(this::hideControl, 200);
         App.post(() -> SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).show(this), 200);
     }
 

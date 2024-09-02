@@ -96,6 +96,8 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
         mBinding.control.seek.setListener(mPlayers);
         mBinding.control.speed.setUpListener(this::onSpeedAdd);
         mBinding.control.speed.setDownListener(this::onSpeedSub);
+        mBinding.control.text.setUpListener(this::onSubtitleClick);
+        mBinding.control.text.setDownListener(this::onSubtitleClick);
         mBinding.control.text.setOnClickListener(this::onTrack);
         mBinding.control.audio.setOnClickListener(this::onTrack);
         mBinding.control.video.setOnClickListener(this::onTrack);
@@ -372,6 +374,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
 
     @Override
     public void onSubtitleClick() {
+        App.post(this::hideControl, 200);
         App.post(() -> SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).show(this), 200);
     }
 

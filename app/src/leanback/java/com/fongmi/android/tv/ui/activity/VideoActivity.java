@@ -309,6 +309,8 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mBinding.control.ending.setDownListener(this::onEndingSub);
         mBinding.control.opening.setUpListener(this::onOpeningAdd);
         mBinding.control.opening.setDownListener(this::onOpeningSub);
+        mBinding.control.text.setUpListener(this::onSubtitleClick);
+        mBinding.control.text.setDownListener(this::onSubtitleClick);
         mBinding.control.loop.setOnClickListener(view -> onLoop());
         mBinding.control.next.setOnClickListener(view -> checkNext());
         mBinding.control.prev.setOnClickListener(view -> checkPrev());
@@ -1018,6 +1020,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     @Override
     public void onSubtitleClick() {
+        App.post(this::hideControl, 200);
         App.post(() -> SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).show(this), 200);
     }
 
