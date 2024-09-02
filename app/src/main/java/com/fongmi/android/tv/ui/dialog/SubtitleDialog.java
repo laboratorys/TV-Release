@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.media3.ui.SubtitleView;
 import androidx.viewbinding.ViewBinding;
 
+import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.databinding.DialogSubtitleBinding;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -58,10 +59,12 @@ public final class SubtitleDialog extends BaseDialog {
 
     private void onLarge(View view) {
         subtitleView.addTextSize(0.002f);
+        Setting.putSubtitleTextSize(subtitleView.getTextSize());
     }
 
     private void onSmall(View view) {
         subtitleView.subTextSize(0.002f);
+        Setting.putSubtitleTextSize(subtitleView.getTextSize());
     }
 
     private void onReset(View view) {

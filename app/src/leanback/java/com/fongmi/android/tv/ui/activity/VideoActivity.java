@@ -285,7 +285,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mR4 = this::showEmpty;
         setBackground(false);
         setRecyclerView();
-        setSubtitleView();
         setVideoView();
         setViewModel();
         checkCast();
@@ -374,15 +373,10 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void setVideoView() {
         mPlayers.init(mBinding.exo);
+        ExoUtil.setSubtitleView(mBinding.exo);
         mBinding.control.decode.setText(mPlayers.getDecodeText());
         mBinding.control.speed.setEnabled(mPlayers.canAdjustSpeed());
         mBinding.control.reset.setText(ResUtil.getStringArray(R.array.select_reset)[Setting.getReset()]);
-    }
-
-    private void setSubtitleView() {
-        mBinding.exo.getSubtitleView().setApplyEmbeddedFontSizes(false);
-        mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
-        mBinding.exo.getSubtitleView().setApplyEmbeddedStyles(!Setting.isCaption());
     }
 
     private void setDecode() {

@@ -132,7 +132,6 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mR4 = this::hideUI;
         Server.get().start();
         setRecyclerView();
-        setSubtitleView();
         setVideoView();
         setViewModel();
         checkLive();
@@ -182,6 +181,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     private void setVideoView() {
         mPlayers.init(mBinding.exo);
         setScale(Setting.getLiveScale());
+        ExoUtil.setSubtitleView(mBinding.exo);
         findViewById(R.id.timeBar).setNextFocusUpId(R.id.player);
         mBinding.control.invert.setActivated(Setting.isInvert());
         mBinding.control.across.setActivated(Setting.isAcross());
@@ -190,12 +190,6 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mBinding.control.decode.setText(mPlayers.getDecodeText());
         mBinding.control.speed.setEnabled(mPlayers.canAdjustSpeed());
         mBinding.control.home.setVisibility(LiveConfig.isOnly() ? View.GONE : View.VISIBLE);
-    }
-
-    private void setSubtitleView() {
-        mBinding.exo.getSubtitleView().setApplyEmbeddedFontSizes(false);
-        mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
-        mBinding.exo.getSubtitleView().setApplyEmbeddedStyles(!Setting.isCaption());
     }
 
     private void setDecode() {

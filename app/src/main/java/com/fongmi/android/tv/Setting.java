@@ -257,6 +257,14 @@ public class Setting {
         Prefers.put("speed", speed);
     }
 
+    public static float getSubtitleTextSize() {
+        return Prefers.getFloat("subtitle_text_size");
+    }
+
+    public static void putSubtitleTextSize(float size) {
+        Prefers.put("subtitle_text_size", size);
+    }
+
     public static float getThumbnail() {
         return 0.3f * getQuality() + 0.4f;
     }
