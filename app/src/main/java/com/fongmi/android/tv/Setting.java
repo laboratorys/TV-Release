@@ -261,8 +261,16 @@ public class Setting {
         return Prefers.getFloat("subtitle_text_size");
     }
 
-    public static void putSubtitleTextSize(float size) {
-        Prefers.put("subtitle_text_size", size);
+    public static void putSubtitleTextSize(float value) {
+        Prefers.put("subtitle_text_size", value);
+    }
+
+    public static float getSubtitleBottomPadding() {
+        return Prefers.getFloat("subtitle_bottom_padding");
+    }
+
+    public static void putSubtitleBottomPadding(float value) {
+        Prefers.put("subtitle_bottom_padding", value);
     }
 
     public static float getThumbnail() {
