@@ -24,7 +24,6 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Dimension;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -62,7 +61,6 @@ import com.fongmi.android.tv.event.CastEvent;
 import com.fongmi.android.tv.event.ErrorEvent;
 import com.fongmi.android.tv.event.PlayerEvent;
 import com.fongmi.android.tv.event.RefreshEvent;
-import com.fongmi.android.tv.impl.SubtitleCallback;
 import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.player.Players;
 import com.fongmi.android.tv.player.exo.ExoUtil;
@@ -83,6 +81,7 @@ import com.fongmi.android.tv.ui.dialog.EpisodeGridDialog;
 import com.fongmi.android.tv.ui.dialog.EpisodeListDialog;
 import com.fongmi.android.tv.ui.dialog.InfoDialog;
 import com.fongmi.android.tv.ui.dialog.ReceiveDialog;
+import com.fongmi.android.tv.ui.dialog.SubtitleDialog;
 import com.fongmi.android.tv.ui.dialog.TrackDialog;
 import com.fongmi.android.tv.utils.Clock;
 import com.fongmi.android.tv.utils.FileChooser;
@@ -113,7 +112,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 
-public class VideoActivity extends BaseActivity implements Clock.Callback, CustomKeyDownVod.Listener, TrackDialog.Listener, ControlDialog.Listener, FlagAdapter.OnClickListener, EpisodeAdapter.OnClickListener, QualityAdapter.OnClickListener, QuickAdapter.OnClickListener, ParseAdapter.OnClickListener, SubtitleCallback, CastDialog.Listener, InfoDialog.Listener {
+public class VideoActivity extends BaseActivity implements Clock.Callback, CustomKeyDownVod.Listener, TrackDialog.Listener, ControlDialog.Listener, FlagAdapter.OnClickListener, EpisodeAdapter.OnClickListener, QualityAdapter.OnClickListener, QuickAdapter.OnClickListener, ParseAdapter.OnClickListener, CastDialog.Listener, InfoDialog.Listener {
 
     private ActivityVideoBinding mBinding;
     private ViewGroup.LayoutParams mFrameParams;
@@ -385,14 +384,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setSubtitleView() {
-        setSubtitle(Setting.getSubtitle());
+        mBinding.exo.getSubtitleView().setApplyEmbeddedFontSizes(false);
         mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
         mBinding.exo.getSubtitleView().setApplyEmbeddedStyles(!Setting.isCaption());
-    }
-
-    @Override
-    public void setSubtitle(int size) {
-        mBinding.exo.getSubtitleView().setFixedTextSize(Dimension.SP, size);
     }
 
     private void setDecode() {
@@ -1035,6 +1029,11 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     @Override
+    public void onSubtitleClick() {
+        App.post(() -> SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).player(mPlayers).show(this), 200);
+    }
+
+    @Override
     public void onTimeChanged() {
         long position, duration;
         mHistory.setPosition(position = mPlayers.getPosition());
@@ -1513,13 +1512,11 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         if (!isFullscreen()) setVideoView(isInPictureInPictureMode);
         if (isInPictureInPictureMode) {
             PlaybackService.start(mPlayers);
-            setSubtitle(10);
             hideControl();
             hideSheet();
         } else {
             stopService();
             setForeground(true);
-            setSubtitle(Setting.getSubtitle());
             if (isStop()) finish();
         }
     }

@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 
-import androidx.annotation.Dimension;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
@@ -44,7 +43,6 @@ import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.impl.LiveCallback;
 import com.fongmi.android.tv.impl.PassCallback;
-import com.fongmi.android.tv.impl.SubtitleCallback;
 import com.fongmi.android.tv.model.LiveViewModel;
 import com.fongmi.android.tv.player.Players;
 import com.fongmi.android.tv.player.exo.ExoUtil;
@@ -77,7 +75,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class LiveActivity extends BaseActivity implements CustomKeyDownLive.Listener, TrackDialog.Listener, Biometric.Callback, PassCallback, LiveCallback, GroupAdapter.OnClickListener, ChannelAdapter.OnClickListener, EpgDataAdapter.OnClickListener, SubtitleCallback, CastDialog.Listener, InfoDialog.Listener {
+public class LiveActivity extends BaseActivity implements CustomKeyDownLive.Listener, TrackDialog.Listener, Biometric.Callback, PassCallback, LiveCallback, GroupAdapter.OnClickListener, ChannelAdapter.OnClickListener, EpgDataAdapter.OnClickListener, CastDialog.Listener, InfoDialog.Listener {
 
     private ActivityLiveBinding mBinding;
     private ChannelAdapter mChannelAdapter;
@@ -186,7 +184,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mBinding.control.action.change.setOnClickListener(view -> onChange());
         mBinding.control.action.player.setOnClickListener(view -> onChoose());
         mBinding.control.action.decode.setOnClickListener(view -> onDecode());
-        mBinding.control.action.text.setOnLongClickListener(view -> onTextLong());
         mBinding.control.action.speed.setOnLongClickListener(view -> onSpeedLong());
         mBinding.control.action.getRoot().setOnTouchListener(this::onActionTouch);
         mBinding.video.setOnTouchListener((view, event) -> mKeyDown.onTouchEvent(event));
@@ -215,14 +212,9 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     private void setSubtitleView() {
-        setSubtitle(Setting.getSubtitle());
+        mBinding.exo.getSubtitleView().setApplyEmbeddedFontSizes(false);
         mBinding.exo.getSubtitleView().setStyle(ExoUtil.getCaptionStyle());
         mBinding.exo.getSubtitleView().setApplyEmbeddedStyles(!Setting.isCaption());
-    }
-
-    @Override
-    public void setSubtitle(int size) {
-        mBinding.exo.getSubtitleView().setFixedTextSize(Dimension.SP, size);
     }
 
     private void setDecode() {
@@ -361,12 +353,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     private void onTrack(View view) {
         TrackDialog.create().player(mPlayers).type(Integer.parseInt(view.getTag().toString())).show(this);
         hideControl();
-    }
-
-    private boolean onTextLong() {
-        SubtitleDialog.create(this).show();
-        hideControl();
-        return true;
     }
 
     private void onHome() {
@@ -698,6 +684,11 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     @Override
     public void onTrackClick(Track item) {
+    }
+
+    @Override
+    public void onSubtitleClick() {
+        App.post(() -> SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).player(mPlayers).show(this), 200);
     }
 
     @Override
@@ -1070,7 +1061,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         super.onPictureInPictureModeChanged(isInPictureInPictureMode);
         if (isInPictureInPictureMode) {
             PlaybackService.start(mPlayers);
-            setSubtitle(10);
             hideControl();
             hideInfo();
             hideUI();
@@ -1078,7 +1068,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
             hideInfo();
             stopService();
             setForeground(true);
-            setSubtitle(Setting.getSubtitle());
             if (isStop()) finish();
         }
     }
