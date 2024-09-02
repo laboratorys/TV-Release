@@ -1515,7 +1515,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
             hideControl();
             hideSheet();
         } else {
-            stopService();
+            App.post(mR0, 1000);
             setForeground(true);
             if (isStop()) finish();
         }
@@ -1548,7 +1548,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         super.onResume();
         if (isForeground()) return;
         if (isRedirect()) onPlay();
-        App.removeCallbacks(mR0);
         App.post(mR0, 1000);
         setForeground(true);
         setRedirect(false);
@@ -1587,12 +1586,12 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     protected void onDestroy() {
         super.onDestroy();
         stopSearch();
-        stopService();
         mClock.release();
         mPlayers.release();
         Timer.get().reset();
+        App.post(mR0, 1000);
         RefreshEvent.history();
-        App.removeCallbacks(mR0, mR1, mR2, mR3, mR4);
+        App.removeCallbacks(mR1, mR2, mR3, mR4);
         mViewModel.result.removeObserver(mObserveDetail);
         mViewModel.player.removeObserver(mObservePlayer);
         mViewModel.search.removeObserver(mObserveSearch);

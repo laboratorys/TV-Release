@@ -1066,7 +1066,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
             hideUI();
         } else {
             hideInfo();
-            stopService();
+            App.post(mR0, 1000);
             setForeground(true);
             if (isStop()) finish();
         }
@@ -1097,7 +1097,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         super.onResume();
         if (isForeground()) return;
         if (isRedirect()) onPlay();
-        App.removeCallbacks(mR0);
         App.post(mR0, 1000);
         setForeground(true);
         setRedirect(false);
@@ -1138,10 +1137,10 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopService();
         mClock.release();
         mPlayers.release();
-        App.removeCallbacks(mR0, mR1, mR2, mR3);
+        App.post(mR0, 1000);
+        App.removeCallbacks(mR1, mR2, mR3);
         mViewModel.url.removeObserver(mObserveUrl);
         mViewModel.epg.removeObserver(mObserveEpg);
     }
