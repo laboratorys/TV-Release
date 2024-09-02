@@ -68,6 +68,7 @@ public final class SubtitleDialog extends BaseDialog {
     }
 
     private void onReset(View view) {
+        Setting.putSubtitleTextSize(0);
         subtitleView.setUserDefaultTextSize();
         subtitleView.setBottomPaddingFraction(SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION);
     }
