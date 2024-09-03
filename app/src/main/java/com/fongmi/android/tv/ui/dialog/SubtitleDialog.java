@@ -1,5 +1,6 @@
 package com.fongmi.android.tv.ui.dialog;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ public final class SubtitleDialog extends BaseDialog {
 
     private DialogSubtitleBinding binding;
     private SubtitleView subtitleView;
+    private boolean end;
 
     public static SubtitleDialog create() {
         return new SubtitleDialog();
@@ -27,6 +29,11 @@ public final class SubtitleDialog extends BaseDialog {
 
     public SubtitleDialog view(SubtitleView subtitleView) {
         this.subtitleView = subtitleView;
+        return this;
+    }
+
+    public SubtitleDialog end(boolean end) {
+        this.end = end;
         return this;
     }
 
@@ -79,6 +86,7 @@ public final class SubtitleDialog extends BaseDialog {
     @Override
     public void onResume() {
         super.onResume();
+        if (end) getDialog().getWindow().setGravity(Gravity.END);
         getDialog().getWindow().setLayout(ResUtil.dp2px(216), -1);
     }
 }

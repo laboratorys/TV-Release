@@ -689,7 +689,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     @Override
     public void onSubtitleClick() {
         App.post(this::hideControl, 200);
-        App.post(() -> SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).show(this), 200);
+        App.post(() -> SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).end(true).show(this), 200);
     }
 
     @Override
