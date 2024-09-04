@@ -3,6 +3,7 @@ package com.fongmi.android.tv.ui.dialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ import androidx.viewbinding.ViewBinding;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.databinding.DialogSubtitleBinding;
 import com.fongmi.android.tv.utils.ResUtil;
+import com.github.bassaer.library.MDColor;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public final class SubtitleDialog extends BaseDialog {
@@ -42,8 +44,19 @@ public final class SubtitleDialog extends BaseDialog {
     }
 
     @Override
+    protected boolean transparent() {
+        return full;
+    }
+
+    @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         return binding = DialogSubtitleBinding.inflate(inflater, container, false);
+    }
+
+    @Override
+    protected void initView() {
+        int count = binding.getRoot().getChildCount();
+        if (full) for (int i = 0; i < count; i++) ((ImageView) binding.getRoot().getChildAt(i)).getDrawable().setTint(MDColor.WHITE);
     }
 
     @Override
@@ -85,6 +98,7 @@ public final class SubtitleDialog extends BaseDialog {
     @Override
     public void onResume() {
         super.onResume();
+        if (full) setDimAmount(0.5f);
         getDialog().getWindow().setLayout(ResUtil.dp2px(216), -1);
     }
 }
