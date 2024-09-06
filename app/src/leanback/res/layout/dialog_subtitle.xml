@@ -9,7 +9,7 @@
         android:id="@+id/large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="@drawable/selector_subtitle"
         android:focusable="true"
         android:padding="8dp"
         android:src="@drawable/ic_subtitle_large" />
@@ -18,7 +18,7 @@
         android:id="@+id/small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="@drawable/selector_subtitle"
         android:focusable="true"
         android:padding="8dp"
         android:src="@drawable/ic_subtitle_small" />
@@ -27,7 +27,7 @@
         android:id="@+id/up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="@drawable/selector_subtitle"
         android:focusable="true"
         android:padding="8dp"
         android:src="@drawable/ic_subtitle_up" />
@@ -36,7 +36,7 @@
         android:id="@+id/down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="@drawable/selector_subtitle"
         android:focusable="true"
         android:padding="8dp"
         android:src="@drawable/ic_subtitle_down" />
@@ -45,7 +45,7 @@
         android:id="@+id/reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="@drawable/selector_subtitle"
         android:focusable="true"
         android:padding="8dp"
         android:src="@drawable/ic_subtitle_reset" />
