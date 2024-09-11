@@ -10,8 +10,8 @@ public class ZLive implements Source.Extractor {
     private boolean init;
 
     public void init() {
-        //com.east.android.zlive.ZLive.INSTANCE.OnLiveStart(6677);
-        //init = true;
+        com.east.android.zlive.ZLive.INSTANCE.OnLiveStart(6677);
+        init = true;
     }
 
     private String getLive(String uuid) {
@@ -42,8 +42,8 @@ public class ZLive implements Source.Extractor {
     @Override
     public void stop() {
         try {
-            //if (init) com.east.android.zlive.ZLive.INSTANCE.OnLiveStop();
-            //init = false;
+            if (init) com.east.android.zlive.ZLive.INSTANCE.OnLiveStop();
+            init = false;
         } catch (Throwable e) {
             e.printStackTrace();
         }

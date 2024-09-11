@@ -129,6 +129,7 @@ dependencies {
     implementation(ext: 'aar', name: 'thunder-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'tvbus-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'youtube-release', group: 'fongmi', version: 'release')
+    implementation(ext: 'aar', name: 'zlive-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-common-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-container-release', group: 'fongmi', version: 'release')
     implementation(ext: 'aar', name: 'lib-database-release', group: 'fongmi', version: 'release')
