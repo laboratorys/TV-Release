@@ -136,9 +136,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private boolean fullscreen;
     private boolean initTrack;
     private boolean initAuto;
-    private boolean redirect;
     private boolean autoMode;
     private boolean useParse;
+    private boolean redirect;
     private boolean rotate;
     private boolean stop;
     private boolean lock;
@@ -1069,17 +1069,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
         if (isRedirect()) return;
-        switch (event.getType()) {
-            case DETAIL:
-                getDetail();
-                break;
-            case PLAYER:
-                onRefresh();
-                break;
-            case SUBTITLE:
-                mPlayers.setSub(Sub.from(event.getPath()));
-                break;
-        }
+        if (event.getType() == RefreshEvent.Type.DETAIL) getDetail();
+        else if (event.getType() == RefreshEvent.Type.PLAYER) onRefresh();
+        else if (event.getType() == RefreshEvent.Type.SUBTITLE) mPlayers.setSub(Sub.from(event.getPath()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1328,14 +1320,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         this.initAuto = initAuto;
     }
 
-    public boolean isRedirect() {
-        return redirect;
-    }
-
-    public void setRedirect(boolean redirect) {
-        this.redirect = redirect;
-    }
-
     private boolean isAutoMode() {
         return autoMode;
     }
@@ -1350,6 +1334,14 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     public void setUseParse(boolean useParse) {
         this.useParse = useParse;
+    }
+
+    public boolean isRedirect() {
+        return redirect;
+    }
+
+    public void setRedirect(boolean redirect) {
+        this.redirect = redirect;
     }
 
     public boolean isRotate() {
