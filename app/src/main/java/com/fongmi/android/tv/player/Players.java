@@ -382,7 +382,7 @@ public class Players implements Player.Listener, ParseCallback {
         return subs;
     }
 
-    public void setMediaItem() {
+    private void setMediaItem() {
         if (url == null) RefreshEvent.player();
         else setMediaItem(headers, url, format, drm, subs, Constant.TIMEOUT_PLAY);
     }
