@@ -1128,6 +1128,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         Track.delete(getHistoryKey());
         showError(event.getMsg());
         mClock.setCallback(null);
+        mPlayers.resetTrack();
         mPlayers.reset();
         mPlayers.stop();
         startFlow();
