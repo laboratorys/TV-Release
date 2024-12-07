@@ -18,8 +18,20 @@ public class XtreamParser {
         return new HttpUrl.Builder().scheme(url.scheme()).host(url.host()).port(url.port());
     }
 
+    public static boolean isVerify(Uri uri) {
+        return isApiUrl(uri) || isGetUrl(uri);
+    }
+
+    public static boolean isApiUrl(String url) {
+        return isApiUrl(Uri.parse(url));
+    }
+
     public static boolean isApiUrl(Uri uri) {
-        return uri.getPath() != null && (uri.getPath().contains("get.php") || uri.getPath().contains("player_api.php"));
+        return uri.getPath() != null && uri.getPath().contains("player_api.php") && uri.getQueryParameter("username") != null && uri.getQueryParameter("password") != null;
+    }
+
+    public static boolean isGetUrl(Uri uri) {
+        return uri.getPath() != null && uri.getPath().contains("get.php") && uri.getQueryParameter("username") != null && uri.getQueryParameter("password") != null;
     }
 
     public static String getEpgUrl(Live live) {
