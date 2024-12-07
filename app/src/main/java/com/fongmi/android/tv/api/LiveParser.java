@@ -52,8 +52,8 @@ public class LiveParser {
     public static void text(Live live, String text) {
         int number = 0;
         if (!live.getGroups().isEmpty()) return;
-        if (text.isEmpty() && live.isXtream()) xtream(live);
-        else if (M3U.matcher(text).find()) m3u(live, text);
+        if (M3U.matcher(text).find()) m3u(live, text);
+        else if (live.isXtream()) xtream(live);
         else txt(live, text);
         for (Group group : live.getGroups()) {
             for (Channel channel : group.getChannel()) {
