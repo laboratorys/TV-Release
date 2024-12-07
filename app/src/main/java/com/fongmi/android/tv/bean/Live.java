@@ -336,7 +336,7 @@ public class Live {
         boolean xtream = XtreamParser.isVerify(uri);
         if (xtream) setUsername(uri.getQueryParameter("username"));
         if (xtream) setPassword(uri.getQueryParameter("password"));
-        if (xtream && getEpg().isEmpty()) setEpg(XtreamParser.getEpgUrl(this));
+        if (isXtream() && getEpg().isEmpty()) setEpg(XtreamParser.getEpgUrl(this));
         return this;
     }
 
