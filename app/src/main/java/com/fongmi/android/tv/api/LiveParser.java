@@ -82,6 +82,7 @@ public class LiveParser {
         Setting setting = Setting.create();
         Catchup catchup = Catchup.create();
         Channel channel = Channel.create("");
+        text = text.replace("\r\n", "\n").replace("\r", "");
         for (String line : text.split("\n")) {
             if (Thread.interrupted()) break;
             if (setting.find(line)) {
@@ -132,6 +133,7 @@ public class LiveParser {
 
     private static void txt(Live live, String text) {
         Setting setting = Setting.create();
+        text = text.replace("\r\n", "\n").replace("\r", "");
         for (String line : text.split("\n")) {
             if (Thread.interrupted()) break;
             String[] split = line.split(",");
@@ -151,7 +153,7 @@ public class LiveParser {
 
     private static String getText(Live live) {
         if (live.isXtream() && !XtreamParser.isGetUrl(live.getUrl())) return "";
-        return getText(live.getUrl(), live.getHeaders()).replace("\r\n", "\n");
+        return getText(live.getUrl(), live.getHeaders());
     }
 
     private static String getText(String url, Map<String, String> header) {
