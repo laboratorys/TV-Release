@@ -356,6 +356,7 @@ public class Live {
         if (item == null) return this;
         setBoot(item.isBoot());
         setPass(item.isPass());
+        setKeep(item.getKeep());
         return this;
     }
 
