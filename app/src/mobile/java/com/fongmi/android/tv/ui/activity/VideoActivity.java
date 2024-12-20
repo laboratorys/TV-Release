@@ -988,7 +988,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void updateHistory(Episode item, boolean replay) {
         replay = replay || !item.equals(mHistory.getEpisode());
-        long position = replay ? 0 : mHistory.getPosition();
+        long position = replay ? C.TIME_UNSET : mHistory.getPosition();
         mHistory.setPosition(position);
         mHistory.setEpisodeUrl(item.getUrl());
         mHistory.setVodRemarks(item.getName());

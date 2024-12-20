@@ -186,7 +186,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public long getPosition() {
-        return exoPlayer == null ? 0 : exoPlayer.getCurrentPosition();
+        return exoPlayer == null ? C.TIME_UNSET : exoPlayer.getCurrentPosition();
     }
 
     public long getDuration() {
