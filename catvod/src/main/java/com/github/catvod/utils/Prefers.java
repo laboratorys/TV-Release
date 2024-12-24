@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class Prefers {
 
-    private static final List<String> floats = Arrays.asList("speed");
+    private static final List<String> floats = Arrays.asList("speed", "subtitle_position", "subtitle_text_size");
 
     private static SharedPreferences getPrefers() {
         return PreferenceManager.getDefaultSharedPreferences(Init.context());
