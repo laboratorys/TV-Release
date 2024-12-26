@@ -83,6 +83,7 @@
     <string name="restore_success">還原成功</string>
     <string name="restore_fail">還原失敗</string>
     <string name="backup_success">備份成功</string>
+    <string name="backup_fail">備份失敗</string>
 
     <!-- Player -->
     <string name="player">播放核心</string>

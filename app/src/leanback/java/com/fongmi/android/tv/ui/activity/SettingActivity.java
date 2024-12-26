@@ -353,6 +353,11 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
             public void success() {
                 Notify.show(R.string.backup_success);
             }
+
+            @Override
+            public void error() {
+                Notify.show(R.string.backup_fail);
+            }
         }));
     }
 

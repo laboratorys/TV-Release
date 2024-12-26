@@ -51,9 +51,14 @@ public abstract class AppDatabase extends RoomDatabase {
     public static void backup(com.fongmi.android.tv.impl.Callback callback) {
         App.execute(() -> {
             File file = new File(Path.tv(), "tv-" + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()) + ".bk");
-            Path.write(file, Backup.create().toString().getBytes());
-            FileUtil.gzipCompress(file);
-            App.post(callback::success);
+            Backup backup = Backup.create();
+            if (backup.getConfig().isEmpty()) {
+                App.post(callback::error);
+            } else {
+                Path.write(file, backup.toString().getBytes());
+                FileUtil.gzipCompress(file);
+                App.post(callback::success);
+            }
         });
     }
 
@@ -61,9 +66,14 @@ public abstract class AppDatabase extends RoomDatabase {
         App.execute(() -> {
             File cache = Path.cache("restore");
             FileUtil.gzipDecompress(file, cache);
-            Backup backup = Backup.objectFrom(Path.read(cache)).restore();
-            if (backup.getConfig().isEmpty()) App.post(callback::error);
-            else App.post(callback::success);
+            Backup backup = Backup.objectFrom(Path.read(cache));
+            if (backup.getConfig().isEmpty()) {
+                App.post(callback::error);
+            } else {
+                backup.restore();
+                Path.clear(cache);
+                App.post(callback::success);
+            }
         });
     }
 

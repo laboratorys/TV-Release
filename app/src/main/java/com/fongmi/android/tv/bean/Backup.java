@@ -31,15 +31,13 @@ public class Backup {
         return backup;
     }
 
-    public Backup restore() {
-        if (getConfig().isEmpty()) return this;
-        else AppDatabase.get().clearAllTables();
+    public void restore() {
+        AppDatabase.get().clearAllTables();
         for (History item : getHistory()) item.save();
         for (Config item : getConfig()) item.save();
         for (Site item : getSite()) item.save();
         for (Live item : getLive()) item.save();
         for (Keep item : getKeep()) item.save();
-        return this;
     }
 
     public static Backup objectFrom(String json) {

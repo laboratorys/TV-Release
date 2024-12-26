@@ -84,6 +84,7 @@
     <string name="restore_success">Restore successful</string>
     <string name="restore_fail">Restore failed</string>
     <string name="backup_success">Backup successful</string>
+    <string name="backup_fail">Backup failed</string>
 
     <!-- Player -->
     <string name="player">Player</string>
