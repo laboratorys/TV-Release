@@ -24,9 +24,9 @@ public class Backup {
 
     public static Backup create() {
         Backup backup = new Backup();
-        backup.setKeep(AppDatabase.get().getKeepDao().findAll());
-        backup.setLive(AppDatabase.get().getLiveDao().findAll());
         backup.setSite(AppDatabase.get().getSiteDao().findAll());
+        backup.setLive(AppDatabase.get().getLiveDao().findAll());
+        backup.setKeep(AppDatabase.get().getKeepDao().findAll());
         backup.setConfig(AppDatabase.get().getConfigDao().findAll());
         backup.setHistory(AppDatabase.get().getHistoryDao().findAll());
         return backup;
@@ -34,9 +34,9 @@ public class Backup {
 
     public void restore() {
         AppDatabase.get().clearAllTables();
-        AppDatabase.get().getKeepDao().insertOrUpdate(getKeep());
-        AppDatabase.get().getLiveDao().insertOrUpdate(getLive());
         AppDatabase.get().getSiteDao().insertOrUpdate(getSite());
+        AppDatabase.get().getLiveDao().insertOrUpdate(getLive());
+        AppDatabase.get().getKeepDao().insertOrUpdate(getKeep());
         AppDatabase.get().getConfigDao().insertOrUpdate(getConfig());
         AppDatabase.get().getHistoryDao().insertOrUpdate(getHistory());
     }
