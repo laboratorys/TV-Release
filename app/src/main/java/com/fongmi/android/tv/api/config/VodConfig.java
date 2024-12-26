@@ -62,10 +62,6 @@ public class VodConfig {
         return get().getSites().indexOf(get().getHome());
     }
 
-    public static boolean hasUrl() {
-        return getUrl() != null && getUrl().length() > 0;
-    }
-
     public static boolean hasParse() {
         return !get().getParses().isEmpty();
     }

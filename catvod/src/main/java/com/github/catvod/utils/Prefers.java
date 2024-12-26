@@ -5,20 +5,9 @@ import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
 
 import com.github.catvod.Init;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.ToNumberPolicy;
 import com.google.gson.internal.LazilyParsedNumber;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 public class Prefers {
-
-    private static final List<String> floats = Arrays.asList("speed", "subtitle_position", "subtitle_text_size");
 
     private static SharedPreferences getPrefers() {
         return PreferenceManager.getDefaultSharedPreferences(Init.context());
@@ -91,27 +80,5 @@ public class Prefers {
 
     public static void remove(String key) {
         getPrefers().edit().remove(key).apply();
-    }
-
-    public static void backup(File file) {
-        Path.write(file, new Gson().toJson(getPrefers().getAll()).getBytes());
-    }
-
-    public static void restore(File file) {
-        try {
-            Gson gson = new GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER).create();
-            Map<String, Object> map = gson.fromJson(Path.read(file), new TypeToken<Map<String, Object>>() {}.getType());
-            for (Map.Entry<String, ?> entry : map.entrySet()) Prefers.put(entry.getKey(), convert(entry));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static Object convert(Map.Entry<String, ?> entry) {
-        if (floats.contains(entry.getKey())) {
-            return Float.parseFloat(entry.getValue().toString());
-        } else {
-            return entry.getValue();
-        }
     }
 }
