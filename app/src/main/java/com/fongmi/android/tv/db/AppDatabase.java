@@ -64,14 +64,14 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static void restore(File file, com.fongmi.android.tv.impl.Callback callback) {
         App.execute(() -> {
-            File cache = Path.cache("restore");
-            FileUtil.gzipDecompress(file, cache);
-            Backup backup = Backup.objectFrom(Path.read(cache));
+            File restore = Path.cache("restore");
+            FileUtil.gzipDecompress(file, restore);
+            Backup backup = Backup.objectFrom(Path.read(restore));
             if (backup.getConfig().isEmpty()) {
                 App.post(callback::error);
             } else {
                 backup.restore();
-                Path.clear(cache);
+                Path.clear(restore);
                 App.post(callback::success);
             }
         });

@@ -33,11 +33,11 @@ public class Backup {
 
     public void restore() {
         AppDatabase.get().clearAllTables();
-        for (History item : getHistory()) item.save();
-        for (Config item : getConfig()) item.save();
-        for (Site item : getSite()) item.save();
-        for (Live item : getLive()) item.save();
-        for (Keep item : getKeep()) item.save();
+        AppDatabase.get().getKeepDao().insertOrUpdate(getKeep());
+        AppDatabase.get().getLiveDao().insertOrUpdate(getLive());
+        AppDatabase.get().getSiteDao().insertOrUpdate(getSite());
+        AppDatabase.get().getConfigDao().insertOrUpdate(getConfig());
+        AppDatabase.get().getHistoryDao().insertOrUpdate(getHistory());
     }
 
     public static Backup objectFrom(String json) {
