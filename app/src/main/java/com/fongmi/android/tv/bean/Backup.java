@@ -6,6 +6,7 @@ import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.db.AppDatabase;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Backup {
@@ -50,7 +51,7 @@ public class Backup {
     }
 
     public List<Site> getSite() {
-        return site;
+        return site == null ? Collections.emptyList() : site;
     }
 
     public void setSite(List<Site> site) {
@@ -58,7 +59,7 @@ public class Backup {
     }
 
     public List<Live> getLive() {
-        return live;
+        return live == null ? Collections.emptyList() : live;
     }
 
     public void setLive(List<Live> live) {
@@ -66,7 +67,7 @@ public class Backup {
     }
 
     public List<Keep> getKeep() {
-        return keep;
+        return keep == null ? Collections.emptyList() : keep;
     }
 
     public void setKeep(List<Keep> keep) {
@@ -74,7 +75,7 @@ public class Backup {
     }
 
     public List<Config> getConfig() {
-        return config;
+        return config == null ? Collections.emptyList() : config;
     }
 
     public void setConfig(List<Config> config) {
@@ -82,7 +83,7 @@ public class Backup {
     }
 
     public List<History> getHistory() {
-        return history;
+        return history == null ? Collections.emptyList() : history;
     }
 
     public void setHistory(List<History> history) {
