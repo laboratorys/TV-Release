@@ -52,6 +52,7 @@ public class RestoreDialog extends BaseDialog implements RestoreAdapter.OnClickL
 
     @Override
     public void onDeleteClick(File item) {
+        if (adapter.getItemCount() == 1) dismiss();
         adapter.remove(item);
     }
 }
