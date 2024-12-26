@@ -17,7 +17,4 @@
     <string name="push_clip">推送剪贴板内容</string>
     <string name="push_info">使用手机扫描二维码，或于浏览器访问地址\n<xliff:g name="name">%s</xliff:g></string>
 
-    <!-- Dialog -->
-    <string name="dialog_restore_msg">是否要还原备份数据？</string>
-
 </resources>
