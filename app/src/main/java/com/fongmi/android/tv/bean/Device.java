@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -34,8 +35,17 @@ public class Device {
     @SerializedName("type")
     private int type;
 
+    @Ignore
+    @SerializedName("mac")
+    private String mac;
+    @Ignore
+    @SerializedName("serial")
+    private String serial;
+
     public static Device get() {
         Device device = new Device();
+        device.setMac(Util.getMac());
+        device.setSerial(Util.getSerial());
         device.setUuid(Util.getAndroidId());
         device.setName(Util.getDeviceName());
         device.setIp(Server.get().getAddress());
@@ -93,6 +103,14 @@ public class Device {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
     }
 
     public boolean isLeanback() {

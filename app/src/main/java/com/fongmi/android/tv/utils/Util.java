@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -22,8 +23,10 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
-import com.github.catvod.Init;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -94,12 +97,27 @@ public class Util {
 
     public static String getAndroidId() {
         try {
-            String id = Settings.Secure.getString(Init.context().getContentResolver(), Settings.Secure.ANDROID_ID);
+            String id = Settings.Secure.getString(App.get().getContentResolver(), Settings.Secure.ANDROID_ID);
             if (TextUtils.isEmpty(id)) throw new NullPointerException();
             return id;
         } catch (Exception e) {
             return "0000000000000000";
         }
+    }
+
+    public static String getSerial() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
+            String line;
+            while ((line = reader.readLine()) != null) if (line.startsWith("Serial")) return line.split(":")[1].trim();
+            return "";
+        } catch (IOException e) {
+            return "";
+        }
+    }
+
+    public static String getMac() {
+        WifiManager manager = (WifiManager) App.get().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        return manager.getConnectionInfo().getMacAddress();
     }
 
     public static String getDeviceName() {
