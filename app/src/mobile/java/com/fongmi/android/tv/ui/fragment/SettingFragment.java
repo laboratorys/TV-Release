@@ -94,12 +94,16 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
         mBinding.vodUrl.setText(VodConfig.getDesc());
         mBinding.liveUrl.setText(LiveConfig.getDesc());
         mBinding.wallUrl.setText(WallConfig.getDesc());
-        mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.versionText.setText(BuildConfig.VERSION_NAME);
+        setOtherText();
+        setCacheText();
+    }
+
+    private void setOtherText() {
+        mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.proxyText.setText(getProxy(Setting.getProxy()));
         mBinding.incognitoText.setText(getSwitch(Setting.isIncognito()));
         mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[Setting.getSize()]);
-        setCacheText();
     }
 
     private void setCacheText() {
@@ -338,8 +342,8 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
         OkHttp.selector().clear();
         OkHttp.get().setProxy(proxy);
         Notify.progress(getActivity());
-        VodConfig.load(Config.vod(), getCallback(0));
         mBinding.proxyText.setText(getProxy(proxy));
+        VodConfig.load(Config.vod(), getCallback(0));
     }
 
     private void onCache(View view) {
@@ -371,6 +375,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
             public void success() {
                 Notify.show(R.string.restore_success);
                 Notify.progress(getActivity());
+                setOtherText();
                 initConfig();
             }
 
@@ -393,7 +398,6 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
         mBinding.vodUrl.setText(VodConfig.getDesc());
         mBinding.liveUrl.setText(LiveConfig.getDesc());
         mBinding.wallUrl.setText(WallConfig.getDesc());
-        mBinding.dohText.setText(getDohList()[getDohIndex()]);
         setCacheText();
     }
 

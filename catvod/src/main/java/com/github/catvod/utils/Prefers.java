@@ -75,7 +75,8 @@ public class Prefers {
             getPrefers().edit().putLong(key, (Long) obj).apply();
         } else if (obj instanceof LazilyParsedNumber) {
             LazilyParsedNumber number = (LazilyParsedNumber) obj;
-            put(key, number.toString().contains(".") ? number.floatValue() : number.intValue());
+            if (number.toString().contains(".")) put(key, number.floatValue());
+            else put(key, number.intValue());
         }
     }
 

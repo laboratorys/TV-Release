@@ -86,13 +86,17 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
         mBinding.vodUrl.setText(VodConfig.getDesc());
         mBinding.liveUrl.setText(LiveConfig.getDesc());
         mBinding.wallUrl.setText(WallConfig.getDesc());
-        mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.versionText.setText(BuildConfig.VERSION_NAME);
+        setCacheText();
+        setOtherText();
+    }
+
+    private void setOtherText() {
+        mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.proxyText.setText(getProxy(Setting.getProxy()));
         mBinding.incognitoText.setText(getSwitch(Setting.isIncognito()));
         mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[Setting.getSize()]);
         mBinding.qualityText.setText((quality = ResUtil.getStringArray(R.array.select_quality))[Setting.getQuality()]);
-        setCacheText();
     }
 
     private void setCacheText() {
@@ -334,8 +338,8 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
         Setting.putProxy(proxy);
         OkHttp.get().setProxy(proxy);
         Notify.progress(getActivity());
-        VodConfig.load(Config.vod(), getCallback(0));
         mBinding.proxyText.setText(getProxy(proxy));
+        VodConfig.load(Config.vod(), getCallback(0));
     }
 
     private void onCache(View view) {
@@ -367,6 +371,7 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
             public void success() {
                 Notify.show(R.string.restore_success);
                 Notify.progress(getActivity());
+                setOtherText();
                 initConfig();
             }
 
