@@ -104,7 +104,7 @@ public class Util {
     }
 
     public static String getSerial() {
-        return Shell.exec("getprop ro.serialno");
+        return Shell.exec("getprop ro.serialno").replace("\n", "");
     }
 
     public static String getMac(String name) {
