@@ -14,6 +14,7 @@ import com.github.catvod.utils.Path;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -49,6 +50,7 @@ public class RestoreAdapter extends RecyclerView.Adapter<RestoreAdapter.ViewHold
             File[] files = Path.tv().listFiles();
             if (files == null || files.length == 0) return;
             for (File file : files) if (file.getName().startsWith("tv") && file.getName().endsWith(".bk.gz")) mItems.add(file);
+            Collections.sort(mItems, Collections.reverseOrder());
             callback.success();
         });
     }
