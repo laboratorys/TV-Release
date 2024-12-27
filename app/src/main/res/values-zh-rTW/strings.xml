@@ -79,7 +79,7 @@
     <string name="setting_on">開</string>
 
     <!-- Backup & Restore -->
-    <string name="restore_select">選擇檔案</string>
+    <string name="restore_select">選擇備份</string>
     <string name="restore_success">還原成功</string>
     <string name="restore_fail">還原失敗</string>
     <string name="backup_success">備份成功</string>

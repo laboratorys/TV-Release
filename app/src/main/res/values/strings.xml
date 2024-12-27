@@ -80,7 +80,7 @@
     <string name="setting_on">On</string>
 
     <!-- Backup & Restore -->
-    <string name="restore_select">Select file</string>
+    <string name="restore_select">Select backup</string>
     <string name="restore_success">Restore successful</string>
     <string name="restore_fail">Restore failed</string>
     <string name="backup_success">Backup successful</string>

@@ -9,7 +9,7 @@ import com.google.gson.internal.LazilyParsedNumber;
 
 public class Prefers {
 
-    private static SharedPreferences getPrefers() {
+    public static SharedPreferences getPrefers() {
         return PreferenceManager.getDefaultSharedPreferences(Init.context());
     }
 
@@ -74,7 +74,8 @@ public class Prefers {
         } else if (obj instanceof Long) {
             getPrefers().edit().putLong(key, (Long) obj).apply();
         } else if (obj instanceof LazilyParsedNumber) {
-            getPrefers().edit().putInt(key, ((LazilyParsedNumber) obj).intValue()).apply();
+            LazilyParsedNumber number = (LazilyParsedNumber) obj;
+            put(key, number.toString().contains(".") ? number.floatValue() : number.intValue());
         }
     }
 

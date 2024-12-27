@@ -4,10 +4,16 @@ import androidx.annotation.NonNull;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.db.AppDatabase;
+import com.github.catvod.utils.Prefers;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.ToNumberPolicy;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Backup {
 
@@ -21,9 +27,12 @@ public class Backup {
     private List<Config> config;
     @SerializedName("history")
     private List<History> history;
+    @SerializedName("prefers")
+    private Map<String, ?> prefers;
 
     public static Backup create() {
         Backup backup = new Backup();
+        backup.setPrefers(Prefers.getPrefers().getAll());
         backup.setSite(AppDatabase.get().getSiteDao().findAll());
         backup.setLive(AppDatabase.get().getLiveDao().findAll());
         backup.setKeep(AppDatabase.get().getKeepDao().findAll());
@@ -39,11 +48,13 @@ public class Backup {
         AppDatabase.get().getKeepDao().insertOrUpdate(getKeep());
         AppDatabase.get().getConfigDao().insertOrUpdate(getConfig());
         AppDatabase.get().getHistoryDao().insertOrUpdate(getHistory());
+        for (Map.Entry<String, ?> entry : getPrefers().entrySet()) Prefers.put(entry.getKey(), entry.getValue());
     }
 
     public static Backup objectFrom(String json) {
         try {
-            Backup backup = App.gson().fromJson(json, Backup.class);
+            Gson gson = new GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER).create();
+            Backup backup = gson.fromJson(json, Backup.class);
             return backup == null ? new Backup() : backup;
         } catch (Exception e) {
             return new Backup();
@@ -88,6 +99,14 @@ public class Backup {
 
     public void setHistory(List<History> history) {
         this.history = history;
+    }
+
+    public Map<String, ?> getPrefers() {
+        return prefers == null ? new HashMap<>() : prefers;
+    }
+
+    public void setPrefers(Map<String, ?> prefers) {
+        this.prefers = prefers;
     }
 
     @NonNull
