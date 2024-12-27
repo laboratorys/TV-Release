@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -23,10 +22,9 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
+import com.github.catvod.utils.Shell;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -106,33 +104,30 @@ public class Util {
     }
 
     public static String getSerial() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
-            String line;
-            while ((line = reader.readLine()) != null) if (line.startsWith("Serial")) return line.split(":")[1].trim();
-            return "";
-        } catch (IOException e) {
-            return "";
-        }
+        return Shell.exec("getprop ro.serialno");
     }
 
     public static String getMac() {
-        WifiManager manager = (WifiManager) App.get().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        return manager.getConnectionInfo().getMacAddress();
+        String eth = getMac("eth0");
+        String wlan = getMac("wlan0");
+        return !wlan.isEmpty() ? wlan : eth;
+    }
+
+    public static String getMac(String name) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            NetworkInterface nif = NetworkInterface.getByName(name);
+            for (byte b : nif.getHardwareAddress()) sb.append(String.format("%02X:", b));
+            return sb.substring(0, sb.length() - 1);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public static String getDeviceName() {
         String model = Build.MODEL;
         String manufacturer = Build.MANUFACTURER;
         return model.startsWith(manufacturer) ? model : manufacturer + " " + model;
-    }
-
-    public static String substring(String text) {
-        return substring(text, 1);
-    }
-
-    public static String substring(String text, int num) {
-        if (text != null && text.length() > num) return text.substring(0, text.length() - num);
-        return text;
     }
 
     public static long format(SimpleDateFormat format, String src) {
