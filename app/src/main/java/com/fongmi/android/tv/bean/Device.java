@@ -36,16 +36,20 @@ public class Device {
     private int type;
 
     @Ignore
-    @SerializedName("mac")
-    private String mac;
-    @Ignore
     @SerializedName("serial")
     private String serial;
+    @Ignore
+    @SerializedName("eth")
+    private String eth;
+    @Ignore
+    @SerializedName("wlan")
+    private String wlan;
 
     public static Device get() {
         Device device = new Device();
-        device.setMac(Util.getMac());
         device.setSerial(Util.getSerial());
+        device.setEth(Util.getMac("eth0"));
+        device.setWlan(Util.getMac("wlan0"));
         device.setUuid(Util.getAndroidId());
         device.setName(Util.getDeviceName());
         device.setIp(Server.get().getAddress());
@@ -105,12 +109,16 @@ public class Device {
         this.type = type;
     }
 
-    public void setMac(String mac) {
-        this.mac = mac;
-    }
-
     public void setSerial(String serial) {
         this.serial = serial;
+    }
+
+    public void setEth(String eth) {
+        this.eth = eth;
+    }
+
+    public void setWlan(String wlan) {
+        this.wlan = wlan;
     }
 
     public boolean isLeanback() {

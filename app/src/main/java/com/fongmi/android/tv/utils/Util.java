@@ -107,12 +107,6 @@ public class Util {
         return Shell.exec("getprop ro.serialno");
     }
 
-    public static String getMac() {
-        String eth = getMac("eth0");
-        String wlan = getMac("wlan0");
-        return !wlan.isEmpty() ? wlan : eth;
-    }
-
     public static String getMac(String name) {
         try {
             StringBuilder sb = new StringBuilder();
