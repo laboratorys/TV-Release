@@ -523,6 +523,7 @@ public class Players implements Player.Listener, ParseCallback {
     @Override
     public void onParseSuccess(Map<String, String> headers, String url, String from) {
         if (!TextUtils.isEmpty(from)) Notify.show(ResUtil.getString(R.string.parse_from, from));
+        if (headers != null) headers.remove(HttpHeaders.RANGE);
         setMediaItem(headers, url);
     }
 
