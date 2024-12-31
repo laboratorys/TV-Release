@@ -40,6 +40,7 @@ public class RestoreDialog extends BaseDialog implements RestoreAdapter.OnClickL
 
     @Override
     protected void initView() {
+        binding.recycler.setItemAnimator(null);
         binding.recycler.setHasFixedSize(false);
         binding.recycler.setAdapter(adapter = new RestoreAdapter(this));
     }
