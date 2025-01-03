@@ -41,6 +41,6 @@ public class Drm {
     }
 
     public MediaItem.DrmConfiguration get() {
-        return new MediaItem.DrmConfiguration.Builder(getUUID()).setLicenseUri(getKey()).build();
+        return new MediaItem.DrmConfiguration.Builder(getUUID()).setLicenseUri(getKey()).setMultiSession(!getType().contains("clearkey")).build();
     }
 }
