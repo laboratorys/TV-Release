@@ -108,7 +108,7 @@ public class ExoUtil {
         return null;
     }
 
-    public static MediaItem getMediaItem(Map<String, String> headers, Uri uri, String mimeType, Drm drm, List<Sub> subs) {
+    public static MediaItem getMediaItem(Map<String, String> headers, Uri uri, String mimeType, Drm drm, List<Sub> subs, int decode) {
         MediaItem.Builder builder = new MediaItem.Builder().setUri(uri);
         builder.setRequestMetadata(getRequestMetadata(headers, uri));
         builder.setSubtitleConfigurations(getSubtitleConfigs(subs));
@@ -117,6 +117,7 @@ public class ExoUtil {
         builder.setForceUseRtpTcp(Setting.getRtsp() == 1);
         builder.setAds(Sniffer.getRegex(uri));
         builder.setMediaId(uri.toString());
+        builder.setDecode(decode);
         return builder.build();
     }
 
