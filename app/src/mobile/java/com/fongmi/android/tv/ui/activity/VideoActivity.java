@@ -1078,35 +1078,34 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     public void onPlayerEvent(PlayerEvent event) {
         if (isRedirect()) return;
         switch (event.getState()) {
-            case 0:
+            case PlayerEvent.PREPARE:
                 setInitTrack(true);
-                setTrackVisible(false);
                 mClock.setCallback(this);
-                break;
-            case Player.STATE_IDLE:
                 break;
             case Player.STATE_BUFFERING:
                 showProgress();
                 break;
             case Player.STATE_READY:
-                stopSearch();
-                checkRotate();
-                setMetadata();
                 hideProgress();
-                mPlayers.reset();
-                setDefaultTrack();
-                setTrackVisible(true);
                 checkPlayImg(mPlayers.isPlaying());
-                mBinding.control.size.setText(mPlayers.getSizeText());
-                if (isVisible(mBinding.control.getRoot())) showControl();
                 break;
             case Player.STATE_ENDED:
                 checkEnded();
                 break;
+            case PlayerEvent.TRACK:
+                setMetadata();
+                setInitTrack();
+                mPlayers.reset();
+                setTrackVisible();
+                break;
+            case PlayerEvent.SIZE:
+                checkPortrait();
+                mBinding.control.size.setText(mPlayers.getSizeText());
+                break;
         }
     }
 
-    private void checkRotate() {
+    private void checkPortrait() {
         if (isFullscreen() && !isRotate() && mPlayers.isPortrait()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
             setRotate(true);
@@ -1123,14 +1122,14 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         }
     }
 
-    private void setTrackVisible(boolean visible) {
-        mBinding.control.action.text.setVisibility(visible ? View.VISIBLE : View.GONE);
-        mBinding.control.action.audio.setVisibility(visible && mPlayers.haveTrack(C.TRACK_TYPE_AUDIO) ? View.VISIBLE : View.GONE);
-        mBinding.control.action.video.setVisibility(visible && mPlayers.haveTrack(C.TRACK_TYPE_VIDEO) ? View.VISIBLE : View.GONE);
+    private void setTrackVisible() {
+        mBinding.control.action.text.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_TEXT) || mPlayers.isVod() ? View.VISIBLE : View.GONE);
+        mBinding.control.action.audio.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_AUDIO) ? View.VISIBLE : View.GONE);
+        mBinding.control.action.video.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_VIDEO) ? View.VISIBLE : View.GONE);
         if (mControlDialog != null && mControlDialog.isVisible()) mControlDialog.setTrackVisible();
     }
 
-    private void setDefaultTrack() {
+    private void setInitTrack() {
         if (isInitTrack()) {
             setInitTrack(false);
             mPlayers.setTrack(Track.find(getHistoryKey()));

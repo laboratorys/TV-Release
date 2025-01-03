@@ -21,6 +21,8 @@ import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
+import androidx.media3.common.Tracks;
+import androidx.media3.common.VideoSize;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.drm.FrameworkMediaDrm;
 import androidx.media3.exoplayer.util.EventLogger;
@@ -223,11 +225,11 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public boolean isLive() {
-        return getDuration() < 5 * 60 * 1000 || exoPlayer.isCurrentMediaItemLive();
+        return getDuration() < 3 * 60 * 1000 || exoPlayer.isCurrentMediaItemLive();
     }
 
     public boolean isVod() {
-        return getDuration() > 5 * 60 * 1000 && !exoPlayer.isCurrentMediaItemLive();
+        return getDuration() > 3 * 60 * 1000 && !exoPlayer.isCurrentMediaItemLive();
     }
 
     public boolean isHard() {
@@ -554,6 +556,16 @@ public class Players implements Player.Listener, ParseCallback {
     @Override
     public void onPlaybackStateChanged(int state) {
         PlayerEvent.state(state);
+    }
+
+    @Override
+    public void onVideoSizeChanged(@NonNull VideoSize videoSize) {
+        PlayerEvent.size();
+    }
+
+    @Override
+    public void onTracksChanged(@NonNull Tracks tracks) {
+        PlayerEvent.track();
     }
 
     @Override
