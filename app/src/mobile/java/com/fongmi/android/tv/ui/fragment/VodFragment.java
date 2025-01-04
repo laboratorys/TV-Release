@@ -115,6 +115,7 @@ public class VodFragment extends BaseFragment implements SiteCallback, FilterCal
         mBinding.filter.setOnClickListener(this::onFilter);
         mBinding.search.setOnClickListener(this::onSearch);
         mBinding.history.setOnClickListener(this::onHistory);
+        mBinding.filter.setOnLongClickListener(this::onLink);
         mBinding.pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -200,8 +201,9 @@ public class VodFragment extends BaseFragment implements SiteCallback, FilterCal
         else if (mBinding.link.getVisibility() == View.INVISIBLE) mBinding.link.show();
     }
 
-    private void onLink(View view) {
+    private boolean onLink(View view) {
         LinkDialog.create(this).show();
+        return true;
     }
 
     private void onLogo(View view) {
