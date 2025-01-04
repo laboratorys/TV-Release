@@ -179,7 +179,7 @@ public class VodFragment extends BaseFragment implements SiteCallback, FilterCal
             mBinding.top.setVisibility(View.INVISIBLE);
             mBinding.link.setVisibility(View.VISIBLE);
             mBinding.filter.setVisibility(View.GONE);
-        } else if (mAdapter.get(position).getFilters().size() > 0) {
+        } else if (!mAdapter.get(position).getFilters().isEmpty()) {
             mBinding.top.setVisibility(View.INVISIBLE);
             mBinding.link.setVisibility(View.GONE);
             mBinding.filter.show();
