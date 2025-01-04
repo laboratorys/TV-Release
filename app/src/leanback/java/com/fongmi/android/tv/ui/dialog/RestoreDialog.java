@@ -41,6 +41,7 @@ public class RestoreDialog implements RestoreAdapter.OnClickListener {
 
     private void setRecyclerView() {
         binding.recycler.setAdapter(adapter);
+        binding.recycler.setItemAnimator(null);
         binding.recycler.setHasFixedSize(false);
         binding.recycler.addItemDecoration(new SpaceItemDecoration(1, 16));
     }
@@ -62,7 +63,6 @@ public class RestoreDialog implements RestoreAdapter.OnClickListener {
 
     @Override
     public void onDeleteClick(File item) {
-        if (adapter.getItemCount() == 1) dialog.dismiss();
-        adapter.remove(item);
+        if (adapter.remove(item) == 0) dialog.dismiss();
     }
 }
