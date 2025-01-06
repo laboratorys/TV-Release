@@ -38,6 +38,8 @@ import java.util.regex.Pattern;
 public class CustomWebView extends WebView implements DialogInterface.OnDismissListener {
 
     private static final String TAG = CustomWebView.class.getSimpleName();
+
+    private static final Pattern PLAYER = Pattern.compile("player/.*[?&][^=&]+=https?://");
     private static final String BLANK = "about:blank";
 
     private WebResourceResponse empty;
@@ -112,7 +114,7 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
                 if (TextUtils.isEmpty(host) || isAd(host)) return empty;
                 Map<String, String> headers = request.getRequestHeaders();
                 if (url.contains("challenges.cloudflare.com/turnstile")) App.post(() -> showDialog());
-                if (detect && url.contains("player/?url=")) onParseAdd(headers, url);
+                if (detect && PLAYER.matcher(url).find()) onParseAdd(headers, url);
                 else if (isVideoFormat(url)) onParseSuccess(headers, url);
                 return super.shouldInterceptRequest(view, request);
             }
