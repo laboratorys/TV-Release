@@ -48,6 +48,7 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
     private String click;
     private String from;
     private String key;
+    private String url;
 
     public static CustomWebView create(@NonNull Context context) {
         return new CustomWebView(context);
@@ -84,11 +85,12 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
         this.click = click;
         this.from = from;
         this.key = key;
-        start(url, headers);
+        this.url = url;
+        start(headers);
         return this;
     }
 
-    private void start(String url, Map<String, String> headers) {
+    private void start(Map<String, String> headers) {
         OkCookieJar.setAcceptThirdPartyCookies(this);
         checkHeader(url, headers);
         loadUrl(url, headers);
@@ -179,6 +181,7 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
     private boolean isVideoFormat(String url) {
         try {
             Logger.t(TAG).d(url);
+            if (url.equals(this.url)) return false;
             Spider spider = VodConfig.get().getSite(key).spider();
             if (spider.manualVideoCheck()) return spider.isVideoFormat(url);
             return Sniffer.isVideoFormat(url);
