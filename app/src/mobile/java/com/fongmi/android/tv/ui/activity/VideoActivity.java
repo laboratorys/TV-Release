@@ -525,8 +525,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mViewModel.playerContent(getKey(), flag.getFlag(), episode.getUrl());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         updateHistory(episode, replay);
-        mPlayers.clear();
-        mPlayers.stop();
         showProgress();
         setMetadata();
     }
@@ -752,6 +750,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void onReset(boolean replay) {
+        mPlayers.stop();
+        mPlayers.clear();
         mClock.setCallback(null);
         if (mFlagAdapter.isEmpty()) return;
         if (mEpisodeAdapter.isEmpty()) return;
