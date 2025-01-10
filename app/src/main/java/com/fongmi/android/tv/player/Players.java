@@ -565,7 +565,7 @@ public class Players implements Player.Listener, ParseCallback {
 
     @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
-        PlayerEvent.track();
+        if (!tracks.isEmpty()) PlayerEvent.track();
     }
 
     @Override

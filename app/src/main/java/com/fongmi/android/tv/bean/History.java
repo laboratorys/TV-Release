@@ -234,10 +234,6 @@ public class History {
         return isRevPlay() ? R.string.play_backward_hint : R.string.play_forward_hint;
     }
 
-    public boolean isNew() {
-        return getCreateTime() == 0 && getPosition() == 0;
-    }
-
     public static List<History> get() {
         return get(VodConfig.getCid());
     }
