@@ -144,7 +144,6 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public void setSub(Sub sub) {
-        setPosition(getPosition());
         this.sub = sub;
         setMediaItem();
     }
@@ -159,7 +158,6 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public void reset() {
-        position = C.TIME_UNSET;
         removeTimeoutCheck();
         retry = 0;
     }
@@ -216,8 +214,12 @@ public class Players implements Player.Listener, ParseCallback {
         return exoPlayer != null && exoPlayer.isPlaying();
     }
 
-    public boolean isEnd() {
+    public boolean isEnded() {
         return exoPlayer != null && exoPlayer.getPlaybackState() == Player.STATE_ENDED;
+    }
+
+    public boolean isIdle() {
+        return exoPlayer != null && exoPlayer.getPlaybackState() == Player.STATE_IDLE;
     }
 
     public boolean isEmpty() {
@@ -309,6 +311,10 @@ public class Players implements Player.Listener, ParseCallback {
         if (exoPlayer != null) exoPlayer.seekTo(time);
     }
 
+    public void prepare() {
+        if (exoPlayer != null) exoPlayer.prepare();
+    }
+
     public void play() {
         if (exoPlayer != null) exoPlayer.play();
     }
@@ -320,7 +326,6 @@ public class Players implements Player.Listener, ParseCallback {
     public void stop() {
         if (parseJob != null) parseJob.stop();
         if (exoPlayer != null) exoPlayer.stop();
-        if (exoPlayer != null) exoPlayer.clearMediaItems();
     }
 
     public void release() {

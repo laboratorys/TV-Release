@@ -120,7 +120,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     private void checkAction() {
         mAction = getIntent().getParcelableExtra(RendererInterfaceKt.keyExtraCastAction);
         mBinding.widget.title.setText(getName());
-        position = duration = 0;
+        position = duration = C.TIME_UNSET;
         start();
     }
 
@@ -175,6 +175,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     }
 
     private void onReset() {
+        mPlayers.setPosition(position = C.TIME_UNSET);
         start();
     }
 
@@ -221,13 +222,15 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     }
 
     private void showInfo() {
-        mBinding.widget.center.setVisibility(View.VISIBLE);
         mBinding.widget.info.setVisibility(View.VISIBLE);
+        mBinding.widget.center.setVisibility(View.VISIBLE);
+        mBinding.widget.exoDuration.setText(mPlayers.getDurationTime());
+        mBinding.widget.exoPosition.setText(mPlayers.getPositionTime(0));
     }
 
     private void hideInfo() {
-        mBinding.widget.center.setVisibility(View.GONE);
         mBinding.widget.info.setVisibility(View.GONE);
+        mBinding.widget.center.setVisibility(View.GONE);
     }
 
     private void showControl() {
@@ -336,8 +339,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     }
 
     private void onPaused() {
-        mBinding.widget.exoDuration.setText(mPlayers.getDurationTime());
-        mBinding.widget.exoPosition.setText(mPlayers.getPositionTime(0));
         setState(RenderState.PAUSED);
         mPlayers.pause();
         showInfo();
@@ -345,6 +346,8 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
 
     private void onPlay() {
         setState(RenderState.PLAYING);
+        if (mPlayers.isEnded()) mPlayers.seekTo(C.TIME_UNSET);
+        if (mPlayers.isIdle()) mPlayers.prepare();
         mPlayers.play();
         hideCenter();
     }
@@ -377,8 +380,8 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
 
     @Override
     public void onTimeChanged() {
-        position = mPlayers.getPosition();
         duration = mPlayers.getDuration();
+        mPlayers.setPosition(position = mPlayers.getPosition());
     }
 
     @Override

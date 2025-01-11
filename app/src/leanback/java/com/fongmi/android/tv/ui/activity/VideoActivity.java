@@ -645,7 +645,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mKeyDown.setFull(true);
         setFullscreen(true);
         mFocus2 = null;
-        onPlay();
     }
 
     private void exitFullscreen() {
@@ -861,13 +860,15 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void showInfo() {
-        mBinding.widget.center.setVisibility(View.VISIBLE);
         mBinding.widget.info.setVisibility(View.VISIBLE);
+        mBinding.widget.center.setVisibility(View.VISIBLE);
+        mBinding.widget.exoDuration.setText(mPlayers.getDurationTime());
+        mBinding.widget.exoPosition.setText(mPlayers.getPositionTime(0));
     }
 
     private void hideInfo() {
-        mBinding.widget.center.setVisibility(View.GONE);
         mBinding.widget.info.setVisibility(View.GONE);
+        mBinding.widget.center.setVisibility(View.GONE);
     }
 
     private void showControl(View view) {
@@ -997,6 +998,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     @Override
     public void onTimeChanged() {
         long position, duration;
+        mPlayers.setPosition(mPlayers.getPosition());
         mHistory.setPosition(position = mPlayers.getPosition());
         mHistory.setDuration(duration = mPlayers.getDuration());
         if (position >= 0 && duration > 0 && !Setting.isIncognito()) App.execute(() -> mHistory.update());
@@ -1226,8 +1228,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void onPaused() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        mBinding.widget.exoDuration.setText(mPlayers.getDurationTime());
-        mBinding.widget.exoPosition.setText(mPlayers.getPositionTime(0));
         if (isFullscreen()) showInfo();
         else hideInfo();
         mPlayers.pause();
@@ -1235,6 +1235,8 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void onPlay() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (mPlayers.isEnded()) mPlayers.seekTo(mHistory.getOpening());
+        if (mPlayers.isIdle()) mPlayers.prepare();
         mPlayers.play();
         hideCenter();
     }

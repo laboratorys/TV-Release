@@ -1039,6 +1039,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     @Override
     public void onTimeChanged() {
         long position, duration;
+        mPlayers.setPosition(mPlayers.getPosition());
         mHistory.setPosition(position = mPlayers.getPosition());
         mHistory.setDuration(duration = mPlayers.getDuration());
         if (position >= 0 && duration > 0 && !Setting.isIncognito()) App.execute(() -> mHistory.update());
@@ -1285,7 +1286,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void onPlay() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (mPlayers.isEnd()) mPlayers.seekTo(mHistory.getOpening());
+        if (mPlayers.isEnded()) mPlayers.seekTo(mHistory.getOpening());
+        if (mPlayers.isIdle()) mPlayers.prepare();
         checkPlayImg(true);
         mPlayers.play();
     }
