@@ -83,7 +83,6 @@ public class Players implements Player.Listener, ParseCallback {
     private Drm drm;
     private Sub sub;
 
-    private long position;
     private int decode;
     private int retry;
 
@@ -98,7 +97,6 @@ public class Players implements Player.Listener, ParseCallback {
         builder = new StringBuilder();
         runnable = ErrorEvent::timeout;
         formatter = new Formatter(builder, Locale.getDefault());
-        position = C.TIME_UNSET;
         createSession(activity);
     }
 
@@ -151,10 +149,6 @@ public class Players implements Player.Listener, ParseCallback {
     public void setFormat(String format) {
         this.format = format;
         setMediaItem();
-    }
-
-    public void setPosition(long position) {
-        this.position = position;
     }
 
     public void reset() {
@@ -416,12 +410,12 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     private void setMediaItem(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, int timeout) {
-        if (exoPlayer != null) exoPlayer.setMediaItem(ExoUtil.getMediaItem(this.headers = checkUa(headers), UrlUtil.uri(this.url = url), this.format = format, this.drm = drm, checkSub(this.subs = subs), decode), position);
-        if (exoPlayer != null) exoPlayer.prepare();
+        if (exoPlayer != null) exoPlayer.setMediaItem(ExoUtil.getMediaItem(this.headers = checkUa(headers), UrlUtil.uri(this.url = url), this.format = format, this.drm = drm, checkSub(this.subs = subs), decode));
         App.post(runnable, timeout);
         session.setActive(true);
         PlayerEvent.prepare();
         Logger.t(TAG).d(url);
+        prepare();
     }
 
     private void removeTimeoutCheck() {

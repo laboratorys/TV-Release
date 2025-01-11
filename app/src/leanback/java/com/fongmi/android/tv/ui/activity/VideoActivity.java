@@ -965,7 +965,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mHistory.setVodRemarks(item.getName());
         mHistory.setVodFlag(getFlag().getFlag());
         mHistory.setCreateTime(System.currentTimeMillis());
-        mPlayers.setPosition(Math.max(mHistory.getOpening(), position));
     }
 
     private void checkKeep() {
@@ -998,13 +997,12 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     @Override
     public void onTimeChanged() {
         long position, duration;
-        mPlayers.setPosition(mPlayers.getPosition());
         mHistory.setPosition(position = mPlayers.getPosition());
         mHistory.setDuration(duration = mPlayers.getDuration());
         if (position >= 0 && duration > 0 && !Setting.isIncognito()) App.execute(() -> mHistory.update());
         if (mHistory.getEnding() > 0 && duration > 0 && mHistory.getEnding() + position >= duration) {
             mClock.setCallback(null);
-            checkNext();
+            checkEnded();
         }
     }
 
@@ -1036,7 +1034,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         switch (event.getState()) {
             case PlayerEvent.PREPARE:
                 setInitTrack(true);
-                mClock.setCallback(this);
+                setPosition();
                 break;
             case Player.STATE_BUFFERING:
                 showProgress();
@@ -1052,11 +1050,16 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
                 setInitTrack();
                 mPlayers.reset();
                 setTrackVisible();
+                mClock.setCallback(this);
                 break;
             case PlayerEvent.SIZE:
                 mBinding.widget.size.setText(mPlayers.getSizeText());
                 break;
         }
+    }
+
+    private void setPosition() {
+        if (mHistory != null) mPlayers.seekTo(Math.max(mHistory.getOpening(), mHistory.getPosition()));
     }
 
     private void checkEnded() {
@@ -1234,9 +1237,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void onPlay() {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (mHistory != null && mPlayers.isEnded()) mPlayers.seekTo(mHistory.getOpening());
-        if (mPlayers.isIdle()) mPlayers.prepare();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (!mPlayers.isEmpty() && mPlayers.isIdle()) mPlayers.prepare();
         mPlayers.play();
         hideCenter();
     }
