@@ -1235,7 +1235,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void onPlay() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (mPlayers.isEnded()) mPlayers.seekTo(mHistory.getOpening());
+        if (mPlayers.isEnded()) mPlayers.seekTo(mHistory != null ? mHistory.getOpening() : C.TIME_UNSET);
         if (mPlayers.isIdle()) mPlayers.prepare();
         mPlayers.play();
         hideCenter();

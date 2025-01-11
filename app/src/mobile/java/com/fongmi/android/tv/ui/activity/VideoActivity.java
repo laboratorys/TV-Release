@@ -1286,7 +1286,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void onPlay() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (mPlayers.isEnded()) mPlayers.seekTo(mHistory.getOpening());
+        if (mPlayers.isEnded()) mPlayers.seekTo(mHistory != null ? mHistory.getOpening() : C.TIME_UNSET);
         if (mPlayers.isIdle()) mPlayers.prepare();
         checkPlayImg(true);
         mPlayers.play();
