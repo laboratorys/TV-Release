@@ -134,7 +134,7 @@ public final class TrackDialog extends BaseDialog implements TrackAdapter.OnClic
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK || requestCode != FileChooser.REQUEST_PICK_FILE) return;
-        App.post(() -> player.setSub(Sub.from(FileChooser.getPathFromUri(App.get(), data.getData()))), 250);
+        App.post(() -> player.setSub(Sub.from(FileChooser.getPathFromUri(data.getData()))), 250);
         dismiss();
     }
 
