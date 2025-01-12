@@ -941,8 +941,8 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mHistory = mHistory == null ? createHistory(item) : mHistory;
         if (!TextUtils.isEmpty(getMark())) mHistory.setVodRemarks(getMark());
         if (Setting.isIncognito() && mHistory.getKey().equals(getHistoryKey())) mHistory.delete();
-        mBinding.control.opening.setText(mHistory.getOpening() == 0 ? getString(R.string.play_op) : mPlayers.stringToTime(mHistory.getOpening()));
-        mBinding.control.ending.setText(mHistory.getEnding() == 0 ? getString(R.string.play_ed) : mPlayers.stringToTime(mHistory.getEnding()));
+        mBinding.control.opening.setText(mHistory.getOpening() <= 0 ? getString(R.string.play_op) : mPlayers.stringToTime(mHistory.getOpening()));
+        mBinding.control.ending.setText(mHistory.getEnding() <= 0 ? getString(R.string.play_ed) : mPlayers.stringToTime(mHistory.getEnding()));
         mBinding.control.speed.setText(mPlayers.setSpeed(mHistory.getSpeed()));
         mHistory.setVodPic(item.getVodPic());
         setScale(getScale());
@@ -959,12 +959,11 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void updateHistory(Episode item, boolean replay) {
         replay = replay || !item.equals(mHistory.getEpisode());
-        long position = replay ? C.TIME_UNSET : mHistory.getPosition();
-        mHistory.setPosition(position);
         mHistory.setEpisodeUrl(item.getUrl());
         mHistory.setVodRemarks(item.getName());
         mHistory.setVodFlag(getFlag().getFlag());
         mHistory.setCreateTime(System.currentTimeMillis());
+        mHistory.setPosition(replay ? C.TIME_UNSET : mHistory.getPosition());
     }
 
     private void checkKeep() {
@@ -1059,7 +1058,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void setPosition() {
-        if (mHistory != null) mPlayers.seekTo(Math.max(mHistory.getOpening(), mHistory.getPosition()));
+        if (mHistory != null) mPlayers.seekTo(mHistory.getOpening() > 0 ? mHistory.getOpening() : mHistory.getPosition());
     }
 
     private void checkEnded() {
@@ -1237,9 +1236,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void onPlay() {
-        if (mHistory != null && mPlayers.isEnded()) mPlayers.seekTo(mHistory.getOpening());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (!mPlayers.isEmpty() && mPlayers.isIdle()) mPlayers.prepare();
+        if (mHistory != null && mPlayers.isEnded()) setPosition();
         mPlayers.play();
         hideCenter();
     }
