@@ -346,9 +346,9 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     }
 
     private void onPlay() {
-        setState(RenderState.PLAYING);
+        if (!mPlayers.isEmpty() && mPlayers.isIdle()) mPlayers.prepare();
         if (mPlayers.isEnded()) mPlayers.seekTo(C.TIME_UNSET);
-        if (mPlayers.isIdle()) mPlayers.prepare();
+        setState(RenderState.PLAYING);
         mPlayers.play();
         hideCenter();
     }
