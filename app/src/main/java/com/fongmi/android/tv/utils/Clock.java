@@ -14,9 +14,9 @@ public class Clock {
 
     private SimpleDateFormat format;
     private Callback callback;
+    private final Date date;
     private TextView view;
     private Timer timer;
-    private Date date;
 
     public static Clock create() {
         return new Clock();
@@ -69,7 +69,6 @@ public class Clock {
     }
 
     public void release() {
-        if (date != null) date = null;
         if (timer != null) timer.cancel();
         if (callback != null) callback = null;
     }
