@@ -1058,7 +1058,8 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void setPosition() {
-        if (mHistory != null) mPlayers.seekTo(mHistory.getOpening() > 0 ? mHistory.getOpening() : mHistory.getPosition());
+        if (mHistory == null) return;
+        mPlayers.seekTo(Math.max(mHistory.getOpening(), mHistory.getPosition()));
     }
 
     private void checkEnded() {
@@ -1236,9 +1237,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void onPlay() {
+        if (mHistory != null && mPlayers.isEnded()) mPlayers.seekTo(mHistory.getOpening());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (!mPlayers.isEmpty() && mPlayers.isIdle()) mPlayers.prepare();
-        if (mHistory != null && mPlayers.isEnded()) setPosition();
         mPlayers.play();
         hideCenter();
     }
