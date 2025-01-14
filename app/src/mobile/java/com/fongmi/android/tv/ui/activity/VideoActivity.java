@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.PictureInPictureUiState;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -27,7 +26,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
@@ -1504,16 +1502,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         if (isRedirect()) return;
         if (isLock()) App.post(this::onLock, 500);
         if (mPlayers.haveTrack(C.TRACK_TYPE_VIDEO)) mPiP.enter(this, mPlayers.getVideoWidth(), mPlayers.getVideoHeight(), getScale());
-    }
-
-    @Override
-    @RequiresApi(35)
-    public void onPictureInPictureUiStateChanged(@NonNull PictureInPictureUiState pipState) {
-        super.onPictureInPictureUiStateChanged(pipState);
-        if (pipState.isTransitioningToPip()) {
-            hideControl();
-            hideSheet();
-        }
     }
 
     @Override
