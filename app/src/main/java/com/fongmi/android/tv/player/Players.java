@@ -40,7 +40,6 @@ import com.fongmi.android.tv.bean.Track;
 import com.fongmi.android.tv.event.ActionEvent;
 import com.fongmi.android.tv.event.ErrorEvent;
 import com.fongmi.android.tv.event.PlayerEvent;
-import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.impl.ParseCallback;
 import com.fongmi.android.tv.impl.SessionCallback;
 import com.fongmi.android.tv.player.exo.ExoUtil;
@@ -389,8 +388,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     private void setMediaItem() {
-        if (url == null) RefreshEvent.player();
-        else setMediaItem(headers, url, format, drm, subs, Constant.TIMEOUT_PLAY);
+        if (url != null) setMediaItem(headers, url, format, drm, subs, Constant.TIMEOUT_PLAY);
     }
 
     public void setMediaItem(String url) {
