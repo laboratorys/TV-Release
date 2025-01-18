@@ -11,6 +11,9 @@
     <string name="home_history">最近觀看</string>
     <string name="home_recommend">更新推薦</string>
 
+    <!-- Cast -->
+    <string name="cast_waiting">正在等待連線…</string>
+
     <!-- Collect -->
     <string name="collect_result">「<xliff:g name="name">%s</xliff:g>」的搜尋結果</string>
 

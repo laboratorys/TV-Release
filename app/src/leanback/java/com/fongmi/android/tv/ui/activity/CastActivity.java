@@ -76,8 +76,8 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        getIntent().putExtras(intent);
-        checkAction();
+        if (intent.hasExtra(RendererInterfaceKt.keyExtraCastAction)) setAction(intent);
+        else finish();
     }
 
     @Override
@@ -119,8 +119,9 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
         }
     }
 
-    private void checkAction() {
-        mAction = getIntent().getParcelableExtra(RendererInterfaceKt.keyExtraCastAction);
+    private void setAction(Intent intent) {
+        mAction = intent.getParcelableExtra(RendererInterfaceKt.keyExtraCastAction);
+        mBinding.widget.waiting.setVisibility(View.GONE);
         mBinding.widget.title.setText(getName());
         position = duration = C.TIME_UNSET;
         mService.bindRealPlayer(this);
