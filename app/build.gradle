@@ -91,6 +91,7 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: "libs", include: ["*.aar"])
     implementation project(':catvod')
     implementation project(':quickjs')
     pythonImplementation project(':chaquo')
@@ -120,34 +121,6 @@ dependencies {
     implementation 'org.fourthline.cling:cling-support:2.1.1'
     implementation 'org.greenrobot:eventbus:3.3.1'
     implementation('org.simpleframework:simple-xml:2.7.1') { exclude group: 'stax', module: 'stax-api' exclude group: 'xpp3', module: 'xpp3' }
-    implementation(ext: 'aar', name: 'dlna-core-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'dlna-dmc-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'dlna-dmr-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'forcetech-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'hook-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'jianpian-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'nanohttpd-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'thunder-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'tvbus-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'youtube-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'zlive-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-common-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-container-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-database-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-datasource-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-datasource-okhttp-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-datasource-rtmp-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-decoder-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-decoder-av1-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-decoder-iamf-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-decoder-ffmpeg-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-exoplayer-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-exoplayer-dash-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-exoplayer-hls-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-exoplayer-rtsp-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-exoplayer-smoothstreaming-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-extractor-release', group: 'fongmi', version: 'release')
-    implementation(ext: 'aar', name: 'lib-ui-release', group: 'fongmi', version: 'release')
     leanbackImplementation 'androidx.leanback:leanback:1.2.0-alpha04'
     leanbackImplementation 'com.github.JessYanCoding:AndroidAutoSize:1.2.1'
     mobileImplementation 'androidx.biometric:biometric:1.1.0'
