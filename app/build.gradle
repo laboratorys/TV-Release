@@ -64,11 +64,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
     android.applicationVariants.configureEach { variant ->
         variant.outputs.configureEach { output ->
             outputFileName = "${variant.productFlavors[0].name}-${variant.productFlavors[1].name}-${variant.productFlavors[2].name}.apk"
@@ -83,6 +78,11 @@ android {
 
     lint {
         disable 'UnsafeOptInUsageError'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
