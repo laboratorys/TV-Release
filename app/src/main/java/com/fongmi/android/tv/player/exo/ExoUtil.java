@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.accessibility.CaptioningManager;
 
-import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MimeTypes;
 import androidx.media3.common.PlaybackException;
@@ -53,8 +52,8 @@ public class ExoUtil {
         return trackSelector;
     }
 
-    public static RenderersFactory buildRenderersFactory(int renderMode) {
-        return new DefaultRenderersFactory(App.get()).setEnableDecoderFallback(true).setExtensionRendererMode(renderMode);
+    public static RenderersFactory buildRenderersFactory() {
+        return new DefaultRenderersFactory(App.get()).setEnableDecoderFallback(true);
     }
 
     public static MediaSource.Factory buildMediaSourceFactory() {
@@ -63,12 +62,6 @@ public class ExoUtil {
 
     public static CaptionStyleCompat getCaptionStyle() {
         return Setting.isCaption() ? CaptionStyleCompat.createFromCaptionStyle(((CaptioningManager) App.get().getSystemService(Context.CAPTIONING_SERVICE)).getUserStyle()) : new CaptionStyleCompat(Color.WHITE, Color.TRANSPARENT, Color.TRANSPARENT, CaptionStyleCompat.EDGE_TYPE_OUTLINE, Color.BLACK, null);
-    }
-
-    public static boolean shouldSoftDecode(Tracks tracks) {
-        if (!haveTrack(tracks, C.TRACK_TYPE_VIDEO)) return false;
-        for (Tracks.Group trackGroup : tracks.getGroups()) if (trackGroup.getType() == C.TRACK_TYPE_VIDEO && trackGroup.isSupported(true)) return false;
-        return true;
     }
 
     public static boolean haveTrack(Tracks tracks, int type) {
