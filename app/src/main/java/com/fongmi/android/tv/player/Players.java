@@ -302,6 +302,11 @@ public class Players implements Player.Listener, ParseCallback {
         if (exoPlayer != null) exoPlayer.seekTo(time);
     }
 
+    public void seekToDefaultPosition() {
+        if (exoPlayer != null) exoPlayer.seekToDefaultPosition();
+        prepare();
+    }
+
     public void prepare() {
         if (exoPlayer != null) exoPlayer.prepare();
     }
