@@ -163,8 +163,7 @@ public class OkHttp {
     private static SSLContext getSSLContext() {
         try {
             Security.insertProviderAt(Conscrypt.newProvider(), 1);
-        } catch (Throwable e) {
-            e.printStackTrace();
+        } catch (Throwable ignored) {
         }
         try {
             SSLContext context = SSLContext.getInstance("TLS");
