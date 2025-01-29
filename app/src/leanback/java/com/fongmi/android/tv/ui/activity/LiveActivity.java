@@ -764,6 +764,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void onError(ErrorEvent event) {
+        Track.delete(mPlayers.getUrl());
         showError(event.getMsg());
         mPlayers.resetTrack();
         mPlayers.reset();
