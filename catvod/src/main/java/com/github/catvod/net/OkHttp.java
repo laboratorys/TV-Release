@@ -10,8 +10,11 @@ import com.github.catvod.net.interceptor.RequestInterceptor;
 import com.github.catvod.net.interceptor.ResponseInterceptor;
 import com.github.catvod.utils.Path;
 
+import org.conscrypt.Conscrypt;
+
 import java.net.ProxySelector;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.Objects;
@@ -158,6 +161,11 @@ public class OkHttp {
     }
 
     private static SSLContext getSSLContext() {
+        try {
+            Security.insertProviderAt(Conscrypt.newProvider(), 1);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
         try {
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null, new TrustManager[]{trustAllCertificates()}, new SecureRandom());
