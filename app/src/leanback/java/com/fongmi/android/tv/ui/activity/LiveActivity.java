@@ -87,6 +87,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     private Runnable mR3;
     private Runnable mR4;
     private Clock mClock;
+    private boolean initTrack;
     private int count;
 
     public static void start(Context context) {
@@ -633,6 +634,8 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Override
     public void onTrackClick(Track item) {
+        item.setKey(mPlayers.getUrl());
+        item.save();
     }
 
     @Override
@@ -700,6 +703,9 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPlayerEvent(PlayerEvent event) {
         switch (event.getState()) {
+            case PlayerEvent.PREPARE:
+                setInitTrack(true);
+                break;
             case Player.STATE_BUFFERING:
                 showProgress();
                 break;
@@ -711,6 +717,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
                 break;
             case PlayerEvent.TRACK:
                 setMetadata();
+                setInitTrack();
                 mPlayers.reset();
                 setTrackVisible();
                 break;
@@ -727,6 +734,13 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mBinding.control.speed.setVisibility(mPlayers.isVod() ? View.VISIBLE : View.GONE);
     }
 
+    private void setInitTrack() {
+        if (isInitTrack()) {
+            setInitTrack(false);
+            mPlayers.setTrack(Track.find(mPlayers.getUrl()));
+        }
+    }
+
     private void setMetadata() {
         String title = mBinding.widget.name.getText().toString();
         String artist = mBinding.widget.play.getText().toString();
@@ -741,9 +755,10 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void onCheck(ErrorEvent event) {
-        if (event.getCode() == PlaybackException.ERROR_CODE_IO_UNSPECIFIED || event.getCode() >= PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED && event.getCode() <= PlaybackException.ERROR_CODE_PARSING_MANIFEST_UNSUPPORTED) mPlayers.setFormat(ExoUtil.getMimeType(event.getCode()));
-        else if (event.getCode() == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW) mPlayers.seekToDefaultPosition();
-        else if (event.getCode() == PlaybackException.ERROR_CODE_DECODER_INIT_FAILED) mPlayers.init(mBinding.exo);
+        if (event.getCode() == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW) mPlayers.seekToDefaultPosition();
+        else if (event.getCode() == PlaybackException.ERROR_CODE_IO_UNSPECIFIED || event.getCode() >= PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED && event.getCode() <= PlaybackException.ERROR_CODE_PARSING_MANIFEST_UNSUPPORTED) mPlayers.setFormat(ExoUtil.getMimeType(event.getCode()));
+        else if (event.getCode() == PlaybackException.ERROR_CODE_DECODER_INIT_FAILED && mPlayers.getRetry() == 1) mPlayers.init(mBinding.exo);
+        else if (event.getCode() == PlaybackException.ERROR_CODE_DECODER_INIT_FAILED && mPlayers.isHard()) onDecode();
         else if (event.getCode() == PlaybackException.ERROR_CODE_DECODING_FAILED && mPlayers.isHard()) onDecode();
         else onError(event);
     }
@@ -807,6 +822,14 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mKeyDown.resetTime();
         showProgress();
         hideCenter();
+    }
+
+    private boolean isInitTrack() {
+        return initTrack;
+    }
+
+    private void setInitTrack(boolean initTrack) {
+        this.initTrack = initTrack;
     }
 
     @Override

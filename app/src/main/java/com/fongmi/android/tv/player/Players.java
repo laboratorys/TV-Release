@@ -178,6 +178,10 @@ public class Players implements Player.Listener, ParseCallback {
         return exoPlayer == null ? 0 : exoPlayer.getVideoSize().height;
     }
 
+    public int getRetry() {
+        return retry;
+    }
+
     public float getSpeed() {
         return exoPlayer == null ? 1.0f : exoPlayer.getPlaybackParameters().speed;
     }
@@ -228,6 +232,10 @@ public class Players implements Player.Listener, ParseCallback {
 
     public boolean isHard() {
         return decode == HARD;
+    }
+
+    public boolean isSoft() {
+        return decode == SOFT;
     }
 
     public boolean isPortrait() {
