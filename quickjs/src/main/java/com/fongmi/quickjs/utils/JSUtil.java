@@ -16,7 +16,7 @@ public class JSUtil {
         return array;
     }
 
-    public static JSObject toObj(QuickJSContext ctx, Map<String, String> map) {
+    public static JSObject toObject(QuickJSContext ctx, Map<String, String> map) {
         JSObject obj = ctx.createNewJSObject();
         if (map == null || map.isEmpty()) return obj;
         for (String s : map.keySet()) obj.setProperty(s, map.get(s));

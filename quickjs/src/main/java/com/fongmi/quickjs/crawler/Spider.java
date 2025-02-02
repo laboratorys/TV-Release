@@ -78,7 +78,7 @@ public class Spider extends com.github.catvod.crawler.Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        JSObject obj = submit(() -> JSUtil.toObj(ctx, extend)).get();
+        JSObject obj = submit(() -> JSUtil.toObject(ctx, extend)).get();
         return (String) call("category", tid, pg, filter, obj);
     }
 
@@ -190,7 +190,7 @@ public class Spider extends com.github.catvod.crawler.Spider {
     }
 
     private Object[] proxy1(Map<String, String> params) throws Exception {
-        JSObject object = JSUtil.toObj(ctx, params);
+        JSObject object = JSUtil.toObject(ctx, params);
         JSONArray array = new JSONArray(((JSArray) jsObject.getJSFunction("proxy").call(object)).stringify());
         Map<String, String> headers = array.length() > 3 ? Json.toMap(array.optString(3)) : null;
         boolean base64 = array.length() > 4 && array.optInt(4) == 1;
