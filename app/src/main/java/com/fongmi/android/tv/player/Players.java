@@ -352,10 +352,10 @@ public class Players implements Player.Listener, ParseCallback {
     public void start(Channel channel, int timeout) {
         if (channel.hasMsg()) {
             ErrorEvent.extract(channel.getMsg());
-        } else if (channel.getParse() == 1) {
-            startParse(channel.result(), false);
         } else if (isIllegal(channel.getUrl())) {
             ErrorEvent.url();
+        } else if (channel.getParse() == 1) {
+            startParse(channel.result(), false);
         } else if (channel.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(channel.getDrm().getUUID())) {
             ErrorEvent.drm();
         } else {
