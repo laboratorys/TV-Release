@@ -14,14 +14,12 @@ import com.github.catvod.utils.Json;
 import com.github.catvod.utils.UriUtil;
 import com.github.catvod.utils.Util;
 import com.whl.quickjs.wrapper.JSArray;
-import com.whl.quickjs.wrapper.JSMethod;
 import com.whl.quickjs.wrapper.JSObject;
 import com.whl.quickjs.wrapper.QuickJSContext;
 
 import org.json.JSONArray;
 
 import java.io.ByteArrayInputStream;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -178,45 +176,12 @@ public class Spider extends com.github.catvod.crawler.Spider {
 
     private void createDex() {
         try {
-            JSObject obj = ctx.createNewJSObject();
-            Class<?> clz = dex.loadClass("com.github.catvod.js.Method");
-            Class<?>[] classes = clz.getDeclaredClasses();
-            ctx.getGlobalObject().setProperty("jsapi", obj);
-            if (classes.length == 0) invokeSingle(clz, obj);
-            if (classes.length >= 1) invokeMultiple(clz, obj);
+            if (dex == null) return;
+            Class<?> clz = dex.loadClass("com.github.catvod.js.Function");
+            clz.getDeclaredConstructor(QuickJSContext.class).newInstance(ctx);
         } catch (Throwable e) {
             e.printStackTrace();
         }
-    }
-
-    private void invokeSingle(Class<?> clz, JSObject jsObj) throws Throwable {
-        invoke(clz, jsObj, clz.getDeclaredConstructor(QuickJSContext.class).newInstance(ctx));
-    }
-
-    private void invokeMultiple(Class<?> clz, JSObject jsObj) throws Throwable {
-        for (Class<?> subClz : clz.getDeclaredClasses()) {
-            Object javaObj = subClz.getDeclaredConstructor(clz).newInstance(clz.getDeclaredConstructor(QuickJSContext.class).newInstance(ctx));
-            JSObject subObj = ctx.createNewJSObject();
-            invoke(subClz, subObj, javaObj);
-            jsObj.setProperty(subClz.getSimpleName(), subObj);
-        }
-    }
-
-    private void invoke(Class<?> clz, JSObject jsObj, Object javaObj) {
-        for (Method method : clz.getMethods()) {
-            if (!method.isAnnotationPresent(JSMethod.class)) continue;
-            invoke(jsObj, method, javaObj);
-        }
-    }
-
-    private void invoke(JSObject jsObj, Method method, Object javaObj) {
-        jsObj.setProperty(method.getName(), args -> {
-            try {
-                return method.invoke(javaObj, args);
-            } catch (Throwable e) {
-                return null;
-            }
-        });
     }
 
     private void createObj() {

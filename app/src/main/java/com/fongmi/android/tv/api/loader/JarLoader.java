@@ -101,7 +101,7 @@ public class JarLoader {
         }
     }
 
-    public DexClassLoader getLoader(String jar) {
+    public DexClassLoader dex(String jar) {
         try {
             String jaKey = Util.md5(jar);
             if (!loaders.containsKey(jaKey)) parseJar(jaKey, jar);

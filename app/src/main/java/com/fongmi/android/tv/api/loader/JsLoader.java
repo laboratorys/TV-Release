@@ -10,17 +10,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JsLoader {
 
     private final ConcurrentHashMap<String, Spider> spiders;
-    private final JarLoader jarLoader;
     private String recent;
 
     public JsLoader() {
-        jarLoader = new JarLoader();
         spiders = new ConcurrentHashMap<>();
     }
 
     public void clear() {
         for (Spider spider : spiders.values()) App.execute(spider::destroy);
-        jarLoader.clear();
         spiders.clear();
     }
 
@@ -31,7 +28,7 @@ public class JsLoader {
     public Spider getSpider(String key, String api, String ext, String jar) {
         try {
             if (spiders.containsKey(key)) return spiders.get(key);
-            Spider spider = new com.fongmi.quickjs.crawler.Spider(key, api, jarLoader.getLoader(jar));
+            Spider spider = new com.fongmi.quickjs.crawler.Spider(key, api, BaseLoader.get().dex(jar));
             spider.init(App.get(), ext);
             spiders.put(key, spider);
             return spider;

@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import dalvik.system.DexClassLoader;
+
 public class BaseLoader {
 
     private final JarLoader jarLoader;
@@ -80,6 +82,10 @@ public class BaseLoader {
 
     public void parseJar(String jar) {
         jarLoader.parseJar(Util.md5(jar), jar);
+    }
+
+    public DexClassLoader dex(String jar) {
+        return jarLoader.dex(jar);
     }
 
     public JSONObject jsonExt(String key, LinkedHashMap<String, String> jxs, String url) throws Throwable {
