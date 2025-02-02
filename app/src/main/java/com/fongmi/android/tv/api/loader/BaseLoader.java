@@ -45,7 +45,7 @@ public class BaseLoader {
         boolean py = api.contains(".py");
         boolean csp = api.startsWith("csp_");
         if (py) return pyLoader.getSpider(key, api, ext);
-        else if (js) return jsLoader.getSpider(key, api, ext);
+        else if (js) return jsLoader.getSpider(key, api, ext, jar);
         else if (csp) return jarLoader.getSpider(key, api, ext, jar);
         else return new SpiderNull();
     }
