@@ -165,8 +165,7 @@ public class Spider extends com.github.catvod.crawler.Spider {
 
             @Override
             public byte[] getModuleBytecode(String moduleName) {
-                String content = Module.get().fetch(moduleName);
-                return content.startsWith("//bb") ? Module.get().bb(content) : ctx.compileModule(content, moduleName);
+                return ctx.compileModule(Module.get().fetch(moduleName), moduleName);
             }
         });
     }
@@ -175,9 +174,8 @@ public class Spider extends com.github.catvod.crawler.Spider {
         String spider = "__JS_SPIDER__";
         String global = "globalThis." + spider;
         String content = Module.get().fetch(api);
-        boolean bb = content.startsWith("//bb");
-        cat = bb || content.contains("__jsEvalReturn");
-        if (!bb) ctx.evaluateModule(content.replace(spider, global), api);
+        cat = content.contains("__jsEvalReturn");
+        ctx.evaluateModule(content.replace(spider, global), api);
         ctx.evaluateModule(String.format(Asset.read("js/lib/spider.js"), api));
         jsObject = (JSObject) ctx.getProperty(ctx.getGlobalObject(), spider);
     }
@@ -219,11 +217,8 @@ public class Spider extends com.github.catvod.crawler.Spider {
     }
 
     private ByteArrayInputStream getStream(Object o, boolean base64) {
-        if (o instanceof JSONArray) {
-            JSONArray a = (JSONArray) o;
-            byte[] bytes = new byte[a.length()];
-            for (int i = 0; i < a.length(); i++) bytes[i] = (byte) a.optInt(i);
-            return new ByteArrayInputStream(bytes);
+        if (o instanceof byte[]) {
+            return new ByteArrayInputStream((byte[]) o);
         } else {
             String content = o.toString();
             if (base64 && content.contains("base64,")) content = content.split("base64,")[1];
