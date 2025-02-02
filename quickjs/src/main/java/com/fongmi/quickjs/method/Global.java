@@ -21,7 +21,9 @@ import com.whl.quickjs.wrapper.QuickJSContext;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
@@ -151,8 +153,8 @@ public class Global {
 
     @Keep
     @JSMethod
-    public String gbkDecode(JSArray buffer) throws CharacterCodingException {
-        String result = JSUtil.decodeTo("GB2312", buffer);
+    public String gbkDecode(byte[] buffer) throws CharacterCodingException {
+        String result = Charset.forName("GB2312").newDecoder().decode(ByteBuffer.wrap(buffer)).toString();
         Logger.t("gbkDecode").d("text:%s\nresult:\n%s", buffer, result);
         return result;
     }
