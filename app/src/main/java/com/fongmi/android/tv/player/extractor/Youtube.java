@@ -24,12 +24,13 @@ public class Youtube implements Source.Extractor {
     public String fetch(String url) throws Exception {
         String html = OkHttp.newCall(url, Headers.of(HttpHeaders.USER_AGENT, Util.CHROME)).execute().body().string();
         Matcher matcher = Pattern.compile("var ytInitialPlayerResponse =(.*?\\});").matcher(html);
-        JsonObject object = Json.parse(matcher.group(1)).getAsJsonObject().get("streamingData").getAsJsonObject();
-        return getHlsManifestUrl(object);
+        if (matcher.find()) return getHlsManifestUrl(matcher);
+        return "";
     }
 
-    private String getHlsManifestUrl(JsonObject object) {
-        JsonElement hlsManifestUrl = object.get("hlsManifestUrl");
+    private String getHlsManifestUrl(Matcher matcher) {
+        JsonObject object = Json.parse(matcher.group(1)).getAsJsonObject();
+        JsonElement hlsManifestUrl = object.get("streamingData").getAsJsonObject().get("hlsManifestUrl");
         if (hlsManifestUrl.isJsonArray()) return hlsManifestUrl.getAsJsonArray().get(0).getAsString();
         return hlsManifestUrl.getAsString();
     }
