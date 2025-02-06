@@ -49,7 +49,17 @@ public class Youtube implements Source.Extractor {
         YoutubeStreamExtractor extractor = new YoutubeStreamExtractor(ServiceList.YouTube, handler);
         extractor.forceLocalization(NewPipe.getPreferredLocalization());
         extractor.fetchPage();
-        return StreamType.LIVE_STREAM.equals(extractor.getStreamType()) ? extractor.getHlsUrl() : getMpd(extractor);
+        return StreamType.LIVE_STREAM.equals(extractor.getStreamType()) ? getLive(extractor) : getMpd(extractor);
+    }
+
+    private String getLive(YoutubeStreamExtractor extractor) throws Exception {
+        if (!extractor.getHlsUrl().isEmpty()) {
+            return extractor.getHlsUrl();
+        } else if (!extractor.getDashMpdUrl().isEmpty()) {
+            return extractor.getDashMpdUrl();
+        } else {
+            return "";
+        }
     }
 
     private String getMpd(YoutubeStreamExtractor extractor) throws Exception {
