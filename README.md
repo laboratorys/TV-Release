@@ -163,13 +163,13 @@ scheme://username:password@host:port
 
 ### 域名映射
 
-範例為域名A改用域名B解析
-
 ```json
 {
   "spider": "",
   "hosts": [
-    "域名A=域名B"
+    "cache.ott.ystenlive.itv.cmvideo.cn=base-v4-free-mghy.e.cdn.chinamobile.com",
+    "cache.ott.bestlive.itv.cmvideo.cn=base-v4-free-mghy.e.cdn.chinamobile.com",
+    "cache.ott.wasulive.itv.cmvideo.cn=base-v4-free-mghy.e.cdn.chinamobile.com"
   ]
 }
 ```
