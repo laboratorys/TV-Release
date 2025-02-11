@@ -8,17 +8,18 @@ import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Dns;
+import okhttp3.dnsoverhttps.DnsOverHttps;
 
 public class OkDns implements Dns {
 
     private final HashMap<String, String> map;
-    private Dns doh;
+    private DnsOverHttps doh;
 
     public OkDns() {
         this.map = new HashMap<>();
     }
 
-    public void setDoh(Dns doh) {
+    public void setDoh(DnsOverHttps doh) {
         this.doh = doh;
     }
 
@@ -33,8 +34,7 @@ public class OkDns implements Dns {
     @NonNull
     @Override
     public List<InetAddress> lookup(@NonNull String hostname) throws UnknownHostException {
-        if (map.containsKey(hostname)) return Dns.SYSTEM.lookup(map.get(hostname));
-        return doh != null ? doh.lookup(hostname) : Dns.SYSTEM.lookup(hostname);
+        return (doh != null ? doh : Dns.SYSTEM).lookup(map.containsKey(hostname) ? map.get(hostname) : hostname);
     }
 }
 
