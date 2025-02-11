@@ -204,6 +204,7 @@ public class VodConfig {
         setDoh(Doh.arrayFrom(object.getAsJsonArray("doh")));
         setFlags(Json.safeListString(object, "flags"));
         setHosts(Json.safeListString(object, "hosts"));
+        setProxy(Json.safeListString(object, "proxy"));
         setWall(Json.safeString(object, "wallpaper"));
         setAds(Json.safeListString(object, "ads"));
     }
@@ -229,8 +230,6 @@ public class VodConfig {
     }
 
     public void setRules(List<Rule> rules) {
-        for (Rule rule : rules) if ("proxy".equals(rule.getName())) OkHttp.selector().addAll(rule.getHosts());
-        rules.remove(Rule.create("proxy"));
         this.rules = rules;
     }
 
@@ -265,6 +264,10 @@ public class VodConfig {
 
     public void setHosts(List<String> hosts) {
         OkHttp.dns().addAll(hosts);
+    }
+
+    public void setProxy(List<String> hosts) {
+        OkHttp.selector().addAll(hosts);
     }
 
     public List<String> getAds() {

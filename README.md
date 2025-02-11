@@ -146,13 +146,17 @@ scheme 支持 http, https, socks4, socks5
 scheme://username:password@host:port
 ```
 
-配置 rules 新增 proxy 判斷 host 是否走代理
+配置新增 proxy 判斷域名是否走代理
+全局只需要加上一條規則 ".*."
 
 ```json
 {
-  "name": "proxy",
-  "hosts": [
-    "api.nivodz.com"
+  "spider": "",
+  "proxy": [
+    [
+      "raw.githubusercontent.com",
+      "googlevideo.com"
+    ]
   ]
 }
 ```
