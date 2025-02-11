@@ -153,10 +153,21 @@ scheme://username:password@host:port
 {
   "spider": "",
   "proxy": [
-    [
-      "raw.githubusercontent.com",
-      "googlevideo.com"
-    ]
+    "raw.githubusercontent.com",
+    "googlevideo.com"
+  ]
+}
+```
+
+### Hosts
+
+範例為域名A改用域名B解析
+
+```json
+{
+  "spider": "",
+  "hosts": [
+    "域名A=域名B"
   ]
 }
 ```
