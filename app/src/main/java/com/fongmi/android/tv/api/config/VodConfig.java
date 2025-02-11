@@ -203,6 +203,7 @@ public class VodConfig {
         setRules(Rule.arrayFrom(object.getAsJsonArray("rules")));
         setDoh(Doh.arrayFrom(object.getAsJsonArray("doh")));
         setFlags(Json.safeListString(object, "flags"));
+        setHosts(Json.safeListString(object, "hosts"));
         setWall(Json.safeString(object, "wallpaper"));
         setAds(Json.safeListString(object, "ads"));
     }
@@ -260,6 +261,10 @@ public class VodConfig {
 
     private void setFlags(List<String> flags) {
         this.flags.addAll(flags);
+    }
+
+    public void setHosts(List<String> hosts) {
+        OkHttp.dns().addAll(hosts);
     }
 
     public List<String> getAds() {
