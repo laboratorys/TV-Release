@@ -558,7 +558,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void checkDanmaku(String url) {
         mBinding.danmaku.release();
-        mBinding.danmaku.setVisibility(url.isEmpty() ? View.GONE : View.VISIBLE);
+        mBinding.danmaku.setVisibility(mPiP.isInMode(this) || url.isEmpty() ? View.GONE : View.VISIBLE);
         if (!url.isEmpty()) App.execute(() -> mBinding.danmaku.prepare(new Parser(url), mDanmakuContext));
     }
 
