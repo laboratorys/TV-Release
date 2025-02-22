@@ -328,6 +328,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     public void seekTo(long time) {
         if (exoPlayer != null) exoPlayer.seekTo(time);
         if (haveDanmaku()) danmakuView.seekTo(time);
+        if (haveDanmaku()) danmakuView.hide();
     }
 
     public void seekToDefaultPosition() {
