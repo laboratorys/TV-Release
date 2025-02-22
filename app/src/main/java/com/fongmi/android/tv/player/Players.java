@@ -65,8 +65,12 @@ import java.util.Map;
 import io.github.peerless2012.ass.media.AssHandler;
 import io.github.peerless2012.ass.media.parser.AssSubtitleParserFactory;
 import io.github.peerless2012.ass.media.type.AssRenderType;
+import master.flame.danmaku.controller.DrawHandler;
+import master.flame.danmaku.danmaku.model.BaseDanmaku;
+import master.flame.danmaku.danmaku.model.DanmakuTimer;
+import master.flame.danmaku.ui.widget.DanmakuView;
 
-public class Players implements Player.Listener, ParseCallback {
+public class Players implements Player.Listener, ParseCallback, DrawHandler.Callback {
 
     private static final String TAG = Players.class.getSimpleName();
 
@@ -79,6 +83,7 @@ public class Players implements Player.Listener, ParseCallback {
 
     private Map<String, String> headers;
     private MediaSessionCompat session;
+    private DanmakuView danmakuView;
     private ExoPlayer exoPlayer;
     private ParseJob parseJob;
     private PlayerView view;
@@ -132,6 +137,11 @@ public class Players implements Player.Listener, ParseCallback {
         //assHandler.init(exoPlayer);
         view.setPlayer(exoPlayer);
         this.view = view;
+    }
+
+    public void setDanmakuView(DanmakuView view) {
+        view.setCallback(this);
+        danmakuView = view;
     }
 
     public ExoPlayer get() {
@@ -207,6 +217,10 @@ public class Players implements Player.Listener, ParseCallback {
 
     public boolean haveTrack(int type) {
         return exoPlayer != null && ExoUtil.haveTrack(exoPlayer.getCurrentTracks(), type);
+    }
+
+    public boolean haveDanmaku() {
+        return danmakuView != null && danmakuView.isPrepared();
     }
 
     public boolean isPlaying() {
@@ -313,6 +327,7 @@ public class Players implements Player.Listener, ParseCallback {
 
     public void seekTo(long time) {
         if (exoPlayer != null) exoPlayer.seekTo(time);
+        if (haveDanmaku()) danmakuView.seekTo(time);
     }
 
     public void seekToDefaultPosition() {
@@ -326,14 +341,17 @@ public class Players implements Player.Listener, ParseCallback {
 
     public void play() {
         if (exoPlayer != null) exoPlayer.play();
+        if (haveDanmaku()) danmakuView.resume();
     }
 
     public void pause() {
         if (exoPlayer != null) exoPlayer.pause();
+        if (haveDanmaku()) danmakuView.pause();
     }
 
     public void stop() {
         if (exoPlayer != null) exoPlayer.stop();
+        if (haveDanmaku()) danmakuView.stop();
         stopParse();
     }
 
@@ -569,6 +587,7 @@ public class Players implements Player.Listener, ParseCallback {
 
     @Override
     public void onPlaybackStateChanged(int state) {
+        if (state == Player.STATE_READY && haveDanmaku()) prepared();
         PlayerEvent.state(state);
     }
 
@@ -579,7 +598,9 @@ public class Players implements Player.Listener, ParseCallback {
 
     @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
-        if (!tracks.isEmpty()) PlayerEvent.track();
+        if (tracks.isEmpty()) return;
+        setTrack(Track.find(url));
+        PlayerEvent.track();
     }
 
     @Override
@@ -606,5 +627,26 @@ public class Players implements Player.Listener, ParseCallback {
                 ErrorEvent.extract(error.getErrorCodeName());
                 break;
         }
+    }
+
+    @Override
+    public void prepared() {
+        App.post(() -> {
+            if (isPlaying()) danmakuView.start(getPosition());
+            else danmakuView.pause();
+            danmakuView.show();
+        });
+    }
+
+    @Override
+    public void updateTimer(DanmakuTimer danmakuTimer) {
+    }
+
+    @Override
+    public void danmakuShown(BaseDanmaku baseDanmaku) {
+    }
+
+    @Override
+    public void drawingFinished() {
     }
 }

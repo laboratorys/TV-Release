@@ -57,6 +57,8 @@ import com.fongmi.android.tv.event.PlayerEvent;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.player.Players;
+import com.fongmi.android.tv.player.danmaku.Parser;
+import com.fongmi.android.tv.player.danmaku.Sync;
 import com.fongmi.android.tv.player.exo.ExoUtil;
 import com.fongmi.android.tv.service.PlaybackService;
 import com.fongmi.android.tv.ui.adapter.QualityAdapter;
@@ -100,6 +102,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 
+import master.flame.danmaku.danmaku.model.BaseDanmaku;
+import master.flame.danmaku.danmaku.model.IDisplayer;
+import master.flame.danmaku.danmaku.model.android.DanmakuContext;
+
 public class VideoActivity extends BaseActivity implements CustomKeyDownVod.Listener, TrackDialog.Listener, ArrayPresenter.OnClickListener, Clock.Callback {
 
     private ActivityVideoBinding mBinding;
@@ -114,6 +120,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     private Observer<Result> mObserveDetail;
     private Observer<Result> mObservePlayer;
     private Observer<Result> mObserveSearch;
+    private DanmakuContext mDanmakuContext;
     private QualityAdapter mQualityAdapter;
     private FlagPresenter mFlagPresenter;
     private PartPresenter mPartPresenter;
@@ -124,7 +131,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     private History mHistory;
     private Players mPlayers;
     private boolean fullscreen;
-    private boolean initTrack;
     private boolean initAuto;
     private boolean autoMode;
     private boolean useParse;
@@ -270,6 +276,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     protected void initView() {
         mFrameParams = mBinding.video.getLayoutParams();
         mClock = Clock.create(mBinding.widget.clock);
+        mDanmakuContext = DanmakuContext.create();
         mKeyDown = CustomKeyDownVod.create(this);
         mObserveDetail = this::setDetail;
         mObservePlayer = this::setPlayer;
@@ -281,6 +288,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mR3 = this::setTraffic;
         mR4 = this::showEmpty;
         setRecyclerView();
+        setDanmakuView();
         setVideoView();
         setViewModel();
         checkCast();
@@ -371,8 +379,20 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mPlayers.init(mBinding.exo);
         PlaybackService.start(mPlayers);
         ExoUtil.setSubtitleView(mBinding.exo);
+        mPlayers.setDanmakuView(mBinding.danmaku);
         mBinding.control.decode.setText(mPlayers.getDecodeText());
         mBinding.control.reset.setText(ResUtil.getStringArray(R.array.select_reset)[Setting.getReset()]);
+    }
+
+    private void setDanmakuView() {
+        HashMap<Integer, Integer> maxLines = new HashMap<>();
+        maxLines.put(BaseDanmaku.TYPE_FIX_TOP, 4);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, 4);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, 4);
+        maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, 4);
+        mDanmakuContext.setDanmakuSync(new Sync(mPlayers));
+        mDanmakuContext.setMaximumLines(maxLines).setScrollSpeedFactor(1.2f).setDanmakuTransparency(0.8f);
+        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(ResUtil.dp2px(8));
     }
 
     private void setDecode() {
@@ -525,7 +545,14 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mPlayers.start(result, isUseParse(), getSite().isChangeable() ? getSite().getTimeout() : -1);
         mBinding.control.parse.setVisibility(isUseParse() ? View.VISIBLE : View.GONE);
         setQualityVisible(result.getUrl().isMulti());
+        checkDanmaku(result.getDanmaku());
         mQualityAdapter.addAll(result);
+    }
+
+    private void checkDanmaku(String url) {
+        mBinding.danmaku.release();
+        mBinding.danmaku.setVisibility(url.isEmpty() ? View.GONE : View.VISIBLE);
+        if (!url.isEmpty()) App.execute(() -> mBinding.danmaku.prepare(new Parser(url), mDanmakuContext));
     }
 
     private void setFlagActivated(Flag item) {
@@ -571,6 +598,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void setQualityActivated(Result result) {
         try {
+            hideDanmaku();
             mPlayers.start(result, isUseParse(), getSite().isChangeable() ? getSite().getTimeout() : -1);
         } catch (Exception e) {
             ErrorEvent.extract(e.getMessage());
@@ -882,6 +910,14 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mBinding.widget.center.setVisibility(View.GONE);
     }
 
+    private void showDanmaku() {
+        mBinding.danmaku.show();
+    }
+
+    private void hideDanmaku() {
+        mBinding.danmaku.hide();
+    }
+
     private void showControl(View view) {
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         view.requestFocus();
@@ -997,12 +1033,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     @Override
-    public void onTrackClick(Track item) {
-        item.setKey(getHistoryKey());
-        item.save();
-    }
-
-    @Override
     public void onSubtitleClick() {
         App.post(this::hideControl, 200);
         App.post(() -> SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).full(isFullscreen()).show(this), 200);
@@ -1038,6 +1068,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         if (isRedirect()) return;
         if (event.getType() == RefreshEvent.Type.DETAIL) getDetail();
         else if (event.getType() == RefreshEvent.Type.PLAYER) onRefresh();
+        else if (event.getType() == RefreshEvent.Type.DANMAKU) checkDanmaku(event.getPath());
         else if (event.getType() == RefreshEvent.Type.SUBTITLE) mPlayers.setSub(Sub.from(event.getPath()));
     }
 
@@ -1046,9 +1077,8 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         if (isRedirect()) return;
         switch (event.getState()) {
             case PlayerEvent.PREPARE:
-                setInitTrack(true);
-                setPosition();
                 setDecode();
+                setPosition();
                 break;
             case Player.STATE_BUFFERING:
                 showProgress();
@@ -1063,7 +1093,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
                 break;
             case PlayerEvent.TRACK:
                 setMetadata();
-                setInitTrack();
                 setTrackVisible();
                 mClock.setCallback(this);
                 break;
@@ -1091,13 +1120,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mBinding.control.text.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_TEXT) || mPlayers.isVod() ? View.VISIBLE : View.GONE);
         mBinding.control.audio.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_AUDIO) ? View.VISIBLE : View.GONE);
         mBinding.control.video.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_VIDEO) ? View.VISIBLE : View.GONE);
-    }
-
-    private void setInitTrack() {
-        if (isInitTrack()) {
-            setInitTrack(false);
-            mPlayers.setTrack(Track.find(getHistoryKey()));
-        }
     }
 
     private void setMetadata() {
@@ -1259,14 +1281,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void setFullscreen(boolean fullscreen) {
         this.fullscreen = fullscreen;
-    }
-
-    private boolean isInitTrack() {
-        return initTrack;
-    }
-
-    private void setInitTrack(boolean initTrack) {
-        this.initTrack = initTrack;
     }
 
     private boolean isInitAuto() {

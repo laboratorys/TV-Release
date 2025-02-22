@@ -66,6 +66,8 @@ public class Result implements Parcelable {
     private String flag;
     @SerializedName("desc")
     private String desc;
+    @SerializedName("danmaku")
+    private String danmaku;
     @SerializedName("format")
     private String format;
     @SerializedName("click")
@@ -226,6 +228,10 @@ public class Result implements Parcelable {
 
     public String getDesc() {
         return TextUtils.isEmpty(desc) ? "" : desc;
+    }
+
+    public String getDanmaku() {
+        return TextUtils.isEmpty(danmaku) ? "" : danmaku;
     }
 
     public String getFormat() {
