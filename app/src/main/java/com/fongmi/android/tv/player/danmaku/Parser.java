@@ -6,6 +6,7 @@ import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,17 +19,25 @@ import master.flame.danmaku.danmaku.util.DanmakuUtils;
 public class Parser extends BaseDanmakuParser {
 
     private final Map<String, String> charMap;
-    private final Danmaku danmaku;
     private BaseDanmaku item;
+    private Danmaku danmaku;
     private int index;
 
     public Parser(String path) {
-        danmaku = Danmaku.fromXml(OkHttp.string(UrlUtil.convert(path)));
         charMap = new HashMap<>();
         charMap.put("&amp;", "&");
         charMap.put("&quot;", "\"");
         charMap.put("&gt;", ">");
         charMap.put("&lt;", "<");
+        fetch(path);
+    }
+
+    private void fetch(String path) {
+        try {
+            danmaku = Danmaku.objectFrom(OkHttp.newCall(UrlUtil.convert(path)).execute().body().byteStream());
+        } catch (IOException e) {
+            danmaku = new Danmaku();
+        }
     }
 
     @Override

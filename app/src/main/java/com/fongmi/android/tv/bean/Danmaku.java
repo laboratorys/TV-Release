@@ -8,8 +8,13 @@ import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Text;
 import org.simpleframework.xml.core.Persister;
 
-import java.util.Collections;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Root(name = "i", strict = false)
 public class Danmaku {
@@ -17,17 +22,31 @@ public class Danmaku {
     @ElementList(entry = "d", required = false, inline = true)
     private List<Data> data;
 
-    public static Danmaku fromXml(String str) {
+    public static Danmaku objectFrom(InputStream is) {
         try {
-            return new Persister().read(Danmaku.class, str);
+            return new Persister().read(Danmaku.class, is);
         } catch (Exception e) {
-            e.printStackTrace();
-            return new Danmaku();
+            return fromText(is);
+        }
+    }
+
+    public static Danmaku fromText(InputStream is) {
+        Danmaku danmaku = new Danmaku();
+        Pattern pattern = Pattern.compile("\\[(.*?)\\](.*)");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.matches() && matcher.groupCount() == 2) danmaku.getData().add(new Data(matcher));
+            }
+            return danmaku;
+        } catch (Exception ignored) {
+            return danmaku;
         }
     }
 
     public List<Data> getData() {
-        return data == null ? Collections.emptyList() : data;
+        return data = data == null ? new ArrayList<>() : data;
     }
 
     public static class Data {
@@ -37,6 +56,16 @@ public class Danmaku {
 
         @Text(required = false)
         public String text;
+
+        public Data(Matcher matcher) {
+            this.param = matcher.group(1);
+            this.text = matcher.group(2);
+        }
+
+        public Data(String param, String text) {
+            this.param = param;
+            this.text = text;
+        }
 
         public String getParam() {
             return TextUtils.isEmpty(param) ? "" : param;
