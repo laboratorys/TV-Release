@@ -62,12 +62,8 @@ public class Danmaku {
         }
 
         public Data(Matcher matcher) {
-            this(matcher.group(1), matcher.group(2));
-        }
-
-        public Data(String param, String text) {
-            this.param = param;
-            this.text = text;
+            this.param = matcher.group(1);
+            this.text = matcher.group(2);
         }
 
         public String getParam() {
