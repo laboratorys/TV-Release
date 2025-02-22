@@ -9,7 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Html;
@@ -558,7 +557,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void checkDanmaku(String url) {
         mBinding.danmaku.release();
-        mBinding.danmaku.setVisibility(mPiP.isInMode(this) || url.isEmpty() ? View.GONE : View.VISIBLE);
+        mBinding.danmaku.setVisibility(url.isEmpty() ? View.GONE : View.VISIBLE);
         if (!url.isEmpty()) App.execute(() -> mBinding.danmaku.prepare(new Parser(url), mDanmakuContext));
     }
 
@@ -929,7 +928,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void showControl() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInPictureInPictureMode()) return;
+        if (mPiP.isInMode(this)) return;
         mBinding.control.setting.setVisibility(mHistory == null || isFullscreen() ? View.GONE : View.VISIBLE);
         mBinding.control.right.rotate.setVisibility(isFullscreen() && !isLock() ? View.VISIBLE : View.GONE);
         mBinding.control.keep.setVisibility(mHistory == null || isFullscreen() ? View.GONE : View.VISIBLE);
