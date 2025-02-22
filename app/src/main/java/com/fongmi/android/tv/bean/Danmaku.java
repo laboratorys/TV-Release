@@ -58,6 +58,9 @@ public class Danmaku {
         @Text(required = false)
         public String text;
 
+        public Data() {
+        }
+
         public Data(Matcher matcher) {
             this(matcher.group(1), matcher.group(2));
         }
