@@ -18,17 +18,17 @@ import master.flame.danmaku.danmaku.util.DanmakuUtils;
 
 public class Parser extends BaseDanmakuParser {
 
-    private final Map<String, String> charMap;
+    private final Map<String, String> map;
     private BaseDanmaku item;
     private Danmaku danmaku;
     private int index;
 
     public Parser(String path) {
-        charMap = new HashMap<>();
-        charMap.put("&amp;", "&");
-        charMap.put("&quot;", "\"");
-        charMap.put("&gt;", ">");
-        charMap.put("&lt;", "<");
+        map = new HashMap<>();
+        map.put("&amp;", "&");
+        map.put("&quot;", "\"");
+        map.put("&gt;", ">");
+        map.put("&lt;", "<");
         fetch(path);
     }
 
@@ -71,7 +71,7 @@ public class Parser extends BaseDanmakuParser {
     }
 
     private void setText(String text) {
-        for (Map.Entry<String, String> entry : charMap.entrySet()) text = text.replace(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, String> entry : map.entrySet()) text = text.replace(entry.getKey(), entry.getValue());
         DanmakuUtils.fillText(item, text);
     }
 }
