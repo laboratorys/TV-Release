@@ -910,11 +910,11 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void showDanmaku() {
-        mBinding.danmaku.show();
+        mBinding.danmaku.setVisibility(View.VISIBLE);
     }
 
     private void hideDanmaku() {
-        mBinding.danmaku.hide();
+        mBinding.danmaku.setVisibility(View.GONE);
     }
 
     private void showControl(View view) {
