@@ -49,7 +49,7 @@ public class Parser extends BaseDanmakuParser {
     private void setParam(String[] values) {
         int type = Integer.parseInt(values[1]);
         long time = (long) (Float.parseFloat(values[0]) * 1000);
-        float size = Float.parseFloat(values[2]) * (mDispDensity - 0.6f);
+        float size = Float.parseFloat(values[2]) * (mDispDensity - 0.66f);
         int color = (int) ((0x00000000ff000000L | Long.parseLong(values[3])) & 0x00000000ffffffffL);
         item = mContext.mDanmakuFactory.createDanmaku(type, mContext);
         item.index = index++;
