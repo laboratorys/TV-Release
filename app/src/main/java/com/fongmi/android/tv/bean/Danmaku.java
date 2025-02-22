@@ -30,6 +30,7 @@ public class Danmaku {
         }
     }
 
+    //[0.000000,1,25,16777215]20250222
     public static Danmaku fromText(InputStream is) {
         Danmaku danmaku = new Danmaku();
         Pattern pattern = Pattern.compile("\\[(.*?)\\](.*)");
