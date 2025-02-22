@@ -36,6 +36,7 @@
     <string name="play_loop">Loop</string>
     <string name="play_timer">Timer</string>
     <string name="play_change">Change</string>
+    <string name="play_danmaku">Danmaku</string>
     <string name="play_forward">→</string>
     <string name="play_backward">←</string>
     <string name="play_invert">Invert</string>

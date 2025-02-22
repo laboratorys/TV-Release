@@ -296,6 +296,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mR4 = this::showEmpty;
         mPiP = new PiP();
         setRecyclerView();
+        checkDanmakuImg();
         setDanmakuView();
         setVideoView();
         setViewModel();
@@ -320,6 +321,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.control.play.setOnClickListener(view -> checkPlay());
         mBinding.control.next.setOnClickListener(view -> checkNext());
         mBinding.control.prev.setOnClickListener(view -> checkPrev());
+        mBinding.control.danmaku.setOnClickListener(view -> onDanmaku());
         mBinding.control.setting.setOnClickListener(view -> onSetting());
         mBinding.control.title.setOnLongClickListener(view -> onChange());
         mBinding.control.right.back.setOnClickListener(view -> onFull());
@@ -718,6 +720,12 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         else Notify.show(R.string.error_play_prev);
     }
 
+    private void onDanmaku() {
+        Setting.putDanmakuShow(!Setting.isDanmakuShow());
+        checkDanmakuImg();
+        toggleDanmaku();
+    }
+
     private void onSetting() {
         mControlDialog = ControlDialog.create().parent(mBinding).history(mHistory).player(mPlayers).parse(isUseParse()).show(this);
     }
@@ -919,6 +927,11 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.widget.text.setText("");
     }
 
+    private void toggleDanmaku() {
+        if (Setting.isDanmakuShow()) mBinding.danmaku.show();
+        else mBinding.danmaku.hide();
+    }
+
     private void showDanmaku() {
         mBinding.danmaku.setVisibility(View.VISIBLE);
     }
@@ -929,6 +942,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void showControl() {
         if (mPiP.isInMode(this)) return;
+        mBinding.control.danmaku.setVisibility(isLock() || !mBinding.danmaku.isPrepared() ? View.GONE : View.VISIBLE);
         mBinding.control.setting.setVisibility(mHistory == null || isFullscreen() ? View.GONE : View.VISIBLE);
         mBinding.control.right.rotate.setVisibility(isFullscreen() && !isLock() ? View.VISIBLE : View.GONE);
         mBinding.control.keep.setVisibility(mHistory == null || isFullscreen() ? View.GONE : View.VISIBLE);
@@ -1042,6 +1056,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void checkLockImg() {
         mBinding.control.right.lock.setImageResource(isLock() ? R.drawable.ic_control_lock_on : R.drawable.ic_control_lock_off);
+    }
+
+    private void checkDanmakuImg() {
+        mBinding.control.danmaku.setImageResource(Setting.isDanmakuShow() ? R.drawable.ic_control_danmaku_on : R.drawable.ic_control_danmaku_off);
     }
 
     private void createKeep() {

@@ -635,7 +635,8 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
         App.post(() -> {
             if (isPlaying()) danmakuView.start(getPosition());
             else danmakuView.pause();
-            danmakuView.show();
+            if (Setting.isDanmakuShow()) danmakuView.show();
+            else danmakuView.hide();
         });
     }
 

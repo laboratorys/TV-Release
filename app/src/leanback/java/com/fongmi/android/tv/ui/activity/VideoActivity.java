@@ -289,6 +289,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mR4 = this::showEmpty;
         setRecyclerView();
         setDanmakuView();
+        checkDanmaku();
         setVideoView();
         setViewModel();
         checkCast();
@@ -324,6 +325,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mBinding.control.decode.setOnClickListener(view -> onDecode());
         mBinding.control.ending.setOnClickListener(view -> onEnding());
         mBinding.control.change2.setOnClickListener(view -> onChange());
+        mBinding.control.danmaku.setOnClickListener(view -> onDanmaku());
         mBinding.control.opening.setOnClickListener(view -> onOpening());
         mBinding.control.speed.setOnLongClickListener(view -> onSpeedLong());
         mBinding.control.reset.setOnLongClickListener(view -> onResetToggle());
@@ -799,6 +801,12 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         return true;
     }
 
+    private void onDanmaku() {
+        Setting.putDanmakuShow(!Setting.isDanmakuShow());
+        mBinding.control.danmaku.setActivated(Setting.isDanmakuShow());
+        toggleDanmaku();
+    }
+
     private void onOpening() {
         long current = mPlayers.getPosition();
         long duration = mPlayers.getDuration();
@@ -911,15 +919,13 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mBinding.widget.center.setVisibility(View.GONE);
     }
 
-    private void showDanmaku() {
-        mBinding.danmaku.setVisibility(View.VISIBLE);
-    }
-
-    private void hideDanmaku() {
-        mBinding.danmaku.setVisibility(View.GONE);
+    private void toggleDanmaku() {
+        if (Setting.isDanmakuShow()) mBinding.danmaku.show();
+        else mBinding.danmaku.hide();
     }
 
     private void showControl(View view) {
+        mBinding.control.danmaku.setVisibility(mBinding.danmaku.isPrepared() ? View.VISIBLE : View.GONE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         view.requestFocus();
         setR1Callback();
@@ -1020,6 +1026,10 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void checkKeep() {
         mBinding.keep.setCompoundDrawablesWithIntrinsicBounds(Keep.find(getHistoryKey()) == null ? R.drawable.ic_detail_keep_off : R.drawable.ic_detail_keep_on, 0, 0, 0);
+    }
+
+    private void checkDanmaku() {
+        mBinding.control.danmaku.setActivated(Setting.isDanmakuShow());
     }
 
     private void createKeep() {
