@@ -1176,7 +1176,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void onError(ErrorEvent event) {
         mBinding.swipeLayout.setEnabled(true);
-        Track.delete(getHistoryKey());
+        Track.delete(mPlayers.getUrl());
         showError(event.getMsg());
         mClock.setCallback(null);
         mPlayers.resetTrack();
