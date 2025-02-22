@@ -392,7 +392,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, 4);
         mDanmakuContext.setDanmakuSync(new Sync(mPlayers));
         mDanmakuContext.setMaximumLines(maxLines).setScrollSpeedFactor(1.2f).setDanmakuTransparency(0.8f);
-        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(ResUtil.dp2px(8));
+        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(ResUtil.dp2px(8)).setScaleTextSize(0.8f);
     }
 
     private void setDecode() {
@@ -674,6 +674,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mBinding.video.setForeground(null);
         mBinding.video.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         mBinding.flag.setSelectedPosition(getFlagPosition());
+        mDanmakuContext.setScaleTextSize(0.8f);
         mKeyDown.setFull(true);
         setFullscreen(true);
         mFocus2 = null;
@@ -682,6 +683,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     private void exitFullscreen() {
         mBinding.video.setForeground(ResUtil.getDrawable(R.drawable.selector_video));
         mBinding.video.setLayoutParams(mFrameParams);
+        mDanmakuContext.setScaleTextSize(1.2f);
         getFocus1().requestFocus();
         mKeyDown.setFull(false);
         setFullscreen(false);

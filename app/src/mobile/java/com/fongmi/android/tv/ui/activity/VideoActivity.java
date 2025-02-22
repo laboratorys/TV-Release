@@ -395,7 +395,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, 4);
         mDanmakuContext.setDanmakuSync(new Sync(mPlayers));
         mDanmakuContext.setMaximumLines(maxLines).setScrollSpeedFactor(1.2f).setDanmakuTransparency(0.8f);
-        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(ResUtil.dp2px(8));
+        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(ResUtil.dp2px(8)).setScaleTextSize(0.8f);
     }
 
     private void setDecode() {
@@ -868,6 +868,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         setRequestedOrientation(mPlayers.isPortrait() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         mBinding.control.full.setVisibility(View.GONE);
         setRotate(mPlayers.isPortrait(), true);
+        mDanmakuContext.setScaleTextSize(1.2f);
         Util.hideSystemUI(this);
         App.post(mR3, 2000);
         hideControl();
@@ -879,6 +880,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         App.post(() -> mBinding.episode.scrollToPosition(mEpisodeAdapter.getPosition()), 50);
         mBinding.control.full.setVisibility(View.VISIBLE);
         mBinding.video.setLayoutParams(mFrameParams);
+        mDanmakuContext.setScaleTextSize(0.8f);
         setRotate(false, false);
         App.post(mR3, 2000);
         hideControl();
