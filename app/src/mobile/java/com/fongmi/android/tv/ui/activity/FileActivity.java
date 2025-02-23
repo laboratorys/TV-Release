@@ -33,7 +33,14 @@ public class FileActivity extends BaseActivity implements FileAdapter.OnClickLis
     @Override
     protected void initView(Bundle savedInstanceState) {
         setRecyclerView();
-        PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> update(Path.root()));
+        checkPermission();
+    }
+
+    private void checkPermission() {
+        PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> {
+            if (allGranted) update(Path.root());
+            else finish();
+        });
     }
 
     private void setRecyclerView() {
