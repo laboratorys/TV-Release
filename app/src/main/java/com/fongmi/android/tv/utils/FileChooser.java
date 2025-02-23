@@ -64,7 +64,7 @@ public class FileChooser {
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
         intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
-        if (intent.resolveActivity(App.get().getPackageManager()) == null) {
+        if (intent.resolveActivity(App.get().getPackageManager()) != null) {
             if (activity != null) activity.startActivityForResult(Intent.createChooser(intent, ""), code);
             if (fragment != null) fragment.startActivityForResult(Intent.createChooser(intent, ""), code);
         } else {

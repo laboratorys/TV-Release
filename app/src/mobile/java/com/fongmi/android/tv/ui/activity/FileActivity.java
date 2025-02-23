@@ -3,24 +3,22 @@ package com.fongmi.android.tv.ui.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 
-import androidx.leanback.widget.ArrayObjectAdapter;
-import androidx.leanback.widget.ItemBridgeAdapter;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.databinding.ActivityFileBinding;
+import com.fongmi.android.tv.ui.adapter.FileAdapter;
 import com.fongmi.android.tv.ui.base.BaseActivity;
-import com.fongmi.android.tv.ui.presenter.FilePresenter;
-import com.fongmi.android.tv.utils.ResUtil;
 import com.github.catvod.utils.Path;
 import com.permissionx.guolindev.PermissionX;
 
 import java.io.File;
 
-public class FileActivity extends BaseActivity implements FilePresenter.OnClickListener {
+public class FileActivity extends BaseActivity implements FileAdapter.OnClickListener {
 
     private ActivityFileBinding mBinding;
-    private ArrayObjectAdapter mAdapter;
+    private FileAdapter mAdapter;
     private File dir;
 
     private boolean isRoot() {
@@ -33,20 +31,19 @@ public class FileActivity extends BaseActivity implements FilePresenter.OnClickL
     }
 
     @Override
-    protected void initView() {
+    protected void initView(Bundle savedInstanceState) {
         setRecyclerView();
         PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> update(Path.root()));
     }
 
     private void setRecyclerView() {
         mBinding.recycler.setHasFixedSize(true);
-        mBinding.recycler.setVerticalSpacing(ResUtil.dp2px(16));
-        mBinding.recycler.setAdapter(new ItemBridgeAdapter(mAdapter = new ArrayObjectAdapter(new FilePresenter(this))));
+        mBinding.recycler.setAdapter(mAdapter = new FileAdapter(this));
     }
 
     private void update(File dir) {
-        mBinding.recycler.setSelectedPosition(0);
-        mAdapter.setItems(Path.list(this.dir = dir), null);
+        mBinding.recycler.scrollToPosition(0);
+        mAdapter.addAll(Path.list(this.dir = dir));
     }
 
     @Override

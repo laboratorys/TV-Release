@@ -1,21 +1,25 @@
-package com.fongmi.android.tv.ui.presenter;
+package com.fongmi.android.tv.ui.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.leanback.widget.Presenter;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.databinding.AdapterFileBinding;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-public class FilePresenter extends Presenter {
+public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
     private final OnClickListener mListener;
+    private final List<File> mItems;
 
-    public FilePresenter(OnClickListener listener) {
+    public FileAdapter(OnClickListener listener) {
+        this.mItems = new ArrayList<>();
         this.mListener = listener;
     }
 
@@ -24,29 +28,36 @@ public class FilePresenter extends Presenter {
         void onItemClick(File file);
     }
 
+    public void addAll(List<File> items) {
+        mItems.clear();
+        mItems.addAll(items);
+        notifyDataSetChanged();
+    }
+
     @Override
-    public Presenter.ViewHolder onCreateViewHolder(ViewGroup parent) {
+    public int getItemCount() {
+        return mItems.size();
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(AdapterFileBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
-    public void onBindViewHolder(Presenter.ViewHolder viewHolder, Object object) {
-        File file = (File) object;
-        ViewHolder holder = (ViewHolder) viewHolder;
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        File file = mItems.get(position);
         holder.binding.name.setText(file.getName());
         holder.binding.getRoot().setOnClickListener(v -> mListener.onItemClick(file));
         holder.binding.image.setImageResource(file.isDirectory() ? R.drawable.ic_folder : R.drawable.ic_file);
     }
 
-    @Override
-    public void onUnbindViewHolder(Presenter.ViewHolder viewHolder) {
-    }
-
-    public static class ViewHolder extends Presenter.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final AdapterFileBinding binding;
 
-        public ViewHolder(@NonNull AdapterFileBinding binding) {
+        ViewHolder(@NonNull AdapterFileBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
