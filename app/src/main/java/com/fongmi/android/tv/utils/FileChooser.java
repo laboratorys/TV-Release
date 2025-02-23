@@ -5,6 +5,8 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -21,6 +23,7 @@ import com.github.catvod.utils.Path;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.util.List;
 
 public class FileChooser {
 
@@ -64,7 +67,8 @@ public class FileChooser {
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
         intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
-        if (intent.resolveActivity(App.get().getPackageManager()) != null) {
+        List<ResolveInfo> resolveInfos = App.get().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (!resolveInfos.isEmpty() && !resolveInfos.get(0).activityInfo.packageName.contains("frameworkpackagestubs")) {
             if (activity != null) activity.startActivityForResult(Intent.createChooser(intent, ""), code);
             if (fragment != null) fragment.startActivityForResult(Intent.createChooser(intent, ""), code);
         } else {

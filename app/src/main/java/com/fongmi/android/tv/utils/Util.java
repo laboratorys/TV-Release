@@ -6,6 +6,7 @@ import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.IBinder;
@@ -156,7 +157,7 @@ public class Util {
 
     public static Intent getChooser(Intent intent) {
         List<ComponentName> components = new ArrayList<>();
-        for (ResolveInfo resolveInfo : App.get().getPackageManager().queryIntentActivities(intent, 0)) {
+        for (ResolveInfo resolveInfo : App.get().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)) {
             String pkgName = resolveInfo.activityInfo.packageName;
             if (pkgName.equals(App.get().getPackageName())) {
                 components.add(new ComponentName(pkgName, resolveInfo.activityInfo.name));
