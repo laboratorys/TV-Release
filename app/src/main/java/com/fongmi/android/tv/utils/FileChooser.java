@@ -1,5 +1,6 @@
 package com.fongmi.android.tv.utils;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.provider.MediaStore;
 import androidx.fragment.app.Fragment;
 
 import com.fongmi.android.tv.App;
+import com.fongmi.android.tv.ui.activity.PickerActivity;
 import com.github.catvod.utils.Path;
 
 import java.io.File;
@@ -24,10 +26,19 @@ public class FileChooser {
 
     public static final int REQUEST_PICK_FILE = 9999;
 
-    private final Fragment fragment;
+    private Activity activity;
+    private Fragment fragment;
+
+    public static FileChooser from(Activity activity) {
+        return new FileChooser(activity);
+    }
 
     public static FileChooser from(Fragment fragment) {
         return new FileChooser(fragment);
+    }
+
+    private FileChooser(Activity activity) {
+        this.activity = activity;
     }
 
     private FileChooser(Fragment fragment) {
@@ -47,14 +58,19 @@ public class FileChooser {
     }
 
     public void show(String mimeType, String[] mimeTypes, int code) {
-        Intent intent = new Intent(Util.isTvBox() ? Intent.ACTION_GET_CONTENT : Intent.ACTION_OPEN_DOCUMENT);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType(mimeType);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
         intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
-        if (intent.resolveActivity(App.get().getPackageManager()) == null) return;
-        if (fragment != null) fragment.startActivityForResult(Intent.createChooser(intent, ""), code);
+        if (intent.resolveActivity(App.get().getPackageManager()) == null) {
+            if (activity != null) activity.startActivityForResult(Intent.createChooser(intent, ""), code);
+            if (fragment != null) fragment.startActivityForResult(Intent.createChooser(intent, ""), code);
+        } else {
+            if (activity != null) activity.startActivityForResult(new Intent(activity, PickerActivity.class), code);
+            if (fragment != null) fragment.startActivityForResult(new Intent(fragment.getActivity(), PickerActivity.class), code);
+        }
     }
 
     public static boolean isValid(Context context, Uri uri) {
