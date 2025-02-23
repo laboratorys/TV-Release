@@ -655,6 +655,10 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mPlayers.start(result, getTimeout());
     }
 
+    private void checkControl() {
+        if (isVisible(mBinding.control.getRoot())) showControl();
+    }
+
     private void checkPlayImg() {
         mPiP.update(this, mPlayers.isPlaying());
         ActionEvent.update();
@@ -753,6 +757,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
                 break;
             case Player.STATE_READY:
                 hideProgress();
+                checkControl();
                 checkPlayImg();
                 mPlayers.reset();
                 break;

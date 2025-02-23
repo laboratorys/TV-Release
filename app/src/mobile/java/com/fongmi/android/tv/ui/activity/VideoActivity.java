@@ -1044,6 +1044,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mHistory.setPosition(replay ? C.TIME_UNSET : mHistory.getPosition());
     }
 
+    private void checkControl() {
+        if (isVisible(mBinding.control.getRoot())) showControl();
+    }
+
     private void checkPlayImg() {
         mBinding.control.play.setImageResource(mPlayers.isPlaying() ? androidx.media3.ui.R.drawable.exo_icon_pause : androidx.media3.ui.R.drawable.exo_icon_play);
         mPiP.update(this, mPlayers.isPlaying());
@@ -1132,6 +1136,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 break;
             case Player.STATE_READY:
                 hideProgress();
+                checkControl();
                 checkPlayImg();
                 mPlayers.reset();
                 break;
