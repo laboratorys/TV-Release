@@ -7,15 +7,15 @@ import androidx.annotation.NonNull;
 import androidx.leanback.widget.Presenter;
 
 import com.fongmi.android.tv.R;
-import com.fongmi.android.tv.databinding.AdapterPickerBinding;
+import com.fongmi.android.tv.databinding.AdapterFileBinding;
 
 import java.io.File;
 
-public class PickPresenter extends Presenter {
+public class FilePresenter extends Presenter {
 
     private final OnClickListener mListener;
 
-    public PickPresenter(OnClickListener listener) {
+    public FilePresenter(OnClickListener listener) {
         this.mListener = listener;
     }
 
@@ -26,7 +26,7 @@ public class PickPresenter extends Presenter {
 
     @Override
     public Presenter.ViewHolder onCreateViewHolder(ViewGroup parent) {
-        return new ViewHolder(AdapterPickerBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolder(AdapterFileBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
@@ -35,7 +35,7 @@ public class PickPresenter extends Presenter {
         ViewHolder holder = (ViewHolder) viewHolder;
         holder.binding.name.setText(file.getName());
         holder.binding.getRoot().setOnClickListener(v -> mListener.onItemClick(file));
-        holder.binding.image.setImageResource(file.isDirectory() ? R.drawable.ic_picker_folder : R.drawable.ic_picker_file);
+        holder.binding.image.setImageResource(file.isDirectory() ? R.drawable.ic_file_folder : R.drawable.ic_file_file);
     }
 
     @Override
@@ -44,9 +44,9 @@ public class PickPresenter extends Presenter {
 
     public static class ViewHolder extends Presenter.ViewHolder {
 
-        private final AdapterPickerBinding binding;
+        private final AdapterFileBinding binding;
 
-        public ViewHolder(@NonNull AdapterPickerBinding binding) {
+        public ViewHolder(@NonNull AdapterFileBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

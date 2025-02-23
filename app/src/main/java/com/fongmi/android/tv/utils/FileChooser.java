@@ -15,7 +15,7 @@ import android.provider.MediaStore;
 import androidx.fragment.app.Fragment;
 
 import com.fongmi.android.tv.App;
-import com.fongmi.android.tv.ui.activity.PickerActivity;
+import com.fongmi.android.tv.ui.activity.FileActivity;
 import com.github.catvod.utils.Path;
 
 import java.io.File;
@@ -68,8 +68,8 @@ public class FileChooser {
             if (activity != null) activity.startActivityForResult(Intent.createChooser(intent, ""), code);
             if (fragment != null) fragment.startActivityForResult(Intent.createChooser(intent, ""), code);
         } else {
-            if (activity != null) activity.startActivityForResult(new Intent(activity, PickerActivity.class), code);
-            if (fragment != null) fragment.startActivityForResult(new Intent(fragment.getActivity(), PickerActivity.class), code);
+            if (activity != null) activity.startActivityForResult(new Intent(activity, FileActivity.class), code);
+            if (fragment != null) fragment.startActivityForResult(new Intent(fragment.getActivity(), FileActivity.class), code);
         }
     }
 

@@ -7,17 +7,17 @@ import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ItemBridgeAdapter;
 import androidx.viewbinding.ViewBinding;
 
-import com.fongmi.android.tv.databinding.ActivityPickerBinding;
+import com.fongmi.android.tv.databinding.ActivityFileBinding;
 import com.fongmi.android.tv.ui.base.BaseActivity;
-import com.fongmi.android.tv.ui.presenter.PickPresenter;
+import com.fongmi.android.tv.ui.presenter.FilePresenter;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.github.catvod.utils.Path;
 
 import java.io.File;
 
-public class PickerActivity extends BaseActivity implements PickPresenter.OnClickListener {
+public class FileActivity extends BaseActivity implements FilePresenter.OnClickListener {
 
-    private ActivityPickerBinding mBinding;
+    private ActivityFileBinding mBinding;
     private ArrayObjectAdapter mAdapter;
     private File dir;
 
@@ -27,7 +27,7 @@ public class PickerActivity extends BaseActivity implements PickPresenter.OnClic
 
     @Override
     protected ViewBinding getBinding() {
-        return mBinding = ActivityPickerBinding.inflate(getLayoutInflater());
+        return mBinding = ActivityFileBinding.inflate(getLayoutInflater());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class PickerActivity extends BaseActivity implements PickPresenter.OnClic
     private void setRecyclerView() {
         mBinding.recycler.setHasFixedSize(true);
         mBinding.recycler.setVerticalSpacing(ResUtil.dp2px(16));
-        mBinding.recycler.setAdapter(new ItemBridgeAdapter(mAdapter = new ArrayObjectAdapter(new PickPresenter(this))));
+        mBinding.recycler.setAdapter(new ItemBridgeAdapter(mAdapter = new ArrayObjectAdapter(new FilePresenter(this))));
     }
 
     private void update(File dir) {

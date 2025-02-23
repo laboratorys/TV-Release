@@ -75,7 +75,7 @@
     <string name="setting_backup">备份</string>
     <string name="setting_restore">恢复</string>
     <string name="setting_version">版本</string>
-    <string name="setting_storage">权限</string>
+    <string name="setting_choose">选择</string>
     <string name="setting_off">关</string>
     <string name="setting_on">开</string>
 
