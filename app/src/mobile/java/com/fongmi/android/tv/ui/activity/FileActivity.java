@@ -51,6 +51,7 @@ public class FileActivity extends BaseActivity implements FileAdapter.OnClickLis
     private void update(File dir) {
         mBinding.recycler.scrollToPosition(0);
         mAdapter.addAll(Path.list(this.dir = dir));
+        mBinding.progressLayout.showContent(true, mAdapter.getItemCount());
     }
 
     @Override

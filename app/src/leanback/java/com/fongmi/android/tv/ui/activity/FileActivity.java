@@ -54,6 +54,7 @@ public class FileActivity extends BaseActivity implements FilePresenter.OnClickL
     private void update(File dir) {
         mBinding.recycler.setSelectedPosition(0);
         mAdapter.setItems(Path.list(this.dir = dir), null);
+        mBinding.progressLayout.showContent(true, mAdapter.size());
     }
 
     @Override
