@@ -47,6 +47,7 @@ public class Parser extends BaseDanmakuParser {
             Danmakus result = new Danmakus(IDanmakus.ST_BY_TIME);
             for (int i = 0; i < items.size(); i++) {
                 BaseDanmaku item = mContext.mDanmakuFactory.createDanmaku(items.get(i).getType(), mContext);
+                if (item.getType() == BaseDanmaku.TYPE_SPECIAL) continue;
                 DanmakuUtils.fillText(item, items.get(i).getText());
                 item.textShadowColor = items.get(i).getShadow();
                 item.textColor = items.get(i).getColor();
