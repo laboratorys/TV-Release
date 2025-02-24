@@ -168,7 +168,6 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     public String getUrl() {
         return url;
-
     }
 
     public Map<String, String> getHeaders() {
@@ -425,7 +424,6 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
             ErrorEvent.drm();
         } else {
             setMediaItem(result, timeout);
-            setDanmaku(danmakus = result.getDanmaku());
         }
     }
 
@@ -469,6 +467,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     private void setMediaItem(Result result, int timeout) {
         setMediaItem(result.getHeaders(), result.getRealUrl(), result.getFormat(), result.getDrm(), result.getSubs(), timeout);
+        setDanmaku(danmakus = result.getDanmaku());
     }
 
     private void setMediaItem(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, int timeout) {

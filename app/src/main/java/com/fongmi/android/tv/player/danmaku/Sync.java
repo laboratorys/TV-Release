@@ -6,26 +6,26 @@ import master.flame.danmaku.danmaku.model.AbsDanmakuSync;
 
 public class Sync extends AbsDanmakuSync {
 
-    private final Players players;
+    private final Players player;
     private long time;
 
-    public Sync(Players players) {
-        this.players = players;
+    public Sync(Players player) {
+        this.player = player;
         this.time = System.currentTimeMillis();
     }
 
     @Override
     public long getUptimeMillis() {
-        return players == null ? 0 : players.getPosition();
+        return player == null ? 0 : player.getPosition();
     }
 
     @Override
     public int getSyncState() {
-        if (players == null) return SYNC_STATE_HALT;
+        if (player == null) return SYNC_STATE_HALT;
         long current = System.currentTimeMillis();
         if (current - time < 1000) return SYNC_STATE_HALT;
         time = current;
-        return players.isPlaying() ? SYNC_STATE_PLAYING : SYNC_STATE_HALT;
+        return player.isPlaying() ? SYNC_STATE_PLAYING : SYNC_STATE_HALT;
     }
 
     @Override
