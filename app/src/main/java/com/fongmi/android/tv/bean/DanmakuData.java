@@ -19,14 +19,14 @@ public class DanmakuData {
         this.text = matcher.group(2);
     }
 
-    private void param(String parm, float density) throws Exception {
-        String[] params = parm.split(",");
+    private void param(String param, float density) throws Exception {
+        String[] params = param.split(",");
         if (params.length < 4) throw new Exception();
         this.type = Integer.parseInt(params[1]);
         this.time = (long) (Float.parseFloat(params[0]) * 1000);
         this.size = Float.parseFloat(params[2]) * (density - 0.6f);
-        this.color = (int) (0xFF000000L | Long.parseLong(params[3]) & 0xFFFFFF);
-        this.shadow = color == Color.BLACK ? Color.WHITE : Color.BLACK;
+        this.color = (int) ((0x00000000FF000000L | Long.parseLong(params[3])) & 0x00000000FFFFFFFFL);
+        this.shadow = color <= Color.BLACK ? Color.WHITE : Color.BLACK;
     }
 
     public int getType() {
