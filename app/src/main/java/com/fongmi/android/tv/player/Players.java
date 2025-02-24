@@ -83,7 +83,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     private Map<String, String> headers;
     private MediaSessionCompat session;
-    private DanmakuView danmakuView;
+    private DanmakuView danmaku;
     private ExoPlayer exoPlayer;
     private ParseJob parseJob;
     private PlayerView view;
@@ -141,7 +141,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     public void setDanmakuView(DanmakuView view) {
         view.setCallback(this);
-        danmakuView = view;
+        danmaku = view;
     }
 
     public ExoPlayer get() {
@@ -220,7 +220,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     public boolean haveDanmaku() {
-        return danmakuView != null && danmakuView.isPrepared();
+        return danmaku != null && danmaku.isPrepared();
     }
 
     public boolean isPlaying() {
@@ -327,8 +327,8 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     public void seekTo(long time) {
         if (exoPlayer != null) exoPlayer.seekTo(time);
-        if (haveDanmaku()) danmakuView.seekTo(time);
-        if (haveDanmaku()) danmakuView.hide();
+        if (haveDanmaku()) danmaku.seekTo(time);
+        if (haveDanmaku()) danmaku.hide();
     }
 
     public void seekToDefaultPosition() {
@@ -342,17 +342,17 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     public void play() {
         if (exoPlayer != null) exoPlayer.play();
-        if (haveDanmaku()) danmakuView.resume();
+        if (haveDanmaku()) danmaku.resume();
     }
 
     public void pause() {
         if (exoPlayer != null) exoPlayer.pause();
-        if (haveDanmaku()) danmakuView.pause();
+        if (haveDanmaku()) danmaku.pause();
     }
 
     public void stop() {
         if (exoPlayer != null) exoPlayer.stop();
-        if (haveDanmaku()) danmakuView.stop();
+        if (haveDanmaku()) danmaku.stop();
         stopParse();
     }
 
@@ -633,10 +633,10 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     @Override
     public void prepared() {
         App.post(() -> {
-            if (isPlaying()) danmakuView.start(getPosition());
-            else danmakuView.pause();
-            if (Setting.isDanmakuShow()) danmakuView.show();
-            else danmakuView.hide();
+            if (isPlaying()) danmaku.start(getPosition());
+            else danmaku.pause();
+            if (Setting.isDanmakuShow()) danmaku.show();
+            else danmaku.hide();
         });
     }
 

@@ -558,9 +558,14 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void checkDanmaku(List<Danmaku> items) {
-        mBinding.danmaku.release();
         mBinding.danmaku.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
-        if (!items.isEmpty()) App.execute(() -> mBinding.danmaku.prepare(new Parser(items.get(0).getUrl()), mDanmakuContext));
+        if (items.isEmpty()) mBinding.danmaku.release();
+        else checkDanmaku(items.get(0).getUrl());
+    }
+
+    private void checkDanmaku(String path) {
+        mBinding.danmaku.release();
+        if (!TextUtils.isEmpty(path)) App.execute(() -> mBinding.danmaku.prepare(new Parser(path), mDanmakuContext));
     }
 
     @Override
@@ -1120,7 +1125,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         if (isRedirect()) return;
         if (event.getType() == RefreshEvent.Type.DETAIL) getDetail();
         else if (event.getType() == RefreshEvent.Type.PLAYER) onRefresh();
-        else if (event.getType() == RefreshEvent.Type.DANMAKU) checkDanmaku(Danmaku.from(event.getPath()));
+        else if (event.getType() == RefreshEvent.Type.DANMAKU) checkDanmaku(event.getPath());
         else if (event.getType() == RefreshEvent.Type.SUBTITLE) mPlayers.setSub(Sub.from(event.getPath()));
     }
 
