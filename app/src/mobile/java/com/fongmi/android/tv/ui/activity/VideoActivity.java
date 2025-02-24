@@ -297,7 +297,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mR4 = this::showEmpty;
         mPiP = new PiP();
         setRecyclerView();
-        checkDanmakuImg();
         setDanmakuView();
         setVideoView();
         setViewModel();
@@ -957,6 +956,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.control.bottom.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
+        checkDanmakuImg();
         setR1Callback();
         checkPlayImg();
     }

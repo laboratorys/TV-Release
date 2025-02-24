@@ -290,7 +290,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mR4 = this::showEmpty;
         setRecyclerView();
         setDanmakuView();
-        checkDanmaku();
         setVideoView();
         setViewModel();
         checkCast();
@@ -927,6 +926,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void showControl(View view) {
         mBinding.control.danmaku.setVisibility(mBinding.danmaku.isPrepared() ? View.VISIBLE : View.GONE);
+        mBinding.control.danmaku.setActivated(Setting.isDanmakuShow());
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         view.requestFocus();
         setR1Callback();
@@ -1027,10 +1027,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void checkKeep() {
         mBinding.keep.setCompoundDrawablesWithIntrinsicBounds(Keep.find(getHistoryKey()) == null ? R.drawable.ic_detail_keep_off : R.drawable.ic_detail_keep_on, 0, 0, 0);
-    }
-
-    private void checkDanmaku() {
-        mBinding.control.danmaku.setActivated(Setting.isDanmakuShow());
     }
 
     private void createKeep() {
