@@ -1,14 +1,15 @@
 package com.fongmi.android.tv.player.danmaku;
 
-import android.graphics.Color;
-
-import com.fongmi.android.tv.bean.Danmaku;
+import com.fongmi.android.tv.bean.DanmakuData;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.model.IDanmakus;
@@ -18,60 +19,50 @@ import master.flame.danmaku.danmaku.util.DanmakuUtils;
 
 public class Parser extends BaseDanmakuParser {
 
-    private final Map<String, String> map;
-    private BaseDanmaku item;
-    private Danmaku danmaku;
-    private int index;
+    private static final Pattern XML = Pattern.compile("p=\"([^\"]+)\"[^>]*>([^<]+)<");
+    private static final Pattern TXT = Pattern.compile("\\[(.*?)\\](.*)");
+    private final String path;
 
     public Parser(String path) {
-        map = new HashMap<>();
-        map.put("&amp;", "&");
-        map.put("&quot;", "\"");
-        map.put("&gt;", ">");
-        map.put("&lt;", "<");
-        fetch(path);
-    }
-
-    private void fetch(String path) {
-        try {
-            danmaku = Danmaku.fromXml(OkHttp.newCall(UrlUtil.convert(path)).execute().body().byteStream());
-        } catch (IOException e) {
-            danmaku = new Danmaku();
-        }
+        this.path = path;
     }
 
     @Override
-    protected Danmakus parse() {
-        Danmakus result = new Danmakus(IDanmakus.ST_BY_TIME);
-        for (Danmaku.Data data : danmaku.getData()) {
-            String[] values = data.getParam().split(",");
-            if (values.length < 4) continue;
-            setParam(values);
-            setText(data.getText());
-            synchronized (result.obtainSynchronizer()) {
-                result.addItem(item);
+    public Danmakus parse() {
+        String line;
+        Pattern pattern = null;
+        List<DanmakuData> items = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(OkHttp.newCall(UrlUtil.convert(path)).execute().body().byteStream()))) {
+            while ((line = br.readLine()) != null) {
+                if (pattern == null) pattern = line.startsWith("<?") ? XML : TXT;
+                Matcher matcher = pattern.matcher(line);
+                while (matcher.find() && matcher.groupCount() == 2) {
+                    try {
+                        items.add(new DanmakuData(matcher));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
+            Danmakus result = new Danmakus(IDanmakus.ST_BY_TIME);
+            for (int i = 0; i < items.size(); i++) {
+                BaseDanmaku item = mContext.mDanmakuFactory.createDanmaku(items.get(i).getType(), mContext);
+                DanmakuUtils.fillText(item, items.get(i).getText());
+                item.textShadowColor = items.get(i).getShadow();
+                item.textColor = items.get(i).getColor();
+                item.flags = mContext.mGlobalFlagValues;
+                item.textSize = items.get(i).getSize();
+                item.setTime(items.get(i).getTime());
+                item.setTimer(mTimer);
+                item.index = i;
+                synchronized (result.obtainSynchronizer()) {
+                    result.addItem(item);
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        return result;
-    }
-
-    private void setParam(String[] values) {
-        int type = Integer.parseInt(values[1]);
-        long time = (long) (Float.parseFloat(values[0]) * 1000);
-        float size = Float.parseFloat(values[2]) * (mDispDensity - 0.6f);
-        int color = (int) ((0x00000000ff000000L | Long.parseLong(values[3])) & 0x00000000ffffffffL);
-        item = mContext.mDanmakuFactory.createDanmaku(type, mContext);
-        item.index = index++;
-        item.setTime(time);
-        item.setTimer(mTimer);
-        item.textSize = size;
-        item.textColor = color;
-        item.textShadowColor = color <= Color.BLACK ? Color.WHITE : Color.BLACK;
-        item.flags = mContext.mGlobalFlagValues;
-    }
-
-    private void setText(String text) {
-        for (Map.Entry<String, String> entry : map.entrySet()) text = text.replace(entry.getKey(), entry.getValue());
-        DanmakuUtils.fillText(item, text);
     }
 }

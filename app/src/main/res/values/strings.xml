@@ -36,7 +36,6 @@
     <string name="play_loop">Loop</string>
     <string name="play_timer">Timer</string>
     <string name="play_change">Change</string>
-    <string name="play_danmaku">Danmaku</string>
     <string name="play_forward">→</string>
     <string name="play_backward">←</string>
     <string name="play_invert">Invert</string>
@@ -52,6 +51,10 @@
     <string name="play_switch_parse">Switching parse to <xliff:g name="name">%s</xliff:g></string>
     <string name="play_switch_flag">Switching flag to <xliff:g name="name">%s</xliff:g></string>
     <string name="play_switch_site">Switching site to <xliff:g name="name">%s</xliff:g></string>
+
+    <!-- Danmaku -->
+    <string name="danmaku">Danmaku</string>
+    <string name="danmaku_select">Select danmaku</string>
 
     <!-- Parse -->
     <string name="parse">Parse</string>

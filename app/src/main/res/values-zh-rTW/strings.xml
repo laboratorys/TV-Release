@@ -36,7 +36,6 @@
     <string name="play_loop">循環</string>
     <string name="play_timer">定時</string>
     <string name="play_change">換源</string>
-    <string name="play_danmaku">彈幕</string>
     <string name="play_forward">→</string>
     <string name="play_backward">←</string>
     <string name="play_invert">反轉</string>
@@ -52,6 +51,10 @@
     <string name="play_switch_parse">正在切换解析至「<xliff:g name="name">%s</xliff:g>」</string>
     <string name="play_switch_flag">正在切換線路至「<xliff:g name="name">%s</xliff:g>」</string>
     <string name="play_switch_site">正在切換站源至「<xliff:g name="name">%s</xliff:g>」</string>
+
+    <!-- Danmaku -->
+    <string name="danmaku">彈幕</string>
+    <string name="danmaku_select">選擇彈幕</string>
 
     <!-- Parse -->
     <string name="parse">解析</string>

@@ -223,9 +223,10 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:nextFocusDown="@id/timeBar"
-                android:text="@string/play_danmaku"
+                android:text="@string/danmaku"
                 android:textColor="@color/text"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/loop"
