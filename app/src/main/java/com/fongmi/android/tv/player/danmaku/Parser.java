@@ -34,7 +34,7 @@ public class Parser extends BaseDanmakuParser {
 
     private void fetch(String path) {
         try {
-            danmaku = Danmaku.objectFrom(OkHttp.newCall(UrlUtil.convert(path)).execute().body().byteStream());
+            danmaku = Danmaku.fromXml(OkHttp.newCall(UrlUtil.convert(path)).execute().body().byteStream());
         } catch (IOException e) {
             danmaku = new Danmaku();
         }

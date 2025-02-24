@@ -44,14 +44,6 @@ public abstract class Spider {
         return "";
     }
 
-    public String searchDanmaku(String name) throws Exception {
-        return "";
-    }
-
-    public String searchSubtitle(String name) throws Exception {
-        return "";
-    }
-
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         return "";
     }

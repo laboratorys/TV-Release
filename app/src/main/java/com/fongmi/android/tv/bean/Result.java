@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Setting;
+import com.fongmi.android.tv.gson.DanmakuAdapter;
 import com.fongmi.android.tv.gson.FilterAdapter;
 import com.fongmi.android.tv.gson.MsgAdapter;
 import com.fongmi.android.tv.gson.UrlAdapter;
@@ -55,6 +56,10 @@ public class Result implements Parcelable {
     @JsonAdapter(MsgAdapter.class)
     private String msg;
 
+    @SerializedName("danmaku")
+    @JsonAdapter(DanmakuAdapter.class)
+    private List<Danmaku> danmaku;
+
     @SerializedName("subs")
     private List<Sub> subs;
     @SerializedName("header")
@@ -67,8 +72,6 @@ public class Result implements Parcelable {
     private String flag;
     @SerializedName("desc")
     private String desc;
-    @SerializedName("danmaku")
-    private String danmaku;
     @SerializedName("format")
     private String format;
     @SerializedName("click")
@@ -231,8 +234,8 @@ public class Result implements Parcelable {
         return TextUtils.isEmpty(desc) ? "" : desc;
     }
 
-    public String getDanmaku() {
-        return !Setting.isDanmakuLoad() || TextUtils.isEmpty(danmaku) ? "" : danmaku;
+    public List<Danmaku> getDanmaku() {
+        return !Setting.isDanmakuLoad() || danmaku == null ? new ArrayList<>() : danmaku;
     }
 
     public String getFormat() {

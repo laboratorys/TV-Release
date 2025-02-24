@@ -2,6 +2,8 @@ package com.fongmi.android.tv.bean;
 
 import android.text.TextUtils;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
@@ -22,7 +24,19 @@ public class Danmaku {
     @ElementList(entry = "d", required = false, inline = true)
     private List<Data> data;
 
-    public static Danmaku objectFrom(InputStream is) {
+    @SerializedName("name")
+    private String name;
+    @SerializedName("url")
+    private String url;
+
+    public static List<Danmaku> from(String path) {
+        Danmaku danmaku = new Danmaku();
+        danmaku.setName(path);
+        danmaku.setUrl(path);
+        return List.of(danmaku);
+    }
+
+    public static Danmaku fromXml(InputStream is) {
         try {
             return new Persister().read(Danmaku.class, is);
         } catch (Exception e) {
@@ -48,6 +62,22 @@ public class Danmaku {
 
     public List<Data> getData() {
         return data = data == null ? new ArrayList<>() : data;
+    }
+
+    public String getUrl() {
+        return TextUtils.isEmpty(url) ? "" : url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getName() {
+        return TextUtils.isEmpty(name) ? getUrl() : name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public static class Data {
