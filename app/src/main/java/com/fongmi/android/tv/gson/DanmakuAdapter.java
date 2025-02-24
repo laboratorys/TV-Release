@@ -14,7 +14,9 @@ public class DanmakuAdapter implements JsonDeserializer<List<Danmaku>> {
 
     @Override
     public List<Danmaku> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        if (json.isJsonPrimitive()) return Danmaku.from(json.getAsString());
-        return App.gson().fromJson(json, typeOfT);
+        if (!json.isJsonPrimitive()) return App.gson().fromJson(json, typeOfT);
+        String text = json.getAsString().trim();
+        if (text.startsWith("[")) return App.gson().fromJson(text, typeOfT);
+        else return Danmaku.from(text);
     }
 }
