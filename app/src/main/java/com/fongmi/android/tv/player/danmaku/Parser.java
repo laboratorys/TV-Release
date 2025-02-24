@@ -34,7 +34,7 @@ public class Parser extends BaseDanmakuParser {
         List<DanmakuData> items = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(OkHttp.newCall(UrlUtil.convert(path)).execute().body().byteStream()))) {
             while ((line = br.readLine()) != null) {
-                if (pattern == null) pattern = line.startsWith("<?") ? XML : TXT;
+                if (pattern == null) pattern = line.startsWith("<") ? XML : TXT;
                 Matcher matcher = pattern.matcher(line);
                 while (matcher.find() && matcher.groupCount() == 2) {
                     try {
