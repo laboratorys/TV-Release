@@ -38,7 +38,7 @@ public class Parser extends BaseDanmakuParser {
                 Matcher matcher = pattern.matcher(line);
                 while (matcher.find() && matcher.groupCount() == 2) {
                     try {
-                        items.add(new DanmakuData(matcher));
+                        items.add(new DanmakuData(matcher, mDispDensity));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
