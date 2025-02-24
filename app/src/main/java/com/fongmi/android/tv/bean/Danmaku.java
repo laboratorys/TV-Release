@@ -17,7 +17,6 @@ public class Danmaku {
 
     public static List<Danmaku> from(String path) {
         Danmaku danmaku = new Danmaku();
-        danmaku.setSelected(true);
         danmaku.setName(path);
         danmaku.setUrl(path);
         return List.of(danmaku);

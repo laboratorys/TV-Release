@@ -481,8 +481,9 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     private void setDanmaku(List<Danmaku> items) {
         danmaku.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
-        if (items.isEmpty()) danmaku.release();
-        else setDanmaku(items.get(0).getUrl());
+        if (!items.isEmpty()) setDanmaku(items.get(0).getUrl());
+        if (!items.isEmpty()) items.get(0).setSelected(true);
+        else danmaku.release();
     }
 
     public void setDanmaku(String path) {
