@@ -36,8 +36,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.NextRenderersFactory;
-import io.github.peerless2012.ass.media.AssHandler;
-import io.github.peerless2012.ass.media.parser.AssSubtitleParserFactory;
 
 public class ExoUtil {
 
