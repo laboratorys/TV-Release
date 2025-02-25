@@ -2,6 +2,7 @@ package com.fongmi.android.tv.gson;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.bean.Danmaku;
+import com.github.catvod.utils.Json;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -16,7 +17,7 @@ public class DanmakuAdapter implements JsonDeserializer<List<Danmaku>> {
     public List<Danmaku> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         if (!json.isJsonPrimitive()) return App.gson().fromJson(json, typeOfT);
         String text = json.getAsString().trim();
-        if (text.startsWith("[")) return App.gson().fromJson(text, typeOfT);
+        if (Json.isArray(text)) return App.gson().fromJson(text, typeOfT);
         else return Danmaku.from(text);
     }
 }

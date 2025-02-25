@@ -1,6 +1,5 @@
 package com.fongmi.android.tv.bean;
 
-import android.net.Uri;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,6 @@ import androidx.room.PrimaryKey;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.R;
-import com.fongmi.android.tv.api.XtreamParser;
 import com.fongmi.android.tv.api.loader.BaseLoader;
 import com.fongmi.android.tv.db.AppDatabase;
 import com.fongmi.android.tv.gson.ExtAdapter;
@@ -313,10 +311,6 @@ public class Live {
         this.width = width;
     }
 
-    public boolean isXtream() {
-        return !getUsername().isEmpty() && !getPassword().isEmpty();
-    }
-
     public boolean isEmpty() {
         return getName().isEmpty();
     }
@@ -357,14 +351,6 @@ public class Live {
         setBoot(item.isBoot());
         setPass(item.isPass());
         setKeep(item.getKeep());
-        return this;
-    }
-
-    public Live check() {
-        Uri uri = Uri.parse(getUrl());
-        boolean xtream = XtreamParser.isVerify(uri);
-        if (xtream) setUsername(uri.getQueryParameter("username"));
-        if (xtream) setPassword(uri.getQueryParameter("password"));
         return this;
     }
 
