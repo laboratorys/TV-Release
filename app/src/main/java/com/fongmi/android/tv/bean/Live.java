@@ -275,6 +275,17 @@ public class Live {
         this.width = width;
     }
 
+    public String getEpgApi() {
+        for (String url : getEpg().split(",")) if (url.contains("{")) return url;
+        return getEpg();
+    }
+
+    public List<String> getEpgXml() {
+        List<String> items = new ArrayList<>();
+        for (String epg : getEpg().split(",")) if (!epg.contains("{") && (epg.contains("xml") || epg.contains("gz"))) items.add(epg);
+        return items;
+    }
+
     public boolean isEmpty() {
         return getName().isEmpty();
     }

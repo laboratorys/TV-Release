@@ -32,7 +32,6 @@ public class EpgParser {
     private static final SimpleDateFormat formatFull = new SimpleDateFormat("yyyyMMddHHmmss Z", Locale.getDefault());
 
     public static boolean start(Live live, String url) throws Exception {
-        if (!url.contains("xml") && !url.contains("gz")) return false;
         File file = Path.epg(Uri.parse(url).getLastPathSegment());
         if (shouldDownload(file)) Download.create(url, file).start();
         if (file.getName().endsWith(".gz")) readGzip(live, file);
