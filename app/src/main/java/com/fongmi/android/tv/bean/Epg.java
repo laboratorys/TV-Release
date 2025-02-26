@@ -27,7 +27,7 @@ public class Epg {
     private int width;
 
     public static Epg objectFrom(String str, String key, SimpleDateFormat format) throws Exception {
-        if (!Json.isObj(key)) return EpgParser.getEpg(str, key);
+        if (!Json.isObj(str)) return EpgParser.getEpg(str, key);
         Epg item = App.gson().fromJson(str, Epg.class);
         item.setTime(format);
         item.setKey(key);
