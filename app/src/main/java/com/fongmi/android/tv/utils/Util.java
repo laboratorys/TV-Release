@@ -48,6 +48,12 @@ public class Util {
         window.getDecorView().setSystemUiVisibility(flags);
     }
 
+    public static void showKeyboard(View view) {
+        if (!view.requestFocus()) return;
+        InputMethodManager imm = (InputMethodManager) App.get().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) view.postDelayed(() -> imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT), 250);
+    }
+
     public static void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) App.get().getSystemService(Context.INPUT_METHOD_SERVICE);
         IBinder windowToken = view.getWindowToken();
