@@ -80,13 +80,13 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     public static final int SOFT = 0;
     public static final int HARD = 1;
 
+    private final DanmakuContext context;
     private final StringBuilder builder;
     private final Formatter formatter;
     private final Runnable runnable;
 
     private Map<String, String> headers;
     private MediaSessionCompat session;
-    private DanmakuContext context;
     private List<Danmaku> danmakus;
     private DanmakuView danmaku;
     private ExoPlayer exoPlayer;
@@ -146,10 +146,10 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
         (danmaku = view).setCallback(this);
         context.setDanmakuSync(new Sync(this));
         HashMap<Integer, Integer> maxLines = new HashMap<>();
-        maxLines.put(BaseDanmaku.TYPE_FIX_TOP, 4);
-        maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, 4);
-        maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, 4);
-        maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, 4);
+        maxLines.put(BaseDanmaku.TYPE_FIX_TOP, 2);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, 2);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, 2);
+        maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, 2);
         context.setMaximumLines(maxLines).setScrollSpeedFactor(1.2f).setDanmakuTransparency(0.8f);
         context.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(ResUtil.dp2px(8));
     }
