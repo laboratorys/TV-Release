@@ -52,7 +52,7 @@ public class LiveParser {
     }
 
     private static String getText(Live live) throws Exception {
-        if (live.getType() == 3) return live.spider().liveContent(live.getUrl());
+        if (!live.getApi().isEmpty()) return live.spider().liveContent(live.getUrl());
         return OkHttp.string(UrlUtil.convert(live.getUrl()), live.getHeaders());
     }
 

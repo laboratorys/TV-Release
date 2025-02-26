@@ -77,23 +77,11 @@ public class Live {
     private String referer;
 
     @Ignore
-    @SerializedName("username")
-    private String username;
-
-    @Ignore
-    @SerializedName("password")
-    private String password;
-
-    @Ignore
     @SerializedName("timeZone")
     private String timeZone;
 
     @SerializedName("keep")
     private String keep;
-
-    @Ignore
-    @SerializedName("type")
-    private Integer type;
 
     @Ignore
     @SerializedName("timeout")
@@ -219,28 +207,8 @@ public class Live {
         return TextUtils.isEmpty(referer) ? "" : referer;
     }
 
-    public String getUsername() {
-        return TextUtils.isEmpty(username) ? "" : username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return TextUtils.isEmpty(password) ? "" : password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getTimeZone() {
         return TextUtils.isEmpty(timeZone) ? "" : timeZone;
-    }
-
-    public void setTimeZone(String timeZone) {
-        this.timeZone = timeZone;
     }
 
     public String getKeep() {
@@ -249,10 +217,6 @@ public class Live {
 
     public void setKeep(String keep) {
         this.keep = keep;
-    }
-
-    public Integer getType() {
-        return type == null ? 0 : type;
     }
 
     public Integer getTimeout() {
