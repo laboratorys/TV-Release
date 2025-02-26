@@ -90,17 +90,9 @@ public class EpgParser {
 
     public static Epg getEpg(String xml, String key) throws Exception {
         Tv tv = new Persister().read(Tv.class, xml, false);
-        Epg epg = Epg.create(key, getDate(tv.getDate()));
+        Epg epg = Epg.create(key, formatDate.format(formatFull.parse(tv.getDate())));
         for (Tv.Programme programme : tv.getProgramme()) epg.getList().add(getEpgData(programme));
         return epg;
-    }
-
-    private static String getDate(String date) {
-        try {
-            return formatDate.format(formatFull.parse(date));
-        } catch (Exception e) {
-            return formatDate.format(new Date());
-        }
     }
 
     private static EpgData getEpgData(Tv.Programme programme) throws Exception {
