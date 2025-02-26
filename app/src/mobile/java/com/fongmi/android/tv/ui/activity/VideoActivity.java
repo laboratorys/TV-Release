@@ -1111,7 +1111,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
             case PlayerEvent.TRACK:
                 setMetadata();
                 setTrackVisible();
-                setDanmakuVisiable();
                 mClock.setCallback(this);
                 break;
             case PlayerEvent.SIZE:
@@ -1149,11 +1148,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.control.action.text.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_TEXT) || mPlayers.isVod() ? View.VISIBLE : View.GONE);
         mBinding.control.action.audio.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_AUDIO) ? View.VISIBLE : View.GONE);
         mBinding.control.action.video.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_VIDEO) ? View.VISIBLE : View.GONE);
-        if (mControlDialog != null && mControlDialog.isVisible()) mControlDialog.setTrackVisible();
-    }
-
-    private void setDanmakuVisiable() {
         mBinding.control.action.danmaku.setVisibility(mPlayers.haveDanmaku() ? View.VISIBLE : View.GONE);
+        if (mControlDialog != null && mControlDialog.isVisible()) mControlDialog.setTrackVisible();
     }
 
     private void setMetadata() {

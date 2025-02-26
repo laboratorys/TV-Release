@@ -1068,7 +1068,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
             case PlayerEvent.TRACK:
                 setMetadata();
                 setTrackVisible();
-                setDanmakuVisiable();
                 mClock.setCallback(this);
                 break;
             case PlayerEvent.SIZE:
@@ -1095,9 +1094,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mBinding.control.text.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_TEXT) || mPlayers.isVod() ? View.VISIBLE : View.GONE);
         mBinding.control.audio.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_AUDIO) ? View.VISIBLE : View.GONE);
         mBinding.control.video.setVisibility(mPlayers.haveTrack(C.TRACK_TYPE_VIDEO) ? View.VISIBLE : View.GONE);
-    }
-
-    private void setDanmakuVisiable() {
         mBinding.control.danmaku.setVisibility(mPlayers.haveDanmaku() ? View.VISIBLE : View.GONE);
     }
 
