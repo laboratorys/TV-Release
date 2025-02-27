@@ -40,6 +40,7 @@ public class Download {
 
     public void cancel() {
         OkHttp.cancel(url);
+        Path.clear(file);
         callback = null;
     }
 
