@@ -174,7 +174,7 @@ public class LiveConfig {
         } catch (Throwable e) {
             e.printStackTrace();
         } finally {
-            App.post(callback::success);
+            if (callback != null) App.post(callback::success);
         }
     }
 
