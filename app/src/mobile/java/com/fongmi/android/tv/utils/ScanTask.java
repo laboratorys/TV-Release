@@ -46,7 +46,7 @@ public class ScanTask {
 
     private void init() {
         if (executor != null) executor.shutdownNow();
-        executor = Executors.newFixedThreadPool(10);
+        executor = Executors.newCachedThreadPool();
         devices.clear();
     }
 
@@ -71,8 +71,9 @@ public class ScanTask {
 
     private List<String> getUrl(List<String> ips) {
         Set<String> urls = new HashSet<>(ips);
-        String base = Server.get().getAddress().replaceAll("\\d+$", "");
-        for (int i = 1; i < 256; i++) urls.add(base + i + ":" + 9978);
+        String local = Server.get().getAddress();
+        String base = local.substring(0, local.lastIndexOf(".") + 1);
+        for (int i = 1; i < 256; i++) urls.add(base + i + ":9978");
         return new ArrayList<>(urls);
     }
 
