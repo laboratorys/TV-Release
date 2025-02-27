@@ -43,8 +43,10 @@ import com.fongmi.android.tv.bean.Track;
 import com.fongmi.android.tv.event.ActionEvent;
 import com.fongmi.android.tv.event.ErrorEvent;
 import com.fongmi.android.tv.event.PlayerEvent;
+import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.impl.ParseCallback;
 import com.fongmi.android.tv.impl.SessionCallback;
+import com.fongmi.android.tv.player.danmaku.Loader;
 import com.fongmi.android.tv.player.danmaku.Parser;
 import com.fongmi.android.tv.player.danmaku.Sync;
 import com.fongmi.android.tv.player.exo.ExoUtil;
@@ -54,6 +56,7 @@ import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.fongmi.android.tv.utils.Util;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
 import com.google.common.net.HttpHeaders;
 import com.orhanobut.logger.Logger;
@@ -67,11 +70,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import master.flame.danmaku.controller.DrawHandler;
+import master.flame.danmaku.danmaku.loader.ILoader;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.model.DanmakuTimer;
 import master.flame.danmaku.danmaku.model.IDisplayer;
 import master.flame.danmaku.danmaku.model.android.DanmakuContext;
 import master.flame.danmaku.ui.widget.DanmakuView;
+import okhttp3.Call;
+import okhttp3.Response;
 
 public class Players implements Player.Listener, ParseCallback, DrawHandler.Callback {
 
@@ -488,7 +494,20 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     public void setDanmaku(String path) {
         danmaku.release();
-        if (!TextUtils.isEmpty(path)) danmaku.prepare(new Parser(path), context);
+        OkHttp.cancel("danmaku");
+        if (TextUtils.isEmpty(path)) return;
+        OkHttp.newCall(path, "danmaku").enqueue(new Callback() {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                try {
+                    ILoader loader = Loader.create();
+                    loader.load(response.body().byteStream());
+                    danmaku.prepare(new Parser().load(loader.getDataSource()), context);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void setDanmakuSize(float size) {
