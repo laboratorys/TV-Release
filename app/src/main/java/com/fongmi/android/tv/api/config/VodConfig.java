@@ -126,7 +126,7 @@ public class VodConfig {
     }
 
     private void checkJson(JsonObject object, Callback callback) {
-        if (object.has("msg") && callback != null) {
+        if (object.has("msg")) {
             App.post(() -> callback.error(object.get("msg").getAsString()));
         } else if (object.has("urls")) {
             parseDepot(object, callback);
