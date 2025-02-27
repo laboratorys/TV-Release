@@ -648,6 +648,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     @Override
     public void onPlaybackStateChanged(int state) {
+        if (state == Player.STATE_BUFFERING && isDanmakuPrepared()) danmaku.pause();
         if (state == Player.STATE_READY && isDanmakuPrepared()) prepared();
         PlayerEvent.state(state);
     }
