@@ -16,7 +16,6 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -469,7 +468,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     private void setMediaItem(Result result, int timeout) {
         setMediaItem(result.getHeaders(), result.getRealUrl(), result.getFormat(), result.getDrm(), result.getSubs(), timeout);
-        setDanmaku(danmakus = result.getDanmaku());
+        setDanmaku(result.getDanmaku());
     }
 
     private void setMediaItem(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, int timeout) {
@@ -481,17 +480,18 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
         prepare();
     }
 
-    private void setDanmaku(List<Danmaku> items) {
+    public void setDanmaku(List<Danmaku> items) {
+        danmakus = items;
+        danmaku.release();
         danmaku.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
-        if (!items.isEmpty()) setDanmaku(items.get(0).getUrl());
+        if (!items.isEmpty()) App.execute(() -> danmaku.prepare(new Parser().load(new Loader(items.get(0)).getDataSource()), context));
         if (!items.isEmpty()) items.get(0).setSelected(true);
-        else danmaku.release();
     }
 
-    public void setDanmaku(String path) {
-        App.execute(() -> danmaku.prepare(new Parser().load(new Loader(path).getDataSource()), context));
-        danmaku.setVisibility(path.isEmpty() ? View.GONE : View.VISIBLE);
+    public void setDanmaku(Danmaku item) {
         danmaku.release();
+        danmaku.setVisibility(item.isEmpty() ? View.GONE : View.VISIBLE);
+        if (!item.isEmpty()) App.execute(() -> danmaku.prepare(new Parser().load(new Loader(item).getDataSource()), context));
     }
 
     public void setDanmakuSize(float size) {

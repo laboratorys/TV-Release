@@ -1,8 +1,10 @@
 package com.fongmi.android.tv.player.danmaku;
 
+import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import master.flame.danmaku.danmaku.loader.ILoader;
@@ -13,10 +15,11 @@ public class Loader implements ILoader {
 
     private AndroidFileSource dataSource;
 
-    public Loader(String url) {
+    public Loader(Danmaku item) {
         try {
-            load(url);
-        } catch (Exception ignored) {
+            load(item.getUrl());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -24,14 +27,15 @@ public class Loader implements ILoader {
     public void load(String url) throws IllegalDataException {
         try {
             OkHttp.cancel("danmaku");
-            dataSource = new AndroidFileSource(OkHttp.newCall(UrlUtil.convert(url), "danmaku").execute().body().byteStream());
-        } catch (Exception e) {
-            throw new IllegalDataException();
+            load(OkHttp.newCall(UrlUtil.convert(url), "danmaku").execute().body().byteStream());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void load(InputStream stream) throws IllegalDataException {
+        dataSource = new AndroidFileSource(stream);
     }
 
     @Override

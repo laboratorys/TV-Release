@@ -42,6 +42,7 @@ import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.bean.CastVideo;
+import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.bean.Episode;
 import com.fongmi.android.tv.bean.Flag;
 import com.fongmi.android.tv.bean.History;
@@ -1084,8 +1085,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         if (isRedirect()) return;
         if (event.getType() == RefreshEvent.Type.DETAIL) getDetail();
         else if (event.getType() == RefreshEvent.Type.PLAYER) onRefresh();
-        else if (event.getType() == RefreshEvent.Type.DANMAKU) mPlayers.setDanmaku(event.getPath());
         else if (event.getType() == RefreshEvent.Type.SUBTITLE) mPlayers.setSub(Sub.from(event.getPath()));
+        else if (event.getType() == RefreshEvent.Type.DANMAKU) mPlayers.setDanmaku(Danmaku.from(event.getPath()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

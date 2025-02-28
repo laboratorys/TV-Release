@@ -22,6 +22,10 @@ public class Danmaku {
         return List.of(danmaku);
     }
 
+    public static Danmaku empty() {
+        return new Danmaku();
+    }
+
     public String getName() {
         return TextUtils.isEmpty(name) ? getUrl() : name;
     }
@@ -44,5 +48,9 @@ public class Danmaku {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean isEmpty() {
+        return getUrl().isEmpty();
     }
 }
