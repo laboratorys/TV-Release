@@ -85,7 +85,7 @@
             android:layout_below="@+id/keyword"
             android:overScrollMode="never"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="6"
+            app:spanCount="7"
             tools:itemCount="36"
             tools:listitem="@layout/adapter_keyboard_text" />
 
