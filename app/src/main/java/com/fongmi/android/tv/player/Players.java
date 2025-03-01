@@ -235,10 +235,6 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
         return exoPlayer != null && ExoUtil.haveTrack(exoPlayer.getCurrentTracks(), type);
     }
 
-    public boolean haveDanmaku() {
-        return danmakus != null && !danmakus.isEmpty();
-    }
-
     public boolean isDanmakuPrepared() {
         return (danmaku != null && danmaku.isPrepared());
     }
