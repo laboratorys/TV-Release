@@ -1,6 +1,8 @@
 
 package com.fongmi.android.tv.ui.dialog;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.media3.common.MimeTypes;
 import androidx.viewbinding.ViewBinding;
 
+import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.databinding.DialogDanmakuBinding;
 import com.fongmi.android.tv.player.Players;
 import com.fongmi.android.tv.ui.adapter.DanmakuAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
+import com.fongmi.android.tv.utils.FileChooser;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public final class DanmakuDialog extends BaseDialog implements DanmakuAdapter.OnClickListener {
@@ -58,8 +63,26 @@ public final class DanmakuDialog extends BaseDialog implements DanmakuAdapter.On
     }
 
     @Override
+    protected void initEvent() {
+        binding.choose.setOnClickListener(this::showChooser);
+    }
+
+    private void showChooser(View view) {
+        FileChooser.from(this).show(new String[]{MimeTypes.APPLICATION_SUBRIP, MimeTypes.TEXT_SSA, MimeTypes.TEXT_VTT, MimeTypes.APPLICATION_TTML, "audio/*", "text/*", "application/octet-stream"});
+        player.pause();
+    }
+
+    @Override
     public void onItemClick(Danmaku item) {
         player.setDanmaku(item.isSelected() ? item : Danmaku.empty());
+        dismiss();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK || requestCode != FileChooser.REQUEST_PICK_FILE) return;
+        App.post(() -> player.setDanmaku(Danmaku.from(FileChooser.getPathFromUri(data.getData()))), 250);
         dismiss();
     }
 }

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.File;
 import java.util.List;
 
 public class Danmaku {
@@ -16,9 +17,24 @@ public class Danmaku {
     private boolean selected;
 
     public static List<Danmaku> from(String path) {
+        if (path.startsWith("http")) {
+            return http(path);
+        } else {
+            return file(path);
+        }
+    }
+
+    public static List<Danmaku> http(String path) {
         Danmaku danmaku = new Danmaku();
         danmaku.setName(path);
         danmaku.setUrl(path);
+        return List.of(danmaku);
+    }
+
+    public static List<Danmaku> file(String path) {
+        Danmaku danmaku = new Danmaku();
+        danmaku.setName(new File(path).getName());
+        danmaku.setUrl("file:/" + path);
         return List.of(danmaku);
     }
 
