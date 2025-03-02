@@ -29,6 +29,7 @@ public class DanmakuAdapter extends RecyclerView.Adapter<DanmakuAdapter.ViewHold
     }
 
     public DanmakuAdapter addAll(List<Danmaku> items) {
+        if (items == null) return this;
         mItems.addAll(items);
         notifyDataSetChanged();
         return this;
