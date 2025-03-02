@@ -73,7 +73,7 @@ public final class DanmakuDialog extends BaseDialog implements DanmakuAdapter.On
 
     @Override
     public void onItemClick(Danmaku item) {
-        player.setDanmaku(item.isSelected() ? item : Danmaku.empty());
+        player.setDanmaku(item.isSelected() ? Danmaku.empty() : item);
         dismiss();
     }
 

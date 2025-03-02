@@ -69,10 +69,7 @@ public class DanmakuAdapter extends RecyclerView.Adapter<DanmakuAdapter.ViewHold
 
         @Override
         public void onClick(View view) {
-            for (int i = 0; i < mItems.size(); i++) mItems.get(i).setSelected(i == getLayoutPosition() && !mItems.get(i).isSelected());
-            Danmaku item = mItems.get(getLayoutPosition());
-            notifyItemChanged(getLayoutPosition());
-            mListener.onItemClick(item);
+            mListener.onItemClick(mItems.get(getLayoutPosition()));
         }
     }
 }

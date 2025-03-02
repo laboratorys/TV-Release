@@ -16,7 +16,6 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.media3.common.AudioAttributes;
@@ -464,7 +463,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     private void setMediaItem(Result result, int timeout) {
         setMediaItem(result.getHeaders(), result.getRealUrl(), result.getFormat(), result.getDrm(), result.getSubs(), timeout);
-        setDanmaku(result.getDanmaku());
+        setDanmaku(danmakus = result.getDanmaku());
     }
 
     private void setMediaItem(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, int timeout) {
@@ -476,18 +475,17 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
         prepare();
     }
 
-    public void setDanmaku(List<Danmaku> items) {
-        danmakus = items;
-        danmaku.release();
-        danmaku.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
-        if (!items.isEmpty()) App.execute(() -> danmaku.prepare(new Parser().load(new Loader(items.get(0)).getDataSource()), context));
-        if (!items.isEmpty()) items.get(0).setSelected(true);
+    private void setDanmaku(List<Danmaku> items) {
+        if (items.isEmpty()) danmaku.release();
+        else setDanmaku(items.get(0));
     }
 
     public void setDanmaku(Danmaku item) {
         danmaku.release();
-        danmaku.setVisibility(item.isEmpty() ? View.GONE : View.VISIBLE);
+        if (danmakus == null) danmakus = new ArrayList<>();
+        if (!item.isEmpty() && !danmakus.contains(item)) danmakus.add(0, item);
         if (!item.isEmpty()) App.execute(() -> danmaku.prepare(new Parser().load(new Loader(item).getDataSource()), context));
+        for (int i = 0; i < danmakus.size(); i++) danmakus.get(i).setSelected(danmakus.get(i).getUrl().equals(item.getUrl()) && !danmakus.get(i).isSelected());
     }
 
     public void setDanmakuSize(float size) {
