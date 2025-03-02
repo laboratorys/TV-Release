@@ -914,11 +914,11 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void showDanmaku() {
-        mBinding.danmaku.setVisibility(Setting.isDanmakuShow() ? View.VISIBLE : View.GONE);
+        mBinding.danmaku.setVisibility(Setting.isDanmakuShow() ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void hideDanmaku() {
-        mBinding.danmaku.setVisibility(View.GONE);
+        mBinding.danmaku.setVisibility(View.INVISIBLE);
     }
 
     private void showControl() {

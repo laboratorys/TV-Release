@@ -235,7 +235,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     public boolean isDanmakuPrepared() {
-        return (danmaku != null && danmaku.isPrepared());
+        return danmaku != null && danmaku.isPrepared();
     }
 
     public boolean isPlaying() {
