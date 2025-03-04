@@ -54,16 +54,17 @@ public class RestoreAdapter extends RecyclerView.Adapter<RestoreAdapter.ViewHold
             if (files == null) files = new File[0];
             for (File file : files) if (file.getName().startsWith("tv") && file.getName().endsWith(".bk.gz")) mItems.add(file);
             if (!mItems.isEmpty()) Collections.sort(mItems, (f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
-            callback.success();
+            App.post(callback::success);
         });
     }
 
-    public void remove(File item) {
+    public int remove(File item) {
         int position = mItems.indexOf(item);
-        if (position == -1) return;
+        if (position == -1) return -1;
         Path.clear(item);
         mItems.remove(position);
         notifyItemRemoved(position);
+        return getItemCount();
     }
 
     @Override
