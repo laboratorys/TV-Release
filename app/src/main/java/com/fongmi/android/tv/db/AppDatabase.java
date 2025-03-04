@@ -53,7 +53,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static void backup(com.fongmi.android.tv.impl.Callback callback) {
         App.execute(() -> {
-            File file = new File(Path.tv(), "tv-" + new SimpleDateFormat("yyyy-MM-ddHHmmssSSS", Locale.getDefault()).format(new Date()) + ".bk");
+            File file = new File(Path.tv(), "tv-" + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()) + ".bk");
             Backup backup = Backup.create();
             if (backup.getConfig().isEmpty()) {
                 App.post(callback::error);
