@@ -17,6 +17,8 @@ public class Drm {
     private String key;
     @SerializedName("type")
     private String type;
+    @SerializedName("forceKey")
+    private boolean forceKey;
     @SerializedName("header")
     private JsonElement header;
 
@@ -37,6 +39,10 @@ public class Drm {
         return TextUtils.isEmpty(type) ? "" : type;
     }
 
+    public boolean isForceKey() {
+        return forceKey;
+    }
+
     private JsonElement getHeader() {
         return header;
     }
@@ -49,6 +55,11 @@ public class Drm {
     }
 
     public MediaItem.DrmConfiguration get() {
-        return new MediaItem.DrmConfiguration.Builder(getUUID()).setLicenseUri(getKey()).setLicenseRequestHeaders(Json.toMap(getHeader())).setMultiSession(!getType().contains("clearkey")).build();
+        MediaItem.DrmConfiguration.Builder builder = new MediaItem.DrmConfiguration.Builder(getUUID());
+        builder.setMultiSession(!C.CLEARKEY_UUID.equals(getUUID()));
+        builder.setLicenseRequestHeaders(Json.toMap(getHeader()));
+        builder.setForceDefaultLicenseUri(isForceKey());
+        builder.setLicenseUri(getKey());
+        return builder.build();
     }
 }
