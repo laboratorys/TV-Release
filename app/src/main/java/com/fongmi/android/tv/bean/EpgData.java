@@ -94,11 +94,11 @@ public class EpgData {
         return getStart() + " ~ " + getEnd();
     }
 
-    public void fixCrossDay() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(getEndTime());
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        setEndTime(calendar.getTimeInMillis());
+    public void checkDay() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(getEndTime());
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        setEndTime(cal.getTimeInMillis());
     }
 
     @Override
