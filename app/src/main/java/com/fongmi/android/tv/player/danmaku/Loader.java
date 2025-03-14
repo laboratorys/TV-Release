@@ -13,6 +13,8 @@ import master.flame.danmaku.danmaku.parser.android.AndroidFileSource;
 
 public class Loader implements ILoader {
 
+    private static final int TIMEOUT = 30 * 1000;
+
     private AndroidFileSource dataSource;
 
     public Loader(Danmaku item) {
@@ -27,7 +29,7 @@ public class Loader implements ILoader {
     public void load(String url) throws IllegalDataException {
         try {
             OkHttp.cancel("danmaku");
-            load(OkHttp.newCall(UrlUtil.convert(url), "danmaku").execute().body().byteStream());
+            load(OkHttp.newCall(OkHttp.client(TIMEOUT), UrlUtil.convert(url), "danmaku").execute().body().byteStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
