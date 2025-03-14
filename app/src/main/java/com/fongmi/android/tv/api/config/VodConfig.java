@@ -167,8 +167,7 @@ public class VodConfig {
             return;
         }
         String spider = Json.safeString(object, "spider");
-        BaseLoader.get().parseJar(spider);
-        BaseLoader.get().setRecent(spider);
+        BaseLoader.get().parseJar(spider, true);
         for (JsonElement element : Json.safeListElement(object, "sites")) {
             Site site = Site.objectFrom(element);
             if (sites.contains(site)) continue;

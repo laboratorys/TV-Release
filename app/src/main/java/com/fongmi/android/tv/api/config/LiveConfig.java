@@ -179,7 +179,7 @@ public class LiveConfig {
 
     private void initLive(JsonObject object) {
         String spider = Json.safeString(object, "spider");
-        BaseLoader.get().parseJar(spider);
+        BaseLoader.get().parseJar(spider, false);
         for (JsonElement element : Json.safeListElement(object, "lives")) {
             Live live = Live.objectFrom(element);
             if (lives.contains(live)) continue;
