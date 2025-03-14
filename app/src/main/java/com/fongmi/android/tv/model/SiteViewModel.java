@@ -24,7 +24,6 @@ import com.fongmi.android.tv.utils.Sniffer;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Trans;
 import com.github.catvod.utils.Util;
 
@@ -76,7 +75,7 @@ public class SiteViewModel extends ViewModel {
             } else if (site.getType() == 4) {
                 ArrayMap<String, String> params = new ArrayMap<>();
                 params.put("filter", "true");
-                String homeContent = call(site, params);
+                String homeContent = call(site.fetchExt(), params);
                 SpiderDebug.log(homeContent);
                 return Result.fromJson(homeContent);
             } else {
@@ -239,17 +238,10 @@ public class SiteViewModel extends ViewModel {
     }
 
     private String call(Site site, ArrayMap<String, String> params) throws IOException {
-        String extend = fetchExt(site);
-        if (!extend.isEmpty()) params.put("extend", extend);
+        if (!site.getExt().isEmpty()) params.put("extend", site.getExt());
         Call get = OkHttp.newCall(site.getApi(), site.getHeaders(), params);
         Call post = OkHttp.newCall(site.getApi(), site.getHeaders(), OkHttp.toBody(params));
-        return (extend.length() <= 1000 ? get : post).execute().body().string();
-    }
-
-    private String fetchExt(Site site) {
-        String extend = OkHttp.string(site.getExt(), Json.toMap(site.getHeader()));
-        if (!extend.isEmpty()) site.setExt(extend);
-        return site.getExt();
+        return (site.getExt().length() <= 1000 ? get : post).execute().body().string();
     }
 
     private Result fetchPic(Site site, Result result) throws Exception {
