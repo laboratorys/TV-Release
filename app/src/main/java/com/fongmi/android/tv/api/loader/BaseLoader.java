@@ -67,7 +67,7 @@ public class BaseLoader {
         boolean csp = api.startsWith("csp_");
         if (js) jsLoader.setRecent(key);
         else if (py) pyLoader.setRecent(key);
-        else if (csp) jarLoader.setRecent(jar);
+        else if (csp) jarLoader.setRecent(Util.md5(jar));
     }
 
     public Object[] proxyLocal(Map<String, String> params) {
@@ -82,6 +82,10 @@ public class BaseLoader {
 
     public void parseJar(String jar) {
         jarLoader.parseJar(Util.md5(jar), jar);
+    }
+
+    public void setRecent(String jar) {
+        jarLoader.setRecent(Util.md5(jar));
     }
 
     public DexClassLoader dex(String jar) {
