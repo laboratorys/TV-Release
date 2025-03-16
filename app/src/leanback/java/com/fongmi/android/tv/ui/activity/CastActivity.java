@@ -366,6 +366,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     }
 
     private void onStopped() {
+        mPlayers.get().clearMediaItems();
         setState(RenderState.STOPPED);
         mPlayers.reset();
         mPlayers.stop();
@@ -429,7 +430,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
 
     @Override
     public void stop() {
-        App.post(this::finish);
+        App.post(this::onStopped);
     }
 
     @Override
