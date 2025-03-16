@@ -366,8 +366,8 @@ public class CastActivity extends BaseActivity implements CustomKeyDownCast.List
     }
 
     private void onStopped() {
-        mPlayers.get().clearMediaItems();
         setState(RenderState.STOPPED);
+        mPlayers.clearMediaItems();
         mPlayers.reset();
         mPlayers.stop();
     }

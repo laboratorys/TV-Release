@@ -189,6 +189,10 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
         retry = 0;
     }
 
+    public void clearMediaItems() {
+        if (exoPlayer != null) exoPlayer.clearMediaItems();
+    }
+
     public void clear() {
         danmakus = null;
         headers = null;
