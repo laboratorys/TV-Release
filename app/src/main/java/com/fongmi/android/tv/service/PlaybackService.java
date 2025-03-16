@@ -123,8 +123,7 @@ public class PlaybackService extends Service {
                 setLargeIcon(builder, bitmap);
                 Notify.show(builder.build());
                 bitmap.recycle();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ignored) {
             }
         });
     }
