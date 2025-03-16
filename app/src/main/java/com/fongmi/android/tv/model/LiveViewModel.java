@@ -1,7 +1,5 @@
 package com.fongmi.android.tv.model;
 
-import android.text.TextUtils;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -76,11 +74,10 @@ public class LiveViewModel extends ViewModel {
     }
 
     public void getEpg(Channel item) {
-        if (TextUtils.isEmpty(item.getEpg())) return;
         String date = formatDate.format(new Date());
         String url = item.getEpg().replace("{date}", date);
         execute(EPG, () -> {
-            if (!item.getData().equal(date)) item.setData(Epg.objectFrom(OkHttp.string(url), item.getTvgName(), formatTime));
+            if (!url.isEmpty() && !item.getData().equal(date)) item.setData(Epg.objectFrom(OkHttp.string(url), item.getTvgName(), formatTime));
             return item.getData().selected();
         });
     }
