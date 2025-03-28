@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.NextRenderersFactory;
 import io.github.peerless2012.ass.media.AssHandler;
@@ -132,8 +133,9 @@ public class ExoUtil {
     }
 
     private static List<MediaItem.SubtitleConfiguration> getSubtitleConfigs(List<Sub> subs) {
+        int id = 10000 + new Random().nextInt(10000);
         List<MediaItem.SubtitleConfiguration> configs = new ArrayList<>();
-        for (Sub sub : subs) configs.add(sub.getConfig());
+        for (int i = 0; i < subs.size(); i++) configs.add(subs.get(i).getConfig(id + i));
         return configs;
     }
 

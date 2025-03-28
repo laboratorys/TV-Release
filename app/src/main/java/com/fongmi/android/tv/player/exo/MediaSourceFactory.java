@@ -39,7 +39,7 @@ public class MediaSourceFactory implements MediaSource.Factory {
     private ExtractorsFactory extractorsFactory;
 
     public MediaSourceFactory(AssHandler assHandler, AssSubtitleParserFactory subtitleParserFactory) {
-        defaultMediaSourceFactory = new DefaultMediaSourceFactory(getDataSourceFactory(), AssPlayerKt.withAssMkvSupport(getExtractorsFactory(), subtitleParserFactory, assHandler));
+        defaultMediaSourceFactory = new DefaultMediaSourceFactory(getDataSourceFactory(), AssPlayerKt.withAssMkvSupport(getExtractorsFactory(), subtitleParserFactory, assHandler)).setSubtitleParserFactory(subtitleParserFactory);
     }
 
     @NonNull
