@@ -138,12 +138,12 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
         AssSubtitleParserFactory subtitleParserFactory = new AssSubtitleParserFactory(assHandler);
         exoPlayer = new ExoPlayer.Builder(App.get()).setLoadControl(ExoUtil.buildLoadControl()).setTrackSelector(ExoUtil.buildTrackSelector()).setRenderersFactory(ExoUtil.buildRenderersFactory(isHard() ? EXTENSION_RENDERER_MODE_ON : EXTENSION_RENDERER_MODE_PREFER)).setMediaSourceFactory(ExoUtil.buildMediaSourceFactory(assHandler, subtitleParserFactory)).build();
         exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, true);
+        if (Setting.isLibAss()) assHandler.init(exoPlayer);
         exoPlayer.addAnalyticsListener(new EventLogger());
         exoPlayer.setHandleAudioBecomingNoisy(true);
         view.setRender(Setting.getRender());
         exoPlayer.setPlayWhenReady(true);
         exoPlayer.addListener(this);
-        assHandler.init(exoPlayer);
         view.setPlayer(exoPlayer);
         this.view = view;
     }

@@ -22,6 +22,7 @@ import androidx.media3.extractor.ExtractorsFactory;
 import androidx.media3.extractor.ts.TsExtractor;
 
 import com.fongmi.android.tv.App;
+import com.fongmi.android.tv.Setting;
 import com.github.catvod.net.OkHttp;
 
 import java.util.HashMap;
@@ -39,7 +40,11 @@ public class MediaSourceFactory implements MediaSource.Factory {
     private ExtractorsFactory extractorsFactory;
 
     public MediaSourceFactory(AssHandler assHandler, AssSubtitleParserFactory subtitleParserFactory) {
-        defaultMediaSourceFactory = new DefaultMediaSourceFactory(getDataSourceFactory(), AssPlayerKt.withAssMkvSupport(getExtractorsFactory(), subtitleParserFactory, assHandler)).setSubtitleParserFactory(subtitleParserFactory);
+        if (Setting.isLibAss()) {
+            defaultMediaSourceFactory = new DefaultMediaSourceFactory(getDataSourceFactory(), AssPlayerKt.withAssMkvSupport(getExtractorsFactory(), subtitleParserFactory, assHandler)).setSubtitleParserFactory(subtitleParserFactory);
+        } else {
+            defaultMediaSourceFactory = new DefaultMediaSourceFactory(getDataSourceFactory(), getExtractorsFactory());
+        }
     }
 
     @NonNull
