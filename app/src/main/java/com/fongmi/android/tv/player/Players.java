@@ -23,6 +23,7 @@ import androidx.media3.common.C;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.common.Tracks;
+import androidx.media3.common.util.Size;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.drm.FrameworkMediaDrm;
 import androidx.media3.exoplayer.util.EventLogger;
@@ -102,8 +103,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     private int decode;
     private int retry;
-    private int height;
-    private int width;
+    private Size size;
 
     public static Players create(Activity activity) {
         Players player = new Players(activity);
@@ -201,8 +201,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     public void clear() {
-        height = width = 0;
-        PlayerEvent.size();
+        setVideoSize(Size.ZERO);
         danmakus = null;
         headers = null;
         format = null;
@@ -216,11 +215,11 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     public int getVideoWidth() {
-        return width;
+        return size == null ? 0 : size.getWidth();
     }
 
     public int getVideoHeight() {
-        return height;
+        return size == null ? 0 : size.getHeight();
     }
 
     public float getSpeed() {
@@ -653,13 +652,16 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
             if (group.getType() != C.TRACK_TYPE_VIDEO) continue;
             for (int i = 0; i < group.length; i++) {
                 if (group.isTrackSelected(i)) {
-                    height = group.getTrackFormat(i).height;
-                    width = group.getTrackFormat(i).width;
-                    PlayerEvent.size();
+                    setVideoSize(new Size(group.getTrackFormat(i).width, group.getTrackFormat(i).height));
                     break;
                 }
             }
         }
+    }
+
+    private void setVideoSize(Size size) {
+        this.size = size;
+        PlayerEvent.size();
     }
 
     @Override
