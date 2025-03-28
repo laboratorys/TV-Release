@@ -23,7 +23,6 @@ import androidx.media3.common.C;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.common.Tracks;
-import androidx.media3.common.VideoSize;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.drm.FrameworkMediaDrm;
 import androidx.media3.exoplayer.util.EventLogger;
@@ -103,6 +102,8 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     private int decode;
     private int retry;
+    private int height;
+    private int width;
 
     public static Players create(Activity activity) {
         Players player = new Players(activity);
@@ -200,6 +201,8 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     public void clear() {
+        height = width = 0;
+        PlayerEvent.size();
         danmakus = null;
         headers = null;
         format = null;
@@ -213,11 +216,11 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     public int getVideoWidth() {
-        return exoPlayer == null ? 0 : exoPlayer.getVideoSize().width;
+        return width;
     }
 
     public int getVideoHeight() {
-        return exoPlayer == null ? 0 : exoPlayer.getVideoSize().height;
+        return height;
     }
 
     public float getSpeed() {
@@ -638,15 +641,25 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     @Override
-    public void onVideoSizeChanged(@NonNull VideoSize videoSize) {
-        PlayerEvent.size();
-    }
-
-    @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
         if (tracks.isEmpty()) return;
         setTrack(Track.find(url));
+        setVideoSize(tracks);
         PlayerEvent.track();
+    }
+
+    private void setVideoSize(@NonNull Tracks tracks) {
+        for (Tracks.Group group : tracks.getGroups()) {
+            if (group.getType() != C.TRACK_TYPE_VIDEO) continue;
+            for (int i = 0; i < group.length; i++) {
+                if (group.isTrackSelected(i)) {
+                    height = group.getTrackFormat(i).height;
+                    width = group.getTrackFormat(i).width;
+                    PlayerEvent.size();
+                    break;
+                }
+            }
+        }
     }
 
     @Override
