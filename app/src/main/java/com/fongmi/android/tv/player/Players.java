@@ -95,6 +95,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     private VideoSize size;
     private List<Sub> subs;
     private String format;
+    private String key;
     private String url;
     private Drm drm;
     private Sub sub;
@@ -183,6 +184,14 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     public void setFormat(String format) {
         this.format = format;
         setMediaItem();
+    }
+
+    public String getKey() {
+        return key != null ? key : url;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public void reset() {
@@ -641,7 +650,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
         if (tracks.isEmpty()) return;
-        setTrack(Track.find(url));
+        setTrack(Track.find(getKey()));
         PlayerEvent.track();
     }
 

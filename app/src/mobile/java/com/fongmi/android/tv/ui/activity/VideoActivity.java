@@ -540,6 +540,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mPlayers.start(result, isUseParse(), getSite().isChangeable() ? getSite().getTimeout() : -1);
         setQualityVisible(result.getUrl().isMulti());
         mBinding.swipeLayout.setRefreshing(false);
+        mPlayers.setKey(getHistoryKey());
         mQualityAdapter.addAll(result);
     }
 
