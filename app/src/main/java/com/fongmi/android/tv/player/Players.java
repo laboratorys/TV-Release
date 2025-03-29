@@ -23,7 +23,7 @@ import androidx.media3.common.C;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.common.Tracks;
-import androidx.media3.common.util.Size;
+import androidx.media3.common.VideoSize;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.drm.FrameworkMediaDrm;
 import androidx.media3.exoplayer.util.EventLogger;
@@ -66,9 +66,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import io.github.peerless2012.ass.media.AssHandler;
-import io.github.peerless2012.ass.media.parser.AssSubtitleParserFactory;
-import io.github.peerless2012.ass.media.type.AssRenderType;
 import master.flame.danmaku.controller.DrawHandler;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.model.DanmakuTimer;
@@ -95,6 +92,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     private ExoPlayer exoPlayer;
     private ParseJob parseJob;
     private PlayerView view;
+    private VideoSize size;
     private List<Sub> subs;
     private String format;
     private String url;
@@ -103,7 +101,6 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     private int decode;
     private int retry;
-    private Size size;
 
     public static Players create(Activity activity) {
         Players player = new Players(activity);
@@ -135,11 +132,8 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     private void setPlayer(PlayerView view) {
-        AssHandler assHandler = new AssHandler(AssRenderType.OPEN_GL);
-        AssSubtitleParserFactory subtitleParserFactory = new AssSubtitleParserFactory(assHandler);
-        exoPlayer = new ExoPlayer.Builder(App.get()).setLoadControl(ExoUtil.buildLoadControl()).setTrackSelector(ExoUtil.buildTrackSelector()).setRenderersFactory(ExoUtil.buildRenderersFactory(isHard() ? EXTENSION_RENDERER_MODE_ON : EXTENSION_RENDERER_MODE_PREFER)).setMediaSourceFactory(ExoUtil.buildMediaSourceFactory(assHandler, subtitleParserFactory)).build();
+        exoPlayer = new ExoPlayer.Builder(App.get()).setLoadControl(ExoUtil.buildLoadControl()).setTrackSelector(ExoUtil.buildTrackSelector()).setRenderersFactory(ExoUtil.buildRenderersFactory(isHard() ? EXTENSION_RENDERER_MODE_ON : EXTENSION_RENDERER_MODE_PREFER)).setMediaSourceFactory(ExoUtil.buildMediaSourceFactory()).build();
         exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, true);
-        if (Setting.isLibAss()) assHandler.init(exoPlayer);
         exoPlayer.addAnalyticsListener(new EventLogger());
         exoPlayer.setHandleAudioBecomingNoisy(true);
         view.setRender(Setting.getRender());
@@ -201,7 +195,6 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     public void clear() {
-        setVideoSize(Size.ZERO);
         danmakus = null;
         headers = null;
         format = null;
@@ -215,11 +208,11 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     public int getVideoWidth() {
-        return size == null ? 0 : size.getWidth();
+        return size == null ? 0 : size.width;
     }
 
     public int getVideoHeight() {
-        return size == null ? 0 : size.getHeight();
+        return size == null ? 0 : size.height;
     }
 
     public float getSpeed() {
@@ -640,28 +633,16 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     @Override
+    public void onVideoSizeChanged(@NonNull VideoSize videoSize) {
+        this.size = videoSize;
+        PlayerEvent.size();
+    }
+
+    @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
         if (tracks.isEmpty()) return;
         setTrack(Track.find(url));
-        setVideoSize(tracks);
         PlayerEvent.track();
-    }
-
-    private void setVideoSize(@NonNull Tracks tracks) {
-        for (Tracks.Group group : tracks.getGroups()) {
-            if (group.getType() != C.TRACK_TYPE_VIDEO) continue;
-            for (int i = 0; i < group.length; i++) {
-                if (group.isTrackSelected(i)) {
-                    setVideoSize(new Size(group.getTrackFormat(i).width, group.getTrackFormat(i).height));
-                    break;
-                }
-            }
-        }
-    }
-
-    private void setVideoSize(Size size) {
-        this.size = size;
-        PlayerEvent.size();
     }
 
     @Override
