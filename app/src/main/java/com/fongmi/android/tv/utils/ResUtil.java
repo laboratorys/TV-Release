@@ -2,7 +2,6 @@ package com.fongmi.android.tv.utils;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -27,7 +26,7 @@ import com.fongmi.android.tv.App;
 public class ResUtil {
 
     public static DisplayMetrics getDisplayMetrics() {
-        return Resources.getSystem().getDisplayMetrics();
+        return App.get().getResources().getDisplayMetrics();
     }
 
     public static WindowManager getWindowManager() {
