@@ -1,15 +1,17 @@
 package com.fongmi.android.tv.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -25,27 +27,31 @@ import com.fongmi.android.tv.App;
 public class ResUtil {
 
     public static DisplayMetrics getDisplayMetrics() {
-        return App.get().getResources().getDisplayMetrics();
+        return Resources.getSystem().getDisplayMetrics();
+    }
+
+    public static WindowManager getWindowManager() {
+        return (WindowManager) App.get().getSystemService(Context.WINDOW_SERVICE);
     }
 
     public static int getScreenWidth() {
-        return getDisplayMetrics().widthPixels;
-    }
-
-    public static int getScreenWidth(Context context) {
-        return context.getResources().getDisplayMetrics().widthPixels;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            return getWindowManager().getCurrentWindowMetrics().getBounds().width();
+        } else {
+            return getDisplayMetrics().widthPixels;
+        }
     }
 
     public static int getScreenHeight() {
-        return getDisplayMetrics().heightPixels;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            return getWindowManager().getCurrentWindowMetrics().getBounds().height();
+        } else {
+            return getDisplayMetrics().heightPixels;
+        }
     }
 
-    public static int getScreenHeight(Context context) {
-        return context.getResources().getDisplayMetrics().heightPixels;
-    }
-
-    public static boolean isEdge(Activity activity, MotionEvent e, int edge) {
-        return e.getRawX() < edge || e.getRawX() > getScreenWidth(activity) - edge || e.getRawY() < edge || e.getRawY() > getScreenHeight(activity) - edge;
+    public static boolean isEdge(MotionEvent e, int edge) {
+        return e.getRawX() < edge || e.getRawX() > getScreenWidth() - edge || e.getRawY() < edge || e.getRawY() > getScreenHeight() - edge;
     }
 
     public static boolean isLand(Context context) {
