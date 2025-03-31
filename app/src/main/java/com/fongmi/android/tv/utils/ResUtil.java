@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -43,7 +44,8 @@ public class ResUtil {
 
     public static int getScreenWidth(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return getWindowManager(context).getCurrentWindowMetrics().getBounds().width();
+            Rect rect = getWindowManager(context).getCurrentWindowMetrics().getBounds();
+            return isLand(context) ? Math.max(rect.width(), rect.height()) : Math.min(rect.width(), rect.height());
         } else {
             return getDisplayMetrics(context).widthPixels;
         }
@@ -55,7 +57,8 @@ public class ResUtil {
 
     public static int getScreenHeight(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return getWindowManager(context).getCurrentWindowMetrics().getBounds().height();
+            Rect rect = getWindowManager(context).getCurrentWindowMetrics().getBounds();
+            return isLand(context) ? Math.min(rect.width(), rect.height()) : Math.max(rect.width(), rect.height());
         } else {
             return getDisplayMetrics(context).heightPixels;
         }
