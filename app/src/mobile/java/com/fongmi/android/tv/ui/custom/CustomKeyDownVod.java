@@ -55,7 +55,7 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
     }
 
     private boolean isEdge(MotionEvent e) {
-        return ResUtil.isEdge(e, ResUtil.dp2px(24));
+        return ResUtil.isEdge(activity, e, ResUtil.dp2px(24));
     }
 
     @Override
@@ -115,7 +115,7 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
     }
 
     private void checkSide(MotionEvent e2) {
-        int half = ResUtil.getScreenWidth() / 2;
+        int half = ResUtil.getScreenWidth(activity) / 2;
         if (e2.getX() > half) changeVolume = true;
         else changeBright = true;
     }

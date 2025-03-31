@@ -29,15 +29,15 @@ public class Product {
         int column = getColumn(context, style);
         int space = ResUtil.dp2px(32) + ResUtil.dp2px(16 * (column - 1));
         if (style.isOval()) space += ResUtil.dp2px(column * 16);
-        return getSpec(space, column, style);
+        return getSpec(context, space, column, style);
     }
 
-    public static int[] getSpec(int space, int column) {
-        return getSpec(space, column, Style.rect());
+    public static int[] getSpec(Context context, int space, int column) {
+        return getSpec(context, space, column, Style.rect());
     }
 
-    private static int[] getSpec(int space, int column, Style style) {
-        int base = ResUtil.getScreenWidth() - space;
+    private static int[] getSpec(Context context, int space, int column, Style style) {
+        int base = ResUtil.getScreenWidth(context) - space;
         int width = base / column;
         int height = (int) (width / style.getRatio());
         return new int[]{width, height};
