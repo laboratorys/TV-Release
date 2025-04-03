@@ -20,8 +20,8 @@ import java.io.File;
 
 public class TVBus implements Source.Extractor, Listener {
 
+    private volatile String hls;
     private TVCore tvcore;
-    private String hls;
     private Core core;
 
     @Override
@@ -50,8 +50,9 @@ public class TVBus implements Source.Extractor, Listener {
 
     @Override
     public String fetch(String url) throws Exception {
-        if (core != null && !core.equals(LiveConfig.get().getHome().getCore())) change();
-        if (tvcore == null) init(core = LiveConfig.get().getHome().getCore());
+        Core c = LiveConfig.get().getHome().getCore();
+        if (core != null && !core.equals(c)) change();
+        if (tvcore == null) init(core = c);
         App.get().setHook(null);
         tvcore.start(url);
         onWait();
@@ -63,7 +64,7 @@ public class TVBus implements Source.Extractor, Listener {
         if (hls.startsWith("-")) throw new ExtractException(ResUtil.getString(R.string.error_play_code, hls));
     }
 
-    private void onWait() throws InterruptedException {
+    private void onWait() throws Exception {
         synchronized (this) {
             wait();
         }
@@ -83,7 +84,7 @@ public class TVBus implements Source.Extractor, Listener {
     @Override
     public void stop() {
         if (tvcore != null) tvcore.stop();
-        if (hls != null) hls = null;
+        hls = null;
     }
 
     @Override
