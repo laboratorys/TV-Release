@@ -498,7 +498,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void setArtwork(String url) {
-        ImgUtil.load(url, R.drawable.radio, new CustomTarget<>() {
+        ImgUtil.load(url, R.drawable.radio, new CustomTarget<>(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()) {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 mBinding.exo.setDefaultArtwork(resource);
