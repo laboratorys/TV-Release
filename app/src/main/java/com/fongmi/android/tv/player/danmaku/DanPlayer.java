@@ -34,7 +34,7 @@ public class DanPlayer implements DrawHandler.Callback {
         maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, 2);
         maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, 2);
         context.setMaximumLines(maxLines).setScrollSpeedFactor(1.2f).setDanmakuTransparency(0.8f);
-        context.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(ResUtil.dp2px(8));
+        context.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(ResUtil.dp2px(8)).setScaleTextSize(0.8f);
     }
 
     public void setView(DanmakuView view) {
