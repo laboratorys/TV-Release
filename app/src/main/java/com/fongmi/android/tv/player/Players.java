@@ -619,8 +619,7 @@ public class Players implements Player.Listener, ParseCallback {
 
     @Override
     public void onPlaybackStateChanged(int state) {
-        if (state == Player.STATE_BUFFERING && danPlayer != null) danPlayer.pause();
-        if (state == Player.STATE_READY && danPlayer != null) danPlayer.prepared();
+        if (danPlayer != null) danPlayer.change(state);
         PlayerEvent.state(state);
     }
 

@@ -1,5 +1,7 @@
 package com.fongmi.android.tv.player.danmaku;
 
+import androidx.media3.common.Player;
+
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.player.Players;
@@ -88,6 +90,11 @@ public class DanPlayer implements DrawHandler.Callback {
 
     public void setTextSize(float size) {
         context.setScaleTextSize(size);
+    }
+
+    public void change(int state) {
+        if (state == Player.STATE_BUFFERING) pause();
+        else if (state == Player.STATE_READY) prepared();
     }
 
     @Override
