@@ -44,9 +44,7 @@ import com.fongmi.android.tv.event.ErrorEvent;
 import com.fongmi.android.tv.event.PlayerEvent;
 import com.fongmi.android.tv.impl.ParseCallback;
 import com.fongmi.android.tv.impl.SessionCallback;
-import com.fongmi.android.tv.player.danmaku.Loader;
-import com.fongmi.android.tv.player.danmaku.Parser;
-import com.fongmi.android.tv.player.danmaku.Sync;
+import com.fongmi.android.tv.player.danmaku.DanPlayer;
 import com.fongmi.android.tv.player.exo.ExoUtil;
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.FileUtil;
@@ -66,21 +64,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import master.flame.danmaku.controller.DrawHandler;
-import master.flame.danmaku.danmaku.model.BaseDanmaku;
-import master.flame.danmaku.danmaku.model.DanmakuTimer;
-import master.flame.danmaku.danmaku.model.IDisplayer;
-import master.flame.danmaku.danmaku.model.android.DanmakuContext;
 import master.flame.danmaku.ui.widget.DanmakuView;
 
-public class Players implements Player.Listener, ParseCallback, DrawHandler.Callback {
+public class Players implements Player.Listener, ParseCallback {
 
     private static final String TAG = Players.class.getSimpleName();
 
     public static final int SOFT = 0;
     public static final int HARD = 1;
 
-    private final DanmakuContext context;
     private final StringBuilder builder;
     private final Formatter formatter;
     private final Runnable runnable;
@@ -88,8 +80,8 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     private Map<String, String> headers;
     private MediaSessionCompat session;
     private List<Danmaku> danmakus;
-    private DanmakuView danmaku;
     private ExoPlayer exoPlayer;
+    private DanPlayer danPlayer;
     private ParseJob parseJob;
     private PlayerView view;
     private VideoSize size;
@@ -113,7 +105,6 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
         decode = Setting.getDecode();
         builder = new StringBuilder();
         runnable = ErrorEvent::timeout;
-        context = DanmakuContext.create();
         formatter = new Formatter(builder, Locale.getDefault());
         createSession(activity);
     }
@@ -145,15 +136,9 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     public void setDanmakuView(DanmakuView view) {
-        (danmaku = view).setCallback(this);
-        context.setDanmakuSync(new Sync(this));
-        HashMap<Integer, Integer> maxLines = new HashMap<>();
-        maxLines.put(BaseDanmaku.TYPE_FIX_TOP, 2);
-        maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, 2);
-        maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, 2);
-        maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, 2);
-        context.setMaximumLines(maxLines).setScrollSpeedFactor(1.2f).setDanmakuTransparency(0.8f);
-        context.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(ResUtil.dp2px(8));
+        danPlayer = new DanPlayer();
+        danPlayer.setPlayer(this);
+        danPlayer.setView(view);
     }
 
     public ExoPlayer get() {
@@ -248,8 +233,9 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
         return exoPlayer != null && ExoUtil.haveTrack(exoPlayer.getCurrentTracks(), type);
     }
 
-    public boolean isDanmakuPrepared() {
-        return danmaku != null && danmaku.isPrepared();
+    public boolean haveDanmaku() {
+        if (danmakus != null) for (Danmaku danmaku : danmakus) if (danmaku.isSelected()) return true;
+        return false;
     }
 
     public boolean isPlaying() {
@@ -356,8 +342,7 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     public void seekTo(long time) {
         if (exoPlayer != null) exoPlayer.seekTo(time);
-        if (isDanmakuPrepared()) danmaku.seekTo(time);
-        if (isDanmakuPrepared()) danmaku.hide();
+        if (danPlayer != null) danPlayer.seekTo(time);
     }
 
     public void seekToDefaultPosition() {
@@ -371,17 +356,17 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     public void play() {
         if (exoPlayer != null) exoPlayer.play();
-        if (isDanmakuPrepared()) danmaku.resume();
+        if (danPlayer != null) danPlayer.play();
     }
 
     public void pause() {
         if (exoPlayer != null) exoPlayer.pause();
-        if (isDanmakuPrepared()) danmaku.pause();
+        if (danPlayer != null) danPlayer.pause();
     }
 
     public void stop() {
         if (exoPlayer != null) exoPlayer.stop();
-        if (isDanmakuPrepared()) danmaku.stop();
+        if (danPlayer != null) danPlayer.stop();
         stopParse();
     }
 
@@ -392,11 +377,11 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
         removeTimeoutCheck();
         Server.get().setPlayer(null);
         App.execute(() -> Source.get().stop());
-        if (isDanmakuPrepared()) danmaku.release();
     }
 
     private void releasePlayer() {
         if (exoPlayer != null) exoPlayer.release();
+        if (danPlayer != null) danPlayer.release();
         if (view != null) view.setPlayer(null);
         exoPlayer = null;
     }
@@ -490,17 +475,14 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     public void setDanmaku(Danmaku item) {
-        App.execute(() -> {
-            danmaku.release();
-            if (danmakus == null) danmakus = new ArrayList<>();
-            if (!item.isEmpty() && !danmakus.contains(item)) danmakus.add(0, item);
-            if (!item.isEmpty()) danmaku.prepare(new Parser().load(new Loader(item).getDataSource()), context);
-            for (int i = 0; i < danmakus.size(); i++) danmakus.get(i).setSelected(danmakus.get(i).getUrl().equals(item.getUrl()) && !danmakus.get(i).isSelected());
-        });
+        if (danPlayer != null) danPlayer.setDanmaku(item);
+        if (danmakus == null) danmakus = new ArrayList<>();
+        if (!item.isEmpty() && !danmakus.contains(item)) danmakus.add(0, item);
+        for (int i = 0; i < danmakus.size(); i++) danmakus.get(i).setSelected(danmakus.get(i).getUrl().equals(item.getUrl()) && !danmakus.get(i).isSelected());
     }
 
     public void setDanmakuSize(float size) {
-        context.setScaleTextSize(size);
+        if (danPlayer != null) danPlayer.setTextSize(size);
     }
 
     public void resetTrack() {
@@ -637,8 +619,8 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
 
     @Override
     public void onPlaybackStateChanged(int state) {
-        if (state == Player.STATE_BUFFERING && isDanmakuPrepared()) danmaku.pause();
-        if (state == Player.STATE_READY && isDanmakuPrepared()) prepared();
+        if (state == Player.STATE_BUFFERING && danPlayer != null) danPlayer.pause();
+        if (state == Player.STATE_READY && danPlayer != null) danPlayer.prepared();
         PlayerEvent.state(state);
     }
 
@@ -679,26 +661,5 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
                 ErrorEvent.extract(error.getErrorCodeName());
                 break;
         }
-    }
-
-    @Override
-    public void prepared() {
-        App.post(() -> {
-            if (isPlaying()) danmaku.start(getPosition());
-            else danmaku.pause();
-            danmaku.show();
-        });
-    }
-
-    @Override
-    public void updateTimer(DanmakuTimer danmakuTimer) {
-    }
-
-    @Override
-    public void danmakuShown(BaseDanmaku baseDanmaku) {
-    }
-
-    @Override
-    public void drawingFinished() {
     }
 }
