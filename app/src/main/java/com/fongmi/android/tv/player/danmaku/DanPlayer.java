@@ -6,6 +6,7 @@ import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.player.Players;
 import com.fongmi.android.tv.utils.ResUtil;
+import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -20,6 +21,7 @@ import master.flame.danmaku.ui.widget.DanmakuView;
 
 public class DanPlayer implements DrawHandler.Callback {
 
+    private static final String TAG = DanPlayer.class.getSimpleName();
     private final ExecutorService executor;
     private final DanmakuContext context;
     private DanmakuView view;
@@ -84,6 +86,7 @@ public class DanPlayer implements DrawHandler.Callback {
     public void setDanmaku(Danmaku item) {
         executor.execute(() -> {
             view.release();
+            Logger.t(TAG).d(item.getUrl());
             if (!item.isEmpty()) view.prepare(new Parser().load(new Loader(item).getDataSource()), context);
         });
     }
