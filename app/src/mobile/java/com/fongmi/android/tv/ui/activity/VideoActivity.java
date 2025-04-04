@@ -108,6 +108,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -145,6 +146,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private Runnable mR3;
     private Runnable mR4;
     private Clock mClock;
+    private String tag;
     private PiP mPiP;
 
     public static void push(FragmentActivity activity, String text) {
@@ -371,6 +373,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         PlaybackService.start(mPlayers);
         ExoUtil.setSubtitleView(mBinding.exo);
         mPlayers.setDanmakuView(mBinding.danmaku);
+        mPlayers.setTag(tag = UUID.randomUUID().toString());
         if (isPort() && ResUtil.isLand(this)) enterFullscreen();
         mBinding.control.action.decode.setText(mPlayers.getDecodeText());
         mBinding.control.action.danmaku.setVisibility(Setting.isDanmakuLoad() ? View.VISIBLE : View.GONE);
@@ -568,7 +571,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         try {
             mPlayers.start(result, isUseParse(), getSite().isChangeable() ? getSite().getTimeout() : -1);
         } catch (Exception e) {
-            ErrorEvent.extract(e.getMessage());
+            ErrorEvent.extract(tag, e.getMessage());
             e.printStackTrace();
         }
     }
@@ -993,7 +996,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         boolean empty = item.getVodFlags().isEmpty();
         mBinding.flag.setVisibility(empty ? View.GONE : View.VISIBLE);
         if (empty) {
-            ErrorEvent.flag();
+            ErrorEvent.flag(tag);
         } else {
             onItemClick(mHistory.getFlag());
             if (mHistory.isRevSort()) reverseEpisode(true);
@@ -1111,7 +1114,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPlayerEvent(PlayerEvent event) {
-        if (isRedirect()) return;
+        if (!event.getTag().equals(tag)) return;
         switch (event.getState()) {
             case PlayerEvent.PREPARE:
                 setDecode();
@@ -1181,7 +1184,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEvent(ErrorEvent event) {
-        if (isRedirect()) return;
+        if (!event.getTag().equals(tag)) return;
         if (mPlayers.retried()) onError(event);
         else onRefresh();
     }

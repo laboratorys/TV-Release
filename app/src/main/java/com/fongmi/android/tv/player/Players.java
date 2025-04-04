@@ -87,6 +87,7 @@ public class Players implements Player.Listener, ParseCallback {
     private VideoSize size;
     private List<Sub> subs;
     private String format;
+    private String tag;
     private String key;
     private String url;
     private Drm drm;
@@ -104,7 +105,7 @@ public class Players implements Player.Listener, ParseCallback {
     private Players(Activity activity) {
         decode = Setting.getDecode();
         builder = new StringBuilder();
-        runnable = ErrorEvent::timeout;
+        runnable = () -> ErrorEvent.timeout(tag);
         formatter = new Formatter(builder, Locale.getDefault());
         createSession(activity);
     }
@@ -177,6 +178,14 @@ public class Players implements Player.Listener, ParseCallback {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public void reset() {
@@ -392,13 +401,13 @@ public class Players implements Player.Listener, ParseCallback {
 
     public void start(Channel channel, int timeout) {
         if (channel.hasMsg()) {
-            ErrorEvent.extract(channel.getMsg());
+            ErrorEvent.extract(tag, channel.getMsg());
         } else if (isIllegal(channel.getUrl())) {
-            ErrorEvent.url();
+            ErrorEvent.url(tag);
         } else if (channel.getParse() == 1) {
             startParse(channel.result(), false);
         } else if (channel.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(channel.getDrm().getUUID())) {
-            ErrorEvent.drm();
+            ErrorEvent.drm(tag);
         } else {
             setMediaItem(channel, timeout);
         }
@@ -406,13 +415,13 @@ public class Players implements Player.Listener, ParseCallback {
 
     public void start(Result result, boolean useParse, int timeout) {
         if (result.hasMsg()) {
-            ErrorEvent.extract(result.getMsg());
+            ErrorEvent.extract(tag, result.getMsg());
         } else if (isIllegal(result.getRealUrl())) {
-            ErrorEvent.url();
+            ErrorEvent.url(tag);
         } else if (result.getParse(1) == 1 || result.getJx() == 1) {
             startParse(result, useParse);
         } else if (result.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(result.getDrm().getUUID())) {
-            ErrorEvent.drm();
+            ErrorEvent.drm(tag);
         } else {
             setMediaItem(result, timeout);
         }
@@ -464,8 +473,8 @@ public class Players implements Player.Listener, ParseCallback {
     private void setMediaItem(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, int timeout) {
         if (exoPlayer != null) exoPlayer.setMediaItem(ExoUtil.getMediaItem(this.headers = checkUa(headers), UrlUtil.uri(this.url = url), this.format = format, this.drm = drm, checkSub(this.subs = subs), decode));
         App.post(runnable, timeout);
+        PlayerEvent.prepare(tag);
         session.setActive(true);
-        PlayerEvent.prepare();
         Logger.t(TAG).d(url);
         prepare();
     }
@@ -595,7 +604,7 @@ public class Players implements Player.Listener, ParseCallback {
 
     @Override
     public void onParseError() {
-        ErrorEvent.parse();
+        ErrorEvent.parse(tag);
     }
 
     @Override
@@ -620,26 +629,26 @@ public class Players implements Player.Listener, ParseCallback {
     @Override
     public void onPlaybackStateChanged(int state) {
         if (danPlayer != null) danPlayer.check(state);
-        PlayerEvent.state(state);
+        PlayerEvent.state(tag, state);
     }
 
     @Override
     public void onVideoSizeChanged(@NonNull VideoSize videoSize) {
         this.size = videoSize;
-        PlayerEvent.size();
+        PlayerEvent.size(tag);
     }
 
     @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
         if (tracks.isEmpty()) return;
         setTrack(Track.find(getKey()));
-        PlayerEvent.track();
+        PlayerEvent.track(tag);
     }
 
     @Override
     public void onPlayerError(@NonNull PlaybackException error) {
         Logger.t(TAG).e(error.errorCode + "," + url);
-        if (retried()) ErrorEvent.extract(error.getErrorCodeName());
+        if (retried()) ErrorEvent.extract(tag, error.getErrorCodeName());
         else switch (error.errorCode) {
             case PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW:
                 seekToDefaultPosition();
@@ -657,7 +666,7 @@ public class Players implements Player.Listener, ParseCallback {
                 setFormat(ExoUtil.getMimeType(error.errorCode));
                 break;
             default:
-                ErrorEvent.extract(error.getErrorCodeName());
+                ErrorEvent.extract(tag, error.getErrorCodeName());
                 break;
         }
     }
