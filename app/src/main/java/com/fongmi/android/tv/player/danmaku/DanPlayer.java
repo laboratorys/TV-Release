@@ -92,7 +92,7 @@ public class DanPlayer implements DrawHandler.Callback {
         context.setScaleTextSize(size);
     }
 
-    public void change(int state) {
+    public void check(int state) {
         if (state == Player.STATE_BUFFERING) pause();
         else if (state == Player.STATE_READY) prepared();
     }
