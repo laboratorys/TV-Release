@@ -450,7 +450,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     private void setMediaItem() {
-        if (url != null) setMediaItem(headers, url, format, drm, subs, Constant.TIMEOUT_PLAY);
+        if (url != null) setMediaItem(headers, url, format, drm, subs, danmakus, Constant.TIMEOUT_PLAY);
     }
 
     public void setMediaItem(String url) {
@@ -458,20 +458,20 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     private void setMediaItem(Map<String, String> headers, String url) {
-        setMediaItem(headers, url, null, null, new ArrayList<>(), Constant.TIMEOUT_PLAY);
+        setMediaItem(headers, url, null, null, new ArrayList<>(), new ArrayList<>(), Constant.TIMEOUT_PLAY);
     }
 
     private void setMediaItem(Channel channel, int timeout) {
-        setMediaItem(channel.getHeaders(), channel.getUrl(), channel.getFormat(), channel.getDrm(), new ArrayList<>(), timeout);
+        setMediaItem(channel.getHeaders(), channel.getUrl(), channel.getFormat(), channel.getDrm(), new ArrayList<>(), new ArrayList<>(), timeout);
     }
 
     private void setMediaItem(Result result, int timeout) {
-        setMediaItem(result.getHeaders(), result.getRealUrl(), result.getFormat(), result.getDrm(), result.getSubs(), timeout);
-        setDanmaku(danmakus = result.getDanmaku());
+        setMediaItem(result.getHeaders(), result.getRealUrl(), result.getFormat(), result.getDrm(), result.getSubs(), result.getDanmaku(), timeout);
     }
 
-    private void setMediaItem(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, int timeout) {
+    private void setMediaItem(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, List<Danmaku> danmakus, int timeout) {
         if (exoPlayer != null) exoPlayer.setMediaItem(ExoUtil.getMediaItem(this.headers = checkUa(headers), UrlUtil.uri(this.url = url), this.format = format, this.drm = drm, checkSub(this.subs = subs), decode));
+        if (danPlayer != null) setDanmaku(this.danmakus = danmakus);
         App.post(runnable, timeout);
         PlayerEvent.prepare(tag);
         session.setActive(true);
@@ -484,7 +484,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public void setDanmaku(Danmaku item) {
-        if (danPlayer != null) danPlayer.setDanmaku(item);
+        danPlayer.setDanmaku(item);
         if (danmakus == null) danmakus = new ArrayList<>();
         if (!item.isEmpty() && !danmakus.contains(item)) danmakus.add(0, item);
         for (int i = 0; i < danmakus.size(); i++) danmakus.get(i).setSelected(danmakus.get(i).getUrl().equals(item.getUrl()) && !danmakus.get(i).isSelected());
