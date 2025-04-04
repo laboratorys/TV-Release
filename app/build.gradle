@@ -85,8 +85,8 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.aar"])
     implementation project(':catvod')
-    implementation project(':quickjs')
     implementation project(':chaquo')
+    implementation project(':quickjs')
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.media:media:1.7.0'
     implementation 'androidx.room:room-runtime:2.6.1'
