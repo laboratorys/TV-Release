@@ -486,16 +486,17 @@ public class Players implements Player.Listener, ParseCallback, DrawHandler.Call
     }
 
     private void setDanmaku(List<Danmaku> items) {
-        if (items.isEmpty()) danmaku.release();
-        else setDanmaku(items.get(0));
+        setDanmaku(items.isEmpty() ? Danmaku.empty() : items.get(0));
     }
 
     public void setDanmaku(Danmaku item) {
-        danmaku.release();
-        if (danmakus == null) danmakus = new ArrayList<>();
-        if (!item.isEmpty() && !danmakus.contains(item)) danmakus.add(0, item);
-        if (!item.isEmpty()) App.execute(() -> danmaku.prepare(new Parser().load(new Loader(item).getDataSource()), context));
-        for (int i = 0; i < danmakus.size(); i++) danmakus.get(i).setSelected(danmakus.get(i).getUrl().equals(item.getUrl()) && !danmakus.get(i).isSelected());
+        App.execute(() -> {
+            danmaku.release();
+            if (danmakus == null) danmakus = new ArrayList<>();
+            if (!item.isEmpty() && !danmakus.contains(item)) danmakus.add(0, item);
+            if (!item.isEmpty()) danmaku.prepare(new Parser().load(new Loader(item).getDataSource()), context);
+            for (int i = 0; i < danmakus.size(); i++) danmakus.get(i).setSelected(danmakus.get(i).getUrl().equals(item.getUrl()) && !danmakus.get(i).isSelected());
+        });
     }
 
     public void setDanmakuSize(float size) {
