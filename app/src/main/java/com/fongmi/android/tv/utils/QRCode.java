@@ -1,6 +1,7 @@
 package com.fongmi.android.tv.utils;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -12,17 +13,14 @@ import java.util.Map;
 
 public class QRCode {
 
-    private static final int WHITE = 0xFFFFFFFF;
-    private static final int BLACK = 0xFF000000;
-
-    public static Bitmap createBitmap(BitMatrix matrix) {
+    private static Bitmap createBitmap(BitMatrix matrix) {
         int width = matrix.getWidth();
         int height = matrix.getHeight();
         int[] pixels = new int[width * height];
         for (int y = 0; y < height; y++) {
             int offset = y * width;
             for (int x = 0; x < width; x++) {
-                pixels[offset + x] = matrix.get(x, y) ? BLACK : WHITE;
+                pixels[offset + x] = matrix.get(x, y) ? Color.BLACK : Color.WHITE;
             }
         }
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
