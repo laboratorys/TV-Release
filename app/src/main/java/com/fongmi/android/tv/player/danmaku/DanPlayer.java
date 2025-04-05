@@ -88,7 +88,7 @@ public class DanPlayer implements DrawHandler.Callback {
             view.release();
             if (item.isEmpty()) return;
             Logger.t(TAG).d(item.getUrl());
-            if (!item.isEmpty()) view.prepare(new Parser().load(new Loader(item).getDataSource()), context);
+            view.prepare(new Parser().load(new Loader(item).getDataSource()), context);
         });
     }
 
