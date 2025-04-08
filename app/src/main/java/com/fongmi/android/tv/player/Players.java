@@ -429,11 +429,11 @@ public class Players implements Player.Listener, ParseCallback {
 
     private void startParse(Result result, boolean useParse) {
         stopParse();
+        drm = result.getDrm();
+        subs = result.getSubs();
+        format = result.getFormat();
+        danmakus = result.getDanmaku();
         parseJob = ParseJob.create(this).start(result, useParse);
-        this.drm = result.getDrm();
-        this.subs = result.getSubs();
-        this.format = result.getFormat();
-        this.danmakus = result.getDanmaku();
     }
 
     private void stopParse() {
