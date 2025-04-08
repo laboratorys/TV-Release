@@ -458,7 +458,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     private void setMediaItem(Map<String, String> headers, String url) {
-        setMediaItem(headers, url, null, null, new ArrayList<>(), new ArrayList<>(), Constant.TIMEOUT_PLAY);
+        setMediaItem(headers, url, null, null, subs, danmakus, Constant.TIMEOUT_PLAY);
     }
 
     private void setMediaItem(Channel channel, int timeout) {
