@@ -430,6 +430,10 @@ public class Players implements Player.Listener, ParseCallback {
     private void startParse(Result result, boolean useParse) {
         stopParse();
         parseJob = ParseJob.create(this).start(result, useParse);
+        this.drm = result.getDrm();
+        this.subs = result.getSubs();
+        this.format = result.getFormat();
+        this.danmakus = result.getDanmaku();
     }
 
     private void stopParse() {
@@ -458,7 +462,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     private void setMediaItem(Map<String, String> headers, String url) {
-        setMediaItem(headers, url, null, null, subs, danmakus, Constant.TIMEOUT_PLAY);
+        setMediaItem(headers, url, format, drm, subs, danmakus, Constant.TIMEOUT_PLAY);
     }
 
     private void setMediaItem(Channel channel, int timeout) {
