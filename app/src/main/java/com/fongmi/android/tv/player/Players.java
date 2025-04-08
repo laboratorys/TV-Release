@@ -484,7 +484,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     private void setDanmaku(List<Danmaku> items) {
-        setDanmaku(items.isEmpty() ? Danmaku.empty() : items.get(0));
+        setDanmaku(items == null || items.isEmpty() ? Danmaku.empty() : items.get(0));
     }
 
     public void setDanmaku(Danmaku item) {
