@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
@@ -33,11 +32,11 @@ public class OkGlideModule extends AppGlideModule {
     }
 
     @Override
-    public void registerComponents(@NonNull Context context, @Nullable Glide glide, Registry registry) {
+    public void registerComponents(@NonNull Context context, @NonNull Glide glide, Registry registry) {
+        AvifByteBufferBitmapDecoder byteBufferBitmapDecoder = new AvifByteBufferBitmapDecoder(glide.getBitmapPool());
+        AvifStreamBitmapDecoder streamBitmapDecoder = new AvifStreamBitmapDecoder(registry.getImageHeaderParsers(), byteBufferBitmapDecoder, glide.getArrayPool());
         registry.replace(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(OkHttp.client()));
-        AvifByteBufferBitmapDecoder byteBuffer = new AvifByteBufferBitmapDecoder(glide.getBitmapPool());
-        AvifStreamBitmapDecoder stream = new AvifStreamBitmapDecoder(registry.getImageHeaderParsers(), byteBuffer, glide.getArrayPool());
-        registry.append(ByteBuffer.class, Bitmap.class, byteBuffer);
-        registry.append(InputStream.class, Bitmap.class, stream);
+        registry.append(ByteBuffer.class, Bitmap.class, byteBufferBitmapDecoder);
+        registry.append(InputStream.class, Bitmap.class, streamBitmapDecoder);
     }
 }
