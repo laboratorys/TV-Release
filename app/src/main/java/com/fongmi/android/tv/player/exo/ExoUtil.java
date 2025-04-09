@@ -131,7 +131,7 @@ public class ExoUtil {
 
     private static List<MediaItem.SubtitleConfiguration> getSubtitleConfigs(List<Sub> subs) {
         List<MediaItem.SubtitleConfiguration> configs = new ArrayList<>();
-        if (subs != null) for (Sub sub : subs) configs.add(sub.getConfig());
+        if (subs != null) for (Sub sub : subs) configs.add(sub.config());
         return configs;
     }
 

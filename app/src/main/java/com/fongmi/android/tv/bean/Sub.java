@@ -79,7 +79,7 @@ public class Sub {
         this.name = Trans.s2t(name);
     }
 
-    public MediaItem.SubtitleConfiguration getConfig() {
+    public MediaItem.SubtitleConfiguration config() {
         return new MediaItem.SubtitleConfiguration.Builder(Uri.parse(getUrl())).setLabel(getName()).setMimeType(getFormat()).setSelectionFlags(getFlag()).setLanguage(getLang()).build();
     }
 
