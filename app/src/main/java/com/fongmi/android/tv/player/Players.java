@@ -448,6 +448,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     private List<Sub> checkSub(List<Sub> subs) {
+        if (subs == null) subs = this.subs = new ArrayList<>();
         if (sub == null || subs.contains(sub)) return subs;
         subs.add(0, sub);
         return subs;
