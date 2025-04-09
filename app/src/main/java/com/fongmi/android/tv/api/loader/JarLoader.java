@@ -112,7 +112,7 @@ public class JarLoader {
         }
     }
 
-    public synchronized Spider getSpider(String key, String api, String ext, String jar) {
+    public Spider getSpider(String key, String api, String ext, String jar) {
         try {
             String jaKey = Util.md5(jar);
             String spKey = jaKey + key;

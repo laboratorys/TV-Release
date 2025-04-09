@@ -28,7 +28,7 @@ public class PyLoader {
         this.recent = recent;
     }
 
-    public synchronized Spider getSpider(String key, String api, String ext) {
+    public Spider getSpider(String key, String api, String ext) {
         try {
             if (spiders.containsKey(key)) return spiders.get(key);
             Spider spider = loader.spider(App.get(), api);
