@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 public class LiveParser {
 
+    private static final Pattern M3U = Pattern.compile("^(?!.*#genre#)(#EXTM3U|#EXTINF)");
     private static final Pattern CATCHUP_REPLACE = Pattern.compile(".*catchup-replace=\"(.?|.+?)\".*");
     private static final Pattern CATCHUP_SOURCE = Pattern.compile(".*catchup-source=\"(.?|.+?)\".*");
     private static final Pattern CATCHUP = Pattern.compile(".*catchup=\"(.?|.+?)\".*");
@@ -30,7 +31,6 @@ public class LiveParser {
     private static final Pattern URL_TVG = Pattern.compile(".*url-tvg=\"(.?|.+?)\".*");
     private static final Pattern GROUP = Pattern.compile(".*group-title=\"(.?|.+?)\".*");
     private static final Pattern NAME = Pattern.compile(".*,(.+?)$");
-    private static final Pattern M3U = Pattern.compile("#EXTM3U|#EXTINF");
 
     private static String extract(String line, Pattern pattern) {
         Matcher matcher = pattern.matcher(line.trim());
