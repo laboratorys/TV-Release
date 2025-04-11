@@ -141,9 +141,15 @@ public class JarLoader {
     }
 
     public Object[] proxyInvoke(Map<String, String> params) {
+        for (Map.Entry<String, Method> entry : methods.entrySet()) {
+            Object[] result = proxyInvoke(entry.getValue(), params);
+            if (result != null) return result;
+        }
+        return null;
+    }
+
+    private Object[] proxyInvoke(Method method, Map<String, String> params) {
         try {
-            Method method = methods.get(recent);
-            if (method == null) return null;
             return (Object[]) method.invoke(null, params);
         } catch (Throwable e) {
             e.printStackTrace();
