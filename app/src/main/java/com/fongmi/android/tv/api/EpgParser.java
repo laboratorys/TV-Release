@@ -66,7 +66,7 @@ public class EpgParser {
         Map<String, Tv.Channel> mapping = new HashMap<>();
         String today = formatDate.format(new Date());
         Tv tv = new Persister().read(Tv.class, Path.read(file), false);
-        for (Group group : live.getGroups()) for (Channel channel : group.getChannel()) exist.add(channel.getTvgName());
+        for (Group group : live.getGroups()) for (Channel channel : group.getChannel()) exist.add(channel.getTvgId());
         for (Tv.Channel channel : tv.getChannel()) mapping.put(channel.getId(), channel);
         for (Tv.Programme programme : tv.getProgramme()) {
             String key = programme.getChannel();
@@ -81,8 +81,8 @@ public class EpgParser {
         }
         for (Group group : live.getGroups()) {
             for (Channel channel : group.getChannel()) {
-                if (epgMap.containsKey(channel.getTvgName())) channel.setData(epgMap.get(channel.getTvgName()));
-                if (srcMap.containsKey(channel.getTvgName())) channel.setLogo(srcMap.get(channel.getTvgName()));
+                if (epgMap.containsKey(channel.getTvgId())) channel.setData(epgMap.get(channel.getTvgId()));
+                if (srcMap.containsKey(channel.getTvgId())) channel.setLogo(srcMap.get(channel.getTvgId()));
             }
         }
     }
