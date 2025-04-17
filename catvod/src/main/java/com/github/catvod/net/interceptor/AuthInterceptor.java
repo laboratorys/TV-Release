@@ -1,6 +1,5 @@
 package com.github.catvod.net.interceptor;
 
-
 import androidx.annotation.NonNull;
 
 import com.github.catvod.utils.Util;
