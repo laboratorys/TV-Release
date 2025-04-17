@@ -40,18 +40,16 @@ public class CombineAuthenticator implements Authenticator {
 
         if (authHeader.startsWith("Digest")) {
             Map<String, String> params = parseAuthHeader(authHeader.substring(7));
-            String realm = params.get("realm");
-            String nonce = params.get("nonce");
-            String opaque = params.get("opaque");
-            String qop = params.get("qop");
-            String uri = url.encodedPath();
-            String method = response.request().method();
-            String cnonce = Long.toHexString(System.currentTimeMillis());
             String[] parts = userInfo.split(":", 2);
             String username = parts[0];
             String password = parts[1];
-            String nc = "00000001";
-            String digestAuth = getDigestAuth(username, password, realm, nonce, qop, opaque, method, uri, cnonce, nc);
+            String uri = url.encodedPath();
+            String qop = params.get("qop");
+            String realm = params.get("realm");
+            String nonce = params.get("nonce");
+            String opaque = params.get("opaque");
+            String method = response.request().method();
+            String digestAuth = getDigestAuth(username, password, realm, nonce, qop, opaque, method, uri);
             authCache.put(host, digestAuth);
             return response.request().newBuilder().header(HttpHeaders.AUTHORIZATION, digestAuth).build();
         } else {
@@ -61,10 +59,12 @@ public class CombineAuthenticator implements Authenticator {
         }
     }
 
-    private String getDigestAuth(String username, String password, String realm, String nonce, String qop, String opaque, String method, String uri, String cnonce, String nc) {
-        String ha1 = Util.md5(username + ":" + realm + ":" + password);
-        String ha2 = Util.md5(method + ":" + uri);
-        String responseDigest = Util.md5(ha1 + ":" + nonce + ":" + nc + ":" + cnonce + ":" + (qop != null ? qop : "") + ":" + ha2);
+    private String getDigestAuth(String username, String password, String realm, String nonce, String qop, String opaque, String method, String uri) {
+        String nc = "00000001";
+        String hash2 = Util.md5(method + ":" + uri);
+        String cnonce = Long.toHexString(System.currentTimeMillis());
+        String hash1 = Util.md5(username + ":" + realm + ":" + password);
+        String response = Util.md5(hash1 + ":" + nonce + ":" + nc + ":" + cnonce + ":" + (qop != null ? qop : "") + ":" + hash2);
         StringBuilder authValue = new StringBuilder("Digest ");
         authValue.append("username=\"").append(username).append("\", ");
         if (realm != null) authValue.append("realm=\"").append(realm).append("\", ");
@@ -73,7 +73,7 @@ public class CombineAuthenticator implements Authenticator {
         authValue.append("cnonce=\"").append(cnonce).append("\", ");
         authValue.append("nc=").append(nc).append(", ");
         if (qop != null) authValue.append("qop=\"").append(qop).append("\", ");
-        authValue.append("response=\"").append(responseDigest).append("\"");
+        authValue.append("response=\"").append(response).append("\"");
         if (opaque != null) authValue.append(", opaque=\"").append(opaque).append("\"");
         return authValue.toString();
     }
