@@ -126,9 +126,8 @@ public class Util {
         }
     }
 
-    public static String digest(String authHeader, Request request) {
-        Map<String, String> params = parse(authHeader.substring(7));
-        String userInfo = request.url().uri().getUserInfo();
+    public static String digest(String userInfo, String header, Request request) {
+        Map<String, String> params = parse(header.substring(7));
         String[] parts = userInfo.split(":", 2);
         String nc = "00000001";
         String username = parts[0];
