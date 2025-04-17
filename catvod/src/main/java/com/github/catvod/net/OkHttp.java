@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import androidx.collection.ArrayMap;
 
 import com.github.catvod.bean.Doh;
-import com.github.catvod.net.authenticator.CombineAuthenticator;
+import com.github.catvod.net.interceptor.AuthInterceptor;
 import com.github.catvod.net.interceptor.RequestInterceptor;
 import com.github.catvod.net.interceptor.ResponseInterceptor;
 import com.github.catvod.utils.Path;
@@ -188,7 +188,7 @@ public class OkHttp {
     }
 
     private static OkHttpClient.Builder getBuilder() {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder().authenticator(new CombineAuthenticator()).cookieJar(OkCookieJar.get()).addInterceptor(requestInterceptor()).addNetworkInterceptor(responseInterceptor()).connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS).readTimeout(TIMEOUT, TimeUnit.MILLISECONDS).writeTimeout(TIMEOUT, TimeUnit.MILLISECONDS).dns(dns()).hostnameVerifier((hostname, session) -> true).sslSocketFactory(getSSLContext().getSocketFactory(), trustAllCertificates());
+        OkHttpClient.Builder builder = new OkHttpClient.Builder().cookieJar(OkCookieJar.get()).addInterceptor(requestInterceptor()).addInterceptor(new AuthInterceptor()).addNetworkInterceptor(responseInterceptor()).connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS).readTimeout(TIMEOUT, TimeUnit.MILLISECONDS).writeTimeout(TIMEOUT, TimeUnit.MILLISECONDS).dns(dns()).hostnameVerifier((hostname, session) -> true).sslSocketFactory(getSSLContext().getSocketFactory(), trustAllCertificates());
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
         builder.proxySelector(get().proxy ? selector() : defaultSelector);
         //builder.addNetworkInterceptor(logging);
