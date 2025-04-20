@@ -117,24 +117,33 @@ public class Util {
 
     public static String getIp() {
         try {
-            WifiManager manager = (WifiManager) Init.context().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            int address = manager.getConnectionInfo().getIpAddress();
-            if (address != 0) return Formatter.formatIpAddress(address);
-            return getHostAddress();
+            String ip = getHostAddress("wlan");
+            if (!ip.isEmpty()) return ip;
+            ip = getHostAddress("eth");
+            if (!ip.isEmpty()) return ip;
+            ip = getWifiAddress();
+            if (!ip.isEmpty()) return ip;
+            return getHostAddress("");
         } catch (Exception e) {
             return "";
         }
     }
 
-    private static String getHostAddress() throws SocketException {
+    private static String getWifiAddress() {
+        WifiManager manager = (WifiManager) Init.context().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        int address = manager.getConnectionInfo().getIpAddress();
+        if (address != 0) return Formatter.formatIpAddress(address);
+        return "";
+    }
+
+    private static String getHostAddress(String keyword) throws SocketException {
         for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
             NetworkInterface nif = en.nextElement();
-            String name = nif.getName();
-            if (name.startsWith("veth") || name.startsWith("tun") || name.startsWith("tap") || nif.getHardwareAddress() == null) continue;
+            if (!keyword.isEmpty() && !nif.getName().contains(keyword)) continue;
             for (Enumeration<InetAddress> addresses = nif.getInetAddresses(); addresses.hasMoreElements(); ) {
-                InetAddress inetAddress = addresses.nextElement();
-                if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-                    return inetAddress.getHostAddress();
+                InetAddress addr = addresses.nextElement();
+                if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
+                    return addr.getHostAddress();
                 }
             }
         }
