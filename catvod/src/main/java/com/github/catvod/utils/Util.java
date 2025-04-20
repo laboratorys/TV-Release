@@ -128,11 +128,9 @@ public class Util {
 
     private static String getHostAddress() throws SocketException {
         for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
-            NetworkInterface networkInterface = en.nextElement();
-            byte[] mac = networkInterface.getHardwareAddress();
-            String name = networkInterface.getName();
-            if (mac == null || name.startsWith("veth") || name.startsWith("tun") || name.startsWith("tap")) continue;
-            for (Enumeration<InetAddress> addresses = networkInterface.getInetAddresses(); addresses.hasMoreElements(); ) {
+            NetworkInterface nif = en.nextElement();
+            if (nif.getHardwareAddress() == null || !nif.getName().startsWith("eth")) continue;
+            for (Enumeration<InetAddress> addresses = nif.getInetAddresses(); addresses.hasMoreElements(); ) {
                 InetAddress inetAddress = addresses.nextElement();
                 if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
                     return inetAddress.getHostAddress();
