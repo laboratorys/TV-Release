@@ -23,7 +23,7 @@ public class ResponseInterceptor implements Interceptor {
     private final ConcurrentHashMap<String, String> redirect;
 
     public ResponseInterceptor() {
-        this.redirect = new ConcurrentHashMap<>();
+        redirect = new ConcurrentHashMap<>();
     }
 
     @NonNull
