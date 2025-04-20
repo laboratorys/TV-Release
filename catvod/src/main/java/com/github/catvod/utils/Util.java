@@ -126,6 +126,22 @@ public class Util {
         }
     }
 
+    private static String getHostAddress() throws SocketException {
+        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+            NetworkInterface networkInterface = en.nextElement();
+            byte[] mac = networkInterface.getHardwareAddress();
+            String name = networkInterface.getName();
+            if (mac == null || name.startsWith("veth") || name.startsWith("tun") || name.startsWith("tap")) continue;
+            for (Enumeration<InetAddress> addresses = networkInterface.getInetAddresses(); addresses.hasMoreElements(); ) {
+                InetAddress inetAddress = addresses.nextElement();
+                if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                    return inetAddress.getHostAddress();
+                }
+            }
+        }
+        return "";
+    }
+
     public static String digest(String userInfo, String header, Request request) {
         Map<String, String> params = parse(header.substring(7));
         String[] parts = userInfo.split(":", 2);
@@ -152,19 +168,6 @@ public class Util {
         auth.append("response=\"").append(response).append("\"");
         if (opaque != null) auth.append(", opaque=\"").append(opaque).append("\"");
         return auth.toString();
-    }
-
-    private static String getHostAddress() throws SocketException {
-        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
-            NetworkInterface interfaces = en.nextElement();
-            for (Enumeration<InetAddress> addresses = interfaces.getInetAddresses(); addresses.hasMoreElements(); ) {
-                InetAddress inetAddress = addresses.nextElement();
-                if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-                    return inetAddress.getHostAddress();
-                }
-            }
-        }
-        return "";
     }
 
     private static Map<String, String> parse(String header) {
