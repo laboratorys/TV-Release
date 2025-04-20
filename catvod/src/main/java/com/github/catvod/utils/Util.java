@@ -3,7 +3,6 @@ package com.github.catvod.utils;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
-import android.text.format.Formatter;
 import android.util.Base64;
 
 import com.github.catvod.Init;
@@ -19,6 +18,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.OkHttp;
@@ -131,15 +131,14 @@ public class Util {
 
     private static String getWifiAddress() {
         WifiManager manager = (WifiManager) Init.context().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        int address = manager.getConnectionInfo().getIpAddress();
-        if (address != 0) return Formatter.formatIpAddress(address);
-        return "";
+        int ip = manager.getConnectionInfo().getIpAddress();
+        return ip == 0 ? "" : String.format(Locale.getDefault(), "%d.%d.%d.%d", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24) & 0xFF);
     }
 
     private static String getHostAddress(String keyword) throws SocketException {
         for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
             NetworkInterface nif = en.nextElement();
-            if (!keyword.isEmpty() && !nif.getName().contains(keyword)) continue;
+            if (!keyword.isEmpty() && !nif.getName().startsWith(keyword)) continue;
             for (Enumeration<InetAddress> addresses = nif.getInetAddresses(); addresses.hasMoreElements(); ) {
                 InetAddress addr = addresses.nextElement();
                 if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
