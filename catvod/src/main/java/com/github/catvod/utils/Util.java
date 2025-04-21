@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.OkHttp;
 import okhttp3.Request;
@@ -181,10 +183,8 @@ public class Util {
 
     private static Map<String, String> parse(String header) {
         Map<String, String> params = new HashMap<>();
-        for (String part : header.split(",\\s*")) {
-            String[] kv = part.split("=", 2);
-            if (kv.length == 2) params.put(kv[0].trim(), kv[1].trim().replace("\"", ""));
-        }
+        Matcher matcher = Pattern.compile("(\\w+)=\"([^\"]*)\"").matcher(header);
+        while (matcher.find()) params.put(matcher.group(1), matcher.group(2));
         return params;
     }
 }
