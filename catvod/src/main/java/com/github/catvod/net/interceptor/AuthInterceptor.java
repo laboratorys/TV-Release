@@ -7,6 +7,7 @@ import com.google.common.net.HttpHeaders;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import okhttp3.Interceptor;
@@ -15,14 +16,14 @@ import okhttp3.Response;
 
 public class AuthInterceptor implements Interceptor {
 
-    private ConcurrentHashMap<String, String> user;
+    private final Map<String, String> userMap;
 
-    private ConcurrentHashMap<String, String> user() {
-        return user == null ? user = new ConcurrentHashMap<>() : user;
+    public AuthInterceptor() {
+        userMap = new ConcurrentHashMap<>();
     }
 
     public void clear() {
-        user().clear();
+        userMap.clear();
     }
 
     @NonNull
@@ -34,7 +35,7 @@ public class AuthInterceptor implements Interceptor {
         String host = request.url().host();
         String user = request.url().uri().getUserInfo();
         String header = response.header(HttpHeaders.WWW_AUTHENTICATE);
-        if (user == null && user().containsKey(host)) user = user().get(host);
+        if (user == null && userMap.containsKey(host)) user = userMap.get(host);
         if (user == null) return response;
         else response.close();
         String auth = digest(header) ? Util.digest(user, header, request) : Util.basic(user);
@@ -48,7 +49,7 @@ public class AuthInterceptor implements Interceptor {
     private Request check(Request request) {
         URI uri = request.url().uri();
         if (uri.getUserInfo() == null) return request;
-        user().put(request.url().host(), uri.getUserInfo());
+        userMap.put(request.url().host(), uri.getUserInfo());
         return request.newBuilder().header(HttpHeaders.AUTHORIZATION, Util.basic(uri.getUserInfo())).build();
     }
 }
