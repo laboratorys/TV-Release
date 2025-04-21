@@ -20,24 +20,27 @@ import okhttp3.Response;
 
 public class RequestInterceptor implements Interceptor {
 
-    private final ConcurrentHashMap<String, String> authMap;
-    private final ConcurrentHashMap<String, JsonObject> headerMap;
+    private ConcurrentHashMap<String, String> auth;
+    private ConcurrentHashMap<String, JsonObject> header;
 
-    public RequestInterceptor() {
-        authMap = new ConcurrentHashMap<>();
-        headerMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, String> auth() {
+        return auth == null ? auth = new ConcurrentHashMap<>() : auth;
+    }
+
+    private ConcurrentHashMap<String, JsonObject> header() {
+        return header == null ? header = new ConcurrentHashMap<>() : header;
     }
 
     public synchronized void setHeaders(List<JsonElement> items) {
         for (JsonElement item : items) {
             JsonObject object = Json.safeObject(item);
-            headerMap.put(object.get("host").getAsString(), object.get("header").getAsJsonObject());
+            header().put(object.get("host").getAsString(), object.get("header").getAsJsonObject());
         }
     }
 
     public void clear() {
-        authMap.clear();
-        headerMap.clear();
+        auth().clear();
+        header().clear();
     }
 
     @NonNull
@@ -53,15 +56,15 @@ public class RequestInterceptor implements Interceptor {
     }
 
     private void checkHeader(HttpUrl url, Request.Builder builder) {
-        if (!headerMap.containsKey(url.host())) return;
-        for (Map.Entry<String, JsonElement> entry : headerMap.get(url.host()).entrySet()) {
+        if (!header().containsKey(url.host())) return;
+        for (Map.Entry<String, JsonElement> entry : header().get(url.host()).entrySet()) {
             builder.header(entry.getKey(), entry.getValue().getAsString());
         }
     }
 
     private void checkAuthUser(HttpUrl url, Request.Builder builder) {
         String auth = url.queryParameter("auth");
-        if (auth != null) authMap.put(url.host(), auth);
-        if (authMap.containsKey(url.host()) && auth == null) builder.url(url.newBuilder().addQueryParameter("auth", authMap.get(url.host())).build());
+        if (auth != null) auth().put(url.host(), auth);
+        if (auth().containsKey(url.host()) && auth == null) builder.url(url.newBuilder().addQueryParameter("auth", auth().get(url.host())).build());
     }
 }
