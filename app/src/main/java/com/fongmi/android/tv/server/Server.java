@@ -63,7 +63,7 @@ public class Server {
                 nano.stop();
                 nano = null;
             }
-        } while (port < 10240);
+        } while (port < 9999);
     }
 
     public void stop() {
