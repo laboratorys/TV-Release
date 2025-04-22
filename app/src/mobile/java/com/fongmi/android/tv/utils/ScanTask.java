@@ -3,6 +3,7 @@ package com.fongmi.android.tv.utils;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.bean.Device;
 import com.fongmi.android.tv.server.Server;
+import com.github.catvod.Proxy;
 import com.github.catvod.net.OkHttp;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class ScanTask {
         Set<String> urls = new HashSet<>(ips);
         String local = Server.get().getAddress();
         String base = local.substring(0, local.lastIndexOf(".") + 1);
-        for (int i = 1; i < 256; i++) urls.add(base + i + ":9978");
+        for (int i = 1; i < 256; i++) urls.add(base + i + ":" + Proxy.getPort());
         return new ArrayList<>(urls);
     }
 

@@ -19,7 +19,7 @@ public class Server {
     }
 
     public Server() {
-        this.port = 9978;
+        this.port = 8964;
     }
 
     public int getPort() {
@@ -63,7 +63,7 @@ public class Server {
                 nano.stop();
                 nano = null;
             }
-        } while (port < 9999);
+        } while (port < 10240);
     }
 
     public void stop() {
