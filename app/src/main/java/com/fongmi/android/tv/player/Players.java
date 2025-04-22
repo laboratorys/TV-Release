@@ -400,28 +400,28 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public void start(Channel channel, int timeout) {
-        if (channel.getParse() == 1) {
-            startParse(channel.result(), false);
+        if (channel.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(channel.getDrm().getUUID())) {
+            ErrorEvent.drm(tag);
         } else if (channel.hasMsg()) {
             ErrorEvent.extract(tag, channel.getMsg());
+        } else if (channel.getParse() == 1) {
+            startParse(channel.result(), false);
         } else if (isIllegal(channel.getUrl())) {
             ErrorEvent.url(tag);
-        } else if (channel.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(channel.getDrm().getUUID())) {
-            ErrorEvent.drm(tag);
         } else {
             setMediaItem(channel, timeout);
         }
     }
 
     public void start(Result result, boolean useParse, int timeout) {
-        if (result.getParse() == 1 || result.getJx() == 1) {
-            startParse(result, useParse);
+        if (result.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(result.getDrm().getUUID())) {
+            ErrorEvent.drm(tag);
         } else if (result.hasMsg()) {
             ErrorEvent.extract(tag, result.getMsg());
+        } else if (result.getParse() == 1 || result.getJx() == 1) {
+            startParse(result, useParse);
         } else if (isIllegal(result.getRealUrl())) {
             ErrorEvent.url(tag);
-        } else if (result.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(result.getDrm().getUUID())) {
-            ErrorEvent.drm(tag);
         } else {
             setMediaItem(result, timeout);
         }
@@ -525,8 +525,6 @@ public class Players implements Player.Listener, ParseCallback {
         String host = UrlUtil.host(uri);
         String scheme = UrlUtil.scheme(uri);
         if ("data".equals(scheme)) return false;
-        if (url.startsWith("json:")) return false;
-        if (url.startsWith("parse:")) return false;
         return scheme.isEmpty() || "file".equals(scheme) ? !Path.exists(url) : host.isEmpty();
     }
 
