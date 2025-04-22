@@ -400,12 +400,12 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public void start(Channel channel, int timeout) {
-        if (channel.hasMsg()) {
+        if (channel.getParse() == 1) {
+            startParse(channel.result(), false);
+        } else if (channel.hasMsg()) {
             ErrorEvent.extract(tag, channel.getMsg());
         } else if (isIllegal(channel.getUrl())) {
             ErrorEvent.url(tag);
-        } else if (channel.getParse() == 1) {
-            startParse(channel.result(), false);
         } else if (channel.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(channel.getDrm().getUUID())) {
             ErrorEvent.drm(tag);
         } else {
@@ -414,12 +414,12 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public void start(Result result, boolean useParse, int timeout) {
-        if (result.hasMsg()) {
+        if (result.getParse() == 1 || result.getJx() == 1) {
+            startParse(result, useParse);
+        } else if (result.hasMsg()) {
             ErrorEvent.extract(tag, result.getMsg());
         } else if (isIllegal(result.getRealUrl())) {
             ErrorEvent.url(tag);
-        } else if (result.getParse(1) == 1 || result.getJx() == 1) {
-            startParse(result, useParse);
         } else if (result.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(result.getDrm().getUUID())) {
             ErrorEvent.drm(tag);
         } else {
