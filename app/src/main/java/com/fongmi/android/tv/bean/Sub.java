@@ -8,7 +8,7 @@ import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 
 import com.fongmi.android.tv.player.exo.ExoUtil;
-import com.github.catvod.utils.Path;
+import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.SerializedName;
 
@@ -28,29 +28,29 @@ public class Sub {
     private int flag;
 
     public static Sub from(String path) {
-        if (path.startsWith("http")) {
+        if (path.contains("://")) {
             return http(path);
         } else {
-            return file(Path.local(path));
+            return file(path);
         }
     }
 
-    private static Sub http(String url) {
-        Uri uri = Uri.parse(url);
+    private static Sub http(String path) {
+        Uri uri = Uri.parse(path);
         Sub sub = new Sub();
-        sub.url = url;
+        sub.url = path;
         sub.name = uri.getLastPathSegment();
         sub.flag = C.SELECTION_FLAG_FORCED;
         sub.format = ExoUtil.getMimeType(uri.getLastPathSegment());
         return sub;
     }
 
-    private static Sub file(File file) {
+    private static Sub file(String path) {
         Sub sub = new Sub();
-        sub.name = file.getName();
-        sub.url = file.getAbsolutePath();
+        sub.url = "file:/" + path;
+        sub.name = new File(path).getName();
         sub.flag = C.SELECTION_FLAG_FORCED;
-        sub.format = ExoUtil.getMimeType(file.getName());
+        sub.format = ExoUtil.getMimeType(sub.name);
         return sub;
     }
 
@@ -80,7 +80,7 @@ public class Sub {
     }
 
     public MediaItem.SubtitleConfiguration config() {
-        return new MediaItem.SubtitleConfiguration.Builder(Uri.parse(getUrl())).setLabel(getName()).setMimeType(getFormat()).setSelectionFlags(getFlag()).setLanguage(getLang()).build();
+        return new MediaItem.SubtitleConfiguration.Builder(Uri.parse(UrlUtil.convert(getUrl()))).setLabel(getName()).setMimeType(getFormat()).setSelectionFlags(getFlag()).setLanguage(getLang()).build();
     }
 
     @Override

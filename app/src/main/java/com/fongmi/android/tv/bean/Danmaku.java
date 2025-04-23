@@ -18,7 +18,7 @@ public class Danmaku {
     private boolean selected;
 
     public static Danmaku from(String path) {
-        if (path.startsWith("http")) {
+        if (path.contains("://")) {
             return http(path);
         } else {
             return file(path);
