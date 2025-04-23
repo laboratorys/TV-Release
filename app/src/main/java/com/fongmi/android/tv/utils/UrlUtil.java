@@ -1,7 +1,6 @@
 package com.fongmi.android.tv.utils;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.fongmi.android.tv.server.Server;
 import com.github.catvod.utils.UriUtil;
@@ -46,7 +45,6 @@ public class UrlUtil {
         if ("file".equals(scheme)) path = "/file/";
         else if ("proxy".equals(scheme)) path = "/proxy?";
         else if ("local".equals(scheme) || "assets".equals(scheme)) path = "/";
-        if (path != null) Log.e("DDD", url.replace(scheme + "://", Server.get().getAddress(path)));
         return path != null ? url.replace(scheme + "://", Server.get().getAddress(path)) : url;
     }
 
