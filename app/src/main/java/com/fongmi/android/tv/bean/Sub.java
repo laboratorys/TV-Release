@@ -12,8 +12,6 @@ import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.File;
-
 public class Sub {
 
     @SerializedName("url")
@@ -28,27 +26,10 @@ public class Sub {
     private int flag;
 
     public static Sub from(String path) {
-        if (path.contains("://")) {
-            return http(path);
-        } else {
-            return file(path);
-        }
-    }
-
-    private static Sub http(String path) {
         Uri uri = Uri.parse(path);
         Sub sub = new Sub();
         sub.url = path;
         sub.name = uri.getLastPathSegment();
-        sub.flag = C.SELECTION_FLAG_FORCED;
-        sub.format = ExoUtil.getMimeType(uri.getLastPathSegment());
-        return sub;
-    }
-
-    private static Sub file(String path) {
-        Sub sub = new Sub();
-        sub.url = "file:/" + path;
-        sub.name = new File(path).getName();
         sub.flag = C.SELECTION_FLAG_FORCED;
         sub.format = ExoUtil.getMimeType(sub.name);
         return sub;
