@@ -60,10 +60,11 @@ public class Server {
         for (int port : Arrays.asList(9978, 8964)) {
             try {
                 Nano nano = new Nano(port);
-                nano.start(500, false);
+                nano.start(2000);
                 Proxy.set(port);
                 items.add(nano);
-            } catch (Throwable ignored) {
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
         }
     }
