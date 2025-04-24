@@ -4,14 +4,10 @@ import com.fongmi.android.tv.player.Players;
 import com.github.catvod.Proxy;
 import com.github.catvod.utils.Util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class Server {
 
-    private final List<Nano> items;
     private Players player;
+    private Nano nano;
 
     private static class Loader {
         static volatile Server INSTANCE = new Server();
@@ -19,10 +15,6 @@ public class Server {
 
     public static Server get() {
         return Loader.INSTANCE;
-    }
-
-    public Server() {
-        this.items = new ArrayList<>();
     }
 
     public Players getPlayer() {
@@ -46,30 +38,25 @@ public class Server {
     }
 
     public String getAddress(boolean local) {
-        return "http://" + (local ? "127.0.0.1" : Util.getIp()) + ":" + getPort();
-    }
-
-    public int getPort() {
-        for (Nano item : items) if (item.getListeningPort() == 8964) return 8964;
-        for (Nano item : items) if (item.getListeningPort() == 9978) return 9978;
-        return -1;
+        return "http://" + (local ? "127.0.0.1" : Util.getIp()) + ":" + Proxy.getPort();
     }
 
     public void start() {
-        if (!items.isEmpty()) return;
-        for (int port : Arrays.asList(9978, 8964)) {
+        if (nano != null) return;
+        for (int i = 9978; i < 9999; i++) {
             try {
-                Nano nano = new Nano(port);
-                nano.start(2000);
-                Proxy.set(port);
-                items.add(nano);
+                nano = new Nano(i);
+                nano.start(500);
+                Proxy.set(i);
+                break;
             } catch (Throwable e) {
-                e.printStackTrace();
+                nano = null;
             }
         }
     }
 
     public void stop() {
-        for (Nano item : items) item.stop();
+        if (nano != null) nano.stop();
+        nano = null;
     }
 }
