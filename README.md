@@ -196,6 +196,38 @@ scheme://username:password@host:port
 }
 ```
 
+### 爬蟲本地代理
+
+Java
+
+```
+proxy://
+```
+
+```
+Proxy.getUrl(boolean local)
+```
+
+Python
+
+```
+proxy://do=py
+```
+
+```
+getProxyUrl(boolean local)
+```
+
+JS
+
+```
+proxy://do=js
+```
+
+```
+getProxy(boolean local)
+```
+
 ### 配置範例
 
 [點播-線上](other/sample/vod/online.json)  
