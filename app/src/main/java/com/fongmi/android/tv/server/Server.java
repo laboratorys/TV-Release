@@ -4,11 +4,14 @@ import com.fongmi.android.tv.player.Players;
 import com.github.catvod.Proxy;
 import com.github.catvod.utils.Util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Server {
 
+    private final List<Nano> items;
     private Players player;
-    private Nano nano;
-    private int port;
 
     private static class Loader {
         static volatile Server INSTANCE = new Server();
@@ -19,11 +22,7 @@ public class Server {
     }
 
     public Server() {
-        this.port = 8964;
-    }
-
-    public int getPort() {
-        return port;
+        this.items = new ArrayList<>();
     }
 
     public Players getPlayer() {
@@ -50,23 +49,26 @@ public class Server {
         return "http://" + (local ? "127.0.0.1" : Util.getIp()) + ":" + getPort();
     }
 
+    public int getPort() {
+        for (Nano item : items) if (item.getListeningPort() == 8964) return 8964;
+        for (Nano item : items) if (item.getListeningPort() == 9978) return 9978;
+        return -1;
+    }
+
     public void start() {
-        if (nano != null) return;
-        while (port < 9999) {
+        if (!items.isEmpty()) return;
+        for (int port : Arrays.asList(9978, 8964)) {
             try {
-                nano = new Nano(port);
+                Nano nano = new Nano(port);
+                nano.start(500, false);
                 Proxy.set(port);
-                nano.start();
-                return;
-            } catch (Exception e) {
-                nano = null;
-                port++;
+                items.add(nano);
+            } catch (Throwable ignored) {
             }
         }
     }
 
     public void stop() {
-        if (nano != null) nano.stop();
-        nano = null;
+        for (Nano item : items) item.stop();
     }
 }
