@@ -64,10 +64,6 @@ public class Path {
         return mkdir(new File(cache() + File.separator + "jar"));
     }
 
-    public static File doh() {
-        return mkdir(new File(cache() + File.separator + "doh"));
-    }
-
     public static File exo() {
         return mkdir(new File(cache() + File.separator + "exo"));
     }

@@ -9,7 +9,6 @@ import com.github.catvod.bean.Doh;
 import com.github.catvod.net.interceptor.AuthInterceptor;
 import com.github.catvod.net.interceptor.RequestInterceptor;
 import com.github.catvod.net.interceptor.ResponseInterceptor;
-import com.github.catvod.utils.Path;
 
 import java.net.ProxySelector;
 import java.security.SecureRandom;
@@ -22,7 +21,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.Headers;
@@ -36,7 +34,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class OkHttp {
 
     private static final int TIMEOUT = 30 * 1000;
-    private static final int CACHE = 100 * 1024 * 1024;
     private static final ProxySelector defaultSelector;
 
     private ResponseInterceptor responseInterceptor;
@@ -70,8 +67,7 @@ public class OkHttp {
     }
 
     public void setDoh(Doh doh) {
-        OkHttpClient c = new OkHttpClient.Builder().cache(new Cache(Path.doh(), CACHE)).build();
-        dns().setDoh(doh.getUrl().isEmpty() ? null : new DnsOverHttps.Builder().client(c).url(HttpUrl.get(doh.getUrl())).bootstrapDnsHosts(doh.getHosts()).build());
+        dns().setDoh(doh.getUrl().isEmpty() ? null : new DnsOverHttps.Builder().client(new OkHttpClient()).url(HttpUrl.get(doh.getUrl())).bootstrapDnsHosts(doh.getHosts()).build());
         client = null;
     }
 
