@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.github.catvod.net.OkCookieJar;
 import com.github.catvod.utils.Json;
-import com.google.common.net.HttpHeaders;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -44,11 +43,11 @@ public class RequestInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request request = chain.request();
-        HttpUrl url = request.url();
         Request.Builder builder = request.newBuilder();
+        HttpUrl url = request.url();
+        checkAuth(url, builder);
         checkHeader(url, builder);
-        checkAuthUser(url, builder);
-        OkCookieJar.sync(url.toString(), request.header(HttpHeaders.COOKIE));
+        OkCookieJar.sync(url, request);
         return chain.proceed(builder.build());
     }
 
@@ -59,7 +58,7 @@ public class RequestInterceptor implements Interceptor {
         }
     }
 
-    private void checkAuthUser(HttpUrl url, Request.Builder builder) {
+    private void checkAuth(HttpUrl url, Request.Builder builder) {
         String auth = url.queryParameter("auth");
         if (auth != null) authMap.put(url.host(), auth);
         if (authMap.containsKey(url.host()) && auth == null) builder.url(url.newBuilder().addQueryParameter("auth", authMap.get(url.host())).build());
