@@ -51,16 +51,16 @@ public class RequestInterceptor implements Interceptor {
         return chain.proceed(builder.build());
     }
 
+    private void checkAuth(HttpUrl url, Request.Builder builder) {
+        String auth = url.queryParameter("auth");
+        if (auth != null) authMap.put(url.host(), auth);
+        if (authMap.containsKey(url.host()) && auth == null) builder.url(url.newBuilder().addQueryParameter("auth", authMap.get(url.host())).build());
+    }
+
     private void checkHeader(HttpUrl url, Request.Builder builder) {
         if (!headerMap.containsKey(url.host())) return;
         for (Map.Entry<String, JsonElement> entry : headerMap.get(url.host()).entrySet()) {
             builder.header(entry.getKey(), entry.getValue().getAsString());
         }
-    }
-
-    private void checkAuth(HttpUrl url, Request.Builder builder) {
-        String auth = url.queryParameter("auth");
-        if (auth != null) authMap.put(url.host(), auth);
-        if (authMap.containsKey(url.host()) && auth == null) builder.url(url.newBuilder().addQueryParameter("auth", authMap.get(url.host())).build());
     }
 }

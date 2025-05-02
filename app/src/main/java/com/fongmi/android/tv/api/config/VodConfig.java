@@ -258,6 +258,7 @@ public class VodConfig {
 
     public void setHeaders(List<JsonElement> items) {
         OkHttp.requestInterceptor().setHeaders(items);
+        OkHttp.responseInterceptor().setHeaders(items);
     }
 
     public List<String> getFlags() {

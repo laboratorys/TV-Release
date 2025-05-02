@@ -66,6 +66,7 @@ public class OkHttp {
         selector().clear();
         authInterceptor().clear();
         requestInterceptor().clear();
+        responseInterceptor().clear();
     }
 
     public void setDoh(Doh doh) {
