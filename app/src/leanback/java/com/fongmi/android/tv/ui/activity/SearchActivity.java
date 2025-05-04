@@ -175,10 +175,4 @@ public class SearchActivity extends BaseActivity implements WordAdapter.OnClickL
         super.onResume();
         mBinding.keyword.requestFocus();
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mBinding.mic.release();
-    }
 }

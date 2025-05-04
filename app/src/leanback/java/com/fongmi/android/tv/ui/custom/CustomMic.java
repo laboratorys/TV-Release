@@ -92,11 +92,6 @@ public class CustomMic extends AppCompatImageView {
         }
     }
 
-    public void release() {
-        recognizer.destroy();
-        recognizer = null;
-    }
-
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, @Nullable Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
