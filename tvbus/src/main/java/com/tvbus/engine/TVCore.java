@@ -126,8 +126,11 @@ public class TVCore implements Runnable {
 
     @Override
     public void run() {
-        init(handle, Init.context());
-        run(handle);
+        try {
+            init(handle, Init.context());
+            run(handle);
+        } catch (Throwable ignored) {
+        }
     }
 
     private native long initialise();
