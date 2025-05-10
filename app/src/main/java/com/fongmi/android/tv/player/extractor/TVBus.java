@@ -47,15 +47,16 @@ public class TVBus implements Source.Extractor, Listener {
         return check();
     }
 
+    private void change() throws Exception {
+        Setting.putBootLive(true);
+        App.post(() -> System.exit(0), 100);
+        throw new ExtractException(ResUtil.getString(R.string.error_play_url));
+    }
+
     private String check() throws Exception {
         if (hls == null) return "";
         if (!hls.startsWith("-")) return hls;
         throw new ExtractException(ResUtil.getString(R.string.error_play_code, hls));
-    }
-
-    private void change() {
-        Setting.putBootLive(true);
-        App.post(() -> System.exit(0), 250);
     }
 
     @Override
