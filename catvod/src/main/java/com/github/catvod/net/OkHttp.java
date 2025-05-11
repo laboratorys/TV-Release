@@ -28,6 +28,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import okhttp3.dnsoverhttps.DnsOverHttps;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -121,8 +122,9 @@ public class OkHttp {
     }
 
     public static String string(String url) {
-        try {
-            return url.startsWith("http") ? newCall(url).execute().body().string() : "";
+        if (!url.startsWith("http")) return "";
+        try (Response res = newCall(url).execute()) {
+            return res.body().string();
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -130,11 +132,22 @@ public class OkHttp {
     }
 
     public static String string(String url, Map<String, String> headers) {
-        try {
-            return url.startsWith("http") ? newCall(url, Headers.of(headers)).execute().body().string() : "";
+        if (!url.startsWith("http")) return "";
+        try (Response res = newCall(url, Headers.of(headers)).execute()) {
+            return res.body().string();
         } catch (Exception e) {
             e.printStackTrace();
             return "";
+        }
+    }
+
+    public static byte[] bytes(String url) {
+        if (!url.startsWith("http")) return new byte[0];
+        try (Response res = newCall(url).execute()) {
+            return res.body().bytes();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new byte[0];
         }
     }
 

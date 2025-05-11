@@ -9,11 +9,10 @@ public class TVCore implements Runnable {
     private final Thread thread;
     private final long handle;
 
-    public TVCore() {
-        System.loadLibrary("tvcore");
-        thread = new Thread(this);
-        thread.setName("tvcore");
+    public TVCore(String path) {
+        System.load(path);
         handle = initialise();
+        thread = new Thread(this);
     }
 
     public TVCore listener(Listener listener) {

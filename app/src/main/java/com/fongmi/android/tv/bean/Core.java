@@ -26,6 +26,8 @@ public class Core {
     private String sign;
     @SerializedName("pkg")
     private String pkg;
+    @SerializedName("so")
+    private String so;
 
     public String getAuth() {
         return !getResp().isEmpty() ? Server.get().getAddress("/tvbus") : TextUtils.isEmpty(auth) ? "" : auth;
@@ -57,6 +59,10 @@ public class Core {
 
     public String getPkg() {
         return TextUtils.isEmpty(pkg) ? "" : pkg;
+    }
+
+    public String getSo() {
+        return TextUtils.isEmpty(so) ? "" : so;
     }
 
     public Hook getHook() {

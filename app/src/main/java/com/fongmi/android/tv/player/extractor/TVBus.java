@@ -1,5 +1,8 @@
 package com.fongmi.android.tv.player.extractor;
 
+import android.net.Uri;
+import android.text.TextUtils;
+
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
@@ -8,10 +11,13 @@ import com.fongmi.android.tv.bean.Core;
 import com.fongmi.android.tv.exception.ExtractException;
 import com.fongmi.android.tv.player.Source;
 import com.fongmi.android.tv.utils.ResUtil;
+import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Path;
 import com.google.gson.JsonObject;
 import com.tvbus.engine.Listener;
 import com.tvbus.engine.TVCore;
 
+import java.io.File;
 import java.util.concurrent.CountDownLatch;
 
 public class TVBus implements Source.Extractor, Listener {
@@ -29,11 +35,19 @@ public class TVBus implements Source.Extractor, Listener {
     private void init(Core core) {
         try {
             App.get().setHook(core.getHook());
-            tvcore = new TVCore().listener(this).auth(core.getAuth()).name(core.getName()).pass(core.getPass()).domain(core.getDomain()).broker(core.getBroker()).serv(0).play(8902).mode(1).init();
+            tvcore = new TVCore(getPath(core.getSo())).listener(this).auth(core.getAuth()).name(core.getName()).pass(core.getPass()).domain(core.getDomain()).broker(core.getBroker()).serv(0).play(8902).mode(1).init();
         } catch (Exception ignored) {
         } finally {
             App.get().setHook(null);
         }
+    }
+
+    private String getPath(String url) {
+        String name = Uri.parse(url).getLastPathSegment();
+        if (TextUtils.isEmpty(name)) name = "tvcore.so";
+        File file = new File(Path.so(), name);
+        if (file.length() < 10240) Path.write(file, OkHttp.bytes(url));
+        return file.getAbsolutePath();
     }
 
     @Override
