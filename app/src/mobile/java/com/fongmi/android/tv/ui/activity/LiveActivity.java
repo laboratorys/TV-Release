@@ -165,6 +165,9 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mBinding.control.seek.setListener(mPlayers);
         mBinding.control.cast.setOnClickListener(view -> onCast());
         mBinding.control.info.setOnClickListener(view -> onInfo());
+        mBinding.control.play.setOnClickListener(view -> checkPlay());
+        mBinding.control.next.setOnClickListener(view -> checkNext());
+        mBinding.control.prev.setOnClickListener(view -> checkPrev());
         mBinding.control.right.back.setOnClickListener(view -> onBack());
         mBinding.control.right.lock.setOnClickListener(view -> onLock());
         mBinding.control.right.rotate.setOnClickListener(view -> onRotate());
@@ -469,10 +472,12 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mBinding.control.cast.setVisibility(mPlayers.isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.control.right.rotate.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.right.back.setVisibility(isLock() ? View.GONE : View.VISIBLE);
+        mBinding.control.center.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.bottom.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         setR1Callback();
+        checkPlayImg();
         hideInfo();
         hideEpg();
     }
@@ -664,6 +669,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     private void checkPlayImg() {
+        mBinding.control.play.setImageResource(mPlayers.isPlaying() ? androidx.media3.ui.R.drawable.exo_icon_pause : androidx.media3.ui.R.drawable.exo_icon_play);
         mPiP.update(this, mPlayers.isPlaying());
         ActionEvent.update();
     }
@@ -730,9 +736,9 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         if (ActionEvent.PLAY.equals(event.getAction()) || ActionEvent.PAUSE.equals(event.getAction())) {
             checkPlay();
         } else if (ActionEvent.NEXT.equals(event.getAction())) {
-            nextChannel();
+            checkNext();
         } else if (ActionEvent.PREV.equals(event.getAction())) {
-            prevChannel();
+            checkPrev();
         } else if (ActionEvent.STOP.equals(event.getAction())) {
             finish();
         }
@@ -863,6 +869,13 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         else nextChannel();
     }
 
+    private void checkPrev() {
+        int position = mChannel.getData().getSelected() - 1;
+        boolean hasPrev = position >= 0;
+        if (hasPrev) onItemClick(mChannel.getData().getList().get(position));
+        else prevChannel();
+    }
+
     private void prevLine() {
         if (mChannel == null || mChannel.isOnly()) return;
         mChannel.prevLine();
@@ -978,12 +991,12 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     @Override
     public void onFlingUp() {
-        prevChannel();
+        checkPrev();
     }
 
     @Override
     public void onFlingDown() {
-        nextChannel();
+        checkNext();
     }
 
     @Override
