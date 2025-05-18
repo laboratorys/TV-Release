@@ -93,6 +93,8 @@ public class LiveViewModel extends ViewModel {
 
     public void getUrl(Channel item, EpgData data) {
         execute(URL, () -> {
+            item.setMsg(null);
+            Source.get().stop();
             item.setUrl(item.getCatchup().format(Source.get().fetch(item), data));
             return item;
         });
