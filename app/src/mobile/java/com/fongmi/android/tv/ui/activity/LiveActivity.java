@@ -166,8 +166,8 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mBinding.control.cast.setOnClickListener(view -> onCast());
         mBinding.control.info.setOnClickListener(view -> onInfo());
         mBinding.control.play.setOnClickListener(view -> checkPlay());
-        mBinding.control.next.setOnClickListener(view -> checkNext());
-        mBinding.control.prev.setOnClickListener(view -> checkPrev());
+        mBinding.control.next.setOnClickListener(view -> nextChannel());
+        mBinding.control.prev.setOnClickListener(view -> prevChannel());
         mBinding.control.right.back.setOnClickListener(view -> onBack());
         mBinding.control.right.lock.setOnClickListener(view -> onLock());
         mBinding.control.right.rotate.setOnClickListener(view -> onRotate());
@@ -736,9 +736,9 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         if (ActionEvent.PLAY.equals(event.getAction()) || ActionEvent.PAUSE.equals(event.getAction())) {
             checkPlay();
         } else if (ActionEvent.NEXT.equals(event.getAction())) {
-            checkNext();
+            nextChannel();
         } else if (ActionEvent.PREV.equals(event.getAction())) {
-            checkPrev();
+            prevChannel();
         } else if (ActionEvent.STOP.equals(event.getAction())) {
             finish();
         }
@@ -869,13 +869,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         else nextChannel();
     }
 
-    private void checkPrev() {
-        int position = mChannel.getData().getSelected() - 1;
-        boolean hasPrev = position >= 0;
-        if (hasPrev) onItemClick(mChannel.getData().getList().get(position));
-        else prevChannel();
-    }
-
     private void prevLine() {
         if (mChannel == null || mChannel.isOnly()) return;
         mChannel.prevLine();
@@ -991,12 +984,12 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     @Override
     public void onFlingUp() {
-        checkPrev();
+        prevChannel();
     }
 
     @Override
     public void onFlingDown() {
-        checkNext();
+        nextChannel();
     }
 
     @Override
