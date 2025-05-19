@@ -72,8 +72,8 @@ public class EpgParser {
             String key = programme.getChannel();
             Tv.Channel channel = mapping.get(key);
             if (!exist.contains(key)) key = find(exist, channel);
-            Date startDate = formatFull.parse(programme.getStart());
-            Date endDate = formatFull.parse(programme.getStop());
+            Date startDate = parse(formatFull, programme.getStart());
+            Date endDate = parse(formatFull, programme.getStop());
             if (!exist.contains(key) || !isToday(startDate)) continue;
             if (!epgMap.containsKey(key)) epgMap.put(key, Epg.create(key, today));
             epgMap.get(key).getList().add(getEpgData(startDate, endDate, programme));
@@ -95,14 +95,14 @@ public class EpgParser {
 
     public static Epg getEpg(String xml, String key) throws Exception {
         Tv tv = new Persister().read(Tv.class, xml, false);
-        Epg epg = Epg.create(key, formatDate.format(formatFull.parse(tv.getDate())));
+        Epg epg = Epg.create(key, formatDate.format(parse(formatFull, tv.getDate())));
         for (Tv.Programme programme : tv.getProgramme()) epg.getList().add(getEpgData(programme));
         return epg;
     }
 
-    private static EpgData getEpgData(Tv.Programme programme) throws Exception {
-        Date startDate = formatFull.parse(programme.getStart());
-        Date endDate = formatFull.parse(programme.getStop());
+    private static EpgData getEpgData(Tv.Programme programme) {
+        Date startDate = parse(formatFull, programme.getStart());
+        Date endDate = parse(formatFull, programme.getStop());
         return getEpgData(startDate, endDate, programme);
     }
 
@@ -117,6 +117,16 @@ public class EpgParser {
             return epgData;
         } catch (Exception e) {
             return new EpgData();
+        }
+    }
+
+    private static Date parse(SimpleDateFormat format, String source) {
+        try {
+            return format.parse(source);
+        } catch (Exception e) {
+            Date date = new Date();
+            date.setTime(0);
+            return date;
         }
     }
 }
