@@ -803,35 +803,41 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void onEnding() {
         long current = mPlayers.getPosition();
         long duration = mPlayers.getDuration();
-        if (duration - current > TimeUnit.MINUTES.toMillis(10)) return;
-        if (current < 0 || duration < 0 || current < duration / 2) return;
-        mHistory.setEnding(duration - current);
-        mBinding.control.action.ending.setText(mPlayers.stringToTime(mHistory.getEnding()));
+        if (current < 0 || duration < 0) return;
+        if (duration - current > TimeUnit.MINUTES.toMillis(5)) return;
+        setEnding(duration - current);
         setR1Callback();
     }
 
     private boolean onEndingReset() {
-        mHistory.setEnding(0);
-        mBinding.control.action.ending.setText(R.string.play_ed);
         setR1Callback();
+        setEnding(0);
         return true;
+    }
+
+    private void setEnding(long ending) {
+        mHistory.setEnding(ending);
+        mBinding.control.action.ending.setText(ending <= 0 ? getString(R.string.play_ed) : mPlayers.stringToTime(mHistory.getEnding()));
     }
 
     private void onOpening() {
         long current = mPlayers.getPosition();
         long duration = mPlayers.getDuration();
-        if (current > TimeUnit.MINUTES.toMillis(10)) return;
-        if (current < 0 || duration < 0 || current > duration / 2) return;
-        mHistory.setOpening(current);
-        mBinding.control.action.opening.setText(mPlayers.stringToTime(mHistory.getOpening()));
+        if (current < 0 || duration < 0) return;
+        if (current > TimeUnit.MINUTES.toMillis(5)) return;
+        setOpening(current);
         setR1Callback();
     }
 
     private boolean onOpeningReset() {
-        mHistory.setOpening(0);
-        mBinding.control.action.opening.setText(R.string.play_op);
         setR1Callback();
+        setOpening(0);
         return true;
+    }
+
+    private void setOpening(long opening) {
+        mHistory.setOpening(opening);
+        mBinding.control.action.opening.setText(opening <= 0 ? getString(R.string.play_op) : mPlayers.stringToTime(mHistory.getOpening()));
     }
 
     private void onEpisodes() {

@@ -783,17 +783,13 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     private void onOpening() {
         long current = mPlayers.getPosition();
         long duration = mPlayers.getDuration();
-        if (current > TimeUnit.MINUTES.toMillis(10)) return;
-        if (current < 0 || duration < 0 || current > duration / 2) return;
+        if (current < 0 || duration < 0) return;
+        if (current > TimeUnit.MINUTES.toMillis(5)) return;
         setOpening(current);
     }
 
     private void onOpeningAdd() {
-        long current = mPlayers.getPosition();
-        long duration = mPlayers.getDuration();
-        if (current < 0 || duration < 0) return;
-        if (mHistory.getOpening() < 0) mHistory.setOpening(0);
-        setOpening(Math.min(mHistory.getOpening() + 1000, duration / 2));
+        setOpening(Math.max(0, mHistory.getOpening() + 1000));
     }
 
     private void onOpeningSub() {
@@ -813,16 +809,13 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     private void onEnding() {
         long current = mPlayers.getPosition();
         long duration = mPlayers.getDuration();
-        if (duration - current > TimeUnit.MINUTES.toMillis(10)) return;
-        if (current < 0 || duration < 0 || current < duration / 2) return;
+        if (current < 0 || duration < 0) return;
+        if (duration - current > TimeUnit.MINUTES.toMillis(5)) return;
         setEnding(duration - current);
     }
 
     private void onEndingAdd() {
-        long current = mPlayers.getPosition();
-        long duration = mPlayers.getDuration();
-        if (current < 0 || duration < 0) return;
-        setEnding(Math.min(duration / 2, mHistory.getEnding() + 1000));
+        setEnding(Math.max(0, mHistory.getEnding() + 1000));
     }
 
     private void onEndingSub() {
@@ -1348,8 +1341,14 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     @Override
     public void onKeyUp() {
         long current = mPlayers.getPosition();
-        long half = mPlayers.getDuration() / 2;
-        showControl(current < half ? mBinding.control.opening : mBinding.control.ending);
+        long duration = mPlayers.getDuration();
+        if (duration - current < TimeUnit.MINUTES.toMillis(5)) {
+            showControl(mBinding.control.ending);
+        } else if (current < TimeUnit.MINUTES.toMillis(5)) {
+            showControl(mBinding.control.opening);
+        } else {
+            showControl(getFocus2());
+        }
     }
 
     @Override
