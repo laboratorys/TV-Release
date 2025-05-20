@@ -80,6 +80,8 @@ public class TrackNameProvider {
 
     private String buildLanguageString(Format format) {
         String language = format.language;
+        if ("chs".equals(language)) language = "zh-Hans";
+        if ("cht".equals(language)) language = "zh-Hant";
         if (TextUtils.isEmpty(language) || C.LANGUAGE_UNDETERMINED.equals(language)) return "";
         Locale languageLocale = Util.SDK_INT >= 21 ? Locale.forLanguageTag(language) : new Locale(language);
         Locale displayLocale = Util.getDefaultDisplayLocale();
