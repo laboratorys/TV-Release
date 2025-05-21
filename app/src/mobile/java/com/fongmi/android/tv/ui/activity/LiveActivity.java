@@ -253,7 +253,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     private void getLive() {
-        mBinding.control.action.home.setText(getHome().getName());
+        mBinding.control.action.home.setText(LiveConfig.isOnly() ? getString(R.string.live_refresh) : getHome().getName());
         mViewModel.getLive(getHome());
         showProgress();
     }
@@ -346,7 +346,8 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     private void onHome() {
-        LiveDialog.create(this).show();
+        if (LiveConfig.isOnly()) setLive(getHome());
+        else LiveDialog.create(this).show();
         hideControl();
     }
 

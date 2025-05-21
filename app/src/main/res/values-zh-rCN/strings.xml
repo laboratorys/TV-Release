@@ -8,6 +8,7 @@
 
     <!-- Live -->
     <string name="live_pass">密码</string>
+    <string name="live_refresh">刷新</string>
     <string name="live_line">线路 <xliff:g name="name">%s</xliff:g></string>
 
     <!-- Detail -->
