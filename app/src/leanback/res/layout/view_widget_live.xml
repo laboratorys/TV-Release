@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/info"
+        android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -30,26 +30,10 @@
             tools:text="民視" />
 
         <TextView
-            android:id="@+id/epg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
-            android:layout_alignStart="@+id/title"
-            android:ellipsize="marquee"
-            android:shadowColor="@color/grey_900"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:shadowRadius="1"
-            android:singleLine="true"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            tools:text="食神" />
-
-        <TextView
             android:id="@+id/size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/epg"
+            android:layout_below="@+id/title"
             android:layout_alignStart="@+id/title"
             android:shadowColor="@color/grey_900"
             android:shadowDx="2"

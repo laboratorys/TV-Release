@@ -580,9 +580,8 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         if (item.isSelected()) {
             fetch(item);
         } else if (mChannel.hasCatchup()) {
+            mBinding.control.title.setText(getString(R.string.detail_title, mChannel.getName(), item.getTitle()));
             Notify.show(getString(R.string.play_ready, item.getTitle()));
-            mBinding.control.epg.setVisibility(View.VISIBLE);
-            mBinding.control.epg.setText(item.getTitle());
             mEpgDataAdapter.setSelected(item);
             fetch(item);
         }
@@ -607,7 +606,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mBinding.widget.play.setText("");
         mChannel.loadLogo(mBinding.widget.logo);
         mBinding.control.title.setSelected(true);
-        mBinding.control.epg.setVisibility(View.GONE);
         mBinding.widget.name.setText(mChannel.getName());
         mBinding.control.title.setText(mChannel.getName());
         mBinding.widget.namePip.setText(mChannel.getName());
@@ -620,12 +618,12 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     private void setEpg() {
-        String epg = mChannel.getData().getEpg();
-        List<EpgData> data = mChannel.getData().getList();
-        if (!epg.isEmpty()) mBinding.widget.name.setMaxEms(12);
-        mBinding.widget.play.setText(epg);
-        mChannelAdapter.changed(mChannel);
-        mEpgDataAdapter.addAll(data);
+        EpgData data = mChannel.getData().getEpgData();
+        boolean hasTitle = !data.getTitle().isEmpty();
+        mEpgDataAdapter.addAll(mChannel.getData().getList());
+        if (hasTitle) mBinding.control.title.setText(getString(R.string.detail_title, mChannel.getName(), data.getTitle()));
+        mBinding.widget.name.setMaxEms(hasTitle ? 12 : 48);
+        mBinding.widget.play.setText(data.format());
         setWidth(mChannel.getData());
         setMetadata();
     }

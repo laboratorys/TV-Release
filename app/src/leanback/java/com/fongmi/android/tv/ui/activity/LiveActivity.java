@@ -454,7 +454,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     private void showControl(View view) {
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
-        mBinding.widget.info.setVisibility(View.VISIBLE);
+        mBinding.widget.top.setVisibility(View.VISIBLE);
         App.post(view::requestFocus, 25);
         setR1Callback();
         hideInfo();
@@ -462,7 +462,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     private void hideControl() {
         mBinding.control.getRoot().setVisibility(View.GONE);
-        mBinding.widget.info.setVisibility(View.GONE);
+        mBinding.widget.top.setVisibility(View.GONE);
         App.removeCallbacks(mR1);
     }
 
@@ -560,8 +560,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         if (item.isSelected()) {
             fetch(item);
         } else if (mChannel.hasCatchup()) {
-            mBinding.widget.epg.setVisibility(item.isInRange() ? View.GONE : View.VISIBLE);
-            mBinding.widget.epg.setText(item.isInRange() ? "" : item.getTitle());
+            mBinding.widget.title.setText(getString(R.string.detail_title, mChannel.getName(), item.getTitle()));
             Notify.show(getString(R.string.play_ready, item.getTitle()));
             setActivated(item);
             fetch(item);
@@ -595,7 +594,6 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mBinding.widget.play.setText("");
         mChannel.loadLogo(mBinding.widget.logo);
         mBinding.widget.title.setSelected(true);
-        mBinding.widget.epg.setVisibility(View.GONE);
         mBinding.widget.name.setText(mChannel.getName());
         mBinding.widget.title.setText(mChannel.getName());
         mBinding.widget.line.setText(mChannel.getLineText());
@@ -606,10 +604,12 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void setEpg() {
-        String epg = mChannel.getData().getEpg();
-        if (!epg.isEmpty()) mBinding.widget.name.setMaxEms(12);
+        EpgData data = mChannel.getData().getEpgData();
+        boolean hasTitle = !data.getTitle().isEmpty();
         mEpgDataAdapter.setItems(mChannel.getData().getList(), null);
-        mBinding.widget.play.setText(epg);
+        if (hasTitle) mBinding.widget.title.setText(getString(R.string.detail_title, mChannel.getName(), data.getTitle()));
+        mBinding.widget.name.setMaxEms(hasTitle ? 12 : 48);
+        mBinding.widget.play.setText(data.format());
         setWidth(mChannel.getData());
         setMetadata();
     }

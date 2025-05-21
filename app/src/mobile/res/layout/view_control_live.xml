@@ -32,15 +32,6 @@
                 tools:text="CCTV-1" />
 
             <TextView
-                android:id="@+id/epg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:visibility="gone"
-                tools:text="秘境之眼" />
-
-            <TextView
                 android:id="@+id/size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
