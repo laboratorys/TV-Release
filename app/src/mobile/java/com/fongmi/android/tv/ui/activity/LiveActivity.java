@@ -59,7 +59,6 @@ import com.fongmi.android.tv.ui.dialog.PassDialog;
 import com.fongmi.android.tv.ui.dialog.SubtitleDialog;
 import com.fongmi.android.tv.ui.dialog.TrackDialog;
 import com.fongmi.android.tv.utils.Biometric;
-import com.fongmi.android.tv.utils.Clock;
 import com.fongmi.android.tv.utils.ImgUtil;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.PiP;
@@ -92,7 +91,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     private Runnable mR1;
     private Runnable mR2;
     private Runnable mR3;
-    private Clock mClock;
     private boolean redirect;
     private boolean rotate;
     private boolean stop;
@@ -140,9 +138,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     @Override
     protected void initView(Bundle savedInstanceState) {
         mKeyDown = CustomKeyDownLive.create(this, mBinding.video);
-        mClock = Clock.create(mBinding.widget.clock);
         setPadding(mBinding.control.getRoot());
-        setPadding(mBinding.widget.epg, true);
         setPadding(mBinding.recycler, true);
         mPlayers = Players.create(this);
         mObserveEpg = this::setEpg;
@@ -192,10 +188,10 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     private void setRecyclerView() {
         mBinding.group.setItemAnimator(null);
         mBinding.channel.setItemAnimator(null);
-        mBinding.widget.epgData.setItemAnimator(null);
+        mBinding.epgData.setItemAnimator(null);
         mBinding.group.setAdapter(mGroupAdapter = new GroupAdapter(this));
         mBinding.channel.setAdapter(mChannelAdapter = new ChannelAdapter(this));
-        mBinding.widget.epgData.setAdapter(mEpgDataAdapter = new EpgDataAdapter(this));
+        mBinding.epgData.setAdapter(mEpgDataAdapter = new EpgDataAdapter(this));
     }
 
     private void setVideoView() {
@@ -209,7 +205,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mBinding.control.action.change.setActivated(Setting.isChange());
         mBinding.control.action.speed.setText(mPlayers.getSpeedText());
         mBinding.control.action.decode.setText(mPlayers.getDecodeText());
-        mBinding.control.action.home.setVisibility(LiveConfig.isOnly() ? View.GONE : View.VISIBLE);
         mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(getActivity(), view));
     }
 
@@ -274,7 +269,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         int padding = ResUtil.dp2px(48);
         if (live.getWidth() == 0) for (Group item : live.getGroups()) live.setWidth(Math.max(live.getWidth(), ResUtil.getTextWidth(item.getName(), 14)));
         mBinding.group.getLayoutParams().width = live.getWidth() == 0 ? 0 : Math.min(live.getWidth() + padding, ResUtil.getScreenWidth() / 4);
-        mBinding.divide.setVisibility(live.getWidth() == 0 ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -291,7 +285,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         if (epg.getList().isEmpty()) return;
         int minWidth = ResUtil.getTextWidth(epg.getList().get(0).getTime(), 14);
         if (epg.getWidth() == 0) for (EpgData item : epg.getList()) epg.setWidth(Math.max(epg.getWidth(), ResUtil.getTextWidth(item.getTitle(), 14)));
-        mBinding.widget.epgData.getLayoutParams().width = epg.getWidth() == 0 ? 0 : Math.min(Math.max(epg.getWidth(), minWidth) + padding, ResUtil.getScreenWidth() / 2);
+        mBinding.epgData.getLayoutParams().width = epg.getWidth() == 0 ? 0 : Math.min(Math.max(epg.getWidth(), minWidth) + padding, ResUtil.getScreenWidth() / 2);
     }
 
     private void setPosition(int[] position) {
@@ -434,13 +428,16 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     private void showEpg(Channel item) {
         if (mChannel == null || mChannel.getData().getList().isEmpty() || mEpgDataAdapter.getItemCount() == 0 || !mChannel.equals(item) || !mChannel.getGroup().equals(mGroup)) return;
-        mBinding.widget.epgData.scrollToPosition(item.getData().getSelected());
-        mBinding.widget.epg.setVisibility(View.VISIBLE);
-        hideUI();
+        mBinding.epgData.scrollToPosition(item.getData().getSelected());
+        mBinding.epgData.setVisibility(View.VISIBLE);
+        mBinding.channel.setVisibility(View.GONE);
+        mBinding.group.setVisibility(View.GONE);
     }
 
     private void hideEpg() {
-        mBinding.widget.epg.setVisibility(View.GONE);
+        mBinding.channel.setVisibility(View.VISIBLE);
+        mBinding.group.setVisibility(View.VISIBLE);
+        mBinding.epgData.setVisibility(View.GONE);
     }
 
     private void showProgress() {
@@ -479,7 +476,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         setR1Callback();
         checkPlayImg();
         hideInfo();
-        hideEpg();
     }
 
     private void hideControl() {
@@ -492,7 +488,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mBinding.widget.info.setVisibility(mPiP.isInMode(this) ? View.GONE : View.VISIBLE);
         setR3Callback();
         hideControl();
-        hideEpg();
         setInfo();
     }
 
@@ -648,7 +643,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         mViewModel.getUrl(mChannel, item);
         mPlayers.clear();
         mPlayers.stop();
-        hideEpg();
+        hideUI();
     }
 
     private void fetch() {
@@ -679,10 +674,9 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     private void resetAdapter() {
-        mBinding.widget.epgData.getLayoutParams().width = 0;
         mBinding.channel.getLayoutParams().width = 0;
+        mBinding.epgData.getLayoutParams().width = 0;
         mBinding.group.getLayoutParams().width = 0;
-        mBinding.divide.setVisibility(View.GONE);
         mEpgDataAdapter.clear();
         mChannelAdapter.clear();
         mGroupAdapter.clear();
@@ -910,11 +904,9 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         this.rotate = rotate;
         if (rotate) {
             noPadding(mBinding.recycler);
-            noPadding(mBinding.widget.epg);
             noPadding(mBinding.control.getRoot());
         } else {
             setPadding(mBinding.recycler, true);
-            setPadding(mBinding.widget.epg, true);
             setPadding(mBinding.control.getRoot());
         }
     }
@@ -1028,7 +1020,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     @Override
     public void onDoubleTap() {
         if (isVisible(mBinding.recycler)) hideUI();
-        else if (isVisible(mBinding.widget.epg)) hideEpg();
         else if (isVisible(mBinding.control.getRoot())) hideControl();
         else showControl();
     }
@@ -1075,7 +1066,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     @Override
     protected void onStart() {
         super.onStart();
-        mClock.stop().start();
         setStop(false);
         onPlay();
     }
@@ -1097,7 +1087,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     protected void onStop() {
         super.onStop();
         if (Setting.isBackgroundOff()) onPaused();
-        if (Setting.isBackgroundOff()) mClock.stop();
         setStop(true);
     }
 
@@ -1107,8 +1096,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
             hideControl();
         } else if (isVisible(mBinding.widget.info)) {
             hideInfo();
-        } else if (isVisible(mBinding.widget.epg)) {
-            hideEpg();
         } else if (isVisible(mBinding.recycler)) {
             hideUI();
         } else if (!isLock()) {
@@ -1119,7 +1106,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mClock.release();
         mPlayers.release();
         Source.get().exit();
         PlaybackService.stop();
