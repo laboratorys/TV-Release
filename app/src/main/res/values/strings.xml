@@ -28,6 +28,7 @@
 
     <!-- Play -->
     <string name="play">Play</string>
+    <string name="pause">Pause</string>
     <string name="play_op">OP</string>
     <string name="play_ed">ED</string>
     <string name="play_exo">EXO</string>

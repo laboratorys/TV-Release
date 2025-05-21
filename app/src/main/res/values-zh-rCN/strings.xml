@@ -28,6 +28,7 @@
 
     <!-- Play -->
     <string name="play">播放</string>
+    <string name="pause">暂停</string>
     <string name="play_op">片头</string>
     <string name="play_ed">片尾</string>
     <string name="play_exo">EXO</string>
