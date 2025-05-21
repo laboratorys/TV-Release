@@ -789,11 +789,11 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void onOpeningAdd() {
-        setOpening(Math.max(0, mHistory.getOpening() + 1000));
+        setOpening(Math.max(0, Math.max(0, mHistory.getOpening()) + 1000));
     }
 
     private void onOpeningSub() {
-        setOpening(Math.max(0, mHistory.getOpening() - 1000));
+        setOpening(Math.max(0, Math.max(0, mHistory.getOpening()) - 1000));
     }
 
     private boolean onOpeningReset() {
@@ -815,11 +815,11 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void onEndingAdd() {
-        setEnding(Math.max(0, mHistory.getEnding() + 1000));
+        setEnding(Math.max(0, Math.max(0, mHistory.getEnding()) + 1000));
     }
 
     private void onEndingSub() {
-        setEnding(Math.max(0, mHistory.getEnding() - 1000));
+        setEnding(Math.max(0, Math.max(0, mHistory.getEnding()) - 1000));
     }
 
     private boolean onEndingReset() {
