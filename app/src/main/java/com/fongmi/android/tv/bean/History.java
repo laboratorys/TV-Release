@@ -244,7 +244,7 @@ public class History {
     }
 
     public static List<History> get(int cid) {
-        return AppDatabase.get().getHistoryDao().find(cid, System.currentTimeMillis() - TimeUnit.DAYS.toMillis(14));
+        return AppDatabase.get().getHistoryDao().find(cid, System.currentTimeMillis() - TimeUnit.DAYS.toMillis(30));
     }
 
     public static History find(String key) {
