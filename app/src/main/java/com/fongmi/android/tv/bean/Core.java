@@ -32,7 +32,7 @@ public class Core {
     private String so;
 
     public String getAuth() {
-        return !getResp().isEmpty() ? Server.get().getAddress("/tvbus") : TextUtils.isEmpty(auth) ? "" : getString(auth);
+        return !getResp().isEmpty() ? Server.get().getAddress("/tvbus") : TextUtils.isEmpty(auth) ? "" : UrlUtil.convert(auth);
     }
 
     public String getName() {
@@ -52,7 +52,7 @@ public class Core {
     }
 
     public String getResp() {
-        return TextUtils.isEmpty(resp) ? "" : resp;
+        return TextUtils.isEmpty(resp) ? "" : getString(resp);
     }
 
     public String getSign() {
@@ -64,7 +64,7 @@ public class Core {
     }
 
     public String getSo() {
-        return TextUtils.isEmpty(so) ? "" : getString(so);
+        return TextUtils.isEmpty(so) ? "" : UrlUtil.convert(so);
     }
 
     public Hook getHook() {
