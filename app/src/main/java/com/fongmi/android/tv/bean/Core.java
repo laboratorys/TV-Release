@@ -72,8 +72,7 @@ public class Core {
     }
 
     private String getString(String value) {
-        value = UrlUtil.convert(value);
-        return value.startsWith("http") ? OkHttp.string(value) : value;
+        return (value = UrlUtil.convert(value)).startsWith("http") ? OkHttp.string(value) : value;
     }
 
     @Override
