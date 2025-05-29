@@ -44,7 +44,7 @@ public class Core {
     }
 
     public String getBroker() {
-        return TextUtils.isEmpty(broker) ? "" : getString(broker);
+        return TextUtils.isEmpty(broker) ? "" : UrlUtil.convert(broker);
     }
 
     public String getDomain() {
