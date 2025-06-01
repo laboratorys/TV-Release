@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class EpgParser {
 
@@ -40,7 +41,7 @@ public class EpgParser {
     }
 
     private static boolean shouldDownload(File file) {
-        return !file.exists() || !isToday(file.lastModified());
+        return !file.exists() || System.currentTimeMillis() - file.lastModified() > TimeUnit.HOURS.toMillis(1);
     }
 
     private static boolean isToday(Date date) {
