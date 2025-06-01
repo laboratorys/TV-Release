@@ -44,10 +44,6 @@ public class EpgParser {
         return !file.exists() || System.currentTimeMillis() - file.lastModified() > TimeUnit.HOURS.toMillis(1);
     }
 
-    private static boolean isToday(Date date) {
-        return isToday(date.getTime());
-    }
-
     private static boolean isToday(long millis) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);
@@ -75,7 +71,7 @@ public class EpgParser {
             if (!exist.contains(key)) key = find(exist, channel);
             Date startDate = parse(formatFull, programme.getStart());
             Date endDate = parse(formatFull, programme.getStop());
-            if (!exist.contains(key) || !isToday(startDate)) continue;
+            if (!exist.contains(key) || !isToday(startDate.getTime())) continue;
             if (!epgMap.containsKey(key)) epgMap.put(key, Epg.create(key, today));
             epgMap.get(key).getList().add(getEpgData(startDate, endDate, programme));
             if (channel != null && channel.hasSrc()) srcMap.put(key, channel.getSrc());
