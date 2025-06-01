@@ -28,16 +28,16 @@ public class Local implements Process {
     }
 
     @Override
-    public boolean isRequest(NanoHTTPD.IHTTPSession session, String path) {
-        return path.startsWith("/file") || path.startsWith("/upload") || path.startsWith("/newFolder") || path.startsWith("/delFolder") || path.startsWith("/delFile");
+    public boolean isRequest(NanoHTTPD.IHTTPSession session, String url) {
+        return url.startsWith("/file") || url.startsWith("/upload") || url.startsWith("/newFolder") || url.startsWith("/delFolder") || url.startsWith("/delFile");
     }
 
     @Override
-    public NanoHTTPD.Response doResponse(NanoHTTPD.IHTTPSession session, String path, Map<String, String> files) {
-        if (path.startsWith("/file")) return getFile(session.getHeaders(), path);
-        if (path.startsWith("/upload")) return upload(session.getParms(), files);
-        if (path.startsWith("/newFolder")) return newFolder(session.getParms());
-        if (path.startsWith("/delFolder") || path.startsWith("/delFile")) return delFolder(session.getParms());
+    public NanoHTTPD.Response doResponse(NanoHTTPD.IHTTPSession session, String url, Map<String, String> files) {
+        if (url.startsWith("/file")) return getFile(session.getHeaders(), url);
+        if (url.startsWith("/upload")) return upload(session.getParms(), files);
+        if (url.startsWith("/newFolder")) return newFolder(session.getParms());
+        if (url.startsWith("/delFolder") || url.startsWith("/delFile")) return delFolder(session.getParms());
         return null;
     }
 
