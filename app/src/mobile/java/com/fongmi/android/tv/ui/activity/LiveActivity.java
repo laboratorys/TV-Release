@@ -859,7 +859,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         int position = mChannel.getData().getSelected() + 1;
         boolean hasNext = position <= current && position > 0;
         if (hasNext) onItemClick(mChannel.getData().getList().get(position));
-        else nextChannel();
+        else fetch();
     }
 
     private void prevLine() {
