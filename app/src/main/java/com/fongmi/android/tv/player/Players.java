@@ -63,6 +63,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import master.flame.danmaku.ui.widget.DanmakuView;
 
@@ -264,11 +265,11 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public boolean isLive() {
-        return getDuration() < 60 * 1000 || exoPlayer.isCurrentMediaItemLive();
+        return getDuration() < TimeUnit.MINUTES.toMillis(1) || exoPlayer.isCurrentMediaItemLive();
     }
 
     public boolean isVod() {
-        return getDuration() > 60 * 1000 && !exoPlayer.isCurrentMediaItemLive();
+        return getDuration() > TimeUnit.MINUTES.toMillis(1) && !exoPlayer.isCurrentMediaItemLive();
     }
 
     public boolean isHard() {

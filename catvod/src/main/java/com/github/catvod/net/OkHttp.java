@@ -34,7 +34,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class OkHttp {
 
-    private static final int TIMEOUT = 30 * 1000;
+    private static final long TIMEOUT = TimeUnit.SECONDS.toMillis(30);
     private static final ProxySelector defaultSelector;
 
     private ResponseInterceptor responseInterceptor;
