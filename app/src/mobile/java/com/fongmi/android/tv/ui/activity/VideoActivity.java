@@ -804,7 +804,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         long current = mPlayers.getPosition();
         long duration = mPlayers.getDuration();
         if (current < 0 || duration < 0) return;
-        if (duration - current > TimeUnit.MINUTES.toMillis(5)) return;
+        if (duration - current > Constant.OPED_LIMIT) return;
         setEnding(duration - current);
         setR1Callback();
     }
@@ -824,7 +824,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         long current = mPlayers.getPosition();
         long duration = mPlayers.getDuration();
         if (current < 0 || duration < 0) return;
-        if (current > TimeUnit.MINUTES.toMillis(5)) return;
+        if (current > Constant.OPED_LIMIT) return;
         setOpening(current);
         setR1Callback();
     }

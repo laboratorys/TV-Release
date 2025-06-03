@@ -115,7 +115,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
         return LiveConfig.get().getHome();
     }
 
-    private int getTimeout() {
+    private long getTimeout() {
         return getHome().isEmpty() ? Constant.TIMEOUT_PLAY : getHome().getTimeout();
     }
 

@@ -400,7 +400,7 @@ public class Players implements Player.Listener, ParseCallback {
         App.removeCallbacks(runnable);
     }
 
-    public void start(Channel channel, int timeout) {
+    public void start(Channel channel, long timeout) {
         if (channel.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(channel.getDrm().getUUID())) {
             ErrorEvent.drm(tag);
         } else if (channel.hasMsg()) {
@@ -414,7 +414,7 @@ public class Players implements Player.Listener, ParseCallback {
         }
     }
 
-    public void start(Result result, boolean useParse, int timeout) {
+    public void start(Result result, boolean useParse, long timeout) {
         if (result.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(result.getDrm().getUUID())) {
             ErrorEvent.drm(tag);
         } else if (result.hasMsg()) {
@@ -467,15 +467,15 @@ public class Players implements Player.Listener, ParseCallback {
         setMediaItem(headers, url, format, drm, subs, danmakus, Constant.TIMEOUT_PLAY);
     }
 
-    private void setMediaItem(Channel channel, int timeout) {
+    private void setMediaItem(Channel channel, long timeout) {
         setMediaItem(channel.getHeaders(), channel.getUrl(), channel.getFormat(), channel.getDrm(), new ArrayList<>(), new ArrayList<>(), timeout);
     }
 
-    private void setMediaItem(Result result, int timeout) {
+    private void setMediaItem(Result result, long timeout) {
         setMediaItem(result.getHeaders(), result.getRealUrl(), result.getFormat(), result.getDrm(), result.getSubs(), result.getDanmaku(), timeout);
     }
 
-    private void setMediaItem(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, List<Danmaku> danmakus, int timeout) {
+    private void setMediaItem(Map<String, String> headers, String url, String format, Drm drm, List<Sub> subs, List<Danmaku> danmakus, long timeout) {
         if (exoPlayer != null) exoPlayer.setMediaItem(ExoUtil.getMediaItem(this.headers = checkUa(headers), UrlUtil.uri(this.url = url), this.format = format, this.drm = drm, checkSub(this.subs = subs), decode));
         if (danPlayer != null) setDanmaku(this.danmakus = danmakus);
         App.post(runnable, timeout);

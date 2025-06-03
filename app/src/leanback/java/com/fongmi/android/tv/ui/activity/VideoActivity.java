@@ -101,7 +101,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 
 public class VideoActivity extends BaseActivity implements CustomKeyDownVod.Listener, TrackDialog.Listener, ArrayPresenter.OnClickListener, Clock.Callback {
@@ -784,7 +783,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         long current = mPlayers.getPosition();
         long duration = mPlayers.getDuration();
         if (current < 0 || duration < 0) return;
-        if (current > TimeUnit.MINUTES.toMillis(5)) return;
+        if (current > Constant.OPED_LIMIT) return;
         setOpening(current);
     }
 
@@ -810,7 +809,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         long current = mPlayers.getPosition();
         long duration = mPlayers.getDuration();
         if (current < 0 || duration < 0) return;
-        if (duration - current > TimeUnit.MINUTES.toMillis(5)) return;
+        if (duration - current > Constant.OPED_LIMIT) return;
         setEnding(duration - current);
     }
 
@@ -1342,9 +1341,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     public void onKeyUp() {
         long current = mPlayers.getPosition();
         long duration = mPlayers.getDuration();
-        if (duration - current < TimeUnit.MINUTES.toMillis(5)) {
+        if (duration - current < Constant.OPED_LIMIT) {
             showControl(mBinding.control.ending);
-        } else if (current < TimeUnit.MINUTES.toMillis(5)) {
+        } else if (current < Constant.OPED_LIMIT) {
             showControl(mBinding.control.opening);
         } else {
             showControl(getFocus2());
