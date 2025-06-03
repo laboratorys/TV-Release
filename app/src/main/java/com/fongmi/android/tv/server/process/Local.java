@@ -98,11 +98,9 @@ public class Local implements Process {
     }
 
     private NanoHTTPD.Response getFile(Map<String, String> headers, File file, String mime) throws IOException {
-        if (mime == null) mime = "application/octet-stream";
         long fileLen = file.length();
         long startFrom = 0, endAt = fileLen - 1;
         String range = headers.get("range");
-
         if (range != null && range.startsWith("bytes=")) {
             try {
                 String[] parts = range.substring(6).split("-", 2);
@@ -115,17 +113,14 @@ public class Local implements Process {
                 endAt = fileLen - 1;
             }
         }
-
+        long contentLength;
+        NanoHTTPD.Response res;
         String ifRange = headers.get("if-range");
         String ifNoneMatch = headers.get("if-none-match");
         String etag = Integer.toHexString((file.getAbsolutePath() + file.lastModified() + fileLen).hashCode());
-        boolean ifRangeMatch = (ifRange == null || ifRange.equals(etag));
         boolean ifNoneMatchHit = ifNoneMatch != null && ("*".equals(ifNoneMatch) || ifNoneMatch.equals(etag));
-
-        long contentLength;
-        NanoHTTPD.Response res;
-
-        if (ifRangeMatch && range != null && startFrom < fileLen) {
+        boolean ifRangeMatchHit = (ifRange == null || ifRange.equals(etag));
+        if (ifRangeMatchHit && range != null && startFrom < fileLen) {
             if (ifNoneMatchHit) {
                 res = NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.NOT_MODIFIED, mime, "");
                 contentLength = 0;
