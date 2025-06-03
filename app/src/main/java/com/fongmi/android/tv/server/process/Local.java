@@ -118,9 +118,9 @@ public class Local implements Process {
         String ifRange = headers.get("if-range");
         String ifNoneMatch = headers.get("if-none-match");
         String etag = Integer.toHexString((file.getAbsolutePath() + file.lastModified() + fileLen).hashCode());
+        boolean ifRangeMatch = ifRange == null || ifRange.equals(etag);
         boolean ifNoneMatchHit = ifNoneMatch != null && ("*".equals(ifNoneMatch) || ifNoneMatch.equals(etag));
-        boolean ifRangeMatchHit = (ifRange == null || ifRange.equals(etag));
-        if (ifRangeMatchHit && range != null && startFrom < fileLen) {
+        if (ifRangeMatch && range != null && startFrom < fileLen) {
             if (ifNoneMatchHit) {
                 res = NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.NOT_MODIFIED, mime, "");
                 contentLength = 0;
