@@ -1306,7 +1306,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     @Override
-    public void onSeeking(int time) {
+    public void onSeeking(long time) {
         mBinding.widget.center.setVisibility(View.VISIBLE);
         mBinding.widget.exoDuration.setText(mPlayers.getDurationTime());
         mBinding.widget.exoPosition.setText(mPlayers.getPositionTime(time));
@@ -1315,9 +1315,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     @Override
-    public void onSeekTo(int time) {
-        mPlayers.seekTo(time);
+    public void onSeekTo(long time) {
         mKeyDown.resetTime();
+        mPlayers.seek(time);
         showProgress();
         onPlay();
     }

@@ -346,7 +346,7 @@ public class Players implements Player.Listener, ParseCallback {
         return stringToTime(time);
     }
 
-    public void seekTo(int time) {
+    public void seek(long time) {
         seekTo(getPosition() + time);
     }
 

@@ -112,7 +112,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         return LiveConfig.get().getHome();
     }
 
-    private int getTimeout() {
+    private long getTimeout() {
         return getHome().isEmpty() ? Constant.TIMEOUT_PLAY : getHome().getTimeout();
     }
 
@@ -826,9 +826,9 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         fetch();
     }
 
-    private void seekTo(int time) {
-        mPlayers.seekTo(time);
+    private void seek(long time) {
         mKeyDown.resetTime();
+        mPlayers.seek(time);
         showProgress();
         hideCenter();
     }
@@ -907,7 +907,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     @Override
-    public void onSeeking(int time) {
+    public void onSeeking(long time) {
         if (mPlayers.isLive()) return;
         mBinding.widget.center.setVisibility(View.VISIBLE);
         mBinding.widget.exoDuration.setText(mPlayers.getDurationTime());
@@ -927,15 +927,15 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     @Override
-    public void onKeyLeft(int time) {
+    public void onKeyLeft(long time) {
         if (mPlayers.isLive()) prevLine();
-        else App.post(() -> seekTo(time), 250);
+        else App.post(() -> seek(time), 250);
     }
 
     @Override
-    public void onKeyRight(int time) {
+    public void onKeyRight(long time) {
         if (mPlayers.isLive()) nextLine(true);
-        else App.post(() -> seekTo(time), 250);
+        else App.post(() -> seek(time), 250);
     }
 
     @Override
