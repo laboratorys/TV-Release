@@ -130,9 +130,9 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
 
     private void checkFunc(MotionEvent e1, MotionEvent e2, float velocityY) {
         if (e1.getY() - e2.getY() > DISTANCE && Math.abs(velocityY) > VELOCITY) {
-            listener.onFlingUp();
+            videoView.animate().translationYBy(-80).setDuration(150).withEndAction(() -> videoView.animate().translationY(0).setDuration(100).withEndAction(listener::onFlingUp).start()).start();
         } else if (e2.getY() - e1.getY() > DISTANCE && Math.abs(velocityY) > VELOCITY) {
-            listener.onFlingDown();
+            videoView.animate().translationYBy(80).setDuration(150).withEndAction(() -> videoView.animate().translationY(0).setDuration(100).withEndAction(listener::onFlingDown).start()).start();
         }
     }
 

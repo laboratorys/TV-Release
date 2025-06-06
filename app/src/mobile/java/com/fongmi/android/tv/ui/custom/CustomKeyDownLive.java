@@ -10,7 +10,6 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 
-import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Util;
 
@@ -137,11 +136,9 @@ public class CustomKeyDownLive extends GestureDetector.SimpleOnGestureListener {
         } else if (e2.getX() - e1.getX() > DISTANCE && Math.abs(velocityX) > VELOCITY) {
             listener.onFlingRight();
         } else if (e1.getY() - e2.getY() > DISTANCE && Math.abs(velocityY) > VELOCITY) {
-            if (Setting.isInvert()) listener.onFlingDown();
-            else listener.onFlingUp();
+            videoView.animate().translationYBy(-80).setDuration(150).withEndAction(() -> videoView.animate().translationY(0).setDuration(100).withEndAction(listener::onFlingUp).start()).start();
         } else if (e2.getY() - e1.getY() > DISTANCE && Math.abs(velocityY) > VELOCITY) {
-            if (Setting.isInvert()) listener.onFlingUp();
-            else listener.onFlingDown();
+            videoView.animate().translationYBy(80).setDuration(150).withEndAction(() -> videoView.animate().translationY(0).setDuration(100).withEndAction(listener::onFlingDown).start()).start();
         }
     }
 
