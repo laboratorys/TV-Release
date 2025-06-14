@@ -398,9 +398,13 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setScale(int scale) {
-        mKeyDown.resetScale();
-        mBinding.exo.setResizeMode(scale);
-        mBinding.control.action.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
+        if (mKeyDown.getScale() != 1.0f) {
+            mKeyDown.resetScale();
+        } else {
+            mHistory.setScale(scale);
+            mBinding.exo.setResizeMode(scale);
+            mBinding.control.action.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
+        }
     }
 
     private void setViewModel() {
@@ -726,7 +730,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void onRotate() {
         setR1Callback();
-        mKeyDown.resetScale();
         setRotate(!isRotate());
         setRequestedOrientation(ResUtil.isLand(this) ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
     }
@@ -754,8 +757,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void onScale() {
         int index = getScale();
         String[] array = ResUtil.getStringArray(R.array.select_scale);
-        mHistory.setScale(index = index == array.length - 1 ? 0 : ++index);
-        setScale(index);
+        setScale(index == array.length - 1 ? 0 : ++index);
         setR1Callback();
     }
 
@@ -1419,7 +1421,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     @Override
     public void onScale(int tag) {
-        mHistory.setScale(tag);
         setScale(tag);
     }
 

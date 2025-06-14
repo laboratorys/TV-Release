@@ -213,9 +213,13 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     }
 
     private void setScale(int scale) {
-        mKeyDown.resetScale();
-        mBinding.exo.setResizeMode(scale);
-        mBinding.control.action.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
+        if (mKeyDown.getScale() != 1.0f) {
+            mKeyDown.resetScale();
+        } else {
+            Setting.putLiveScale(scale);
+            mBinding.exo.setResizeMode(scale);
+            mBinding.control.action.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
+        }
     }
 
     private void setViewModel() {
@@ -332,7 +336,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
 
     private void onRotate() {
         setR1Callback();
-        mKeyDown.resetScale();
         setRotate(!isRotate());
         setRequestedOrientation(ResUtil.isLand(this) ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
     }
@@ -360,8 +363,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDownLive.List
     private void onScale() {
         int index = Setting.getLiveScale();
         String[] array = ResUtil.getStringArray(R.array.select_scale);
-        Setting.putLiveScale(index = index == array.length - 1 ? 0 : ++index);
-        setScale(index);
+        setScale(index == array.length - 1 ? 0 : ++index);
         setR1Callback();
     }
 

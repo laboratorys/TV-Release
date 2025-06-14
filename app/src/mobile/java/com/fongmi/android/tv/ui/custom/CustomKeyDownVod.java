@@ -64,14 +64,18 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener im
 
     public void resetScale() {
         scale = 1.0f;
-        videoView.setScaleX(1.0f);
-        videoView.setScaleY(1.0f);
-        videoView.setPivotX(videoView.getWidth() / 2f);
-        videoView.setPivotY(videoView.getHeight() / 2f);
+        videoView.animate().scaleX(1.0f).scaleY(1.0f).translationX(0f).translationY(0f).setDuration(250).withEndAction(() -> {
+            videoView.setPivotX(videoView.getWidth() / 2f);
+            videoView.setPivotY(videoView.getHeight() / 2f);
+        }).start();
     }
 
     public void setLock(boolean lock) {
         this.lock = lock;
+    }
+
+    public float getScale() {
+        return scale;
     }
 
     private boolean isEdge(MotionEvent e) {
@@ -191,7 +195,7 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener im
 
     @Override
     public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
-        App.post(() -> changeScale = false, 250);
+        App.post(() -> changeScale = false, 500);
     }
 
     @Override
