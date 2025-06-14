@@ -206,7 +206,6 @@ public class CustomKeyDownLive extends GestureDetector.SimpleOnGestureListener i
 
     @Override
     public boolean onScale(@NonNull ScaleGestureDetector detector) {
-        if (!changeScale) return false;
         scale *= detector.getScaleFactor();
         scale = Math.max(1.0f, Math.min(scale, 5.0f));
         videoView.setPivotX(detector.getFocusX());
