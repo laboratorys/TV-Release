@@ -398,6 +398,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setScale(int scale) {
+        mKeyDown.resetScale();
         mBinding.exo.setResizeMode(scale);
         mBinding.control.action.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
     }
@@ -725,6 +726,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void onRotate() {
         setR1Callback();
+        mKeyDown.resetScale();
         setRotate(!isRotate());
         setRequestedOrientation(ResUtil.isLand(this) ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
     }
@@ -882,6 +884,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         setRotate(mPlayers.isPortrait(), true);
         mPlayers.setDanmakuSize(1.0f);
         Util.hideSystemUI(this);
+        mKeyDown.resetScale();
         App.post(mR3, 2000);
         hideControl();
     }
@@ -894,6 +897,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.video.setLayoutParams(mFrameParams);
         mPlayers.setDanmakuSize(0.8f);
         setRotate(false, false);
+        mKeyDown.resetScale();
         App.post(mR3, 2000);
         hideControl();
     }

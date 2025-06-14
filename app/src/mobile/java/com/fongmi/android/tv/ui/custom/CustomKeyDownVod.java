@@ -5,11 +5,13 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 
+import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Util;
 
@@ -18,6 +20,7 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
     private static final int DISTANCE = 250;
     private static final int VELOCITY = 10;
 
+    private final ScaleGestureDetector scaleDetector;
     private final GestureDetector detector;
     private final AudioManager manager;
     private final Listener listener;
@@ -26,6 +29,7 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
     private boolean changeBright;
     private boolean changeVolume;
     private boolean changeSpeed;
+    private boolean changeScale;
     private boolean changeTime;
     private boolean animating;
     private boolean center;
@@ -33,6 +37,7 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
     private boolean lock;
     private float bright;
     private float volume;
+    private float scale;
     private long time;
 
     public static CustomKeyDownVod create(Activity activity, View videoView) {
@@ -41,10 +46,12 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
 
     private CustomKeyDownVod(Activity activity, View videoView) {
         this.manager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
+        this.scaleDetector = new ScaleGestureDetector(activity, new ScaleListener());
         this.detector = new GestureDetector(activity, this);
         this.listener = (Listener) activity;
         this.videoView = videoView;
         this.activity = activity;
+        this.scale = 1.0f;
     }
 
     public boolean onTouchEvent(MotionEvent e) {
@@ -52,7 +59,15 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
         if (changeSpeed && e.getAction() == MotionEvent.ACTION_UP) listener.onSpeedEnd();
         if (changeBright && e.getAction() == MotionEvent.ACTION_UP) listener.onBrightEnd();
         if (changeVolume && e.getAction() == MotionEvent.ACTION_UP) listener.onVolumeEnd();
-        return detector.onTouchEvent(e);
+        return e.getPointerCount() == 2 ? scaleDetector.onTouchEvent(e) : detector.onTouchEvent(e);
+    }
+
+    public void resetScale() {
+        scale = 1.0f;
+        videoView.setScaleX(1.0f);
+        videoView.setScaleY(1.0f);
+        videoView.setPivotX(videoView.getWidth() / 2f);
+        videoView.setPivotY(videoView.getHeight() / 2f);
     }
 
     public void setLock(boolean lock) {
@@ -65,7 +80,7 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
 
     @Override
     public boolean onDown(@NonNull MotionEvent e) {
-        if (isEdge(e) || lock || e.getPointerCount() > 1) return true;
+        if (isEdge(e) || changeScale || lock || e.getPointerCount() > 1) return true;
         volume = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
         bright = Util.getBrightness(activity);
         changeBright = false;
@@ -79,14 +94,14 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
 
     @Override
     public void onLongPress(@NonNull MotionEvent e) {
-        if (isEdge(e) || lock || e.getPointerCount() > 1) return;
+        if (isEdge(e) || changeScale || lock || e.getPointerCount() > 1) return;
         changeSpeed = true;
         listener.onSpeedUp();
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, @NonNull MotionEvent e2, float distanceX, float distanceY) {
-        if (isEdge(e1) || lock || e1.getPointerCount() > 1) return true;
+        if (isEdge(e1) || changeScale || lock || e1.getPointerCount() > 1) return true;
         float deltaX = e2.getX() - e1.getX();
         float deltaY = e1.getY() - e2.getY();
         if (touch) checkFunc(distanceX, distanceY, e2);
@@ -98,19 +113,21 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
 
     @Override
     public boolean onDoubleTap(@NonNull MotionEvent e) {
+        if (isEdge(e) || changeScale || e.getPointerCount() > 1) return true;
         if (!lock) listener.onDoubleTap();
         return true;
     }
 
     @Override
     public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
+        if (isEdge(e) || changeScale || e.getPointerCount() > 1) return true;
         listener.onSingleTap();
         return true;
     }
 
     @Override
     public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
-        if (isEdge(e1) || !center || animating) return true;
+        if (isEdge(e1) || changeScale || !center || animating || e1.getPointerCount() > 1) return true;
         checkFunc(e1, e2, velocityY);
         return true;
     }
@@ -164,6 +181,31 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
         if (index < 0) index = 0;
         manager.setStreamVolume(AudioManager.STREAM_MUSIC, (int) index, 0);
         listener.onVolume((int) (index / maxVolume * 100));
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScaleBegin(@NonNull ScaleGestureDetector detector) {
+            if (changeBright || changeVolume || changeSpeed || changeTime || lock) return false;
+            return changeScale = true;
+        }
+
+        @Override
+        public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
+            App.post(() -> changeScale = false, 250);
+        }
+
+        @Override
+        public boolean onScale(@NonNull ScaleGestureDetector detector) {
+            if (!changeScale) return false;
+            scale *= detector.getScaleFactor();
+            scale = Math.max(1.0f, Math.min(scale, 5.0f));
+            videoView.setPivotX(detector.getFocusX());
+            videoView.setPivotY(detector.getFocusY());
+            videoView.setScaleX(scale);
+            videoView.setScaleY(scale);
+            return true;
+        }
     }
 
     public interface Listener {
