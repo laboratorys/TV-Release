@@ -398,13 +398,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setScale(int scale) {
-        if (mKeyDown.getScale() != 1.0f) {
-            mKeyDown.resetScale();
-        } else {
-            mHistory.setScale(scale);
-            mBinding.exo.setResizeMode(scale);
-            mBinding.control.action.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
-        }
+        mHistory.setScale(scale);
+        mBinding.exo.setResizeMode(scale);
+        mBinding.control.action.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
     }
 
     private void setViewModel() {
@@ -757,7 +753,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void onScale() {
         int index = getScale();
         String[] array = ResUtil.getStringArray(R.array.select_scale);
-        setScale(index == array.length - 1 ? 0 : ++index);
+        if (mKeyDown.getScale() != 1.0f) mKeyDown.resetScale();
+        else setScale(index == array.length - 1 ? 0 : ++index);
         setR1Callback();
     }
 
@@ -1421,6 +1418,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     @Override
     public void onScale(int tag) {
+        mKeyDown.resetScale();
         setScale(tag);
     }
 

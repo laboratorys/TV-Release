@@ -63,10 +63,11 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener im
     }
 
     public void resetScale() {
-        scale = 1.0f;
+        if (scale == 1.0f) return;
         videoView.animate().scaleX(1.0f).scaleY(1.0f).translationX(0f).translationY(0f).setDuration(250).withEndAction(() -> {
-            videoView.setPivotX(videoView.getWidth() / 2f);
             videoView.setPivotY(videoView.getHeight() / 2f);
+            videoView.setPivotX(videoView.getWidth() / 2f);
+            scale = 1.0f;
         }).start();
     }
 
