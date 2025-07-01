@@ -5,7 +5,7 @@ plugins {
 android {
     namespace 'com.fongmi.android.tv'
 
-    compileSdk 35
+    compileSdk 36
     flavorDimensions = ["mode", "abi"]
 
     defaultConfig {
@@ -13,8 +13,8 @@ android {
         minSdk 21
         //noinspection ExpiredTargetSdkVersion
         targetSdk 28
-        versionCode 404
-        versionName "4.0.4"
+        versionCode 405
+        versionName "4.0.5"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString(), "eventBusIndex": "com.fongmi.android.tv.event.EventIndex"]
@@ -101,7 +101,7 @@ dependencies {
     implementation 'com.github.teamnewpipe:NewPipeExtractor:v0.24.6'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.google.zxing:core:3.5.3'
-    implementation 'com.guolindev.permissionx:permissionx:1.8.0'
+    implementation 'com.guolindev.permissionx:permissionx:1.8.1'
     implementation 'com.hierynomus:smbj:0.14.0'
     implementation 'io.antmedia:rtmp-client:3.2.0'
     implementation 'javax.servlet:javax.servlet-api:3.1.0'
