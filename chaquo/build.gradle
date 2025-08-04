@@ -6,8 +6,9 @@ plugins {
 android {
     namespace 'com.fongmi.chaquo'
 
-    compileSdk 36
-    flavorDimensions = ["abi"]
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
         minSdk 24
@@ -19,6 +20,8 @@ android {
             }
         }
     }
+
+    flavorDimensions = ["abi"]
 
     productFlavors {
         arm64_v8a {

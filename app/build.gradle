@@ -5,8 +5,9 @@ plugins {
 android {
     namespace 'com.fongmi.android.tv'
 
-    compileSdk 36
-    flavorDimensions = ["mode", "abi"]
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
         applicationId "com.fongmi.android.tv"
@@ -21,6 +22,8 @@ android {
             }
         }
     }
+
+    flavorDimensions = ["mode", "abi"]
 
     productFlavors {
         leanback {
