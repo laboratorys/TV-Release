@@ -13,6 +13,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Proxy {
 
@@ -43,15 +44,16 @@ public class Proxy {
 
     public List<java.net.Proxy> select() {
         List<java.net.Proxy> items = new ArrayList<>();
-        for (String url : getUrls()) items.add(convert(url));
+        for (String url : getUrls()) items.add(proxy(url));
+        items.removeIf(Objects::isNull);
         return items.isEmpty() ? NO_PROXY : items;
     }
 
-    private java.net.Proxy convert(String url) {
+    private java.net.Proxy proxy(String url) {
         Uri uri = Uri.parse(url);
-        if (uri.getScheme() == null || uri.getHost() == null || uri.getPort() <= 0) return java.net.Proxy.NO_PROXY;
+        if (uri.getScheme() == null || uri.getHost() == null || uri.getPort() <= 0) return null;
         if (uri.getScheme().startsWith("http")) return new java.net.Proxy(java.net.Proxy.Type.HTTP, InetSocketAddress.createUnresolved(uri.getHost(), uri.getPort()));
         if (uri.getScheme().startsWith("socks")) return new java.net.Proxy(java.net.Proxy.Type.SOCKS, InetSocketAddress.createUnresolved(uri.getHost(), uri.getPort()));
-        return java.net.Proxy.NO_PROXY;
+        return null;
     }
 }
