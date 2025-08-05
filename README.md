@@ -168,14 +168,6 @@ scheme://username:password@host:port
         "http://127.0.0.1:7890",
         "socks5://127.0.0.1:7891"
       ]
-    },
-    {
-      "name": "Youtube",
-      "host": "youtube.com",
-      "urls": [
-        "http://127.0.0.1:8890",
-        "socks5://127.0.0.1:8891"
-      ]
     }
   ]
 }
