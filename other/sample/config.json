@@ -34,6 +34,43 @@
       ]
     }
   ],
+  "proxy": [
+    {
+      "host": ".*.",
+      "urls": [
+        "http://127.0.0.1:7890",
+        "socks5://127.0.0.1:7891"
+      ]
+    },
+    {
+      "host": "youtube.com",
+      "urls": [
+        "http://127.0.0.1:8890",
+        "socks5://127.0.0.1:8891"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "hosts": [
+        "api.52wyb.com"
+      ],
+      "regex": [
+        "m3u8?pt=m3u8"
+      ],
+      "exclude": [
+        "test.json"
+      ]
+    },
+    {
+      "hosts": [
+        "www.maolvys.com"
+      ],
+      "script": [
+        "document.getElementsByClassName('swal-button swal-button--confirm')[0].click()"
+      ]
+    }
+  ],
   "headers": [
     {
       "host": "gslbserv.itv.cmvideo.cn",

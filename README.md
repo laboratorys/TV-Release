@@ -147,6 +147,40 @@ http://127.0.0.1:9978/cache?do=get&key=xxx
 http://127.0.0.1:9978/cache?do=del&key=xxx
 ```
 
+### Proxy
+
+支持 http, https, socks4, socks5
+
+```
+scheme://username:password@host:port
+```
+
+配置新增 proxy 可指定走哪條代理
+
+```json
+{
+  "spider": "",
+  "proxy": [
+    {
+      "name": "Global",
+      "host": ".*.",
+      "urls": [
+        "http://127.0.0.1:7890",
+        "socks5://127.0.0.1:7891"
+      ]
+    },
+    {
+      "name": "Youtube",
+      "host": "youtube.com",
+      "urls": [
+        "http://127.0.0.1:8890",
+        "socks5://127.0.0.1:8891"
+      ]
+    }
+  ]
+}
+```
+
 ### Hosts
 
 ```json
@@ -209,7 +243,7 @@ getProxy(boolean local)
 
 ### 配置範例
 
-[本地/線上](other/sample/config.json)  
+[本地/線上](other/sample/config.json)
 
 ### 飛機群
 
