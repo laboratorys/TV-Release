@@ -51,6 +51,7 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
     private WebDialog dialog;
     private Runnable timer;
     private boolean detect;
+    private boolean stop;
     private String click;
     private String from;
     private String key;
@@ -67,21 +68,22 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
 
     @SuppressLint("SetJavaScriptEnabled")
     public void initSettings() {
-        this.timer = () -> stop(true);
-        this.urls = new LinkedHashSet<>();
-        this.empty = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
-        getSettings().setSupportZoom(true);
-        getSettings().setUseWideViewPort(true);
-        getSettings().setDatabaseEnabled(true);
-        getSettings().setDomStorageEnabled(true);
-        getSettings().setJavaScriptEnabled(true);
-        getSettings().setBuiltInZoomControls(true);
-        getSettings().setDisplayZoomControls(false);
-        getSettings().setLoadWithOverviewMode(true);
-        getSettings().setUserAgentString(Setting.getUa());
-        getSettings().setMediaPlaybackRequiresUserGesture(false);
-        getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
-        getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        timer = () -> stop(true);
+        urls = new LinkedHashSet<>();
+        empty = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
+        WebSettings setting = getSettings();
+        setting.setSupportZoom(true);
+        setting.setUseWideViewPort(true);
+        setting.setDatabaseEnabled(true);
+        setting.setDomStorageEnabled(true);
+        setting.setJavaScriptEnabled(true);
+        setting.setBuiltInZoomControls(true);
+        setting.setDisplayZoomControls(false);
+        setting.setLoadWithOverviewMode(true);
+        setting.setUserAgentString(Setting.getUa());
+        setting.setMediaPlaybackRequiresUserGesture(false);
+        setting.setJavaScriptCanOpenWindowsAutomatically(false);
+        setting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         setWebViewClient(webViewClient());
     }
 
@@ -128,7 +130,7 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 if (url.equals(BLANK)) return;
-                evaluate(getScript(url));
+                evaluate(getScript(url), 0);
             }
 
             @Override
@@ -138,7 +140,7 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
             }
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 return false;
             }
         };
@@ -173,12 +175,13 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
         return script;
     }
 
-    private void evaluate(List<String> script) {
-        if (script.isEmpty()) return;
-        if (TextUtils.isEmpty(script.get(0))) {
-            evaluate(script.subList(1, script.size()));
+    private void evaluate(List<String> script, int index) {
+        if (index >= script.size()) return;
+        String js = script.get(index);
+        if (TextUtils.isEmpty(js)) {
+            evaluate(script, index + 1);
         } else {
-            evaluateJavascript(script.get(0), value -> evaluate(script.subList(1, script.size())));
+            evaluateJavascript(js, value -> evaluate(script, index + 1));
         }
     }
 
@@ -216,6 +219,8 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
     }
 
     public void stop(boolean error) {
+        if (stop) return;
+        stop = true;
         hideDialog();
         stopLoading();
         loadUrl(BLANK);
