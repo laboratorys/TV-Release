@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -468,10 +467,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.video.setTag(item.getVodPic(getPic()));
         mBinding.name.setText(item.getVodName(getName()));
         setText(mBinding.remark, 0, item.getVodRemarks());
+        setText(mBinding.content, 0, item.getVodContent());
         setText(mBinding.site, R.string.detail_site, getSite().getName());
-        setText(mBinding.content, 0, Html.fromHtml(item.getVodContent()).toString());
-        setText(mBinding.actor, R.string.detail_actor, Html.fromHtml(item.getVodActor()).toString());
-        setText(mBinding.director, R.string.detail_director, Html.fromHtml(item.getVodDirector()).toString());
+        setText(mBinding.actor, R.string.detail_actor, item.getVodActor());
+        setText(mBinding.director, R.string.detail_director, item.getVodDirector());
         mBinding.contentLayout.setVisibility(mBinding.content.getVisibility());
         mFlagAdapter.addAll(item.getVodFlags());
         setOther(mBinding.other, item);
@@ -540,7 +539,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void setPlayer(Result result) {
         result.getUrl().set(mQualityAdapter.getPosition());
-        if (!result.getDesc().isEmpty()) setText(mBinding.content, R.string.detail_content, Html.fromHtml(result.getDesc()).toString());
+        if (!result.getDesc().isEmpty()) setText(mBinding.content, R.string.detail_content, result.getDesc());
         setUseParse(VodConfig.hasParse() && ((result.getPlayUrl().isEmpty() && VodConfig.get().getFlags().contains(result.getFlag())) || result.getJx() == 1));
         if (mControlDialog != null && mControlDialog.isVisible()) mControlDialog.setParseVisible(isUseParse());
         mBinding.control.parse.setVisibility(isFullscreen() && isUseParse() ? View.VISIBLE : View.GONE);

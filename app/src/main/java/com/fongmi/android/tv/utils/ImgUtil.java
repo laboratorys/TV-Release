@@ -67,8 +67,8 @@ public class ImgUtil {
     }
 
     private static Drawable getTextDrawable(String text, boolean rect) {
-        TextDrawable.Builder builder = new TextDrawable.Builder().withBorder(ResUtil.dp2px(2), ColorGenerator.get700(text));
-        if (rect) return builder.buildRoundRect(text, ColorGenerator.get400(text), ResUtil.dp2px(8));
+        TextDrawable.Builder builder = new TextDrawable.Builder();
+        if (rect) return builder.buildRect(text, ColorGenerator.get400(text));
         return builder.buildRound(text, ColorGenerator.get400(text));
     }
 
