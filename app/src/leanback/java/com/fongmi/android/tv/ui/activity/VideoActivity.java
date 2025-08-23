@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -996,6 +995,19 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         keep.save();
     }
 
+    private void updateVod(Vod item) {
+        mHistory.setVodPic(item.getVodPic());
+        mHistory.setVodName(item.getVodName());
+        mBinding.video.setTag(item.getVodPic());
+        mBinding.name.setText(item.getVodName());
+        mBinding.widget.title.setText(item.getVodName());
+        setText(mBinding.content, R.string.detail_content, item.getVodContent());
+        setText(mBinding.director, R.string.detail_director, item.getVodDirector());
+        mBinding.content.setMaxLines(getMaxLines());
+        setArtwork(item.getVodPic());
+        setMetadata();
+    }
+
     @Override
     public void onSubtitleClick() {
         App.post(this::hideControl, 200);
@@ -1032,6 +1044,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         if (isRedirect()) return;
         if (event.getType() == RefreshEvent.Type.DETAIL) getDetail();
         else if (event.getType() == RefreshEvent.Type.PLAYER) onRefresh();
+        else if (event.getType() == RefreshEvent.Type.VOD) updateVod(event.getVod());
         else if (event.getType() == RefreshEvent.Type.SUBTITLE) mPlayers.setSub(Sub.from(event.getPath()));
         else if (event.getType() == RefreshEvent.Type.DANMAKU) mPlayers.setDanmaku(Danmaku.from(event.getPath()));
     }

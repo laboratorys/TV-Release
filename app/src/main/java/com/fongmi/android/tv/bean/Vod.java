@@ -154,12 +154,20 @@ public class Vod implements Parcelable {
         return TextUtils.isEmpty(vodDirector) ? "" : Util.clean(vodDirector);
     }
 
+    public void setVodDirector(String vodDirector) {
+        this.vodDirector = vodDirector;
+    }
+
     public String getVodActor() {
         return TextUtils.isEmpty(vodActor) ? "" : Util.clean(vodActor);
     }
 
     public String getVodContent() {
         return TextUtils.isEmpty(vodContent) ? "" : Util.clean(vodContent);
+    }
+
+    public void setVodContent(String vodContent) {
+        this.vodContent = vodContent;
     }
 
     public String getVodPlayFrom() {

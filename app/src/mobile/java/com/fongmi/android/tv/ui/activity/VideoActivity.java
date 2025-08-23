@@ -1071,6 +1071,19 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         keep.save();
     }
 
+    private void updateVod(Vod item) {
+        mHistory.setVodPic(item.getVodPic());
+        mHistory.setVodName(item.getVodName());
+        mBinding.video.setTag(item.getVodPic());
+        mBinding.name.setText(item.getVodName());
+        mBinding.control.title.setText(item.getVodName());
+        setText(mBinding.content, 0, item.getVodContent());
+        setText(mBinding.director, R.string.detail_director, item.getVodDirector());
+        mBinding.contentLayout.setVisibility(mBinding.content.getVisibility());
+        setArtwork(item.getVodPic());
+        setMetadata();
+    }
+
     @Override
     public void onSubtitleClick() {
         App.post(this::hideControl, 200);
@@ -1113,6 +1126,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         if (isRedirect()) return;
         if (event.getType() == RefreshEvent.Type.DETAIL) getDetail();
         else if (event.getType() == RefreshEvent.Type.PLAYER) onRefresh();
+        else if (event.getType() == RefreshEvent.Type.VOD) updateVod(event.getVod());
         else if (event.getType() == RefreshEvent.Type.SUBTITLE) mPlayers.setSub(Sub.from(event.getPath()));
         else if (event.getType() == RefreshEvent.Type.DANMAKU) mPlayers.setDanmaku(Danmaku.from(event.getPath()));
     }
