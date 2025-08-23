@@ -2,6 +2,7 @@ package com.fongmi.android.tv.utils;
 
 import static android.widget.ImageView.ScaleType.CENTER;
 import static android.widget.ImageView.ScaleType.CENTER_CROP;
+import static android.widget.ImageView.ScaleType.FIT_CENTER;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -51,20 +52,20 @@ public class ImgUtil {
     }
 
     public static void load(String text, String url, ImageView view, boolean rect) {
-        if (!TextUtils.isEmpty(url)) Glide.with(App.get()).asBitmap().load(getUrl(url)).skipMemoryCache(true).dontAnimate().sizeMultiplier(Setting.getThumbnail()).signature(getSignature(url)).listener(getListener(view)).into(view);
+        if (!TextUtils.isEmpty(url)) Glide.with(App.get()).asBitmap().load(getUrl(url)).skipMemoryCache(true).dontAnimate().sizeMultiplier(Setting.getThumbnail()).signature(getSignature(url)).listener(getListener(true, view)).into(view);
         else if (!text.isEmpty()) view.setImageDrawable(getTextDrawable(text.substring(0, 1), rect));
         else setError(view);
     }
 
     public static void loadVod(String text, String url, ImageView view) {
-        if (!TextUtils.isEmpty(url)) Glide.with(App.get()).asBitmap().load(getUrl(url)).listener(getListener(view)).into(view);
+        if (!TextUtils.isEmpty(url)) Glide.with(App.get()).asBitmap().load(getUrl(url)).listener(getListener(true, view)).into(view);
         else if (!text.isEmpty()) view.setImageDrawable(getTextDrawable(text.substring(0, 1), true));
         else setError(view);
     }
 
     public static void loadLive(String url, ImageView view) {
         view.setVisibility(TextUtils.isEmpty(url) ? View.GONE : View.VISIBLE);
-        if (!TextUtils.isEmpty(url)) Glide.with(App.get()).asBitmap().load(getUrl(url)).skipMemoryCache(true).dontAnimate().signature(getSignature(url)).listener(getListener(view, View.GONE)).into(view);
+        if (!TextUtils.isEmpty(url)) Glide.with(App.get()).asBitmap().load(getUrl(url)).skipMemoryCache(true).dontAnimate().signature(getSignature(url)).listener(getListener(false, view)).into(view);
     }
 
     private static Drawable getTextDrawable(String text, boolean rect) {
@@ -91,23 +92,18 @@ public class ImgUtil {
         for (Map.Entry<String, String> entry : map.entrySet()) builder.addHeader(UrlUtil.fixHeader(entry.getKey()), entry.getValue());
     }
 
-    private static RequestListener<Bitmap> getListener(ImageView view) {
-        return getListener(view, View.VISIBLE);
-    }
-
-    private static RequestListener<Bitmap> getListener(ImageView view, int visible) {
+    private static RequestListener<Bitmap> getListener(boolean vod, ImageView view) {
         return new RequestListener<>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Bitmap> target, boolean isFirstResource) {
-                if (visible == View.VISIBLE) setError(view);
-                view.setVisibility(visible);
+                if (!vod) view.setImageResource(R.drawable.ic_img_error);
+                else setError(view);
                 return true;
             }
 
             @Override
             public boolean onResourceReady(@NonNull Bitmap resource, @NonNull Object model, Target<Bitmap> target, @NonNull DataSource dataSource, boolean isFirstResource) {
-                view.setVisibility(View.VISIBLE);
-                view.setScaleType(CENTER_CROP);
+                view.setScaleType(vod ? CENTER_CROP : FIT_CENTER);
                 return false;
             }
         };
