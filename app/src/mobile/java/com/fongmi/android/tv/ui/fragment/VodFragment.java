@@ -88,6 +88,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     @Override
     protected void initView() {
         EventBus.getDefault().register(this);
+        mBinding.site.setSelected(true);
         setRecyclerView();
         setViewModel();
         showProgress();
