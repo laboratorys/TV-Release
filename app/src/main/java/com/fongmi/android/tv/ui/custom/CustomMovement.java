@@ -13,6 +13,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.fongmi.android.tv.utils.KeyUtil;
+
 public class CustomMovement extends ScrollingMovementMethod {
 
     private static final int CLICK = 1;
@@ -43,7 +45,7 @@ public class CustomMovement extends ScrollingMovementMethod {
             case KeyEvent.KEYCODE_DPAD_CENTER:
             case KeyEvent.KEYCODE_ENTER:
                 if (KeyEvent.metaStateHasNoModifiers(movementMetaState)) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0 && action(CLICK, widget, buffer)) {
+                    if (KeyUtil.isActionDown(event) && event.getRepeatCount() == 0 && action(CLICK, widget, buffer)) {
                         return true;
                     }
                 }

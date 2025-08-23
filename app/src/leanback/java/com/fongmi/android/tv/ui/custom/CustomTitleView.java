@@ -60,8 +60,8 @@ public class CustomTitleView extends AppCompatTextView {
     }
 
     private void onKeyDown(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_UP && KeyUtil.isEnterKey(event)) listener.showDialog();
-        else if (event.getAction() == KeyEvent.ACTION_DOWN && KeyUtil.isUpKey(event)) onKeyUp();
+        if (KeyUtil.isActionUp(event) && KeyUtil.isEnterKey(event)) listener.showDialog();
+        else if (KeyUtil.isActionDown(event) && KeyUtil.isUpKey(event)) onKeyUp();
     }
 
     private void onKeyUp() {

@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
 import com.fongmi.android.tv.R;
+import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.ResUtil;
 
 public class CustomViewPager extends ViewPager {
@@ -46,8 +47,8 @@ public class CustomViewPager extends ViewPager {
     @Override
     public boolean executeKeyEvent(@NonNull KeyEvent event) {
         if (findFocus() instanceof TextView) return false;
-        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) return arrowScroll(FOCUS_LEFT);
-        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) return arrowScroll(FOCUS_RIGHT);
+        if (KeyUtil.isActionDown(event) && KeyUtil.isLeftKey(event)) return arrowScroll(FOCUS_LEFT);
+        if (KeyUtil.isActionDown(event) && KeyUtil.isRightKey(event)) return arrowScroll(FOCUS_RIGHT);
         return false;
     }
 

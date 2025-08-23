@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.leanback.widget.HorizontalGridView;
 
 import com.fongmi.android.tv.R;
+import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.ResUtil;
 
 public class CustomHorizontalGridView extends HorizontalGridView {
@@ -59,8 +60,8 @@ public class CustomHorizontalGridView extends HorizontalGridView {
     }
 
     public boolean executeKeyEvent(@NonNull KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) return arrowScroll(FOCUS_LEFT);
-        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) return arrowScroll(FOCUS_RIGHT);
+        if (KeyUtil.isActionDown(event) && KeyUtil.isLeftKey(event)) return arrowScroll(FOCUS_LEFT);
+        if (KeyUtil.isActionDown(event) && KeyUtil.isRightKey(event)) return arrowScroll(FOCUS_RIGHT);
         return false;
     }
 
