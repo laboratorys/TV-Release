@@ -52,7 +52,7 @@ public class HistoryPresenter extends Presenter {
     public Presenter.ViewHolder onCreateViewHolder(ViewGroup parent) {
         ViewHolder holder = new ViewHolder(AdapterVodBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
         holder.binding.getRoot().getLayoutParams().width = width;
-        holder.binding.getRoot().getLayoutParams().height = height;
+        holder.binding.image.getLayoutParams().height = height;
         return holder;
     }
 
