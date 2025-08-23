@@ -219,8 +219,9 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
         setFabVisible(0);
         mAdapter.clear();
         mViewModel.homeContent();
-        mBinding.site.setText(getSite().getName());
+        String title = getSite().getName();
         mBinding.pager.setAdapter(new PageAdapter(getChildFragmentManager()));
+        mBinding.site.setText(title.isEmpty() ? getString(R.string.app_name) : title);
     }
 
     public Result getResult() {
