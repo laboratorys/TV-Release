@@ -12,9 +12,7 @@
         android:layout_width="150dp"
         android:layout_height="80dp"
         android:background="@color/black_20"
-        android:scaleType="center"
-        app:shapeAppearanceOverlay="@style/Vod.Grid"
-        tools:src="@drawable/ic_img_loading" />
+        app:shapeAppearanceOverlay="@style/Vod.Grid" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/delete"
