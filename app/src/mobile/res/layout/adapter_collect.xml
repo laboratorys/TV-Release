@@ -13,7 +13,7 @@
     android:padding="8dp"
     android:textColor="@color/text"
     app:autoSizeMaxTextSize="14sp"
-    app:autoSizeMinTextSize="11sp"
+    app:autoSizeMinTextSize="12sp"
     app:autoSizeStepGranularity="1sp"
     app:autoSizeTextType="uniform"
     tools:text="泥巴" />
