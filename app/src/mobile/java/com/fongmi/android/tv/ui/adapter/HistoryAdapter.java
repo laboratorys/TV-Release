@@ -20,6 +20,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     private final OnClickListener mListener;
     private final List<History> mItems;
     private int width, height;
+    private boolean animate;
     private boolean delete;
 
     public HistoryAdapter(OnClickListener listener) {
@@ -46,11 +47,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     }
 
     public void setDelete(boolean delete) {
+        animate = false;
         this.delete = delete;
         notifyItemRangeChanged(0, mItems.size());
     }
 
     public void addAll(List<History> items) {
+        animate = true;
         mItems.clear();
         mItems.addAll(items);
         notifyDataSetChanged();
@@ -92,7 +95,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.binding.remark.setText(item.getVodRemarks());
         holder.binding.site.setVisibility(item.getSiteVisible());
         holder.binding.progress.setMax((int) item.getDuration());
-        holder.binding.progress.setProgress((int) item.getPosition());
+        holder.binding.progress.setProgress((int) item.getPosition(), animate);
         holder.binding.remark.setVisibility(delete ? View.GONE : View.VISIBLE);
         holder.binding.delete.setVisibility(!delete ? View.GONE : View.VISIBLE);
         ImgUtil.loadVod(item.getVodName(), item.getVodPic(), holder.binding.image);
