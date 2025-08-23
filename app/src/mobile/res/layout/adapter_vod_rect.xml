@@ -62,7 +62,7 @@
         android:maxLines="1"
         android:textColor="@color/white"
         app:autoSizeMaxTextSize="14sp"
-        app:autoSizeMinTextSize="12sp"
+        app:autoSizeMinTextSize="11sp"
         app:autoSizeStepGranularity="1sp"
         app:autoSizeTextType="uniform"
         tools:text="蜘蛛人" />
