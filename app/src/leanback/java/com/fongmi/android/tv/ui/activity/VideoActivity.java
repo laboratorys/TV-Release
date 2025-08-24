@@ -921,6 +921,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 mBinding.exo.setDefaultArtwork(resource);
+                setMetadata();
             }
 
             @Override
@@ -1005,7 +1006,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         setText(mBinding.director, R.string.detail_director, item.getVodDirector());
         mBinding.content.setMaxLines(getMaxLines());
         setArtwork(item.getVodPic());
-        setMetadata();
     }
 
     @Override

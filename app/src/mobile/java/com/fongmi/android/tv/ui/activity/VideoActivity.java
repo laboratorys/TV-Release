@@ -989,6 +989,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 mBinding.exo.setDefaultArtwork(resource);
+                setMetadata();
             }
 
             @Override
@@ -1081,7 +1082,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         setText(mBinding.director, R.string.detail_director, item.getVodDirector());
         mBinding.contentLayout.setVisibility(mBinding.content.getVisibility());
         setArtwork(item.getVodPic());
-        setMetadata();
     }
 
     @Override
