@@ -36,11 +36,22 @@
   ],
   "proxy": [
     {
-      "name": "Global",
-      "host": ".*.",
+      "name": "全局",
+      "hosts": [
+        ".*."
+      ],
       "urls": [
-        "http://127.0.0.1:7890",
         "socks5://127.0.0.1:7891"
+      ]
+    },
+    {
+      "name": "自訂",
+      "hosts": [
+        "googlevideo.com",
+        "raw.githubusercontent.com"
+      ],
+      "urls": [
+        "http://127.0.0.1:7890"
       ]
     }
   ],
