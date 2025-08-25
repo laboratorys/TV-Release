@@ -156,20 +156,12 @@ scheme://username:password@host:port
 ```
 
 配置新增 proxy 可指定代理
+靠前的 host 匹配到則使用該代理
 
 ```json
 {
   "spider": "",
   "proxy": [
-    {
-      "name": "全局",
-      "hosts": [
-        ".*."
-      ],
-      "urls": [
-        "socks5://127.0.0.1:7891"
-      ]
-    },
     {
       "name": "自訂",
       "hosts": [
@@ -178,6 +170,15 @@ scheme://username:password@host:port
       ],
       "urls": [
         "http://127.0.0.1:7890"
+      ]
+    },
+    {
+      "name": "全局",
+      "hosts": [
+        ".*."
+      ],
+      "urls": [
+        "socks5://127.0.0.1:7891"
       ]
     }
   ]
