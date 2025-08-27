@@ -1,6 +1,7 @@
 package com.github.catvod.bean;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -16,6 +17,8 @@ import java.util.Objects;
 
 public class Proxy {
 
+    @SerializedName("name")
+    private String name;
     @SerializedName("hosts")
     private List<String> hosts;
     @SerializedName("urls")
@@ -31,6 +34,10 @@ public class Proxy {
         } catch (Exception e) {
             return Collections.emptyList();
         }
+    }
+
+    public String getName() {
+        return TextUtils.isEmpty(name) ? "" : name;
     }
 
     public List<String> getHosts() {
@@ -54,5 +61,14 @@ public class Proxy {
         if (uri.getScheme().startsWith("http")) return new java.net.Proxy(java.net.Proxy.Type.HTTP, InetSocketAddress.createUnresolved(uri.getHost(), uri.getPort()));
         if (uri.getScheme().startsWith("socks")) return new java.net.Proxy(java.net.Proxy.Type.SOCKS, InetSocketAddress.createUnresolved(uri.getHost(), uri.getPort()));
         return null;
+    }
+
+    public static void sort(List<Proxy> items) {
+        items.sort((o1, o2) -> {
+            boolean g1 = o1.getHosts().stream().anyMatch(h -> h.contains("*"));
+            boolean g2 = o2.getHosts().stream().anyMatch(h -> h.contains("*"));
+            if (g1 == g2) return 0;
+            return g1 ? 1 : -1;
+        });
     }
 }

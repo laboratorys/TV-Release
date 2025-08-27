@@ -20,6 +20,7 @@ public class OkProxySelector extends ProxySelector {
 
     public synchronized void addAll(List<Proxy> items) {
         proxy.addAll(items);
+        Proxy.sort(proxy);
     }
 
     public void clear() {
