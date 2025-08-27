@@ -20,10 +20,14 @@ import com.github.catvod.utils.Path;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WallConfig {
 
     private Config config;
+    private ExecutorService executor;
+
     private boolean sync;
 
     private static class Loader {
@@ -67,7 +71,9 @@ public class WallConfig {
     }
 
     public void load(Callback callback) {
-        App.execute(() -> loadConfig(callback));
+        if (executor != null) executor.shutdownNow();
+        executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> loadConfig(callback));
     }
 
     private void loadConfig(Callback callback) {

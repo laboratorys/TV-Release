@@ -32,15 +32,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class LiveConfig {
 
+    private Live home;
+    private Config config;
     private List<Live> lives;
     private List<Rule> rules;
     private List<String> ads;
-    private Config config;
+    private ExecutorService executor;
+
     private boolean sync;
-    private Live home;
 
     private static class Loader {
         static volatile LiveConfig INSTANCE = new LiveConfig();
@@ -79,7 +83,7 @@ public class LiveConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().clear().config(config).load(callback);
+        get().config(config).load(callback);
     }
 
     public LiveConfig init() {
@@ -110,7 +114,9 @@ public class LiveConfig {
     }
 
     public void load(Callback callback) {
-        App.execute(() -> loadConfig(callback));
+        if (executor != null) executor.shutdownNow();
+        executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> loadConfig(callback));
     }
 
     private void loadConfig(Callback callback) {
@@ -154,7 +160,7 @@ public class LiveConfig {
         } else if (object.has("urls")) {
             parseDepot(object, callback);
         } else {
-            parseConfig(object, callback);
+            clear().parseConfig(object, callback);
         }
     }
 
@@ -215,7 +221,7 @@ public class LiveConfig {
     }
 
     public void parse(JsonObject object) {
-        parseConfig(object, null);
+        clear().parseConfig(object, null);
     }
 
     public void setKeep(Channel channel) {

@@ -25,20 +25,24 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class VodConfig {
 
+    private Site home;
+    private String wall;
+    private Parse parse;
+    private Config config;
     private List<Doh> doh;
     private List<Rule> rules;
     private List<Site> sites;
-    private List<Parse> parses;
-    private List<String> flags;
     private List<String> ads;
+    private List<String> flags;
+    private List<Parse> parses;
+    private ExecutorService executor;
+
     private boolean loadLive;
-    private Config config;
-    private Parse parse;
-    private String wall;
-    private Site home;
 
     private static class Loader {
         static volatile VodConfig INSTANCE = new VodConfig();
@@ -69,7 +73,7 @@ public class VodConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().clear().config(config).load(callback);
+        get().config(config).load(callback);
     }
 
     public VodConfig init() {
@@ -108,7 +112,9 @@ public class VodConfig {
     }
 
     public void load(Callback callback) {
-        App.execute(() -> loadConfig(callback));
+        if (executor != null) executor.shutdownNow();
+        executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> loadConfig(callback));
     }
 
     private void loadConfig(Callback callback) {
@@ -132,7 +138,7 @@ public class VodConfig {
         } else if (object.has("urls")) {
             parseDepot(object, callback);
         } else {
-            parseConfig(object, callback);
+            clear().parseConfig(object, callback);
         }
     }
 
@@ -187,7 +193,7 @@ public class VodConfig {
     private void initLive(JsonObject object) {
         Config temp = Config.find(config, 1).save();
         boolean sync = LiveConfig.get().needSync(config.getUrl());
-        if (sync) LiveConfig.get().clear().config(temp).parse(object);
+        if (sync) LiveConfig.get().config(temp).parse(object);
     }
 
     private void initParse(JsonObject object) {
