@@ -385,8 +385,7 @@ public class Channel {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Channel)) return false;
-        Channel it = (Channel) obj;
+        if (!(obj instanceof Channel it)) return false;
         if (!getName().isEmpty()) return getName().equals(it.getName());
         if (!getNumber().isEmpty()) return getNumber().equals(it.getNumber());
         return getName().equals(it.getName()) && getNumber().equals(it.getNumber());
