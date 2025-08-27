@@ -113,8 +113,7 @@ public class VodConfig {
 
     private void loadConfig(Callback callback) {
         try {
-            OkHttp.cancel("vod");
-            checkJson(Json.parse(Decoder.getJson(UrlUtil.convert(config.getUrl()), "vod")).getAsJsonObject(), callback);
+            checkJson(Json.parse(Decoder.getJson(UrlUtil.convert(config.getUrl()))).getAsJsonObject(), callback);
         } catch (Throwable e) {
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
             else loadCache(callback, e);
