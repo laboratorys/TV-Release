@@ -1,11 +1,15 @@
 package com.fongmi.android.tv.ui.activity;
 
+import android.os.Bundle;
+import android.text.TextUtils;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.databinding.ActivityCrashBinding;
 import com.fongmi.android.tv.ui.base.BaseActivity;
+import com.github.catvod.utils.Prefers;
 
 import java.util.Objects;
 
@@ -21,9 +25,25 @@ public class CrashActivity extends BaseActivity {
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setCrash();
+    }
+
+    @Override
     protected void initEvent() {
         mBinding.details.setOnClickListener(v -> showError());
         mBinding.restart.setOnClickListener(v -> CustomActivityOnCrash.restartApplication(this, Objects.requireNonNull(CustomActivityOnCrash.getConfigFromIntent(getIntent()))));
+    }
+
+    private void setCrash() {
+        String log = CustomActivityOnCrash.getActivityLogFromIntent(getIntent());
+        if (TextUtils.isEmpty(log)) return;
+        int lastNewLine = log.lastIndexOf('\n');
+        String lastLine = (lastNewLine >= 0) ? log.substring(lastNewLine + 1) : log;
+        if (lastLine.contains(HomeActivity.class.getSimpleName())) {
+            Prefers.put("crash", true);
+        }
     }
 
     private void showError() {
