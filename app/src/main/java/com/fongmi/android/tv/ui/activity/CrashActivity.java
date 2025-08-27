@@ -39,10 +39,13 @@ public class CrashActivity extends BaseActivity {
     private void setCrash() {
         String log = CustomActivityOnCrash.getActivityLogFromIntent(getIntent());
         if (TextUtils.isEmpty(log)) return;
-        int lastNewLine = log.lastIndexOf('\n');
-        String lastLine = (lastNewLine >= 0) ? log.substring(lastNewLine + 1) : log;
-        if (lastLine.contains(HomeActivity.class.getSimpleName())) {
-            Prefers.put("crash", true);
+        String[] lines = log.split("\n");
+        for (int i = lines.length - 1; i >= 0; i--) {
+            if (lines[i].isEmpty()) continue;
+            if (lines[i].contains(HomeActivity.class.getSimpleName())) {
+                Prefers.put("crash", true);
+                break;
+            }
         }
     }
 
