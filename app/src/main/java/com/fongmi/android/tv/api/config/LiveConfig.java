@@ -79,7 +79,7 @@ public class LiveConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().config(config).load(callback);
+        get().clear().config(config).load(callback);
     }
 
     public LiveConfig init() {
@@ -127,7 +127,7 @@ public class LiveConfig {
 
     private void parseConfig(String text, Callback callback) {
         if (!Json.isObj(text)) {
-            clear().parseText(text, callback);
+            parseText(text, callback);
         } else {
             checkJson(Json.parse(text).getAsJsonObject(), callback);
         }
@@ -171,7 +171,6 @@ public class LiveConfig {
 
     private void parseConfig(JsonObject object, Callback callback) {
         try {
-            clear();
             initLive(object);
             initOther(object);
         } catch (Throwable e) {

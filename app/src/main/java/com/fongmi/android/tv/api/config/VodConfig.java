@@ -73,7 +73,7 @@ public class VodConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().config(config).load(callback);
+        get().clear().config(config).load(callback);
     }
 
     public VodConfig init() {
@@ -153,7 +153,6 @@ public class VodConfig {
 
     private void parseConfig(JsonObject object, Callback callback) {
         try {
-            clear();
             initSite(object);
             initParse(object);
             initOther(object);
@@ -194,7 +193,7 @@ public class VodConfig {
     private void initLive(JsonObject object) {
         Config temp = Config.find(config, 1).save();
         boolean sync = LiveConfig.get().needSync(config.getUrl());
-        if (sync) LiveConfig.get().config(temp).parse(object);
+        if (sync) LiveConfig.get().clear().config(temp).parse(object);
     }
 
     private void initParse(JsonObject object) {
