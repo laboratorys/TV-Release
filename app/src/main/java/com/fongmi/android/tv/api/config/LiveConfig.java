@@ -78,10 +78,6 @@ public class LiveConfig {
         return get().getHome().isEmpty();
     }
 
-    public static boolean hasUrl() {
-        return getUrl() != null && !getUrl().isEmpty();
-    }
-
     public static void load(Config config, Callback callback) {
         get().config(config).load(callback);
     }
