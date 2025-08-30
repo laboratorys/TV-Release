@@ -127,7 +127,7 @@ public class LiveConfig {
 
     private void parseConfig(String text, Callback callback) {
         if (!Json.isObj(text)) {
-            parseText(text, callback);
+            clear().parseText(text, callback);
         } else {
             checkJson(Json.parse(text).getAsJsonObject(), callback);
         }
@@ -156,7 +156,7 @@ public class LiveConfig {
         } else if (object.has("urls")) {
             parseDepot(object, callback);
         } else {
-            clear().parseConfig(object, callback);
+            parseConfig(object, callback);
         }
     }
 
@@ -171,6 +171,7 @@ public class LiveConfig {
 
     private void parseConfig(JsonObject object, Callback callback) {
         try {
+            clear();
             initLive(object);
             initOther(object);
         } catch (Throwable e) {
@@ -217,7 +218,7 @@ public class LiveConfig {
     }
 
     public void parse(JsonObject object) {
-        clear().parseConfig(object, null);
+        parseConfig(object, null);
     }
 
     public void setKeep(Channel channel) {

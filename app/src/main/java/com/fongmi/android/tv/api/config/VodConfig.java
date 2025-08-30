@@ -138,7 +138,7 @@ public class VodConfig {
         } else if (object.has("urls")) {
             parseDepot(object, callback);
         } else {
-            clear().parseConfig(object, callback);
+            parseConfig(object, callback);
         }
     }
 
@@ -153,6 +153,7 @@ public class VodConfig {
 
     private void parseConfig(JsonObject object, Callback callback) {
         try {
+            clear();
             initSite(object);
             initParse(object);
             initOther(object);
