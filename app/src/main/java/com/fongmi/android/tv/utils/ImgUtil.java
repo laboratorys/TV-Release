@@ -1,11 +1,9 @@
 package com.fongmi.android.tv.utils;
 
-import static android.widget.ImageView.ScaleType.CENTER;
 import static android.widget.ImageView.ScaleType.CENTER_CROP;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
@@ -113,12 +111,9 @@ public class ImgUtil {
         int width = view.getWidth();
         int height = view.getHeight();
         if (width <= 0 || height <= 0) return;
-        int size = Math.min(width, height) / 2;
-        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-        Drawable drawable = ResUtil.getDrawable(R.drawable.ic_img_error);
-        drawable.setBounds(0, 0, size, size);
-        drawable.draw(new Canvas(bitmap));
-        view.setImageBitmap(bitmap);
-        view.setScaleType(CENTER);
+        int padding = Math.min(width, height) / 4;
+        view.setPadding(padding, padding, padding, padding);
+        view.setImageResource(R.drawable.ic_img_error);
+        view.setScaleType(FIT_CENTER);
     }
 }
