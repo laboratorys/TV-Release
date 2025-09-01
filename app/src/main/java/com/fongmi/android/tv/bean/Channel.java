@@ -280,7 +280,7 @@ public class Channel {
     }
 
     public void loadLogo(ImageView view) {
-        ImgUtil.loadLive(getLogo(), view);
+        ImgUtil.load(getName(), getLogo(), view, false);
     }
 
     public void addUrls(String... urls) {
