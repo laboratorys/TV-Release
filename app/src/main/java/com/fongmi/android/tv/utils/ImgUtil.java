@@ -44,7 +44,7 @@ public class ImgUtil {
 
     public static void load(String text, String url, ImageView view, boolean vod) {
         if (!vod) view.setVisibility(TextUtils.isEmpty(url) ? View.GONE : View.VISIBLE);
-        if (failed.contains(url)) view.setImageDrawable(getTextDrawable(text, vod));
+        if (TextUtils.isEmpty(url) || failed.contains(url)) view.setImageDrawable(getTextDrawable(text, vod));
         else view.post(() -> Glide.with(App.get()).asBitmap().load(getUrl(url)).override(view.getWidth(), view.getHeight()).listener(getListener(text, url, view, vod)).into(view));
     }
 
