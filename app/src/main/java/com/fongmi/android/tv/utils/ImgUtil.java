@@ -24,11 +24,15 @@ import com.fongmi.android.tv.App;
 import com.github.catvod.utils.Json;
 import com.google.common.net.HttpHeaders;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import jahirfiquitiva.libs.textdrawable.TextDrawable;
 
 public class ImgUtil {
+
+    private static final Set<String> failed = new HashSet<>();
 
     public static void load(String url, CustomTarget<Drawable> target) {
         Glide.with(App.get()).asDrawable().load(getUrl(url)).into(target);
@@ -40,7 +44,8 @@ public class ImgUtil {
 
     public static void load(String text, String url, ImageView view, boolean vod) {
         if (!vod) view.setVisibility(TextUtils.isEmpty(url) ? View.GONE : View.VISIBLE);
-        view.post(() -> Glide.with(App.get()).asBitmap().load(getUrl(url)).override(view.getWidth(), view.getHeight()).listener(getListener(text, view, vod)).into(view));
+        if (failed.contains(url)) view.setImageDrawable(getTextDrawable(text, vod));
+        else view.post(() -> Glide.with(App.get()).asBitmap().load(getUrl(url)).override(view.getWidth(), view.getHeight()).listener(getListener(text, url, view, vod)).into(view));
     }
 
     public static Object getUrl(String url) {
@@ -63,15 +68,17 @@ public class ImgUtil {
 
     private static Drawable getTextDrawable(String text, boolean vod) {
         TextDrawable.Builder builder = new TextDrawable.Builder();
+        text = TextUtils.isEmpty(text) ? "！" : text.substring(0, 1);
         if (vod) builder.buildRect(text, ColorGenerator.get400(text));
         return builder.buildRoundRect(text, ColorGenerator.get400(text), ResUtil.dp2px(4));
     }
 
-    private static RequestListener<Bitmap> getListener(String text, ImageView view, boolean vod) {
+    private static RequestListener<Bitmap> getListener(String text, String url, ImageView view, boolean vod) {
         return new RequestListener<>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Bitmap> target, boolean isFirstResource) {
-                view.setImageDrawable(getTextDrawable(TextUtils.isEmpty(text) ? "！" : text.substring(0, 1), vod));
+                view.setImageDrawable(getTextDrawable(text, vod));
+                failed.add(url);
                 return true;
             }
 
