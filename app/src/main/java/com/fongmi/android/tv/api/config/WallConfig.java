@@ -93,7 +93,7 @@ public class WallConfig {
     private File write(File file) throws Exception {
         if (TextUtils.isEmpty(getUrl())) return file;
         Path.write(file, OkHttp.bytes(UrlUtil.convert(getUrl())));
-        Bitmap bitmap = Glide.with(App.get()).asBitmap().load(file).centerCrop().override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).submit().get();
+        Bitmap bitmap = Glide.with(App.get()).asBitmap().load(file).centerCrop().override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).diskCacheStrategy(DiskCacheStrategy.NONE).submit().get();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(file));
         bitmap.recycle();
         return file;
