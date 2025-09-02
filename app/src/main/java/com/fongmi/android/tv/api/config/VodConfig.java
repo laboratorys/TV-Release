@@ -156,7 +156,7 @@ public class VodConfig {
             initSite(object);
             initParse(object);
             initOther(object);
-            if (loadLive && object.has("lives")) initLive(object);
+            if (loadLive && !Json.isEmpty(object, "lives")) initLive(object);
             String notice = Json.safeString(object, "notice");
             config.logo(Json.safeString(object, "logo"));
             App.post(() -> callback.success(notice));
