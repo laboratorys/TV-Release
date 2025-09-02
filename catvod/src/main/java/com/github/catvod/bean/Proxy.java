@@ -24,7 +24,7 @@ public class Proxy {
     @SerializedName("urls")
     private List<String> urls;
 
-    public static List<java.net.Proxy> NO_PROXY = List.of(java.net.Proxy.NO_PROXY);
+    private List<java.net.Proxy> proxies;
 
     public static List<Proxy> arrayFrom(JsonElement element) {
         try {
@@ -34,6 +34,12 @@ public class Proxy {
         } catch (Exception e) {
             return Collections.emptyList();
         }
+    }
+
+    public void init() {
+        proxies = new ArrayList<>();
+        for (String url : getUrls()) proxies.add(create(url));
+        proxies.removeIf(Objects::isNull);
     }
 
     public String getName() {
@@ -48,14 +54,11 @@ public class Proxy {
         return urls == null ? Collections.emptyList() : urls;
     }
 
-    public List<java.net.Proxy> select() {
-        List<java.net.Proxy> items = new ArrayList<>();
-        for (String url : getUrls()) items.add(proxy(url));
-        items.removeIf(Objects::isNull);
-        return items.isEmpty() ? NO_PROXY : items;
+    public List<java.net.Proxy> getProxies() {
+        return proxies == null ? Collections.emptyList() : proxies;
     }
 
-    private java.net.Proxy proxy(String url) {
+    private java.net.Proxy create(String url) {
         Uri uri = Uri.parse(url);
         if (uri.getScheme() == null || uri.getHost() == null || uri.getPort() <= 0) return null;
         if (uri.getScheme().startsWith("http")) return new java.net.Proxy(java.net.Proxy.Type.HTTP, InetSocketAddress.createUnresolved(uri.getHost(), uri.getPort()));
