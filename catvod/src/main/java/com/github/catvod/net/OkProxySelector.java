@@ -30,15 +30,19 @@ public class OkProxySelector extends ProxySelector {
         proxy.clear();
     }
 
+    private List<java.net.Proxy> fallback(URI uri) {
+        return system != null ? system.select(uri) : List.of(java.net.Proxy.NO_PROXY);
+    }
+
     @Override
     public List<java.net.Proxy> select(URI uri) {
-        if (proxy.isEmpty() || uri.getHost() == null || "127.0.0.1".equals(uri.getHost())) return system.select(uri);
-        for (Proxy item : proxy) for (String host : item.getHosts()) if (Util.containOrMatch(uri.getHost(), host)) return item.getProxies().isEmpty() ? system.select(uri) : item.getProxies();
-        return system.select(uri);
+        if (proxy.isEmpty() || uri.getHost() == null || "127.0.0.1".equals(uri.getHost())) return fallback(uri);
+        for (Proxy item : proxy) for (String host : item.getHosts()) if (Util.containOrMatch(uri.getHost(), host)) return !item.getProxies().isEmpty() ? item.getProxies() : fallback(uri);
+        return fallback(uri);
     }
 
     @Override
     public void connectFailed(URI uri, SocketAddress socketAddress, IOException e) {
-        system.connectFailed(uri, socketAddress, e);
+        if (system != null) system.connectFailed(uri, socketAddress, e);
     }
 }
