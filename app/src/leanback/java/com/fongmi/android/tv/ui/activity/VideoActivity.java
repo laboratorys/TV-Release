@@ -43,7 +43,6 @@ import com.fongmi.android.tv.bean.Flag;
 import com.fongmi.android.tv.bean.History;
 import com.fongmi.android.tv.bean.Keep;
 import com.fongmi.android.tv.bean.Parse;
-import com.fongmi.android.tv.bean.Part;
 import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.bean.Site;
 import com.fongmi.android.tv.bean.Sub;
@@ -81,6 +80,7 @@ import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Sniffer;
 import com.fongmi.android.tv.utils.Traffic;
+import com.fongmi.android.tv.utils.Util;
 import com.github.bassaer.library.MDColor;
 import com.github.catvod.utils.Trans;
 import com.permissionx.guolindev.PermissionX;
@@ -459,13 +459,13 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         setText(mBinding.content, R.string.detail_content, item.getVodContent());
         setText(mBinding.director, R.string.detail_director, item.getVodDirector());
         mFlagAdapter.setItems(item.getVodFlags(), null);
-        setPartAdapter(Part.get(item.getVodName()));
         mBinding.content.setMaxLines(getMaxLines());
         mBinding.video.requestFocus();
         App.removeCallbacks(mR4);
         checkHistory(item);
         checkFlag(item);
-        checkKeep();
+        checkKeepImg();
+        updateKeep();
     }
 
     private int getMaxLines() {
@@ -679,7 +679,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         if (keep != null) keep.delete();
         else createKeep();
         RefreshEvent.keep();
-        checkKeep();
+        checkKeepImg();
     }
 
     private void onVideo() {
@@ -928,9 +928,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         });
     }
 
-    private void setPartAdapter(List<String> items) {
+    private void setPartAdapter() {
+        mPartAdapter.setItems(Util.getPart(mHistory.getVodName()), null);
         mBinding.part.setVisibility(View.VISIBLE);
-        mPartAdapter.setItems(items, null);
         setR2Callback();
     }
 
@@ -956,6 +956,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mHistory.setVodName(item.getVodName());
         mHistory.setVodPic(item.getVodPic());
         setScale(getScale());
+        setPartAdapter();
         setArtwork();
     }
 
@@ -980,7 +981,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         ActionEvent.update();
     }
 
-    private void checkKeep() {
+    private void checkKeepImg() {
         mBinding.keep.setCompoundDrawablesWithIntrinsicBounds(Keep.find(getHistoryKey()) == null ? R.drawable.ic_detail_keep_off : R.drawable.ic_detail_keep_on, 0, 0, 0);
     }
 
@@ -995,6 +996,15 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         keep.save();
     }
 
+    private void updateKeep() {
+        Keep keep = Keep.find(getHistoryKey());
+        if (keep != null) {
+            keep.setVodName(mHistory.getVodName());
+            keep.setVodPic(mHistory.getVodPic());
+            keep.save();
+        }
+    }
+
     private void updateVod(Vod item) {
         mHistory.setVodPic(item.getVodPic());
         mHistory.setVodName(item.getVodName());
@@ -1003,7 +1013,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         setText(mBinding.content, R.string.detail_content, item.getVodContent());
         setText(mBinding.director, R.string.detail_director, item.getVodDirector());
         mBinding.content.setMaxLines(getMaxLines());
+        setPartAdapter();
         setArtwork();
+        updateKeep();
     }
 
     @Override

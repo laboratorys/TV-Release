@@ -478,6 +478,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         checkHistory(item);
         checkFlag(item);
         checkKeepImg();
+        updateKeep();
     }
 
     private void setText(TextView view, int resId, String text) {
@@ -1071,6 +1072,15 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         keep.save();
     }
 
+    private void updateKeep() {
+        Keep keep = Keep.find(getHistoryKey());
+        if (keep != null) {
+            keep.setVodName(mHistory.getVodName());
+            keep.setVodPic(mHistory.getVodPic());
+            keep.save();
+        }
+    }
+
     private void updateVod(Vod item) {
         mHistory.setVodPic(item.getVodPic());
         mHistory.setVodName(item.getVodName());
@@ -1080,6 +1090,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         setText(mBinding.director, R.string.detail_director, item.getVodDirector());
         mBinding.contentLayout.setVisibility(mBinding.content.getVisibility());
         setArtwork();
+        updateKeep();
     }
 
     @Override
