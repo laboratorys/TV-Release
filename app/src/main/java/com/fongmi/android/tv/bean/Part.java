@@ -12,7 +12,7 @@ public class Part {
         if (source.contains("：")) {
             for (String split : source.split("：")) items.add(split.trim().contains(" ") ? split.split(" ")[0].trim() : split.trim());
         } else if (source.contains("第") && source.contains("季")) {
-            for (String split : source.split("第")) if (!split.contains("季")) items.add(split.trim().contains(" ") ? split.split(" ")[0].trim() : split.trim());
+            for (String split : source.split("第")) if (!split.isEmpty() && !split.contains("季")) items.add(split.trim().contains(" ") ? split.split(" ")[0].trim() : split.trim());
         } else if (source.contains("(")) {
             items.add(source.split("\\(")[0].trim());
         } else if (source.contains(" ")) {
