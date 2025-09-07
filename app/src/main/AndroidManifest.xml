@@ -77,6 +77,7 @@
                 <action android:name="${applicationId}.next" />
                 <action android:name="${applicationId}.play" />
                 <action android:name="${applicationId}.pause" />
+                <action android:name="${applicationId}.audio" />
             </intent-filter>
         </receiver>
 

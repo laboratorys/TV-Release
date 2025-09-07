@@ -961,6 +961,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     @Override
     protected void onStart() {
         super.onStart();
+        mBinding.exo.setPlayer(mPlayers.get());
         mClock.stop().start();
         onPlay();
     }
@@ -983,6 +984,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         super.onStop();
         if (Setting.isBackgroundOff()) onPaused();
         if (Setting.isBackgroundOff()) mClock.stop();
+        mBinding.exo.setPlayer(null);
     }
 
     @Override

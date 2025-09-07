@@ -91,6 +91,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     private Runnable mR1;
     private Runnable mR2;
     private Runnable mR3;
+    private boolean audioOnly;
     private boolean redirect;
     private boolean rotate;
     private boolean stop;
@@ -728,6 +729,9 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
             nextChannel();
         } else if (ActionEvent.PREV.equals(event.getAction())) {
             prevChannel();
+        } else if (ActionEvent.AUDIO.equals(event.getAction())) {
+            moveTaskToBack(true);
+            setAudioOnly(true);
         } else if (ActionEvent.STOP.equals(event.getAction())) {
             finish();
         }
@@ -874,6 +878,14 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     private void onPlay() {
         mPlayers.play();
         checkPlayImg();
+    }
+
+    public boolean isAudioOnly() {
+        return audioOnly;
+    }
+
+    public void setAudioOnly(boolean audioOnly) {
+        this.audioOnly = audioOnly;
     }
 
     public boolean isRedirect() {
@@ -1046,6 +1058,8 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     @Override
     protected void onStart() {
         super.onStart();
+        mBinding.exo.setPlayer(mPlayers.get());
+        setAudioOnly(false);
         setStop(false);
         onPlay();
     }
@@ -1067,7 +1081,8 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     protected void onStop() {
         super.onStop();
         if (Setting.isBackgroundOff()) onPaused();
-        setStop(true);
+        if (!isAudioOnly()) setStop(true);
+        mBinding.exo.setPlayer(null);
     }
 
     @Override

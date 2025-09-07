@@ -133,6 +133,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private History mHistory;
     private Players mPlayers;
     private boolean fullscreen;
+    private boolean audioOnly;
     private boolean initAuto;
     private boolean autoMode;
     private boolean useParse;
@@ -1125,6 +1126,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
             mBinding.control.next.performClick();
         } else if (ActionEvent.PREV.equals(event.getAction())) {
             mBinding.control.prev.performClick();
+        } else if (ActionEvent.AUDIO.equals(event.getAction())) {
+            moveTaskToBack(true);
+            setAudioOnly(true);
         } else if (ActionEvent.STOP.equals(event.getAction())) {
             finish();
         }
@@ -1356,6 +1360,14 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         Util.toggleFullscreen(this, this.fullscreen = fullscreen);
     }
 
+    public boolean isAudioOnly() {
+        return audioOnly;
+    }
+
+    public void setAudioOnly(boolean audioOnly) {
+        this.audioOnly = audioOnly;
+    }
+
     private boolean isInitAuto() {
         return initAuto;
     }
@@ -1581,7 +1593,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     @Override
     protected void onStart() {
         super.onStart();
+        mBinding.exo.setPlayer(mPlayers.get());
         mClock.stop().start();
+        setAudioOnly(false);
         setStop(false);
         onPlay();
     }
@@ -1602,9 +1616,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     @Override
     protected void onStop() {
         super.onStop();
-        if (Setting.isBackgroundOff()) onPaused();
         if (Setting.isBackgroundOff()) mClock.stop();
-        setStop(true);
+        if (Setting.isBackgroundOff()) onPaused();
+        if (!isAudioOnly()) setStop(true);
+        mBinding.exo.setPlayer(null);
     }
 
     @Override
