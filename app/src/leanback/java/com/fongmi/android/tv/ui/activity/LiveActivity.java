@@ -640,7 +640,6 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void checkPlayImg() {
-        ActionEvent.update();
         mBinding.control.action.setText(mPlayers.isPlaying() ? R.string.pause : R.string.play);
     }
 
@@ -725,12 +724,14 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
             case PlayerEvent.PREPARE:
                 setDecode();
                 break;
+            case PlayerEvent.PLAYING:
+                checkPlayImg();
+                break;
             case Player.STATE_BUFFERING:
                 showProgress();
                 break;
             case Player.STATE_READY:
                 hideProgress();
-                checkPlayImg();
                 mPlayers.reset();
                 break;
             case Player.STATE_ENDED:
@@ -830,12 +831,10 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     private void onPaused() {
         mPlayers.pause();
-        checkPlayImg();
     }
 
     private void onPlay() {
         mPlayers.play();
-        checkPlayImg();
     }
 
     public boolean isRedirect() {

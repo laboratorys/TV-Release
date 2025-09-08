@@ -978,10 +978,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mHistory.setPosition(replay ? C.TIME_UNSET : mHistory.getPosition());
     }
 
-    private void checkPlayImg() {
-        ActionEvent.update();
-    }
-
     private void checkKeepImg() {
         mBinding.keep.setCompoundDrawablesWithIntrinsicBounds(Keep.find(getHistoryKey()) == null ? R.drawable.ic_detail_keep_off : R.drawable.ic_detail_keep_on, 0, 0, 0);
     }
@@ -1073,7 +1069,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
                 break;
             case Player.STATE_READY:
                 hideProgress();
-                checkPlayImg();
                 mPlayers.reset();
                 break;
             case Player.STATE_ENDED:
@@ -1100,7 +1095,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             checkNext(notify);
-            checkPlayImg();
         }
     }
 
@@ -1252,7 +1246,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         if (isFullscreen()) showInfo();
         else hideInfo();
         mPlayers.pause();
-        checkPlayImg();
     }
 
     private void onPlay() {
@@ -1260,7 +1253,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (!mPlayers.isEmpty() && mPlayers.isIdle()) mPlayers.prepare();
         mPlayers.play();
-        checkPlayImg();
         hideCenter();
     }
 

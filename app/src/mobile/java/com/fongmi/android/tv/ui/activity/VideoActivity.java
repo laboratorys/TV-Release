@@ -956,7 +956,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         setR1Callback();
-        checkPlayImg();
     }
 
     private void hideControl() {
@@ -1048,7 +1047,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void checkPlayImg() {
         mBinding.control.play.setImageResource(mPlayers.isPlaying() ? androidx.media3.ui.R.drawable.exo_icon_pause : androidx.media3.ui.R.drawable.exo_icon_play);
         mPiP.update(this, mPlayers.isPlaying());
-        ActionEvent.update();
     }
 
     private void checkKeepImg() {
@@ -1153,13 +1151,15 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 setDecode();
                 setPosition();
                 break;
+            case PlayerEvent.PLAYING:
+                checkPlayImg();
+                break;
             case Player.STATE_BUFFERING:
                 showProgress();
                 break;
             case Player.STATE_READY:
                 hideProgress();
                 checkControl();
-                checkPlayImg();
                 mPlayers.reset();
                 break;
             case Player.STATE_ENDED:
@@ -1197,7 +1197,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             checkNext(notify);
-            checkPlayImg();
         }
     }
 
@@ -1342,7 +1341,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void onPaused() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mPlayers.pause();
-        checkPlayImg();
     }
 
     private void onPlay() {
@@ -1350,7 +1348,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (!mPlayers.isEmpty() && mPlayers.isIdle()) mPlayers.prepare();
         mPlayers.play();
-        checkPlayImg();
     }
 
     private boolean isFullscreen() {

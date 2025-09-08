@@ -477,7 +477,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
         mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         setR1Callback();
-        checkPlayImg();
         hideInfo();
     }
 
@@ -662,7 +661,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     private void checkPlayImg() {
         mBinding.control.play.setImageResource(mPlayers.isPlaying() ? androidx.media3.ui.R.drawable.exo_icon_pause : androidx.media3.ui.R.drawable.exo_icon_play);
         mPiP.update(this, mPlayers.isPlaying());
-        ActionEvent.update();
     }
 
     private void checkLockImg() {
@@ -756,13 +754,15 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
             case PlayerEvent.PREPARE:
                 setDecode();
                 break;
+            case PlayerEvent.PLAYING:
+                checkPlayImg();
+                break;
             case Player.STATE_BUFFERING:
                 showProgress();
                 break;
             case Player.STATE_READY:
                 hideProgress();
                 checkControl();
-                checkPlayImg();
                 mPlayers.reset();
                 break;
             case Player.STATE_ENDED:
@@ -872,12 +872,10 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
 
     private void onPaused() {
         mPlayers.pause();
-        checkPlayImg();
     }
 
     private void onPlay() {
         mPlayers.play();
-        checkPlayImg();
     }
 
     public boolean isAudioOnly() {

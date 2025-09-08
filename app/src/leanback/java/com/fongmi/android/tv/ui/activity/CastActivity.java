@@ -279,10 +279,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
         this.redirect = redirect;
     }
 
-    private void checkPlayImg() {
-        ActionEvent.update();
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onActionEvent(ActionEvent event) {
         if (ActionEvent.PLAY.equals(event.getAction()) || ActionEvent.PAUSE.equals(event.getAction())) {
@@ -315,7 +311,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
                 break;
             case Player.STATE_READY:
                 hideProgress();
-                checkPlayImg();
                 mPlayers.reset();
                 setState(RenderState.PLAYING);
                 break;
@@ -360,7 +355,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
     private void onPaused() {
         setState(RenderState.PAUSED);
         mPlayers.pause();
-        checkPlayImg();
         showInfo();
     }
 
@@ -368,7 +362,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
         if (mPlayers.isEmpty()) return;
         setState(RenderState.PLAYING);
         mPlayers.play();
-        checkPlayImg();
         hideCenter();
     }
 
