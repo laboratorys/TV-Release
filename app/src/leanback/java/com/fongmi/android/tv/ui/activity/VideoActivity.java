@@ -1197,8 +1197,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void setSearch(Result result) {
         List<Vod> items = result.getList();
-        Iterator<Vod> iterator = items.iterator();
-        while (iterator.hasNext()) if (mismatch(iterator.next())) iterator.remove();
+        items.removeIf(this::mismatch);
         mQuickAdapter.addAll(mQuickAdapter.size(), items);
         mBinding.quick.setVisibility(View.VISIBLE);
         if (isInitAuto()) nextSite();
@@ -1416,7 +1415,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onBackInvoked() {
         if (isVisible(mBinding.control.getRoot())) {
             hideControl();
         } else if (isVisible(mBinding.widget.center)) {
@@ -1425,7 +1424,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
             exitFullscreen();
         } else {
             stopSearch();
-            super.onBackPressed();
+            super.onBackInvoked();
         }
     }
 

@@ -9,6 +9,8 @@ import android.view.DisplayCutout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +29,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 
 public abstract class BaseActivity extends AppCompatActivity {
+
+    private OnBackInvokedCallback callback;
 
     protected abstract ViewBinding getBinding();
 
@@ -59,17 +63,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         return true;
     }
 
-    protected boolean handleBack() {
-        return false;
-    }
-
     protected void initView(Bundle savedInstanceState) {
     }
 
     protected void initEvent() {
-    }
-
-    protected void onBackPress() {
     }
 
     protected boolean isVisible(View view) {
@@ -101,12 +98,16 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void setBackCallback() {
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(handleBack()) {
-            @Override
-            public void handleOnBackPressed() {
-                onBackPress();
-            }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, callback = this::onBackInvoked);
+        } else {
+            getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                    onBackInvoked();
+                }
+            });
+        }
     }
 
     private void setTransparent(Activity activity) {
@@ -132,9 +133,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (event.getType() == RefreshEvent.Type.WALL) refreshWall();
     }
 
+    protected void onBackInvoked() {
+        finish();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(callback);
     }
 }

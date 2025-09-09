@@ -1084,7 +1084,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onBackInvoked() {
         if (isVisible(mBinding.control.getRoot())) {
             hideControl();
         } else if (isVisible(mBinding.widget.info)) {
@@ -1092,7 +1092,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
         } else if (isVisible(mBinding.recycler)) {
             hideUI();
         } else if (!isLock()) {
-            super.onBackPressed();
+            super.onBackInvoked();
         }
     }
 

@@ -466,12 +466,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     @Override
-    protected boolean handleBack() {
-        return true;
-    }
-
-    @Override
-    protected void onBackPress() {
+    protected void onBackInvoked() {
         if (mBinding.progressLayout.isProgress()) {
             mBinding.progressLayout.showContent();
         } else if (mPresenter.isDelete()) {
@@ -479,7 +474,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         } else if (mBinding.recycler.getSelectedPosition() != 0) {
             mBinding.recycler.scrollToPosition(0);
         } else {
-            finish();
+            super.onBackInvoked();
         }
     }
 

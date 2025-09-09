@@ -68,9 +68,9 @@ public class FileActivity extends BaseActivity implements FilePresenter.OnClickL
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onBackInvoked() {
         if (isRoot()) {
-            super.onBackPressed();
+            super.onBackInvoked();
         } else {
             update(dir.getParentFile());
         }

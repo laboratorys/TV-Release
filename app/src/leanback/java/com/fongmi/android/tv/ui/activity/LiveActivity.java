@@ -987,7 +987,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onBackInvoked() {
         if (isVisible(mBinding.control.getRoot())) {
             hideControl();
         } else if (isVisible(mBinding.widget.bottom)) {
@@ -995,7 +995,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         } else if (isVisible(mBinding.recycler)) {
             hideUI();
         } else {
-            super.onBackPressed();
+            super.onBackInvoked();
         }
     }
 

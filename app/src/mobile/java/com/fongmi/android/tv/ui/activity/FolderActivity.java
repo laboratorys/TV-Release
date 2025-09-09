@@ -53,7 +53,7 @@ public class FolderActivity extends BaseActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        if (getFragment().canBack()) super.onBackPressed();
+    protected void onBackInvoked() {
+        if (getFragment().canBack()) super.onBackInvoked();
     }
 }

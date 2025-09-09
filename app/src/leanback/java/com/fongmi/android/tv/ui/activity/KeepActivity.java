@@ -96,8 +96,8 @@ public class KeepActivity extends BaseActivity implements KeepAdapter.OnClickLis
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onBackInvoked() {
         if (mAdapter.isDelete()) mAdapter.setDelete(false);
-        else super.onBackPressed();
+        else super.onBackInvoked();
     }
 }

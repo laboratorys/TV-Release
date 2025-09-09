@@ -99,8 +99,8 @@ public class HistoryActivity extends BaseActivity implements HistoryAdapter.OnCl
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onBackInvoked() {
         if (mAdapter.isDelete()) mAdapter.setDelete(false);
-        else super.onBackPressed();
+        else super.onBackInvoked();
     }
 }

@@ -296,11 +296,11 @@ public class CollectActivity extends BaseActivity implements CustomScroller.Call
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onBackInvoked() {
         if (isVisible(mBinding.result)) {
             showAgent();
         } else {
-            super.onBackPressed();
+            super.onBackInvoked();
         }
     }
 }

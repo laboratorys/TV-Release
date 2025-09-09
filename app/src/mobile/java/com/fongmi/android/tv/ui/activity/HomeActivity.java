@@ -202,12 +202,8 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         }
     }
 
-    protected boolean handleBack() {
-        return true;
-    }
-
     @Override
-    protected void onBackPress() {
+    protected void onBackInvoked() {
         if (!mBinding.navigation.getMenu().findItem(R.id.vod).isVisible()) {
             setNavigation();
         } else if (mManager.isVisible(2)) {
@@ -215,7 +211,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         } else if (mManager.isVisible(1)) {
             mBinding.navigation.setSelectedItemId(R.id.vod);
         } else if (mManager.canBack(0)) {
-            finish();
+            super.onBackInvoked();
         }
     }
 

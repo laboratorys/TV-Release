@@ -65,9 +65,9 @@ public class FileActivity extends BaseActivity implements FileAdapter.OnClickLis
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onBackInvoked() {
         if (isRoot()) {
-            super.onBackPressed();
+            super.onBackInvoked();
         } else {
             update(dir.getParentFile());
         }
