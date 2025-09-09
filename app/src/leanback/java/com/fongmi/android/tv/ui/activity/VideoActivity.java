@@ -93,7 +93,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -140,7 +139,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     private String tag;
 
     public static void push(FragmentActivity activity, String text) {
-        if (FileChooser.isValid(activity, Uri.parse(text))) file(activity, FileChooser.getPathFromUri(activity, Uri.parse(text)));
+        if (FileChooser.isValid(activity, Uri.parse(text))) file(activity, FileChooser.getPathFromUri(Uri.parse(text)));
         else start(activity, Sniffer.getUrl(text));
     }
 

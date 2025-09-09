@@ -39,10 +39,7 @@ public class FileActivity extends BaseActivity implements FilePresenter.OnClickL
     }
 
     private void checkPermission() {
-        PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> {
-            if (allGranted) update(Path.root());
-            else finish();
-        });
+        PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> update(Path.root()));
     }
 
     private void setRecyclerView() {

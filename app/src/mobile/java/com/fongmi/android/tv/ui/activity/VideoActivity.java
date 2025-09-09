@@ -149,7 +149,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private PiP mPiP;
 
     public static void push(FragmentActivity activity, String text) {
-        if (FileChooser.isValid(activity, Uri.parse(text))) file(activity, FileChooser.getPathFromUri(activity, Uri.parse(text)));
+        if (FileChooser.isValid(activity, Uri.parse(text))) file(activity, FileChooser.getPathFromUri(Uri.parse(text)));
         else start(activity, Sniffer.getUrl(text));
     }
 

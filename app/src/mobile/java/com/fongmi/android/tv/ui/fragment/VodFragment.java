@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -167,7 +169,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     }
 
     private boolean onLink(View view) {
-        LinkDialog.create(this).show();
+        LinkDialog.create(this).launcher(launcher).show();
         return true;
     }
 
@@ -306,13 +308,6 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != Activity.RESULT_OK || requestCode != FileChooser.REQUEST_PICK_FILE) return;
-        VideoActivity.file(getActivity(), FileChooser.getPathFromUri(getContext(), data.getData()));
-    }
-
-    @Override
     public boolean canBack() {
         if (mBinding.pager.getAdapter() == null) return true;
         if (mBinding.pager.getAdapter().getCount() == 0) return true;
@@ -324,6 +319,11 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
     }
+
+    private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null || result.getData().getData() == null) return;
+        VideoActivity.file(getActivity(), FileChooser.getPathFromUri(result.getData().getData()));
+    });
 
     class PageAdapter extends FragmentStatePagerAdapter {
 

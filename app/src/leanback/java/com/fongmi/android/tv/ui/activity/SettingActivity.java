@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.BuildConfig;
@@ -44,8 +46,6 @@ import com.permissionx.guolindev.PermissionX;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 public class SettingActivity extends BaseActivity implements ConfigCallback, SiteCallback, LiveCallback, DohCallback {
 
@@ -213,29 +213,29 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
     }
 
     private void onVod(View view) {
-        ConfigDialog.create(this).type(type = 0).show();
+        ConfigDialog.create(this).launcher(launcher).type(type = 0).show();
     }
 
     private void onLive(View view) {
-        ConfigDialog.create(this).type(type = 1).show();
+        ConfigDialog.create(this).launcher(launcher).type(type = 1).show();
     }
 
     private void onWall(View view) {
-        ConfigDialog.create(this).type(type = 2).show();
+        ConfigDialog.create(this).launcher(launcher).type(type = 2).show();
     }
 
     private boolean onVodEdit(View view) {
-        ConfigDialog.create(this).type(type = 0).edit().show();
+        ConfigDialog.create(this).launcher(launcher).type(type = 0).edit().show();
         return true;
     }
 
     private boolean onLiveEdit(View view) {
-        ConfigDialog.create(this).type(type = 1).edit().show();
+        ConfigDialog.create(this).launcher(launcher).type(type = 1).edit().show();
         return true;
     }
 
     private boolean onWallEdit(View view) {
-        ConfigDialog.create(this).type(type = 2).edit().show();
+        ConfigDialog.create(this).launcher(launcher).type(type = 2).edit().show();
         return true;
     }
 
@@ -355,10 +355,8 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
         VodConfig.get().init().load(getCallback(0));
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != Activity.RESULT_OK || requestCode != FileChooser.REQUEST_PICK_FILE) return;
-        setConfig(Config.find("file:/" + FileChooser.getPathFromUri(this, data.getData()).replace(Path.rootPath(), ""), type));
-    }
+    private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() != RESULT_OK || result.getData() == null || result.getData().getData() == null) return;
+        setConfig(Config.find("file:/" + FileChooser.getPathFromUri(result.getData().getData()).replace(Path.rootPath(), ""), type));
+    });
 }
