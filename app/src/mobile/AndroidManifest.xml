@@ -113,7 +113,7 @@
             android:resizeableActivity="true"
             android:screenOrientation="fullUser"
             android:supportsPictureInPicture="true"
-            android:theme="@style/AppTheme.Detail" />
+            android:theme="@style/AppTheme.Video" />
 
         <receiver
             android:name=".receiver.ShortcutReceiver"

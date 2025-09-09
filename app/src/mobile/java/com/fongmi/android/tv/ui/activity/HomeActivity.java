@@ -27,6 +27,7 @@ import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.event.ServerEvent;
 import com.fongmi.android.tv.event.StateEvent;
 import com.fongmi.android.tv.impl.Callback;
+import com.fongmi.android.tv.impl.ChainTask;
 import com.fongmi.android.tv.player.Source;
 import com.fongmi.android.tv.receiver.ShortcutReceiver;
 import com.fongmi.android.tv.server.Server;
@@ -40,6 +41,7 @@ import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 import com.google.android.material.navigation.NavigationBarView;
+import com.permissionx.guolindev.PermissionX;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -67,6 +69,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         Updater.create().release().start(this);
         initFragment(savedInstanceState);
         Server.get().start();
+        requestPermission();
         initConfig();
     }
 
@@ -99,6 +102,10 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             }
         };
         if (savedInstanceState == null) mManager.change(0);
+    }
+
+    private void requestPermission() {
+        PermissionX.init(this).permissions(PermissionX.permission.POST_NOTIFICATIONS).request((allGranted, grantedList, deniedList) -> PermissionX.init(this).permissions(PermissionX.permission.POST_NOTIFICATIONS).requestManageExternalStoragePermissionNow(new ChainTask()));
     }
 
     private void initConfig() {

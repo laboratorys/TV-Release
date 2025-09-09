@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         minSdk 24
-        targetSdk 28
+        targetSdk 36
         python {
             version "3.8"
             pip {

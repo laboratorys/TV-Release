@@ -40,6 +40,7 @@ import com.fongmi.android.tv.event.CastEvent;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.event.ServerEvent;
 import com.fongmi.android.tv.impl.Callback;
+import com.fongmi.android.tv.impl.ChainTask;
 import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.player.Source;
 import com.fongmi.android.tv.server.Server;
@@ -61,6 +62,7 @@ import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 import com.google.common.collect.Lists;
+import com.permissionx.guolindev.PermissionX;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -100,6 +102,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         Updater.create().release().start(this);
         mResult = Result.empty();
         Server.get().start();
+        requestPermission();
         setRecyclerView();
         setViewModel();
         setAdapter();
@@ -129,6 +132,10 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
                 VideoActivity.push(this, intent.getData().toString());
             }
         }
+    }
+
+    private void requestPermission() {
+        PermissionX.init(this).permissions(PermissionX.permission.POST_NOTIFICATIONS).request((allGranted, grantedList, deniedList) -> PermissionX.init(this).permissions(PermissionX.permission.POST_NOTIFICATIONS).requestManageExternalStoragePermissionNow(new ChainTask()));
     }
 
     private void setRecyclerView() {
