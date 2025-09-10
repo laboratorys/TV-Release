@@ -31,10 +31,9 @@ public class Page {
     }
 
     @Override
-    public boolean equals(@Nullable Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Page)) return false;
-        Page it = (Page) obj;
+        if (!(obj instanceof Page it)) return false;
         return getVodId().equals(it.getVodId()) && getPosition() == it.getPosition();
     }
 }

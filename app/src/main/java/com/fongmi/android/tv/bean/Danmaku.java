@@ -55,10 +55,9 @@ public class Danmaku {
     }
 
     @Override
-    public boolean equals(@Nullable Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Danmaku)) return false;
-        Danmaku it = (Danmaku) obj;
+        if (!(obj instanceof Danmaku it)) return false;
         return getUrl().equals(it.getUrl());
     }
 }
