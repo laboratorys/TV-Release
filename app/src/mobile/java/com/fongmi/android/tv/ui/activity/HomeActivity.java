@@ -16,6 +16,7 @@ import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
+import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.Updater;
 import com.fongmi.android.tv.api.config.LiveConfig;
 import com.fongmi.android.tv.api.config.VodConfig;
@@ -105,7 +106,9 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     }
 
     private void requestPermission() {
-        PermissionX.init(this).permissions(PermissionX.permission.POST_NOTIFICATIONS).request((allGranted, grantedList, deniedList) -> PermissionX.init(this).permissions(PermissionX.permission.POST_NOTIFICATIONS).requestManageExternalStoragePermissionNow(new ChainTask()));
+        PermissionX.init(this).permissions(PermissionX.permission.POST_NOTIFICATIONS).request((allGranted, grantedList, deniedList) -> {
+            if (Setting.hasFileManager()) PermissionX.init(this).permissions().requestManageExternalStoragePermissionNow(new ChainTask());
+        });
     }
 
     private void initConfig() {
