@@ -72,6 +72,11 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
     }
 
     @Override
+    protected boolean customWall() {
+        return false;
+    }
+
+    @Override
     protected ViewBinding getBinding() {
         return mBinding = ActivityCastBinding.inflate(getLayoutInflater());
     }

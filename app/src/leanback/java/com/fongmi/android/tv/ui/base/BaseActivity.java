@@ -1,12 +1,16 @@
 package com.fongmi.android.tv.ui.base;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.widget.ImageView.ScaleType.CENTER_CROP;
+
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
 
@@ -17,24 +21,20 @@ import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
-import com.fongmi.android.tv.R;
-import com.fongmi.android.tv.Setting;
+import com.fongmi.android.tv.api.config.WallConfig;
 import com.fongmi.android.tv.event.RefreshEvent;
-import com.fongmi.android.tv.utils.FileUtil;
-import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Util;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
-
 import me.jessyan.autosize.AutoSizeCompat;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
     private OnBackInvokedCallback callback;
+    private ImageView wall;
 
     protected abstract ViewBinding getBinding();
 
@@ -52,7 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void setContentView(View view) {
         super.setContentView(view);
-        refreshWall();
+        if (customWall()) addWallView();
     }
 
     protected Activity getActivity() {
@@ -94,15 +94,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    private void refreshWall() {
-        try {
-            if (!customWall()) return;
-            File file = FileUtil.getWall(Setting.getWall());
-            if (file.exists() && file.length() > 0) getWindow().setBackgroundDrawable(Drawable.createFromPath(file.getAbsolutePath()));
-            else getWindow().setBackgroundDrawableResource(ResUtil.getDrawable(file.getName()));
-        } catch (Exception e) {
-            getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_1);
-        }
+    private void addWallView() {
+        wall = new ImageView(this);
+        wall.setScaleType(CENTER_CROP);
+        ((ViewGroup) findViewById(android.R.id.content)).addView(wall, 0, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        WallConfig.refresh(wall);
     }
 
     private Resources hackResources(Resources resources) {
@@ -116,7 +112,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
-        if (event.getType() == RefreshEvent.Type.WALL) refreshWall();
+        if (event.getType() == RefreshEvent.Type.WALL && customWall()) WallConfig.refresh(wall);
     }
 
     @Override

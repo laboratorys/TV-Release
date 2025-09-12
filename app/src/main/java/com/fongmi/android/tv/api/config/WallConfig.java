@@ -1,10 +1,8 @@
 package com.fongmi.android.tv.api.config;
 
-import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
@@ -12,6 +10,7 @@ import com.fongmi.android.tv.bean.Config;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.utils.FileUtil;
+import com.fongmi.android.tv.utils.ImgUtil;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
@@ -19,7 +18,6 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -79,7 +77,7 @@ public class WallConfig {
     private void loadConfig(Callback callback) {
         try {
             File file = write(FileUtil.getWall(0));
-            if (file.exists() && file.length() > 0) refresh(0);
+            if (Path.exists(file)) refresh(0);
             else config(Config.find(VodConfig.get().getWall(), 2));
             App.post(callback::success);
             config.update();
@@ -90,12 +88,9 @@ public class WallConfig {
         }
     }
 
-    private File write(File file) throws Exception {
+    private File write(File file) {
         if (TextUtils.isEmpty(getUrl())) return file;
         Path.write(file, OkHttp.bytes(UrlUtil.convert(getUrl())));
-        Bitmap bitmap = Glide.with(App.get()).asBitmap().load(file).centerCrop().override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).diskCacheStrategy(DiskCacheStrategy.NONE).submit().get();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(file));
-        bitmap.recycle();
         return file;
     }
 
@@ -106,5 +101,15 @@ public class WallConfig {
     public static void refresh(int index) {
         Setting.putWall(index);
         RefreshEvent.wall();
+    }
+
+    public static void refresh(ImageView view) {
+        try {
+            File file = FileUtil.getWall(Setting.getWall());
+            if (Path.exists(file)) ImgUtil.load(file, view);
+            else view.setImageResource(ResUtil.getDrawable(file.getName()));
+        } catch (Exception e) {
+            view.setImageResource(R.drawable.wallpaper_1);
+        }
     }
 }
