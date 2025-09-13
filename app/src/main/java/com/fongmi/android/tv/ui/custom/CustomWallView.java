@@ -61,19 +61,27 @@ public class CustomWallView extends FrameLayout {
     }
 
     private void refresh() {
-        if (Setting.getWall() == 0) load(FileUtil.getWall(Setting.getWall()));
-        else image.setImageResource(ResUtil.getDrawable("wallpaper_" + Setting.getWall()));
+        load(FileUtil.getWall(Setting.getWall()));
     }
 
     private void load(File file) {
-        if (isVideo(file)) loadVideo(file);
+        if (!file.getName().endsWith("0")) loadRes(ResUtil.getDrawable(file.getName()));
+        else if (isVideo(file)) loadVideo(file);
         else loadImage(file);
+    }
+
+    private void loadRes(int resId) {
+        video.setPlayer(null);
+        video.setVisibility(GONE);
+        image.setVisibility(VISIBLE);
+        image.setImageResource(resId);
+        WallConfig.get().getPlayer().clearMediaItems();
     }
 
     private void loadImage(File file) {
         video.setPlayer(null);
-        ImgUtil.load(file, image);
         video.setVisibility(GONE);
+        ImgUtil.load(file, image);
         image.setVisibility(VISIBLE);
         WallConfig.get().getPlayer().clearMediaItems();
     }
