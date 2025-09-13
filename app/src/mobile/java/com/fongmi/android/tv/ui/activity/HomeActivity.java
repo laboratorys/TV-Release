@@ -171,9 +171,8 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         mManager.change(position);
     }
 
-    @Override
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
-        super.onRefreshEvent(event);
         if (event.getType().equals(RefreshEvent.Type.CONFIG)) setNavigation();
     }
 

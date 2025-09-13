@@ -297,7 +297,6 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
-        super.onRefreshEvent(event);
         switch (event.getType()) {
             case CONFIG:
                 setLogo();

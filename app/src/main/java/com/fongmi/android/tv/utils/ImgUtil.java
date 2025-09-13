@@ -23,6 +23,7 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.signature.ObjectKey;
 import com.fongmi.android.tv.App;
+import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.impl.CustomTarget;
 import com.github.catvod.utils.Json;
 import com.google.common.net.HttpHeaders;
@@ -53,11 +54,16 @@ public class ImgUtil {
     }
 
     public static void load(File file, ImageView view) {
-        Glide.with(view).load(file).diskCacheStrategy(DiskCacheStrategy.NONE).signature(new ObjectKey(file.lastModified())).into(new CustomTarget<Drawable>() {
+        Glide.with(view).load(file).diskCacheStrategy(DiskCacheStrategy.NONE).error(R.drawable.wallpaper_1).signature(new ObjectKey(file.lastModified())).into(new CustomTarget<Drawable>() {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 if (resource instanceof GifDrawable) ((GifDrawable) resource).start();
                 view.setImageDrawable(resource);
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                view.setImageDrawable(errorDrawable);
             }
         });
     }
