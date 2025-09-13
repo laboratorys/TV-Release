@@ -1,7 +1,6 @@
 package com.fongmi.android.tv.ui.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -16,9 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Product;
@@ -98,7 +94,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     protected void initView() {
-        mClock = Clock.create(mBinding.clock).format("MM/dd HH:mm:ss");
+        mClock = Clock.create(mBinding.clock).format("HH:mm:ss");
         mBinding.progressLayout.showProgress();
         Updater.create().release().start(this);
         mResult = Result.empty();
@@ -296,23 +292,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void setLogo() {
-        Glide.with(mBinding.logo).load(UrlUtil.convert(VodConfig.get().getConfig().getLogo())).circleCrop().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).listener(getListener()).into(mBinding.logo);
-    }
-
-    private RequestListener<Drawable> getListener() {
-        return new RequestListener<>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Drawable> target, boolean isFirstResource) {
-                mBinding.logo.setVisibility(View.GONE);
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(@NonNull Drawable resource, @NonNull Object model, Target<Drawable> target, @NonNull DataSource dataSource, boolean isFirstResource) {
-                mBinding.logo.setVisibility(View.VISIBLE);
-                return false;
-            }
-        };
+        Glide.with(mBinding.logo).load(UrlUtil.convert(VodConfig.get().getConfig().getLogo())).circleCrop().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_logo).into(mBinding.logo);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

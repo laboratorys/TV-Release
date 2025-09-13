@@ -2,7 +2,6 @@ package com.fongmi.android.tv.ui.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +18,7 @@ import androidx.viewbinding.ViewBinding;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.bean.Class;
@@ -53,7 +48,6 @@ import com.fongmi.android.tv.ui.dialog.ReceiveDialog;
 import com.fongmi.android.tv.ui.dialog.SiteDialog;
 import com.fongmi.android.tv.utils.FileChooser;
 import com.fongmi.android.tv.utils.Notify;
-import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -220,25 +214,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     }
 
     private void setLogo() {
-        Glide.with(mBinding.logo).load(UrlUtil.convert(VodConfig.get().getConfig().getLogo())).circleCrop().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_logo).listener(getListener()).into(mBinding.logo);
-    }
-
-    private RequestListener<Drawable> getListener() {
-        return new RequestListener<>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Drawable> target, boolean isFirstResource) {
-                mBinding.logo.getLayoutParams().width = ResUtil.dp2px(24);
-                mBinding.logo.getLayoutParams().height = ResUtil.dp2px(24);
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(@NonNull Drawable resource, @NonNull Object model, Target<Drawable> target, @NonNull DataSource dataSource, boolean isFirstResource) {
-                mBinding.logo.getLayoutParams().width = ResUtil.dp2px(36);
-                mBinding.logo.getLayoutParams().height = ResUtil.dp2px(36);
-                return false;
-            }
-        };
+        Glide.with(mBinding.logo).load(UrlUtil.convert(VodConfig.get().getConfig().getLogo())).circleCrop().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_logo).into(mBinding.logo);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

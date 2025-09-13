@@ -109,7 +109,7 @@ public class PlaybackService extends Service {
         builder.setOnlyAlertOnce(true);
         builder.setContentText(getArtist());
         builder.setContentTitle(getTitle());
-        builder.setSmallIcon(R.drawable.ic_logo);
+        builder.setSmallIcon(R.drawable.ic_notification);
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         builder.setDeleteIntent(ActionReceiver.getPendingIntent(this, ActionEvent.STOP));
         if (nonNull()) builder.setContentIntent(player.getSession().getController().getSessionActivity());

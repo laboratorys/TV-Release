@@ -26,8 +26,9 @@
 
             <ImageView
                 android:id="@+id/logo"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_logo" />
 
@@ -35,7 +36,6 @@
                 android:id="@+id/site"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
                 android:layout_marginEnd="12dp"
                 android:layout_weight="1"
                 android:ellipsize="marquee"
