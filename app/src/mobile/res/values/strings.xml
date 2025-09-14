@@ -9,6 +9,10 @@
     <string name="nav_live">Live</string>
     <string name="nav_setting">Setting</string>
 
+    <!-- Menu -->
+    <string name="menu_sync">Sync</string>
+    <string name="menu_delete">Delete</string>
+
     <!-- Vod -->
     <string name="vod_home">Home</string>
 
