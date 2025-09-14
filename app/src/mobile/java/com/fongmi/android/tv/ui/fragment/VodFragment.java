@@ -49,6 +49,7 @@ import com.fongmi.android.tv.ui.dialog.ReceiveDialog;
 import com.fongmi.android.tv.ui.dialog.SiteDialog;
 import com.fongmi.android.tv.utils.FileChooser;
 import com.fongmi.android.tv.utils.Notify;
+import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -101,6 +102,12 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
         mBinding.filter.setOnClickListener(this::onFilter);
         mBinding.filter.setOnLongClickListener(this::onLink);
         mBinding.toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
+        mBinding.appBar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            float factor = Math.abs(verticalOffset * 1f / appBarLayout.getTotalScrollRange());
+            int padding = (int) (ResUtil.dp2px(12) * factor);
+            if (mBinding.type.getPaddingTop() == padding) return;
+            mBinding.type.setPadding(mBinding.type.getPaddingStart(), padding, mBinding.type.getPaddingEnd(), mBinding.type.getPaddingBottom());
+        });
         mBinding.pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
