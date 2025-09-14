@@ -7,7 +7,11 @@ import android.media.MediaMetadataRetriever;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.activity.ComponentActivity;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
 
@@ -24,9 +28,10 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 
-public class CustomWallView extends FrameLayout {
+public class CustomWallView extends FrameLayout implements DefaultLifecycleObserver {
 
     private ImageView image;
+    private ExoPlayer player;
     private PlayerView video;
 
     public CustomWallView(@NonNull Context context) {
@@ -35,15 +40,25 @@ public class CustomWallView extends FrameLayout {
     }
 
     private void init(Context context) {
-        image = new ImageView(context);
+        ((ComponentActivity) context).getLifecycle().addObserver(this);
+        player = WallConfig.get().getPlayer();
+        addImageView();
+        addVideoView();
+        refresh();
+    }
+
+    private void addImageView() {
+        image = new ImageView(getContext());
         image.setScaleType(CENTER_CROP);
-        video = new PlayerView(context);
+        addView(image, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+    }
+
+    private void addVideoView() {
+        video = new PlayerView(getContext());
         video.setUseController(false);
         video.setKeepContentOnPlayerReset(true);
         video.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
-        addView(image, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         addView(video, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        refresh();
     }
 
     private boolean isVideo(File file) {
@@ -72,37 +87,41 @@ public class CustomWallView extends FrameLayout {
 
     private void loadRes(int resId) {
         video.setPlayer(null);
+        player.clearMediaItems();
         video.setVisibility(GONE);
-        image.setVisibility(VISIBLE);
         image.setImageResource(resId);
-        WallConfig.get().getPlayer().clearMediaItems();
     }
 
     private void loadImage(File file) {
         video.setPlayer(null);
+        player.clearMediaItems();
         video.setVisibility(GONE);
         ImgUtil.load(file, image);
-        image.setVisibility(VISIBLE);
-        WallConfig.get().getPlayer().clearMediaItems();
     }
 
     private void loadVideo(File file) {
         WallConfig.load(file);
-        image.setVisibility(GONE);
+        video.setPlayer(player);
         video.setVisibility(VISIBLE);
-        image.setImageDrawable(null);
-        video.setPlayer(WallConfig.get().getPlayer());
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    public void onPause(@NonNull LifecycleOwner owner) {
+        video.setPlayer(null);
+    }
+
+    @Override
+    public void onResume(@NonNull LifecycleOwner owner) {
+        if (player.getMediaItemCount() > 0) video.setPlayer(player);
+    }
+
+    @Override
+    public void onCreate(@NonNull LifecycleOwner owner) {
         EventBus.getDefault().register(this);
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+    public void onDestroy(@NonNull LifecycleOwner owner) {
         EventBus.getDefault().unregister(this);
     }
 }
