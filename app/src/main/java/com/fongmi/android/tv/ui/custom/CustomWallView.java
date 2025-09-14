@@ -4,6 +4,7 @@ import static android.widget.ImageView.ScaleType.CENTER_CROP;
 
 import android.content.Context;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -11,12 +12,14 @@ import androidx.activity.ComponentActivity;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.media3.common.MediaItem;
+import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
 
+import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Setting;
-import com.fongmi.android.tv.api.config.WallConfig;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.utils.FileUtil;
 import com.fongmi.android.tv.utils.ImgUtil;
@@ -41,10 +44,17 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
 
     private void init(Context context) {
         ((ComponentActivity) context).getLifecycle().addObserver(this);
-        player = WallConfig.get().getPlayer();
+        createPlayer();
         addImageView();
         addVideoView();
         refresh();
+    }
+
+    private void createPlayer() {
+        player = new ExoPlayer.Builder(App.get()).setLoadControl(new DefaultLoadControl.Builder().setBufferDurationsMs(1000, 1000, 0, 1000).build()).build();
+        player.setRepeatMode(ExoPlayer.REPEAT_MODE_ALL);
+        player.setPlayWhenReady(true);
+        player.setVolume(0);
     }
 
     private void addImageView() {
@@ -100,19 +110,10 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
     }
 
     private void loadVideo(File file) {
-        WallConfig.load(file);
-        video.setPlayer(player);
+        player.setMediaItem(MediaItem.fromUri(Uri.fromFile(file)));
         video.setVisibility(VISIBLE);
-    }
-
-    @Override
-    public void onPause(@NonNull LifecycleOwner owner) {
-        video.setPlayer(null);
-    }
-
-    @Override
-    public void onResume(@NonNull LifecycleOwner owner) {
-        if (player.getMediaItemCount() > 0) video.setPlayer(player);
+        video.setPlayer(player);
+        player.prepare();
     }
 
     @Override
@@ -123,5 +124,8 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
     @Override
     public void onDestroy(@NonNull LifecycleOwner owner) {
         EventBus.getDefault().unregister(this);
+        video.setPlayer(null);
+        player.release();
+        player = null;
     }
 }

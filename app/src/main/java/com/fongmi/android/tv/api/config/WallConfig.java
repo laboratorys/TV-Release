@@ -1,10 +1,6 @@
 package com.fongmi.android.tv.api.config;
 
-import android.net.Uri;
 import android.text.TextUtils;
-
-import androidx.media3.common.MediaItem;
-import androidx.media3.exoplayer.ExoPlayer;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
@@ -18,14 +14,12 @@ import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
 
-import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class WallConfig {
 
     private Config config;
-    private ExoPlayer player;
     private ExecutorService executor;
 
     private boolean sync;
@@ -51,7 +45,6 @@ public class WallConfig {
     }
 
     public WallConfig init() {
-        createPlayer();
         return config(Config.wall());
     }
 
@@ -63,17 +56,12 @@ public class WallConfig {
     }
 
     public WallConfig clear() {
-        getPlayer().clearMediaItems();
         this.config = null;
         return this;
     }
 
     public Config getConfig() {
         return config == null ? Config.wall() : config;
-    }
-
-    public ExoPlayer getPlayer() {
-        return player == null ? createPlayer() : player;
     }
 
     public void load(Callback callback) {
@@ -99,20 +87,6 @@ public class WallConfig {
 
     public boolean needSync(String url) {
         return sync || TextUtils.isEmpty(config.getUrl()) || url.equals(config.getUrl());
-    }
-
-    private ExoPlayer createPlayer() {
-        player = new ExoPlayer.Builder(App.get()).build();
-        player.setRepeatMode(ExoPlayer.REPEAT_MODE_ALL);
-        player.setPlayWhenReady(true);
-        player.setVolume(0);
-        return player;
-    }
-
-    public static void load(File file) {
-        if (get().getPlayer().getMediaItemCount() > 0) return;
-        get().getPlayer().setMediaItem(MediaItem.fromUri(Uri.fromFile(file)));
-        get().getPlayer().prepare();
     }
 
     public static void refresh(int index) {
