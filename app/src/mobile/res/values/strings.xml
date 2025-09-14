@@ -12,6 +12,7 @@
     <!-- Menu -->
     <string name="menu_sync">Sync</string>
     <string name="menu_delete">Delete</string>
+    <string name="menu_search">Search</string>
 
     <!-- Vod -->
     <string name="vod_home">Home</string>

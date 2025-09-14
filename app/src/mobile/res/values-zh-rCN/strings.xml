@@ -12,6 +12,7 @@
     <!-- Menu -->
     <string name="menu_sync">同步</string>
     <string name="menu_delete">删除</string>
+    <string name="menu_search">搜索</string>
 
     <!-- Vod -->
     <string name="vod_home">推荐</string>

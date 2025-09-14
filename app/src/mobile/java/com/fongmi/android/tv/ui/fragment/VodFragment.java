@@ -3,6 +3,7 @@ package com.fongmi.android.tv.ui.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -84,7 +85,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     @Override
     protected void initView() {
         EventBus.getDefault().register(this);
-        mBinding.site.setSelected(true);
+        mBinding.title.setSelected(true);
         setRecyclerView();
         setViewModel();
         showProgress();
@@ -94,14 +95,12 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     @Override
     protected void initEvent() {
         mBinding.top.setOnClickListener(this::onTop);
-        mBinding.site.setOnClickListener(this::onSite);
-        mBinding.link.setOnClickListener(this::onLink);
         mBinding.logo.setOnClickListener(this::onLogo);
-        mBinding.keep.setOnClickListener(this::onKeep);
+        mBinding.link.setOnClickListener(this::onLink);
+        mBinding.title.setOnClickListener(this::onSite);
         mBinding.filter.setOnClickListener(this::onFilter);
-        mBinding.search.setOnClickListener(this::onSearch);
-        mBinding.history.setOnClickListener(this::onHistory);
         mBinding.filter.setOnLongClickListener(this::onLink);
+        mBinding.toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
         mBinding.pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -175,20 +174,15 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
         SiteDialog.create(this).change().show();
     }
 
-    private void onKeep(View view) {
-        KeepActivity.start(getActivity());
-    }
-
     private void onFilter(View view) {
         if (mAdapter.getItemCount() > 0) FilterDialog.create().filter(mAdapter.get(mBinding.pager.getCurrentItem()).getFilters()).show(this);
     }
 
-    private void onSearch(View view) {
-        CollectActivity.start(getActivity());
-    }
-
-    private void onHistory(View view) {
-        HistoryActivity.start(getActivity());
+    private boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.keep) KeepActivity.start(getActivity());
+        else if (item.getItemId() == R.id.search) CollectActivity.start(getActivity());
+        else if (item.getItemId() == R.id.history) HistoryActivity.start(getActivity());
+        return true;
     }
 
     private void showProgress() {
@@ -206,7 +200,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
         mViewModel.homeContent();
         String title = getSite().getName();
         mBinding.pager.setAdapter(new PageAdapter(getChildFragmentManager()));
-        mBinding.site.setText(title.isEmpty() ? getString(R.string.app_name) : title);
+        mBinding.title.setText(title.isEmpty() ? getString(R.string.app_name) : title);
     }
 
     public Result getResult() {
