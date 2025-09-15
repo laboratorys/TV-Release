@@ -84,7 +84,6 @@ public class KeepAdapter extends RecyclerView.Adapter<KeepAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Keep item = mItems.get(position);
-        setFocusListener(holder.binding);
         setClickListener(holder.itemView, item);
         holder.binding.name.setText(item.getVodName());
         holder.binding.remark.setVisibility(View.GONE);
@@ -92,10 +91,6 @@ public class KeepAdapter extends RecyclerView.Adapter<KeepAdapter.ViewHolder> {
         holder.binding.site.setText(item.getSiteName());
         holder.binding.delete.setVisibility(!delete ? View.GONE : View.VISIBLE);
         ImgUtil.load(item.getVodName(), item.getVodPic(), holder.binding.image);
-    }
-
-    private void setFocusListener(AdapterVodBinding binding) {
-        binding.getRoot().setOnFocusChangeListener((v, hasFocus) -> binding.name.setSelected(hasFocus));
     }
 
     private void setClickListener(View root, Keep item) {
@@ -113,6 +108,22 @@ public class KeepAdapter extends RecyclerView.Adapter<KeepAdapter.ViewHolder> {
         public ViewHolder(@NonNull AdapterVodBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            setFocusListener();
+        }
+
+        private void setFocusListener() {
+            itemView.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    v.animate().scaleX(1.1f).scaleY(1.1f).setDuration(150).start();
+                    v.setTranslationZ(10f);
+                    v.setSelected(true);
+                    v.bringToFront();
+                } else {
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(150).start();
+                    v.setTranslationZ(0f);
+                    v.setSelected(false);
+                }
+            });
         }
     }
 }
