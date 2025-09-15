@@ -1,7 +1,6 @@
 package com.fongmi.android.tv.ui.dialog;
 
 import android.view.LayoutInflater;
-import android.view.WindowManager;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -48,7 +47,6 @@ public class EpisodeListDialog implements EpisodeAdapter.OnClickListener {
         dialog = new SideSheetDialog(activity);
         dialog.setContentView(binding.getRoot());
         dialog.getBehavior().setDraggable(false);
-        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         dialog.show();
     }
 
