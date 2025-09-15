@@ -4,7 +4,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.databinding.ActivityFileBinding;
@@ -31,7 +35,15 @@ public class FileActivity extends BaseActivity implements FileAdapter.OnClickLis
     }
 
     @Override
+    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+        super.setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("");
+    }
+
+    @Override
     protected void initView(Bundle savedInstanceState) {
+        setSupportActionBar(mBinding.toolbar);
         setRecyclerView();
         checkPermission();
     }
@@ -48,6 +60,7 @@ public class FileActivity extends BaseActivity implements FileAdapter.OnClickLis
     private void update(File dir) {
         mBinding.recycler.scrollToPosition(0);
         mAdapter.addAll(Path.list(this.dir = dir));
+        mBinding.title.setText(dir.getAbsolutePath());
         mBinding.progressLayout.showContent(true, mAdapter.getItemCount());
     }
 
@@ -59,6 +72,12 @@ public class FileActivity extends BaseActivity implements FileAdapter.OnClickLis
             setResult(RESULT_OK, new Intent().setData(Uri.fromFile(file)));
             finish();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) onBackInvoked();
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
