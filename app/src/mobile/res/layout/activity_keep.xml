@@ -27,7 +27,8 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
+    <com.fongmi.android.tv.ui.custom.ProgressLayout
+        android:id="@+id/progressLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -43,5 +44,5 @@
             android:paddingBottom="8dp"
             tools:listitem="@layout/adapter_vod" />
 
-    </FrameLayout>
+    </com.fongmi.android.tv.ui.custom.ProgressLayout>
 </LinearLayout>
