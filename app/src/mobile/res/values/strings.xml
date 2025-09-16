@@ -13,6 +13,9 @@
     <string name="menu_sync">Sync</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_search">Search</string>
+    <string name="menu_site">Site</string>
+    <string name="menu_view">Switch</string>
+    <string name="menu_reset">Reset</string>
 
     <!-- Vod -->
     <string name="vod_home">Home</string>

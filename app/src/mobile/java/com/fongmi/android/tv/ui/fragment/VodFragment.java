@@ -36,9 +36,9 @@ import com.fongmi.android.tv.impl.ConfigCallback;
 import com.fongmi.android.tv.impl.FilterCallback;
 import com.fongmi.android.tv.impl.SiteCallback;
 import com.fongmi.android.tv.model.SiteViewModel;
-import com.fongmi.android.tv.ui.activity.CollectActivity;
 import com.fongmi.android.tv.ui.activity.HistoryActivity;
 import com.fongmi.android.tv.ui.activity.KeepActivity;
+import com.fongmi.android.tv.ui.activity.SearchActivity;
 import com.fongmi.android.tv.ui.activity.VideoActivity;
 import com.fongmi.android.tv.ui.adapter.TypeAdapter;
 import com.fongmi.android.tv.ui.base.BaseFragment;
@@ -187,7 +187,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
 
     private boolean onMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.keep) KeepActivity.start(getActivity());
-        else if (item.getItemId() == R.id.search) CollectActivity.start(getActivity());
+        else if (item.getItemId() == R.id.search) SearchActivity.start(getActivity());
         else if (item.getItemId() == R.id.history) HistoryActivity.start(getActivity());
         return true;
     }

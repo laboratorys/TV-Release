@@ -67,7 +67,7 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.CollectActivity"
+            android:name=".ui.activity.SearchActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|uiMode"
             android:screenOrientation="fullUser"
             android:windowSoftInputMode="adjustPan" />

@@ -22,7 +22,7 @@ import com.fongmi.android.tv.bean.Value;
 import com.fongmi.android.tv.bean.Vod;
 import com.fongmi.android.tv.databinding.FragmentTypeBinding;
 import com.fongmi.android.tv.model.SiteViewModel;
-import com.fongmi.android.tv.ui.activity.CollectActivity;
+import com.fongmi.android.tv.ui.activity.SearchActivity;
 import com.fongmi.android.tv.ui.activity.VideoActivity;
 import com.fongmi.android.tv.ui.adapter.VodAdapter;
 import com.fongmi.android.tv.ui.base.BaseFragment;
@@ -229,14 +229,14 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
             mPages.add(Page.get(item, findPosition()));
             getVideo(item.getVodId(), "1");
         } else {
-            if (getSite().isIndex()) CollectActivity.start(getActivity(), item.getVodName());
+            if (getSite().isIndex()) SearchActivity.start(getActivity(), item.getVodName());
             else VideoActivity.start(getActivity(), getKey(), item.getVodId(), item.getVodName(), item.getVodPic(), isFolder() ? item.getVodName() : null);
         }
     }
 
     @Override
     public boolean onLongClick(Vod item) {
-        CollectActivity.start(getActivity(), item.getVodName());
+        SearchActivity.start(getActivity(), item.getVodName());
         return true;
     }
 
