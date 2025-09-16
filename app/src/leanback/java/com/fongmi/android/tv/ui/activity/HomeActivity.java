@@ -1,11 +1,13 @@
 package com.fongmi.android.tv.ui.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ItemBridgeAdapter;
 import androidx.leanback.widget.ListRow;
@@ -90,6 +92,12 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         checkAction(intent);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.installSplashScreen(this);
+        super.onCreate(savedInstanceState);
     }
 
     @Override

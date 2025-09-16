@@ -97,6 +97,7 @@ dependencies {
     implementation project(':chaquo')
     implementation project(':quickjs')
     implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.core:core-splashscreen:1.0.1'
     implementation 'androidx.media:media:1.7.1'
     implementation 'androidx.room:room-runtime:2.8.0'
     implementation 'cat.ereza:customactivityoncrash:2.4.0'

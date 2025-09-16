@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.fragment.app.Fragment;
 import androidx.viewbinding.ViewBinding;
 
@@ -62,6 +63,12 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         checkAction(intent);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.installSplashScreen(this);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
