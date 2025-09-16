@@ -50,6 +50,7 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
     private FragmentSearchBinding mBinding;
     private RecordAdapter mRecordAdapter;
     private WordAdapter mWordAdapter;
+    private boolean search;
 
     public static SearchFragment newInstance(String keyword) {
         Bundle args = new Bundle();
@@ -116,6 +117,7 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
     private void checkKeyword() {
         if (TextUtils.isEmpty(getKeyword())) Util.showKeyboard(mBinding.keyword);
         else setKeyword(getKeyword());
+        if (!search) search();
     }
 
     private void setKeyword(String text) {
@@ -124,6 +126,7 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
     }
 
     private void search() {
+        search = true;
         if (empty()) return;
         Util.hideKeyboard(mBinding.keyword);
         String keyword = mBinding.keyword.getText().toString().trim();
