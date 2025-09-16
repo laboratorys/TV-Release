@@ -59,13 +59,12 @@ public class EpisodeListDialog implements EpisodeAdapter.OnClickListener {
     }
 
     private void setWidth() {
-        int width = 0;
-        int padding = ResUtil.dp2px(56);
+        int minWidth = ResUtil.dp2px(200);
         int maxWidth = ResUtil.getScreenWidth() / 3;
-        for (Episode item : episodes) width = Math.max(width, ResUtil.getTextWidth(item.getName(), 14));
+        for (Episode item : episodes) minWidth = Math.max(minWidth, ResUtil.getTextWidth(item.getName(), 14));
         FrameLayout sheet = dialog.findViewById(com.google.android.material.R.id.m3_side_sheet);
         ViewGroup.LayoutParams params = sheet.getLayoutParams();
-        params.width = Math.min(width + padding, maxWidth);
+        params.width = Math.min(minWidth, maxWidth);
         sheet.setLayoutParams(params);
     }
 
