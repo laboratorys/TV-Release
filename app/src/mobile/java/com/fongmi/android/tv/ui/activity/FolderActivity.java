@@ -55,7 +55,7 @@ public class FolderActivity extends BaseActivity {
         setSupportActionBar(mBinding.toolbar);
         Class type = getResult().getTypes().get(0);
         setTitle(type.getTypeName());
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, TypeFragment.newInstance(getKey(), type.getTypeId(), type.getStyle(), new HashMap<>(), "1".equals(type.getTypeFlag())), "0").commitAllowingStateLoss();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, TypeFragment.newInstance(getKey(), type.getTypeId(), type.getStyle(), new HashMap<>(), "1".equals(type.getTypeFlag())), "0").commit();
     }
 
     private TypeFragment getFragment() {

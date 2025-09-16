@@ -127,7 +127,7 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
         if (empty()) return;
         Util.hideKeyboard(mBinding.keyword);
         String keyword = mBinding.keyword.getText().toString().trim();
-        getActivity().getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.container, CollectFragment.newInstance(keyword)).addToBackStack(null).commitAllowingStateLoss();
+        getActivity().getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.container, CollectFragment.newInstance(keyword)).addToBackStack(null).commit();
         App.post(() -> mRecordAdapter.add(keyword), 250);
     }
 

@@ -34,7 +34,7 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, SearchFragment.newInstance(getKeyword())).commitAllowingStateLoss();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, SearchFragment.newInstance(getKeyword())).commit();
     }
 
     @Override
