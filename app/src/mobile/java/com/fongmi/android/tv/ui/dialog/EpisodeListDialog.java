@@ -1,6 +1,9 @@
 package com.fongmi.android.tv.ui.dialog;
 
 import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -10,6 +13,8 @@ import com.fongmi.android.tv.databinding.DialogEpisodeListBinding;
 import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.ui.adapter.EpisodeAdapter;
 import com.fongmi.android.tv.ui.base.ViewType;
+import com.fongmi.android.tv.utils.ResUtil;
+import com.fongmi.android.tv.utils.Util;
 import com.google.android.material.sidesheet.SideSheetDialog;
 
 import java.util.List;
@@ -36,10 +41,9 @@ public class EpisodeListDialog implements EpisodeAdapter.OnClickListener {
         return this;
     }
 
-    public SideSheetDialog show() {
+    public void show() {
         initDialog();
         initView();
-        return dialog;
     }
 
     private void initDialog() {
@@ -47,7 +51,22 @@ public class EpisodeListDialog implements EpisodeAdapter.OnClickListener {
         dialog = new SideSheetDialog(activity);
         dialog.setContentView(binding.getRoot());
         dialog.getBehavior().setDraggable(false);
+        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Util.hideSystemUI(dialog.getWindow());
+        dialog.getWindow().setDimAmount(0);
         dialog.show();
+        setWidth();
+    }
+
+    private void setWidth() {
+        int width = 0;
+        int padding = ResUtil.dp2px(56);
+        int maxWidth = ResUtil.getScreenWidth() / 3;
+        for (Episode item : episodes) width = Math.max(width, ResUtil.getTextWidth(item.getName(), 14));
+        FrameLayout sheet = dialog.findViewById(com.google.android.material.R.id.m3_side_sheet);
+        ViewGroup.LayoutParams params = sheet.getLayoutParams();
+        params.width = Math.min(width + padding, maxWidth);
+        sheet.setLayoutParams(params);
     }
 
     private void initView() {

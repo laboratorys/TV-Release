@@ -3,7 +3,6 @@ package com.fongmi.android.tv.ui.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -127,7 +126,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private SiteViewModel mViewModel;
     private FlagAdapter mFlagAdapter;
     private CustomKeyDown mKeyDown;
-    private List<Dialog> mDialogs;
     private List<String> mBroken;
     private History mHistory;
     private Players mPlayers;
@@ -286,7 +284,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mObservePlayer = this::setPlayer;
         mObserveSearch = this::setSearch;
         mPlayers = Players.create(this);
-        mDialogs = new ArrayList<>();
         mBroken = new ArrayList<>();
         mClock = Clock.create();
         mR1 = this::hideControl;
@@ -835,7 +832,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void onEpisodes() {
-        mDialogs.add(EpisodeListDialog.create(this).episodes(mEpisodeAdapter.getItems()).show());
+        EpisodeListDialog.create(this).episodes(mEpisodeAdapter.getItems()).show();
     }
 
     private void onChoose() {
@@ -963,9 +960,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void hideSheet() {
-        for (Dialog dialog : mDialogs) dialog.dismiss();
         for (Fragment fragment : getSupportFragmentManager().getFragments()) if (fragment instanceof BottomSheetDialogFragment) ((BottomSheetDialogFragment) fragment).dismiss();
-        mDialogs.clear();
     }
 
     private void setTraffic() {
