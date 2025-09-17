@@ -213,4 +213,10 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
         if (menuItem.getItemId() == R.id.action_site) onSite();
         return true;
     }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (hidden) requireActivity().removeMenuProvider(this);
+        else initMenu();
+    }
 }
