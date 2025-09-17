@@ -677,7 +677,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         Notify.show(keep != null ? R.string.keep_del : R.string.keep_add);
         if (keep != null) keep.delete();
         else createKeep();
-        RefreshEvent.keep();
         checkKeepImg();
     }
 
@@ -1429,6 +1428,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         stopSearch();
         mClock.release();
         mPlayers.release();
+        RefreshEvent.keep();
         RefreshEvent.history();
         PlaybackService.stop();
         App.removeCallbacks(mR1, mR2, mR3, mR4);
