@@ -312,7 +312,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
         @Override
         public Fragment getItem(int position) {
             Class type = mAdapter.get(position);
-            return TypeFragment.newInstance(getSite().getKey(), type.getTypeId(), type.getStyle(), type.getExtend(true), "1".equals(type.getTypeFlag()));
+            return TypeFragment.newInstance(getSite().getKey(), type.getTypeId(), type.getStyle(), type.getExtend(true), "1".equals(type.getTypeFlag()), 4);
         }
 
         @Override

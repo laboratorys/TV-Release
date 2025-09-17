@@ -28,6 +28,7 @@ import com.fongmi.android.tv.ui.adapter.VodAdapter;
 import com.fongmi.android.tv.ui.base.BaseFragment;
 import com.fongmi.android.tv.ui.custom.CustomScroller;
 import com.fongmi.android.tv.utils.Notify;
+import com.fongmi.android.tv.utils.ResUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,8 +45,9 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     private List<Page> mPages;
     private Page mPage;
 
-    public static TypeFragment newInstance(String key, String typeId, Style style, HashMap<String, String> extend, boolean folder) {
+    public static TypeFragment newInstance(String key, String typeId, Style style, HashMap<String, String> extend, boolean folder, int y) {
         Bundle args = new Bundle();
+        args.putInt("y", y);
         args.putString("key", key);
         args.putString("typeId", typeId);
         args.putBoolean("folder", folder);
@@ -71,6 +73,10 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     private HashMap<String, String> getExtend() {
         Serializable extend = getArguments().getSerializable("extend");
         return extend == null ? new HashMap<>() : (HashMap<String, String>) extend;
+    }
+
+    private int getY() {
+        return getArguments().getInt("y");
     }
 
     private boolean isFolder() {
@@ -120,6 +126,7 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     }
 
     private void setRecyclerView() {
+        mBinding.recycler.setTranslationY(-ResUtil.dp2px(getY()));
         mBinding.recycler.setHasFixedSize(true);
         setStyle(getStyle());
     }
