@@ -768,9 +768,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
                 setMetadata();
                 setTrackVisible();
                 break;
-            case PlayerEvent.SIZE:
-                mBinding.control.size.setText(mPlayers.getSizeText());
-                break;
         }
     }
 
