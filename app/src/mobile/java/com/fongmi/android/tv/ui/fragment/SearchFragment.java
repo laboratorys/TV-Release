@@ -1,5 +1,7 @@
 package com.fongmi.android.tv.ui.fragment;
 
+import static androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -15,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewbinding.ViewBinding;
@@ -50,7 +54,6 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
     private FragmentSearchBinding mBinding;
     private RecordAdapter mRecordAdapter;
     private WordAdapter mWordAdapter;
-    private boolean search;
 
     public static SearchFragment newInstance(String keyword) {
         Bundle args = new Bundle();
@@ -75,7 +78,7 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
 
     @Override
     protected void initMenu() {
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        AppCompatActivity activity = (AppCompatActivity) requireActivity();
         activity.setSupportActionBar(mBinding.toolbar);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         activity.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
@@ -87,6 +90,7 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
         setRecyclerView();
         checkKeyword();
         getHot();
+        search();
     }
 
     private void setRecyclerView() {
@@ -107,7 +111,7 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
         mBinding.keyword.addTextChangedListener(new CustomTextListener() {
             @Override
             public void afterTextChanged(Editable s) {
-                getActivity().invalidateOptionsMenu();
+                requireActivity().invalidateOptionsMenu();
                 if (s.toString().isEmpty()) getHot();
                 else getSuggest(s.toString());
             }
@@ -117,7 +121,6 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
     private void checkKeyword() {
         if (TextUtils.isEmpty(getKeyword())) Util.showKeyboard(mBinding.keyword);
         else setKeyword(getKeyword());
-        if (!search) search();
     }
 
     private void setKeyword(String text) {
@@ -126,12 +129,23 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
     }
 
     private void search() {
-        search = true;
         if (empty()) return;
         Util.hideKeyboard(mBinding.keyword);
         String keyword = mBinding.keyword.getText().toString().trim();
-        getActivity().getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.container, CollectFragment.newInstance(keyword)).addToBackStack(null).commit();
         App.post(() -> mRecordAdapter.add(keyword), 250);
+        collect(keyword);
+    }
+
+    private void collect(String keyword) {
+        FragmentManager fm = requireActivity().getSupportFragmentManager();
+        Fragment search = fm.findFragmentByTag(getClass().getSimpleName());
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.add(R.id.container, CollectFragment.newInstance(keyword));
+        ft.setTransition(TRANSIT_FRAGMENT_OPEN);
+        if (search != null) ft.hide(search);
+        ft.setReorderingAllowed(true);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     private void getHot() {
@@ -161,7 +175,7 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
 
     private void onReset() {
         mBinding.keyword.setText("");
-        getActivity().invalidateOptionsMenu();
+        requireActivity().invalidateOptionsMenu();
     }
 
     private void onSite() {
