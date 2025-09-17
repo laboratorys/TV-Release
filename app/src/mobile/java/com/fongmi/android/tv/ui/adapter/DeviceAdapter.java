@@ -81,7 +81,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         return item.isMobile() ? R.drawable.ic_cast_mobile : R.drawable.ic_cast_tv;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final AdapterDeviceBinding binding;
 

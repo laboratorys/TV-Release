@@ -15,6 +15,7 @@ import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.db.AppDatabase;
 import com.fongmi.android.tv.event.RefreshEvent;
+import com.fongmi.android.tv.ui.adapter.diff.Diffable;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Entity
-public class History {
+public class History implements Diffable<History> {
 
     @NonNull
     @PrimaryKey
@@ -357,5 +358,15 @@ public class History {
     @Override
     public String toString() {
         return App.gson().toJson(this);
+    }
+
+    @Override
+    public boolean isSameItem(History other) {
+        return getKey().equals(other.getKey());
+    }
+
+    @Override
+    public boolean isSameContent(History other) {
+        return equals(other);
     }
 }
