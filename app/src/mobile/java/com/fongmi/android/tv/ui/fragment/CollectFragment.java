@@ -174,13 +174,13 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     @Override
-    public void onPrepareMenu(@NonNull Menu menu) {
-        menu.findItem(R.id.action_view).setIcon(Setting.getViewType(ViewType.GRID) == ViewType.GRID ? R.drawable.ic_action_list : R.drawable.ic_action_grid);
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.menu_collect, menu);
     }
 
     @Override
-    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.menu_collect, menu);
+    public void onPrepareMenu(@NonNull Menu menu) {
+        menu.findItem(R.id.action_view).setIcon(Setting.getViewType(ViewType.GRID) == ViewType.GRID ? R.drawable.ic_action_list : R.drawable.ic_action_grid);
     }
 
     @Override

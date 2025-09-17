@@ -197,13 +197,13 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
     }
 
     @Override
-    public void onPrepareMenu(@NonNull Menu menu) {
-        menu.findItem(R.id.action_reset).setVisible(!empty());
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.menu_search, menu);
     }
 
     @Override
-    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.menu_search, menu);
+    public void onPrepareMenu(@NonNull Menu menu) {
+        menu.findItem(R.id.action_reset).setVisible(!empty());
     }
 
     @Override
