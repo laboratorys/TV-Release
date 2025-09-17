@@ -102,7 +102,7 @@ public class EpgData {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof EpgData it)) return false;
         return getTitle().equals(it.getTitle()) && getEnd().equals(it.getEnd()) && getStart().equals(it.getStart());

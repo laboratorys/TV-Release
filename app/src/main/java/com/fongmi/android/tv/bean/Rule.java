@@ -65,7 +65,7 @@ public class Rule {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Rule it)) return false;
         return getName().equals(it.getName());

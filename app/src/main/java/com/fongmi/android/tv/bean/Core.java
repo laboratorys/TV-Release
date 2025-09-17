@@ -2,6 +2,8 @@ package com.fongmi.android.tv.bean;
 
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.fongmi.hook.Hook;
@@ -106,7 +108,7 @@ public class Core {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Core it)) return false;
         return getSign().equals(it.getSign());

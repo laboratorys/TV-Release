@@ -3,6 +3,7 @@ package com.fongmi.android.tv.bean;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.Index;
@@ -163,7 +164,7 @@ public class Device {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Device it)) return false;
         return getUuid().equals(it.getUuid()) && getName().equals(it.getName());

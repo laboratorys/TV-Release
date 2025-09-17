@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.media3.common.C;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -343,6 +344,13 @@ public class History {
             startSync(targets);
             RefreshEvent.history();
         });
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof History it)) return false;
+        return getKey().equals(it.getKey()) && getVodName().equals(it.getVodName()) && getVodPic().equals(it.getVodPic()) && getCreateTime() == it.getCreateTime();
     }
 
     @NonNull

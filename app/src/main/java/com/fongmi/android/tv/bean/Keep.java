@@ -1,6 +1,7 @@
 package com.fongmi.android.tv.bean;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -167,5 +168,12 @@ public class Keep {
             startSync(configs, targets);
             RefreshEvent.keep();
         });
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Keep it)) return false;
+        return getKey().equals(it.getKey()) && getVodName().equals(it.getVodName()) && getVodPic().equals(it.getVodPic()) && getCreateTime() == it.getCreateTime();
     }
 }
