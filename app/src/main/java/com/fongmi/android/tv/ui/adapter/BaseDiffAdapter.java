@@ -28,8 +28,8 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
         return differ.getCurrentList();
     }
 
-    public void setItems(List<T> list) {
-        differ.submitList(list);
+    public void setItems(List<T> items) {
+        differ.submitList(items);
     }
 
     public void addItem(T item) {
@@ -41,6 +41,12 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
     public void addItems(List<T> items) {
         List<T> current = new ArrayList<>(getItems());
         current.addAll(items);
+        setItems(current);
+    }
+
+    public void sort(java.util.Comparator<T> comparator) {
+        List<T> current = new ArrayList<>(getItems());
+        current.sort(comparator);
         setItems(current);
     }
 
