@@ -1,6 +1,7 @@
 package com.fongmi.android.tv.ui.activity;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -1159,6 +1161,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 mClock.setCallback(this);
                 break;
             case PlayerEvent.SIZE:
+                checkHeight();
                 checkOrientation();
                 break;
         }
@@ -1176,6 +1179,27 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
             setRotate(false);
         }
+    }
+
+    private void checkHeight() {
+        if (isFullscreen() || isLand() || mPlayers.getVideoHeight() == 0) return;
+        mBinding.video.post(this::changeHeight);
+    }
+
+    private void changeHeight() {
+        int minHeight = ResUtil.getScreenHeight() / 4;
+        int maxHeight = ResUtil.getScreenHeight() * 2 / 3;
+        int parentWidth = ((View) mBinding.video.getParent()).getWidth();
+        int calculated = (int) (parentWidth * ((float) mPlayers.getVideoHeight() / mPlayers.getVideoWidth()));
+        int finalHeight = Math.max(minHeight, Math.min(maxHeight, calculated));
+        ValueAnimator animator = ValueAnimator.ofInt(mBinding.video.getHeight(), finalHeight).setDuration(300);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.addUpdateListener(animation -> {
+            ViewGroup.LayoutParams params = mBinding.video.getLayoutParams();
+            params.height = (int) animation.getAnimatedValue();
+            mBinding.video.setLayoutParams(params);
+        });
+        animator.start();
     }
 
     private void checkEnded(boolean notify) {
