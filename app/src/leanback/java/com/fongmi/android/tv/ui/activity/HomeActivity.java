@@ -43,6 +43,7 @@ import com.fongmi.android.tv.impl.ChainTask;
 import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.player.Source;
 import com.fongmi.android.tv.server.Server;
+import com.fongmi.android.tv.ui.adapter.diff.HistoryDiffCallback;
 import com.fongmi.android.tv.ui.base.BaseActivity;
 import com.fongmi.android.tv.ui.custom.CustomRowPresenter;
 import com.fongmi.android.tv.ui.custom.CustomSelector;
@@ -266,7 +267,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         if (renew) mHistoryAdapter = new ArrayObjectAdapter(mPresenter = new HistoryPresenter(this));
         if ((items.isEmpty() && exist) || (renew && exist)) mAdapter.removeItems(historyIndex, 1);
         if ((!items.isEmpty() && !exist) || (renew && exist)) mAdapter.add(historyIndex, new ListRow(mHistoryAdapter));
-        mHistoryAdapter.setItems(items, null);
+        mHistoryAdapter.setItems(items, new HistoryDiffCallback());
     }
 
     private void setHistoryDelete(boolean delete) {

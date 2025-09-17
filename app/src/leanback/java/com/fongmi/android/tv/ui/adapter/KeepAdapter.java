@@ -5,11 +5,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fongmi.android.tv.Product;
 import com.fongmi.android.tv.bean.Keep;
 import com.fongmi.android.tv.databinding.AdapterVodBinding;
+import com.fongmi.android.tv.ui.adapter.diff.KeepDiffCallback;
 import com.fongmi.android.tv.utils.ImgUtil;
 import com.fongmi.android.tv.utils.ResUtil;
 
@@ -18,14 +20,14 @@ import java.util.List;
 
 public class KeepAdapter extends RecyclerView.Adapter<KeepAdapter.ViewHolder> {
 
-    private final OnClickListener mListener;
-    private final List<Keep> mItems;
+    private final AsyncListDiffer<Keep> differ;
+    private final OnClickListener listener;
     private int width, height;
     private boolean delete;
 
     public KeepAdapter(OnClickListener listener) {
-        this.mItems = new ArrayList<>();
-        this.mListener = listener;
+        this.differ = new AsyncListDiffer<>(this, new KeepDiffCallback().asItemCallback());
+        this.listener = listener;
         setLayoutSize();
     }
 
@@ -46,16 +48,12 @@ public class KeepAdapter extends RecyclerView.Adapter<KeepAdapter.ViewHolder> {
     }
 
     public void addAll(List<Keep> items) {
-        mItems.clear();
-        mItems.addAll(items);
-        notifyDataSetChanged();
+        differ.submitList(items);
     }
 
     public void delete(Keep item) {
-        int index = mItems.indexOf(item);
-        if (index == -1) return;
-        mItems.remove(index);
-        notifyItemRemoved(index);
+        List<Keep> current = new ArrayList<>(differ.getCurrentList());
+        if (current.remove(item)) differ.submitList(current);
     }
 
     public boolean isDelete() {
@@ -64,12 +62,12 @@ public class KeepAdapter extends RecyclerView.Adapter<KeepAdapter.ViewHolder> {
 
     public void setDelete(boolean delete) {
         this.delete = delete;
-        notifyItemRangeChanged(0, mItems.size());
+        notifyItemRangeChanged(0, getItemCount());
     }
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return differ.getCurrentList().size();
     }
 
     @NonNull
@@ -83,7 +81,7 @@ public class KeepAdapter extends RecyclerView.Adapter<KeepAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Keep item = mItems.get(position);
+        Keep item = differ.getCurrentList().get(position);
         setClickListener(holder.itemView, item);
         holder.binding.name.setText(item.getVodName());
         holder.binding.remark.setVisibility(View.GONE);
@@ -94,10 +92,10 @@ public class KeepAdapter extends RecyclerView.Adapter<KeepAdapter.ViewHolder> {
     }
 
     private void setClickListener(View root, Keep item) {
-        root.setOnLongClickListener(view -> mListener.onLongClick());
+        root.setOnLongClickListener(view -> listener.onLongClick());
         root.setOnClickListener(view -> {
-            if (isDelete()) mListener.onItemDelete(item);
-            else mListener.onItemClick(item);
+            if (isDelete()) listener.onItemDelete(item);
+            else listener.onItemClick(item);
         });
     }
 
