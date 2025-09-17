@@ -74,7 +74,7 @@ public class LinkDialog {
 
     private void onPositive(DialogInterface dialog, int which) {
         String text = binding.text.getText().toString().trim();
-        if (!text.isEmpty()) VideoActivity.start(fragment.getActivity(), text);
+        if (!text.isEmpty()) VideoActivity.start(fragment.requireActivity(), text);
         dialog.dismiss();
     }
 

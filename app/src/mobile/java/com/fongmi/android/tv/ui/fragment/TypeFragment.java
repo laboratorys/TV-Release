@@ -125,8 +125,8 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     }
 
     private void setStyle(Style style) {
-        mBinding.recycler.setAdapter(mAdapter = new VodAdapter(this, style, Product.getSpec(getActivity(), style)));
-        mBinding.recycler.setLayoutManager(style.isList() ? new LinearLayoutManager(getActivity()) : new GridLayoutManager(getContext(), Product.getColumn(getActivity(), style)));
+        mBinding.recycler.setAdapter(mAdapter = new VodAdapter(this, style, Product.getSpec(requireActivity(), style)));
+        mBinding.recycler.setLayoutManager(style.isList() ? new LinearLayoutManager(requireActivity()) : new GridLayoutManager(getContext(), Product.getColumn(requireActivity(), style)));
     }
 
     private void setViewModel() {
@@ -229,14 +229,14 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
             mPages.add(Page.get(item, findPosition()));
             getVideo(item.getVodId(), "1");
         } else {
-            if (getSite().isIndex()) SearchActivity.start(getActivity(), item.getVodName());
-            else VideoActivity.start(getActivity(), getKey(), item.getVodId(), item.getVodName(), item.getVodPic(), isFolder() ? item.getVodName() : null);
+            if (getSite().isIndex()) SearchActivity.start(requireActivity(), item.getVodName());
+            else VideoActivity.start(requireActivity(), getKey(), item.getVodId(), item.getVodName(), item.getVodPic(), isFolder() ? item.getVodName() : null);
         }
     }
 
     @Override
     public boolean onLongClick(Vod item) {
-        SearchActivity.start(getActivity(), item.getVodName());
+        SearchActivity.start(requireActivity(), item.getVodName());
         return true;
     }
 

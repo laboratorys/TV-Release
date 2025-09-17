@@ -302,8 +302,8 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
     @Override
     public void setDoh(Doh doh) {
         Source.get().stop();
+        Notify.progress(this);
         OkHttp.get().setDoh(doh);
-        Notify.progress(getActivity());
         Setting.putDoh(doh.toString());
         mBinding.dohText.setText(doh.getName());
         VodConfig.load(Config.vod(), getCallback(0));

@@ -137,7 +137,7 @@ public class CastDialog extends BaseDialog implements DeviceAdapter.OnClickListe
     }
 
     private void onScan() {
-        ScanActivity.start(getActivity());
+        ScanActivity.start(requireActivity());
     }
 
     private void onRefresh() {

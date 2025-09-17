@@ -186,9 +186,9 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     }
 
     private boolean onMenuItemClick(MenuItem item) {
-        if (item.getItemId() == R.id.keep) KeepActivity.start(getActivity());
-        else if (item.getItemId() == R.id.search) SearchActivity.start(getActivity());
-        else if (item.getItemId() == R.id.history) HistoryActivity.start(getActivity());
+        if (item.getItemId() == R.id.keep) KeepActivity.start(requireActivity());
+        else if (item.getItemId() == R.id.search) SearchActivity.start(requireActivity());
+        else if (item.getItemId() == R.id.history) HistoryActivity.start(requireActivity());
         return true;
     }
 
@@ -250,7 +250,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
 
     @Override
     public void setConfig(Config config) {
-        Notify.progress(getActivity());
+        Notify.progress(requireActivity());
         VodConfig.load(config, new Callback() {
             @Override
             public void success() {
@@ -299,7 +299,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
 
     private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null || result.getData().getData() == null) return;
-        VideoActivity.file(getActivity(), FileChooser.getPathFromUri(result.getData().getData()));
+        VideoActivity.file(requireActivity(), FileChooser.getPathFromUri(result.getData().getData()));
     });
 
     class PageAdapter extends FragmentStatePagerAdapter {

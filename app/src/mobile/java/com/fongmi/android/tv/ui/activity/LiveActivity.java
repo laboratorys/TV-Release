@@ -206,7 +206,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
         mBinding.control.action.change.setActivated(Setting.isChange());
         mBinding.control.action.speed.setText(mPlayers.getSpeedText());
         mBinding.control.action.decode.setText(mPlayers.getDecodeText());
-        mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(getActivity(), view));
+        mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(this, view));
     }
 
     private void setDecode() {

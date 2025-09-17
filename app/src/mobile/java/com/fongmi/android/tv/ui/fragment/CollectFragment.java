@@ -68,7 +68,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
 
     @Override
     protected void initMenu() {
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        AppCompatActivity activity = (AppCompatActivity) requireActivity();
         activity.setSupportActionBar(mBinding.toolbar);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         activity.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
@@ -98,11 +98,11 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     private void setViewType(int viewType) {
-        int count = Product.getColumn(getActivity()) - 1;
+        int count = Product.getColumn(requireActivity()) - 1;
         mSearchAdapter.setViewType(viewType, count);
-        mSearchAdapter.setSize(Product.getSpec(getActivity(), ResUtil.dp2px(128 + 8 + count * 16), count));
+        mSearchAdapter.setSize(Product.getSpec(requireActivity(), ResUtil.dp2px(128 + 8 + count * 16), count));
         ((GridLayoutManager) mBinding.recycler.getLayoutManager()).setSpanCount(mSearchAdapter.isGrid() ? count : 1);
-        getActivity().invalidateOptionsMenu();
+        requireActivity().invalidateOptionsMenu();
     }
 
     private void setViewModel() {
@@ -155,8 +155,8 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
 
     @Override
     public void onItemClick(Vod item) {
-        if (item.isFolder()) FolderActivity.start(getActivity(), item.getSiteKey(), Result.folder(item));
-        else VideoActivity.collect(getActivity(), item.getSiteKey(), item.getVodId(), item.getVodName(), item.getVodPic());
+        if (item.isFolder()) FolderActivity.start(requireActivity(), item.getSiteKey(), Result.folder(item));
+        else VideoActivity.collect(requireActivity(), item.getSiteKey(), item.getVodId(), item.getVodName(), item.getVodPic());
     }
 
     @Override
@@ -185,7 +185,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-        if (menuItem.getItemId() == android.R.id.home) getActivity().getOnBackPressedDispatcher().onBackPressed();
+        if (menuItem.getItemId() == android.R.id.home) requireActivity().getOnBackPressedDispatcher().onBackPressed();
         if (menuItem.getItemId() == R.id.action_view) onView();
         return true;
     }

@@ -378,7 +378,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.control.action.decode.setText(mPlayers.getDecodeText());
         mBinding.control.action.danmaku.setVisibility(Setting.isDanmakuLoad() ? View.VISIBLE : View.GONE);
         mBinding.control.action.reset.setText(ResUtil.getStringArray(R.array.select_reset)[Setting.getReset()]);
-        mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(getActivity(), view));
+        mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(this, view));
     }
 
     private void setVideoView(boolean isInPictureInPictureMode) {

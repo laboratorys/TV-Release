@@ -76,7 +76,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     }
 
     private HomeActivity getRoot() {
-        return (HomeActivity) getActivity();
+        return (HomeActivity) requireActivity();
     }
 
     @Override
@@ -136,7 +136,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
 
     @Override
     public void setConfig(Config config) {
-        if (config.getUrl().startsWith("file") && !PermissionX.isGranted(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (config.getUrl().startsWith("file") && !PermissionX.isGranted(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> load(config));
         } else {
             load(config);
@@ -146,17 +146,17 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     private void load(Config config) {
         switch (config.getType()) {
             case 0:
-                Notify.progress(getActivity());
+                Notify.progress(requireActivity());
                 VodConfig.load(config, getCallback(0));
                 mBinding.vodUrl.setText(config.getDesc());
                 break;
             case 1:
-                Notify.progress(getActivity());
+                Notify.progress(requireActivity());
                 LiveConfig.load(config, getCallback(1));
                 mBinding.liveUrl.setText(config.getDesc());
                 break;
             case 2:
-                Notify.progress(getActivity());
+                Notify.progress(requireActivity());
                 WallConfig.load(config, getCallback(2));
                 mBinding.wallUrl.setText(config.getDesc());
                 break;
@@ -267,11 +267,11 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     }
 
     private void onVersion(View view) {
-        Updater.create().force().release().start(getActivity());
+        Updater.create().force().release().start(requireActivity());
     }
 
     private boolean onVersionDev(View view) {
-        Updater.create().force().dev().start(getActivity());
+        Updater.create().force().dev().start(requireActivity());
         return true;
     }
 
@@ -280,7 +280,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     }
 
     private void setWallRefresh(View view) {
-        Notify.progress(getActivity());
+        Notify.progress(requireActivity());
         WallConfig.get().load(new Callback() {
             @Override
             public void success() {
@@ -296,7 +296,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     }
 
     private void setSize(View view) {
-        new MaterialAlertDialogBuilder(getActivity()).setTitle(R.string.setting_size).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(size, Setting.getSize(), (dialog, which) -> {
+        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.setting_size).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(size, Setting.getSize(), (dialog, which) -> {
             mBinding.sizeText.setText(size[which]);
             Setting.putSize(which);
             RefreshEvent.size();
@@ -305,7 +305,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     }
 
     private void setDoh(View view) {
-        new MaterialAlertDialogBuilder(getActivity()).setTitle(R.string.setting_doh).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(getDohList(), getDohIndex(), (dialog, which) -> {
+        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.setting_doh).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(getDohList(), getDohIndex(), (dialog, which) -> {
             setDoh(VodConfig.get().getDoh().get(which));
             dialog.dismiss();
         }).show();
@@ -314,7 +314,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     private void setDoh(Doh doh) {
         Source.get().stop();
         OkHttp.get().setDoh(doh);
-        Notify.progress(getActivity());
+        Notify.progress(requireActivity());
         Setting.putDoh(doh.toString());
         mBinding.dohText.setText(doh.getName());
         VodConfig.load(Config.vod(), getCallback(0));
@@ -344,11 +344,11 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     }
 
     private void onRestore(View view) {
-        PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> RestoreDialog.create().show(getActivity(), new Callback() {
+        PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> RestoreDialog.create().show(requireActivity(), new Callback() {
             @Override
             public void success() {
                 Notify.show(R.string.restore_success);
-                Notify.progress(getActivity());
+                Notify.progress(requireActivity());
                 setOtherText();
                 initConfig();
             }
