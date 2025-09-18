@@ -1187,7 +1187,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void changeHeight() {
         int minHeight = ResUtil.dp2px(150);
-        int maxHeight = ResUtil.getScreenHeight() * 2 / 3;
+        int maxHeight = ResUtil.getScreenHeight() / 2;
         int parentWidth = ((View) mBinding.video.getParent()).getWidth();
         int calculated = (int) (parentWidth * ((float) mPlayers.getVideoHeight() / mPlayers.getVideoWidth()));
         int finalHeight = Math.max(minHeight, Math.min(maxHeight, calculated));
