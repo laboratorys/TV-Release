@@ -1182,12 +1182,12 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void checkHeight() {
-        if (isFullscreen() || isLand() || mPlayers.getVideoHeight() == 0) return;
+        if (isLand() || isFullscreen() || mPlayers.getVideoHeight() == 0) return;
         mBinding.video.post(this::changeHeight);
     }
 
     private void changeHeight() {
-        int minHeight = ResUtil.getScreenHeight() / 4;
+        int minHeight = ResUtil.dp2px(150);
         int maxHeight = ResUtil.getScreenHeight() * 2 / 3;
         int parentWidth = ((View) mBinding.video.getParent()).getWidth();
         int calculated = (int) (parentWidth * ((float) mPlayers.getVideoHeight() / mPlayers.getVideoWidth()));

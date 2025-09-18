@@ -36,6 +36,7 @@ public class DeviceAdapter extends BaseDiffAdapter<Device, DeviceAdapter.ViewHol
 
     @Override
     public void clear() {
+        super.clear();
         Device.delete();
     }
 
