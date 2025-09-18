@@ -3,7 +3,6 @@ package com.fongmi.android.tv.ui.base;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.DisplayCutout;
@@ -33,7 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (transparent()) enableEdgeToEdge();
+        enableEdgeToEdge();
         setContentView(getBinding().getRoot());
         EventBus.getDefault().register(this);
         initView(savedInstanceState);
@@ -109,7 +108,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void enableEdgeToEdge() {
         EdgeToEdge.enable(this);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             getWindow().setNavigationBarContrastEnforced(false);
         }
