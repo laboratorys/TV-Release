@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.Html;
 import android.text.TextUtils;
@@ -215,10 +214,6 @@ public class Util {
                 components.add(new ComponentName(pkgName, resolveInfo.activityInfo.name));
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return Intent.createChooser(intent, null).putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, components.toArray(new Parcelable[]{}));
-        } else {
-            return Intent.createChooser(intent, null);
-        }
+        return Intent.createChooser(intent, null).putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, components.toArray(new ComponentName[0]));
     }
 }
