@@ -1,6 +1,5 @@
 package com.fongmi.android.tv.ui.activity;
 
-import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,8 +13,8 @@ import androidx.viewbinding.ViewBinding;
 import com.fongmi.android.tv.databinding.ActivityFileBinding;
 import com.fongmi.android.tv.ui.adapter.FileAdapter;
 import com.fongmi.android.tv.ui.base.BaseActivity;
+import com.fongmi.android.tv.utils.PermissionUtil;
 import com.github.catvod.utils.Path;
-import com.permissionx.guolindev.PermissionX;
 
 import java.io.File;
 
@@ -48,13 +47,13 @@ public class FileActivity extends BaseActivity implements FileAdapter.OnClickLis
         checkPermission();
     }
 
-    private void checkPermission() {
-        PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> update(Path.root()));
-    }
-
     private void setRecyclerView() {
         mBinding.recycler.setHasFixedSize(true);
         mBinding.recycler.setAdapter(mAdapter = new FileAdapter(this));
+    }
+
+    private void checkPermission() {
+        PermissionUtil.requestFile(this, allGranted -> update(Path.root()));
     }
 
     private void update(File dir) {

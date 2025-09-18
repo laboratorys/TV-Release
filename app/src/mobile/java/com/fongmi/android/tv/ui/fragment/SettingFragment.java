@@ -1,6 +1,5 @@
 package com.fongmi.android.tv.ui.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -41,12 +40,12 @@ import com.fongmi.android.tv.ui.dialog.SiteDialog;
 import com.fongmi.android.tv.utils.FileChooser;
 import com.fongmi.android.tv.utils.FileUtil;
 import com.fongmi.android.tv.utils.Notify;
+import com.fongmi.android.tv.utils.PermissionUtil;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.github.catvod.bean.Doh;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.permissionx.guolindev.PermissionX;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,8 +135,8 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
 
     @Override
     public void setConfig(Config config) {
-        if (config.getUrl().startsWith("file") && !PermissionX.isGranted(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> load(config));
+        if (config.getUrl().startsWith("file")) {
+            PermissionUtil.requestFile(this, allGranted -> load(config));
         } else {
             load(config);
         }
@@ -330,7 +329,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     }
 
     private void onBackup(View view) {
-        PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> AppDatabase.backup(new Callback() {
+        PermissionUtil.requestFile(this, allGranted -> AppDatabase.backup(new Callback() {
             @Override
             public void success() {
                 Notify.show(R.string.backup_success);
@@ -344,7 +343,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     }
 
     private void onRestore(View view) {
-        PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request((allGranted, grantedList, deniedList) -> RestoreDialog.create().show(requireActivity(), new Callback() {
+        PermissionUtil.requestFile(this, allGranted -> RestoreDialog.create().show(requireActivity(), new Callback() {
             @Override
             public void success() {
                 Notify.show(R.string.restore_success);

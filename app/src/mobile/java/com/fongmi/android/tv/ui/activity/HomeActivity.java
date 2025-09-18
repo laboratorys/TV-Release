@@ -17,7 +17,6 @@ import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
-import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.Updater;
 import com.fongmi.android.tv.api.config.LiveConfig;
 import com.fongmi.android.tv.api.config.VodConfig;
@@ -29,7 +28,6 @@ import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.event.ServerEvent;
 import com.fongmi.android.tv.event.StateEvent;
 import com.fongmi.android.tv.impl.Callback;
-import com.fongmi.android.tv.impl.ChainTask;
 import com.fongmi.android.tv.player.Source;
 import com.fongmi.android.tv.receiver.ShortcutReceiver;
 import com.fongmi.android.tv.server.Server;
@@ -40,10 +38,10 @@ import com.fongmi.android.tv.ui.fragment.SettingPlayerFragment;
 import com.fongmi.android.tv.ui.fragment.VodFragment;
 import com.fongmi.android.tv.utils.FileChooser;
 import com.fongmi.android.tv.utils.Notify;
+import com.fongmi.android.tv.utils.PermissionUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 import com.google.android.material.navigation.NavigationBarView;
-import com.permissionx.guolindev.PermissionX;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -75,9 +73,9 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     protected void initView(Bundle savedInstanceState) {
         orientation = getResources().getConfiguration().orientation;
         Updater.create().release().start(this);
+        PermissionUtil.requestNotify(this);
         initFragment(savedInstanceState);
         Server.get().start();
-        requestPermission();
         initConfig();
     }
 
@@ -110,12 +108,6 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             }
         };
         if (savedInstanceState == null) mManager.change(0);
-    }
-
-    private void requestPermission() {
-        PermissionX.init(this).permissions(PermissionX.permission.POST_NOTIFICATIONS).request((allGranted, grantedList, deniedList) -> {
-            if (Setting.hasFileManager()) PermissionX.init(this).permissions().requestManageExternalStoragePermissionNow(new ChainTask());
-        });
     }
 
     private void initConfig() {
