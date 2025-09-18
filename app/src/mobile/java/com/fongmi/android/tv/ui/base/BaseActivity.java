@@ -9,13 +9,12 @@ import android.os.Bundle;
 import android.view.DisplayCutout;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.WindowCompat;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.ui.custom.CustomWallView;
@@ -34,7 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (transparent()) setTransparent();
+        enableEdgeToEdge();
         setContentView(getBinding().getRoot());
         EventBus.getDefault().register(this);
         initView(savedInstanceState);
@@ -108,12 +107,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    private void setTransparent() {
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
+    private void enableEdgeToEdge() {
+        EdgeToEdge.enable(this);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            getWindow().setNavigationBarContrastEnforced(false);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -14,7 +14,6 @@ import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.ui.adapter.EpisodeAdapter;
 import com.fongmi.android.tv.ui.base.ViewType;
 import com.fongmi.android.tv.utils.ResUtil;
-import com.fongmi.android.tv.utils.Util;
 import com.google.android.material.sidesheet.SideSheetDialog;
 
 import java.util.List;
@@ -52,7 +51,6 @@ public class EpisodeListDialog implements EpisodeAdapter.OnClickListener {
         dialog.setContentView(binding.getRoot());
         dialog.getBehavior().setDraggable(false);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        Util.hideSystemUI(dialog.getWindow());
         dialog.getWindow().setDimAmount(0);
         dialog.show();
         setWidth();

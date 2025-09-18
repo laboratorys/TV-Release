@@ -24,6 +24,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
@@ -379,6 +382,13 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.control.action.danmaku.setVisibility(Setting.isDanmakuLoad() ? View.VISIBLE : View.GONE);
         mBinding.control.action.reset.setText(ResUtil.getStringArray(R.array.select_reset)[Setting.getReset()]);
         mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(this, view));
+        ViewCompat.setOnApplyWindowInsetsListener(mBinding.video, (v, insets) -> {
+            Insets sysBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            lp.topMargin = sysBars.top;
+            v.setLayoutParams(lp);
+            return insets;
+        });
     }
 
     private void setVideoView(boolean isInPictureInPictureMode) {

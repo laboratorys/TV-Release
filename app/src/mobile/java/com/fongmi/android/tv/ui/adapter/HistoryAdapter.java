@@ -47,6 +47,7 @@ public class HistoryAdapter extends BaseDiffAdapter<History, HistoryAdapter.View
 
     @Override
     public void clear() {
+        super.clear();
         setDelete(false);
         History.delete(VodConfig.getCid());
     }
