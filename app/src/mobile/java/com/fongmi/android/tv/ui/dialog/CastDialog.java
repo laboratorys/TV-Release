@@ -43,6 +43,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import kotlin.Unit;
 import okhttp3.Call;
@@ -127,9 +128,12 @@ public class CastDialog extends BaseDialog implements DeviceAdapter.OnClickListe
     }
 
     private void getDevice() {
-        adapter.setItems(new ArrayList<>());
-        if (fm) adapter.addItems(Device.getAll());
-        adapter.addItems(DLNADevice.get().getAll());
+        List<Device> items = new ArrayList<>();
+        if (fm) items.addAll(Device.getAll());
+        items.addAll(DLNADevice.get().getAll());
+        adapter.setItems(items, () -> {
+            if (adapter.getItemCount() == 0) onRefresh();
+        });
     }
 
     private void initDLNA() {

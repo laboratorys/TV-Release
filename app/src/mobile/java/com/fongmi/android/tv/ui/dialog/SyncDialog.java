@@ -115,8 +115,9 @@ public class SyncDialog extends BaseDialog implements DeviceAdapter.OnClickListe
     }
 
     private void getDevice() {
-        adapter.setItems(Device.getAll());
-        if (adapter.getItemCount() == 0) App.post(this::onRefresh, 1000);
+        adapter.setItems(Device.getAll(), () -> {
+            if (adapter.getItemCount() == 0) onRefresh();
+        });
     }
 
     private void setMode() {
