@@ -25,10 +25,6 @@
         <item name="android:activityCloseExitAnimation">@null</item>
     </style>
 
-    <style name="ModalBottomSheetDialog" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/shape_bottom_sheet</item>
-    </style>
-
     <style name="BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
@@ -36,6 +32,10 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowIsFloating">false</item>
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/shape_bottom_sheet</item>
     </style>
 
 </resources>
