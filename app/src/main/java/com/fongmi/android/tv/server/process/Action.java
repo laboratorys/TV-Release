@@ -111,6 +111,7 @@ public class Action implements Process {
     private void sendHistory(Device device, Map<String, String> params) {
         try {
             Config config = Config.find(Config.objectFrom(params.get("config")));
+            if (config.getUrl() == null) config = Config.vod();
             FormBody.Builder body = new FormBody.Builder();
             body.add("config", config.toString());
             body.add("targets", App.gson().toJson(History.get(config.getId())));
