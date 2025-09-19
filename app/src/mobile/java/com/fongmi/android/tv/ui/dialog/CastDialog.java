@@ -164,12 +164,12 @@ public class CastDialog extends BaseDialog implements DeviceAdapter.OnClickListe
 
     @Override
     public void onDeviceAdded(@NonNull org.fourthline.cling.model.meta.Device<?, ?, ?> device) {
-        adapter.addItems(DLNADevice.get().add(device));
+        adapter.addItem(DLNADevice.get().add(device));
     }
 
     @Override
     public void onDeviceRemoved(@NonNull org.fourthline.cling.model.meta.Device<?, ?, ?> device) {
-        adapter.remove(DLNADevice.get().remove(device));
+        DLNADevice.get().remove(device);
     }
 
     @Override

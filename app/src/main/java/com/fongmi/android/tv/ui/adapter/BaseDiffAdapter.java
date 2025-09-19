@@ -29,8 +29,12 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
         return differ.getCurrentList();
     }
 
+    public void setItems(List<T> items, Runnable commitCallback) {
+        differ.submitList(items, commitCallback);
+    }
+
     public void setItems(List<T> items) {
-        differ.submitList(items);
+        setItems(items, null);
     }
 
     public void addItem(T item) {
