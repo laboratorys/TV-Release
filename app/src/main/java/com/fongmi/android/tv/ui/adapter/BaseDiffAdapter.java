@@ -10,6 +10,7 @@ import com.fongmi.android.tv.ui.adapter.diff.BaseItemCallback;
 import com.fongmi.android.tv.ui.adapter.diff.Diffable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
@@ -44,8 +45,9 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
         setItems(current);
     }
 
-    public void sort(java.util.Comparator<T> comparator) {
+    public void sort(Comparator<T> comparator) {
         List<T> current = new ArrayList<>(getItems());
+        if (current.isEmpty()) return;
         current.sort(comparator);
         setItems(current);
     }

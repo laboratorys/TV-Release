@@ -42,7 +42,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 import kotlin.Unit;
 import okhttp3.Call;
@@ -122,11 +122,12 @@ public class CastDialog extends BaseDialog implements DeviceAdapter.OnClickListe
     }
 
     private void setRecyclerView() {
-        binding.recycler.setHasFixedSize(true);
+        binding.recycler.setHasFixedSize(false);
         binding.recycler.setAdapter(adapter = new DeviceAdapter(this));
     }
 
     private void getDevice() {
+        adapter.setItems(new ArrayList<>());
         if (fm) adapter.addItems(Device.getAll());
         adapter.addItems(DLNADevice.get().getAll());
     }
@@ -157,8 +158,8 @@ public class CastDialog extends BaseDialog implements DeviceAdapter.OnClickListe
     }
 
     @Override
-    public void onFind(List<Device> devices) {
-        if (!devices.isEmpty()) adapter.addItems(devices);
+    public void onFind(Device device) {
+        adapter.addItem(device);
     }
 
     @Override

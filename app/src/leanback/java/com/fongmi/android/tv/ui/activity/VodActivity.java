@@ -2,7 +2,6 @@ package com.fongmi.android.tv.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,12 +127,7 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
 
     private void onChildSelected(@Nullable RecyclerView.ViewHolder child) {
         if (mOldView != null) mOldView.setActivated(false);
-        if (child == null) {
-            Log.e("DDD", "DDD");
-            return;
-
-        }
-        Log.e("DDD", "1");
+        if (child == null) return;
         mOldView = child.itemView;
         mOldView.setActivated(true);
         App.post(mRunnable, 100);
