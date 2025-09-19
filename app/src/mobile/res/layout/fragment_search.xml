@@ -24,10 +24,10 @@
             android:inputType="textCapWords|textAutoCorrect|textAutoComplete"
             android:maxLength="255"
             android:singleLine="true"
+            android:textAppearance="@style/ToolbarTextAppearance"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:textCursorDrawable="@drawable/shape_cursor"
-            android:textSize="20sp" />
+            android:textCursorDrawable="@drawable/shape_cursor" />
 
     </com.google.android.material.appbar.MaterialToolbar>
 
