@@ -51,10 +51,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         return this;
     }
 
-    protected boolean transparent() {
-        return true;
-    }
-
     protected boolean customWall() {
         return true;
     }

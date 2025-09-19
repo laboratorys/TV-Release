@@ -15,10 +15,12 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.BuildConfig;
@@ -44,13 +46,9 @@ public class Util {
     }
 
     public static void hideSystemUI(Window window) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false);
-            window.getInsetsController().hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-            window.getInsetsController().setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-        } else {
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        }
+        WindowInsetsControllerCompat insets = WindowCompat.getInsetsController(window, window.getDecorView());
+        insets.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+        insets.hide(WindowInsetsCompat.Type.systemBars());
     }
 
     public static void showSystemUI(Activity activity) {
@@ -58,13 +56,7 @@ public class Util {
     }
 
     public static void showSystemUI(Window window) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(true);
-            window.getInsetsController().show(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-            window.getInsetsController().setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_DEFAULT);
-        } else {
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-        }
+        WindowCompat.getInsetsController(window, window.getDecorView()).show(WindowInsetsCompat.Type.systemBars());
     }
 
     public static void showKeyboard(View view) {
