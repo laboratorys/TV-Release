@@ -137,8 +137,8 @@ public class SyncDialog extends BaseDialog implements DeviceAdapter.OnClickListe
     }
 
     private void onRefresh() {
-        scanTask.start(adapter.getIps());
         adapter.clear();
+        scanTask.start(adapter.getIps());
     }
 
     private void onSuccess() {

@@ -47,7 +47,7 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
 
     public void sort(Comparator<T> comparator) {
         List<T> current = new ArrayList<>(getItems());
-        if (current.isEmpty()) return;
+        if (current.size() < 2) return;
         current.sort(comparator);
         setItems(current);
     }
