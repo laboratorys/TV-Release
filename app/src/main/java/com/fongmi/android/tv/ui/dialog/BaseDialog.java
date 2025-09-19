@@ -47,8 +47,10 @@ public abstract class BaseDialog extends BottomSheetDialogFragment {
     }
 
     protected void setDimAmount(float amount) {
-        getDialog().getWindow().setDimAmount(amount);
-        getDialog().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            getDialog().getWindow().setDimAmount(amount);
+            getDialog().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
     }
 
     @NonNull
@@ -71,7 +73,7 @@ public abstract class BaseDialog extends BottomSheetDialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && getDialog().getWindow() != null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && getDialog() != null && getDialog().getWindow() != null) {
             getDialog().getWindow().setNavigationBarContrastEnforced(false);
         }
     }
