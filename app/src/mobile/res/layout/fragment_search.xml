@@ -15,7 +15,6 @@
 
         <EditText
             android:id="@+id/keyword"
-            style="@style/TextAppearance.Material3.ActionBar.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
@@ -24,6 +23,7 @@
             android:inputType="textCapWords|textAutoCorrect|textAutoComplete"
             android:maxLength="255"
             android:singleLine="true"
+            android:textAppearance="@style/ToolbarTextAppearance"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textCursorDrawable="@drawable/shape_cursor" />

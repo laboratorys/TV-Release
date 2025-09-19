@@ -16,12 +16,11 @@
 
         <TextView
             android:id="@+id/title"
-            style="@style/TextAppearance.Material3.ActionBar.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="start"
             android:singleLine="true"
-            android:textColor="@color/white" />
+            android:textAppearance="@style/ToolbarTextAppearance" />
 
     </com.google.android.material.appbar.MaterialToolbar>
 

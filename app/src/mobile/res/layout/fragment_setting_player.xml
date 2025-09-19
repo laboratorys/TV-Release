@@ -11,7 +11,7 @@
         android:layout_height="?attr/actionBarSize"
         app:navigationIconTint="@android:color/white"
         app:title="@string/setting_player"
-        app:titleTextColor="@android:color/white" />
+        app:titleTextAppearance="@style/ToolbarTextAppearance" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

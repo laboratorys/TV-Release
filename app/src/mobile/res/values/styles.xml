@@ -55,4 +55,10 @@
         <item name="android:color">@color/indicator</item>
     </style>
 
+    <style name="ToolbarTextAppearance" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="titleTextColor">@color/white</item>
+    </style>
+
 </resources>

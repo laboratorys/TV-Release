@@ -31,13 +31,12 @@
 
             <TextView
                 android:id="@+id/title"
-                style="@style/TextAppearance.Material3.ActionBar.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
                 android:singleLine="true"
                 android:text="@string/app_name"
-                android:textColor="@color/white" />
+                android:textAppearance="@style/ToolbarTextAppearance" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 

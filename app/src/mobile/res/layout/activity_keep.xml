@@ -14,7 +14,7 @@
         app:menu="@menu/menu_keep"
         app:navigationIconTint="@android:color/white"
         app:title="@string/app_keep"
-        app:titleTextColor="@android:color/white" />
+        app:titleTextAppearance="@style/ToolbarTextAppearance" />
 
     <com.fongmi.android.tv.ui.custom.ProgressLayout
         android:id="@+id/progressLayout"
