@@ -17,16 +17,17 @@
             android:id="@+id/keyword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:background="@null"
             android:hint="@string/search_keyword"
             android:imeOptions="actionSearch"
             android:inputType="textCapWords|textAutoCorrect|textAutoComplete"
             android:maxLength="255"
             android:singleLine="true"
-            android:textAppearance="@style/ToolbarTextAppearance"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:textCursorDrawable="@drawable/shape_cursor" />
+            android:textCursorDrawable="@drawable/shape_cursor"
+            android:textSize="20sp" />
 
     </com.google.android.material.appbar.MaterialToolbar>
 
