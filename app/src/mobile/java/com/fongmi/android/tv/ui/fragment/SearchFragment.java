@@ -78,6 +78,7 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
 
     @Override
     protected void initMenu() {
+        if (isHidden()) return;
         AppCompatActivity activity = (AppCompatActivity) requireActivity();
         activity.setSupportActionBar(mBinding.toolbar);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -138,10 +139,11 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
 
     private void collect(String keyword) {
         FragmentManager fm = requireActivity().getSupportFragmentManager();
-        Fragment search = fm.findFragmentByTag(getClass().getSimpleName());
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.add(R.id.container, CollectFragment.newInstance(keyword));
-        ft.setTransition(TRANSIT_FRAGMENT_OPEN);
+        Fragment collect = fm.findFragmentByTag(CollectFragment.class.getSimpleName());
+        if (collect != null) return;
+        FragmentTransaction ft = fm.beginTransaction().setTransition(TRANSIT_FRAGMENT_OPEN);
+        ft.add(R.id.container, CollectFragment.newInstance(keyword), CollectFragment.class.getSimpleName());
+        Fragment search = fm.findFragmentByTag(SearchFragment.class.getSimpleName());
         if (search != null) ft.hide(search);
         ft.setReorderingAllowed(true);
         ft.addToBackStack(null);
@@ -218,5 +220,11 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
     public void onHiddenChanged(boolean hidden) {
         if (hidden) requireActivity().removeMenuProvider(this);
         else initMenu();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        requireActivity().removeMenuProvider(this);
     }
 }
