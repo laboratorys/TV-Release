@@ -1,4 +1,4 @@
-package com.fongmi.android.tv.ui.adapter.diff;
+package com.fongmi.android.tv.impl;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;

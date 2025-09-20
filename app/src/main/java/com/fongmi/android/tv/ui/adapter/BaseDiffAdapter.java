@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fongmi.android.tv.ui.adapter.diff.BaseItemCallback;
-import com.fongmi.android.tv.ui.adapter.diff.Diffable;
+import com.fongmi.android.tv.impl.BaseItemCallback;
+import com.fongmi.android.tv.impl.Diffable;
 
 import java.util.ArrayList;
 import java.util.Comparator;

@@ -13,7 +13,7 @@ import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Product;
 import com.fongmi.android.tv.db.AppDatabase;
 import com.fongmi.android.tv.server.Server;
-import com.fongmi.android.tv.ui.adapter.diff.Diffable;
+import com.fongmi.android.tv.impl.Diffable;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.fongmi.android.tv.utils.Util;
 import com.google.gson.annotations.SerializedName;
