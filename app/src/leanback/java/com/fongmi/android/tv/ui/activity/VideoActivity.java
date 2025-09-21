@@ -27,6 +27,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.C;
 import androidx.media3.common.Player;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.ChangeBounds;
+import androidx.transition.TransitionManager;
 import androidx.viewbinding.ViewBinding;
 
 import com.bumptech.glide.request.transition.Transition;
@@ -644,6 +646,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void enterFullscreen() {
+        setTransition();
         mFocus1 = getCurrentFocus();
         mBinding.video.requestFocus();
         mBinding.video.setForeground(null);
@@ -656,6 +659,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void exitFullscreen() {
+        setTransition();
         mBinding.video.setForeground(ResUtil.getDrawable(R.drawable.selector_video));
         mBinding.video.setLayoutParams(mFrameParams);
         mPlayers.setDanmakuSize(0.8f);
@@ -664,6 +668,13 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         setFullscreen(false);
         mFocus2 = null;
         hideInfo();
+    }
+
+    private void setTransition() {
+        ChangeBounds transition = new ChangeBounds();
+        transition.setDuration(150);
+        ViewGroup parent = (ViewGroup) mBinding.video.getParent();
+        TransitionManager.beginDelayedTransition(parent, transition);
     }
 
     private void onDesc() {

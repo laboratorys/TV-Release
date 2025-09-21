@@ -33,7 +33,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.C;
 import androidx.media3.common.Player;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.AutoTransition;
+import androidx.transition.ChangeBounds;
 import androidx.transition.TransitionManager;
 import androidx.viewbinding.ViewBinding;
 
@@ -899,9 +899,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setTransition() {
-        AutoTransition transition = new AutoTransition();
-        transition.setDuration(200);
-        TransitionManager.beginDelayedTransition(mBinding.video, transition);
+        ChangeBounds transition = new ChangeBounds();
+        transition.setDuration(150);
+        ViewGroup parent = (ViewGroup) mBinding.video.getParent();
+        TransitionManager.beginDelayedTransition(parent, transition);
     }
 
     private int getLockOrient() {
