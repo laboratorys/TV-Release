@@ -33,6 +33,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.C;
 import androidx.media3.common.Player;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.AutoTransition;
+import androidx.transition.TransitionManager;
 import androidx.viewbinding.ViewBinding;
 
 import com.bumptech.glide.request.transition.Transition;
@@ -871,12 +873,12 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void enterFullscreen() {
         if (isFullscreen()) return;
-        App.post(() -> mBinding.video.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)), 50);
+        if (isLand()) setTransition();
+        mBinding.video.postDelayed(() -> mBinding.video.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)), 50);
         setRequestedOrientation(mPlayers.isPortrait() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         mBinding.control.title.setVisibility(View.VISIBLE);
         setRotate(mPlayers.isPortrait(), true);
         mPlayers.setDanmakuSize(1.0f);
-        Util.hideSystemUI(this);
         mKeyDown.resetScale();
         App.post(mR3, 2000);
         hideControl();
@@ -884,8 +886,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void exitFullscreen() {
         if (!isFullscreen()) return;
+        if (isLand()) setTransition();
         setRequestedOrientation(isPort() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_FULL_USER);
-        App.post(() -> mBinding.episode.scrollToPosition(mEpisodeAdapter.getPosition()), 50);
+        mBinding.episode.postDelayed(() -> mBinding.episode.scrollToPosition(mEpisodeAdapter.getPosition()), 50);
         mBinding.control.title.setVisibility(View.INVISIBLE);
         mBinding.video.setLayoutParams(mFrameParams);
         mPlayers.setDanmakuSize(0.8f);
@@ -893,6 +896,12 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mKeyDown.resetScale();
         App.post(mR3, 2000);
         hideControl();
+    }
+
+    private void setTransition() {
+        AutoTransition transition = new AutoTransition();
+        transition.setDuration(100);
+        TransitionManager.beginDelayedTransition(mBinding.video, transition);
     }
 
     private int getLockOrient() {
@@ -1543,7 +1552,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     public void onDoubleTap() {
         if (isLock()) return;
         if (!isFullscreen()) {
-            App.post(this::enterFullscreen, 250);
+            App.post(this::enterFullscreen, 200);
         } else if (mPlayers.isPlaying()) {
             showControl();
             onPaused();
