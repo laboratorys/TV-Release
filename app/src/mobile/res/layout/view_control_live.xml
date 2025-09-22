@@ -22,19 +22,25 @@
             android:scaleType="center"
             android:src="@drawable/ic_control_back" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/title"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:ellipsize="marquee"
-            android:singleLine="true"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            tools:text="CCTV-4K" />
+            android:layout_weight="1">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                tools:text="CCTV-4K" />
+
+        </FrameLayout>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
