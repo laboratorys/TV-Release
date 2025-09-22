@@ -191,7 +191,8 @@ public class Device implements Diffable<Device> {
         @Override
         public int compare(Device o1, Device o2) {
             int comp = Integer.compare(o1.getType(), o2.getType());
-            return comp != 0 ? comp : o1.getName().compareTo(o2.getName());
+            if (comp == 0) comp = o1.getName().compareToIgnoreCase(o2.getName());
+            return comp != 0 ? comp : o1.getUuid().compareTo(o2.getUuid());
         }
     }
 }
