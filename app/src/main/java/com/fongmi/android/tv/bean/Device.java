@@ -167,7 +167,7 @@ public class Device implements Diffable<Device> {
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Device it)) return false;
-        return getUuid().equals(it.getUuid());
+        return getUuid().equals(it.getUuid()) && getName().equals(it.getName()) && getType() == it.getType();
     }
 
     @NonNull
