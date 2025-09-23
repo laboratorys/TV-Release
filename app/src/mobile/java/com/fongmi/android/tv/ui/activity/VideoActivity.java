@@ -997,6 +997,12 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 mBinding.exo.setDefaultArtwork(resource);
                 setMetadata();
             }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                mBinding.exo.setDefaultArtwork(errorDrawable);
+                setMetadata();
+            }
         });
     }
 
