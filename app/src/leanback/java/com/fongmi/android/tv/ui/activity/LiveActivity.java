@@ -512,6 +512,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 mBinding.exo.setDefaultArtwork(resource);
+                setMetadata();
             }
 
             @Override
