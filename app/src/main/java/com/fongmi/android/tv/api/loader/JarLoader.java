@@ -54,7 +54,7 @@ public class JarLoader {
     }
 
     private DexClassLoader dex(File file) {
-        return new DexClassLoader(file.getAbsolutePath(), Path.jar().getAbsolutePath(), null, App.get().getClassLoader());
+        return new DexClassLoader(file.getAbsolutePath(), Path.jar().getAbsolutePath(), Path.jar().getAbsolutePath(), App.get().getClassLoader());
     }
 
     private void invokeInit(String key) {
