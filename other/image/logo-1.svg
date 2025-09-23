@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <svg height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" xml:space="preserve">
-<polygon style="fill:#2DD4AA;" points="470.626,132.082 437.945,205.418 223.319,78.583 256,8.167" />
+    <polygon style="fill:#2DD4AA;" points="470.626,132.082 437.945,205.418 223.319,78.583 256,8.167" />
     <g>
         <polygon style="fill:#4CF5CB;" points="256,8.167 256,78.583 223.319,27.035" />
         <polygon style="fill:#4CF5CB;" points="437.945,150.95 256,321.358 190.638,183.63 256,45.902" />
