@@ -15,8 +15,11 @@ import com.fongmi.android.tv.databinding.FragmentFolderBinding;
 import com.fongmi.android.tv.ui.base.BaseFragment;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public class TypeFragment extends BaseFragment {
+
+    private FragmentFolderBinding mBinding;
 
     public static TypeFragment newInstance(String key, String typeId, Style style, HashMap<String, String> extend, boolean folder) {
         Bundle args = new Bundle();
@@ -50,9 +53,13 @@ public class TypeFragment extends BaseFragment {
         return (HashMap<String, String>) getArguments().getSerializable("extend");
     }
 
+    private VodFragment getChild() {
+        return (VodFragment) getChildFragmentManager().findFragmentById(R.id.container);
+    }
+
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
-        return FragmentFolderBinding.inflate(inflater, container, false);
+        return mBinding = FragmentFolderBinding.inflate(inflater, container, false);
     }
 
     @Override
@@ -62,22 +69,19 @@ public class TypeFragment extends BaseFragment {
 
     public void openFolder(String typeId) {
         VodFragment next = VodFragment.newInstance(getKey(), typeId, getStyle(), getExtend(), getFolder());
-        VodFragment current = (VodFragment) getChildFragmentManager().findFragmentById(R.id.container);
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        if (current != null) ft.hide(current);
+        Optional.ofNullable(getChild()).ifPresent(ft::hide);
         ft.add(R.id.container, next);
         ft.addToBackStack(null);
         ft.commit();
     }
 
     public void toggleFilter(boolean visible) {
-        VodFragment current = (VodFragment) getChildFragmentManager().findFragmentById(R.id.container);
-        if (current != null) current.toggleFilter(visible);
+        Optional.ofNullable(getChild()).ifPresent(f -> f.toggleFilter(visible));
     }
 
     public void onRefresh() {
-        VodFragment current = (VodFragment) getChildFragmentManager().findFragmentById(R.id.container);
-        if (current != null) current.onRefresh();
+        Optional.ofNullable(getChild()).ifPresent(VodFragment::onRefresh);
     }
 
     public boolean canBack() {
@@ -86,5 +90,11 @@ public class TypeFragment extends BaseFragment {
 
     public void goBack() {
         getChildFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (mBinding != null && !isVisibleToUser) Optional.ofNullable(getChild()).ifPresent(f -> f.setUserVisibleHint(false));
     }
 }

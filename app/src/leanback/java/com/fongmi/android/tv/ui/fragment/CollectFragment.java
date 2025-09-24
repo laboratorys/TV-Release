@@ -132,4 +132,10 @@ public class CollectFragment extends BaseFragment implements CustomScroller.Call
         mViewModel.searchContent(mCollect.getSite(), getKeyword(), page);
         mScroller.setLoading(true);
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (mBinding != null && !isVisibleToUser) mBinding.recycler.moveToTop();
+    }
 }

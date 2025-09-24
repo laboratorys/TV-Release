@@ -273,4 +273,10 @@ public class VodFragment extends BaseFragment implements CustomScroller.Callback
             mBinding.recycler.requestFocus();
         }
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (mBinding != null) mBinding.recycler.moveToTop();
+    }
 }
