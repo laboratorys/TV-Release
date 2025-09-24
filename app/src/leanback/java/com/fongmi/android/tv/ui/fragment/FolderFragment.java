@@ -55,8 +55,8 @@ public class FolderFragment extends BaseFragment {
         return (HashMap<String, String>) getArguments().getSerializable("extend");
     }
 
-    private VodFragment getChild() {
-        return (VodFragment) getChildFragmentManager().findFragmentById(R.id.container);
+    private TypeFragment getChild() {
+        return (TypeFragment) getChildFragmentManager().findFragmentById(R.id.container);
     }
 
     private VodActivity getParent() {
@@ -70,12 +70,12 @@ public class FolderFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        getChildFragmentManager().beginTransaction().replace(R.id.container, VodFragment.newInstance(getKey(), getTypeId(), getStyle(), getExtend(), getFolder())).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.container, TypeFragment.newInstance(getKey(), getTypeId(), getStyle(), getExtend(), getFolder())).commit();
     }
 
     public void openFolder(String typeId, HashMap<String, String> extend) {
         Prefers.put("filter_" + getKey() + "_" + typeId, Prefers.getString("filter_" + getKey() + "_" + getTypeId()));
-        VodFragment next = VodFragment.newInstance(getKey(), typeId, getStyle(), extend, getFolder());
+        TypeFragment next = TypeFragment.newInstance(getKey(), typeId, getStyle(), extend, getFolder());
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         Optional.ofNullable(getParent()).ifPresent(VodActivity::closeFilter);
         Optional.ofNullable(getChild()).ifPresent(ft::hide);
@@ -89,7 +89,7 @@ public class FolderFragment extends BaseFragment {
     }
 
     public void onRefresh() {
-        Optional.ofNullable(getChild()).ifPresent(VodFragment::onRefresh);
+        Optional.ofNullable(getChild()).ifPresent(TypeFragment::onRefresh);
     }
 
     public boolean canBack() {

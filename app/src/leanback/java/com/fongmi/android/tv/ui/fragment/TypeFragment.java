@@ -25,7 +25,7 @@ import com.fongmi.android.tv.bean.Site;
 import com.fongmi.android.tv.bean.Style;
 import com.fongmi.android.tv.bean.Value;
 import com.fongmi.android.tv.bean.Vod;
-import com.fongmi.android.tv.databinding.FragmentVodBinding;
+import com.fongmi.android.tv.databinding.FragmentTypeBinding;
 import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.ui.activity.CollectActivity;
 import com.fongmi.android.tv.ui.activity.VideoActivity;
@@ -44,10 +44,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class VodFragment extends BaseFragment implements CustomScroller.Callback, VodPresenter.OnClickListener {
+public class TypeFragment extends BaseFragment implements CustomScroller.Callback, VodPresenter.OnClickListener {
 
     private HashMap<String, String> mExtends;
-    private FragmentVodBinding mBinding;
+    private FragmentTypeBinding mBinding;
     private ArrayObjectAdapter mAdapter;
     private ArrayObjectAdapter mLast;
     private CustomScroller mScroller;
@@ -56,14 +56,14 @@ public class VodFragment extends BaseFragment implements CustomScroller.Callback
     private boolean headerVisible;
     private boolean filterVisible;
 
-    public static VodFragment newInstance(String key, String typeId, Style style, HashMap<String, String> extend, boolean folder) {
+    public static TypeFragment newInstance(String key, String typeId, Style style, HashMap<String, String> extend, boolean folder) {
         Bundle args = new Bundle();
         args.putString("key", key);
         args.putString("typeId", typeId);
         args.putBoolean("folder", folder);
         args.putParcelable("style", style);
         args.putSerializable("extend", extend);
-        VodFragment fragment = new VodFragment();
+        TypeFragment fragment = new TypeFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -102,7 +102,7 @@ public class VodFragment extends BaseFragment implements CustomScroller.Callback
 
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
-        return mBinding = FragmentVodBinding.inflate(inflater, container, false);
+        return mBinding = FragmentTypeBinding.inflate(inflater, container, false);
     }
 
     @Override
