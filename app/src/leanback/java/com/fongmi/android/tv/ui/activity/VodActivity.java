@@ -26,7 +26,7 @@ import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.bean.Site;
 import com.fongmi.android.tv.databinding.ActivityVodBinding;
 import com.fongmi.android.tv.ui.base.BaseActivity;
-import com.fongmi.android.tv.ui.fragment.VodFragment;
+import com.fongmi.android.tv.ui.fragment.TypeFragment;
 import com.fongmi.android.tv.ui.presenter.TypePresenter;
 import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.ResUtil;
@@ -41,7 +41,6 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
     private ActivityVodBinding mBinding;
     private ArrayObjectAdapter mAdapter;
     private PageAdapter mPageAdapter;
-    private boolean coolDown;
     private View mOldView;
 
     public static void start(Activity activity, Result result) {
@@ -146,13 +145,8 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
         mAdapter.notifyArrayItemRangeChanged(0, mAdapter.size());
     }
 
-    private VodFragment getFragment() {
-        return (VodFragment) mPageAdapter.instantiateItem(mBinding.pager, mBinding.pager.getCurrentItem());
-    }
-
-    private void setCoolDown() {
-        App.post(() -> coolDown = false, 2000);
-        coolDown = true;
+    private TypeFragment getFragment() {
+        return (TypeFragment) mPageAdapter.instantiateItem(mBinding.pager, mBinding.pager.getCurrentItem());
     }
 
     @Override
@@ -168,16 +162,15 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (KeyUtil.isMenuKey(event)) updateFilter((Class) mAdapter.get(mBinding.pager.getCurrentItem()));
-        if (KeyUtil.isBackKey(event) && event.isLongPress() && getFragment().goRoot()) setCoolDown();
         return super.dispatchKeyEvent(event);
     }
 
     @Override
     protected void onBackInvoked() {
         Class item = (Class) mAdapter.get(mBinding.pager.getCurrentItem());
-        if (item.getFilter() != null && item.getFilter()) updateFilter(item);
+        if (item != null && item.getFilter() != null && item.getFilter()) updateFilter(item);
         else if (getFragment().canBack()) getFragment().goBack();
-        else if (!coolDown) super.onBackInvoked();
+        else super.onBackInvoked();
     }
 
     class PageAdapter extends FragmentStatePagerAdapter {
@@ -190,7 +183,7 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
         @Override
         public Fragment getItem(int position) {
             Class type = (Class) mAdapter.get(position);
-            return VodFragment.newInstance(getKey(), type.getTypeId(), type.getStyle(), type.getExtend(false), "1".equals(type.getTypeFlag()));
+            return TypeFragment.newInstance(getKey(), type.getTypeId(), type.getStyle(), type.getExtend(false), "1".equals(type.getTypeFlag()));
         }
 
         @Override
