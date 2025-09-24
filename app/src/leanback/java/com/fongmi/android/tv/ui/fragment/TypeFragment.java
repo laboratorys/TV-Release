@@ -76,16 +76,16 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
         return getArguments().getString("typeId");
     }
 
-    private HashMap<String, String> getExtend() {
-        return (HashMap<String, String>) getArguments().getSerializable("extend");
-    }
-
     private boolean isFolder() {
         return getArguments().getBoolean("folder");
     }
 
     private Style getStyle() {
         return isFolder() ? Style.list() : getSite().getStyle(getArguments().getParcelable("style"));
+    }
+
+    private HashMap<String, String> getExtend() {
+        return (HashMap<String, String>) getArguments().getSerializable("extend");
     }
 
     private Site getSite() {
