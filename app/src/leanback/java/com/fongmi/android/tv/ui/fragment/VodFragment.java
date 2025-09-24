@@ -96,8 +96,8 @@ public class VodFragment extends BaseFragment implements CustomScroller.Callback
         return Filter.arrayFrom(Prefers.getString("filter_" + getKey() + "_" + getTypeId()));
     }
 
-    private TypeFragment getParent() {
-        return ((TypeFragment) getParentFragment());
+    private FolderFragment getParent() {
+        return ((FolderFragment) getParentFragment());
     }
 
     @Override
@@ -241,7 +241,7 @@ public class VodFragment extends BaseFragment implements CustomScroller.Callback
         if (item.isAction()) {
             mViewModel.action(getKey(), item.getAction());
         } else if (item.isFolder()) {
-            getParent().openFolder(item.getVodId());
+            getParent().openFolder(item.getVodId(), mExtends);
             headerVisible = mBinding.recycler.isHeaderVisible();
         } else {
             if (getSite().isIndex()) CollectActivity.start(requireActivity(), item.getVodName());

@@ -12,23 +12,25 @@ import androidx.viewbinding.ViewBinding;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.bean.Style;
 import com.fongmi.android.tv.databinding.FragmentFolderBinding;
+import com.fongmi.android.tv.ui.activity.VodActivity;
 import com.fongmi.android.tv.ui.base.BaseFragment;
+import com.github.catvod.utils.Prefers;
 
 import java.util.HashMap;
 import java.util.Optional;
 
-public class TypeFragment extends BaseFragment {
+public class FolderFragment extends BaseFragment {
 
     private FragmentFolderBinding mBinding;
 
-    public static TypeFragment newInstance(String key, String typeId, Style style, HashMap<String, String> extend, boolean folder) {
+    public static FolderFragment newInstance(String key, String typeId, Style style, HashMap<String, String> extend, boolean folder) {
         Bundle args = new Bundle();
         args.putString("key", key);
         args.putString("typeId", typeId);
         args.putBoolean("folder", folder);
         args.putParcelable("style", style);
         args.putSerializable("extend", extend);
-        TypeFragment fragment = new TypeFragment();
+        FolderFragment fragment = new FolderFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,6 +59,10 @@ public class TypeFragment extends BaseFragment {
         return (VodFragment) getChildFragmentManager().findFragmentById(R.id.container);
     }
 
+    private VodActivity getParent() {
+        return (VodActivity) getActivity();
+    }
+
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         return mBinding = FragmentFolderBinding.inflate(inflater, container, false);
@@ -67,9 +73,11 @@ public class TypeFragment extends BaseFragment {
         getChildFragmentManager().beginTransaction().replace(R.id.container, VodFragment.newInstance(getKey(), getTypeId(), getStyle(), getExtend(), getFolder())).commit();
     }
 
-    public void openFolder(String typeId) {
-        VodFragment next = VodFragment.newInstance(getKey(), typeId, getStyle(), getExtend(), getFolder());
+    public void openFolder(String typeId, HashMap<String, String> extend) {
+        Prefers.put("filter_" + getKey() + "_" + typeId, Prefers.getString("filter_" + getKey() + "_" + getTypeId()));
+        VodFragment next = VodFragment.newInstance(getKey(), typeId, getStyle(), extend, getFolder());
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        Optional.ofNullable(getParent()).ifPresent(VodActivity::closeFilter);
         Optional.ofNullable(getChild()).ifPresent(ft::hide);
         ft.add(R.id.container, next);
         ft.addToBackStack(null);

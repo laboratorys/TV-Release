@@ -26,7 +26,7 @@ import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.bean.Site;
 import com.fongmi.android.tv.databinding.ActivityVodBinding;
 import com.fongmi.android.tv.ui.base.BaseActivity;
-import com.fongmi.android.tv.ui.fragment.TypeFragment;
+import com.fongmi.android.tv.ui.fragment.FolderFragment;
 import com.fongmi.android.tv.ui.presenter.TypePresenter;
 import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.ResUtil;
@@ -35,6 +35,7 @@ import com.github.catvod.utils.Prefers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class VodActivity extends BaseActivity implements TypePresenter.OnClickListener {
 
@@ -70,6 +71,14 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
 
     private Site getSite() {
         return VodConfig.get().getSite(getKey());
+    }
+
+    private Class getType() {
+        return (Class) mAdapter.get(mBinding.pager.getCurrentItem());
+    }
+
+    private FolderFragment getFragment() {
+        return (FolderFragment) mPageAdapter.instantiateItem(mBinding.pager, mBinding.pager.getCurrentItem());
     }
 
     @Override
@@ -139,14 +148,22 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
         }
     };
 
+    private boolean isFilterVisible() {
+        return Optional.ofNullable(getType()).map(Class::getFilter).orElse(false);
+    }
+
+    private void updateFilter() {
+        Optional.ofNullable(getType()).ifPresent(this::updateFilter);
+    }
+
     private void updateFilter(Class item) {
         if (item.getFilter() == null) return;
         getFragment().toggleFilter(item.toggleFilter());
         mAdapter.notifyArrayItemRangeChanged(0, mAdapter.size());
     }
 
-    private TypeFragment getFragment() {
-        return (TypeFragment) mPageAdapter.instantiateItem(mBinding.pager, mBinding.pager.getCurrentItem());
+    public void closeFilter() {
+        if (isFilterVisible()) updateFilter();
     }
 
     @Override
@@ -161,14 +178,13 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (KeyUtil.isMenuKey(event)) updateFilter((Class) mAdapter.get(mBinding.pager.getCurrentItem()));
+        if (KeyUtil.isMenuKey(event)) updateFilter();
         return super.dispatchKeyEvent(event);
     }
 
     @Override
     protected void onBackInvoked() {
-        Class item = (Class) mAdapter.get(mBinding.pager.getCurrentItem());
-        if (item != null && item.getFilter() != null && item.getFilter()) updateFilter(item);
+        if (isFilterVisible()) updateFilter();
         else if (getFragment().canBack()) getFragment().goBack();
         else super.onBackInvoked();
     }
@@ -183,7 +199,7 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
         @Override
         public Fragment getItem(int position) {
             Class type = (Class) mAdapter.get(position);
-            return TypeFragment.newInstance(getKey(), type.getTypeId(), type.getStyle(), type.getExtend(false), "1".equals(type.getTypeFlag()));
+            return FolderFragment.newInstance(getKey(), type.getTypeId(), type.getStyle(), type.getExtend(false), "1".equals(type.getTypeFlag()));
         }
 
         @Override
