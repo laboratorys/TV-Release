@@ -9,7 +9,7 @@ tasks.register('clean', Delete) {
 }
 
 project.ext {
-    gsonVersion = '2.13.1'
+    gsonVersion = '2.13.2'
     glideVersion = '5.0.5'
     media3Version = '1.8.0'
     okhttpVersion = '5.1.0'
