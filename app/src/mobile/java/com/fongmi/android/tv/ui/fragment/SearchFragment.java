@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
@@ -44,6 +43,7 @@ import com.google.common.net.HttpHeaders;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Optional;
 
 import okhttp3.Call;
 import okhttp3.Headers;
@@ -139,15 +139,13 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
 
     private void collect(String keyword) {
         FragmentManager fm = requireActivity().getSupportFragmentManager();
-        Fragment collect = fm.findFragmentByTag(CollectFragment.class.getSimpleName());
-        if (collect != null) return;
+        String collectTag = CollectFragment.class.getSimpleName();
+        if (fm.findFragmentByTag(collectTag) != null) return;
+        String searchTag = SearchFragment.class.getSimpleName();
         FragmentTransaction ft = fm.beginTransaction().setTransition(TRANSIT_FRAGMENT_OPEN);
-        ft.add(R.id.container, CollectFragment.newInstance(keyword), CollectFragment.class.getSimpleName());
-        Fragment search = fm.findFragmentByTag(SearchFragment.class.getSimpleName());
-        if (search != null) ft.hide(search);
-        ft.setReorderingAllowed(true);
-        ft.addToBackStack(null);
-        ft.commit();
+        ft.add(R.id.container, CollectFragment.newInstance(keyword), collectTag);
+        Optional.ofNullable(fm.findFragmentByTag(searchTag)).ifPresent(ft::hide);
+        ft.setReorderingAllowed(true).addToBackStack(null).commit();
     }
 
     private void getHot() {
