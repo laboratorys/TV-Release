@@ -98,6 +98,7 @@
     <string name="player_video_decode">視訊軟解</string>
     <string name="player_aac_track">AAC優先</string>
     <string name="player_danmaku_load">彈幕載入</string>
+    <string name="player_adblock">智慧去廣</string>
     <string name="player_tunnel">隧道模式</string>
     <string name="player_buffer">緩衝時間</string>
     <string name="player_speed">長按倍速</string>

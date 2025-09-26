@@ -235,6 +235,14 @@ public class Setting {
         Prefers.put("danmaku_load", danmakuLoad);
     }
 
+    public static boolean isAdblock() {
+        return Prefers.getBoolean("adblock");
+    }
+
+    public static void putAdblock(boolean adblock) {
+        Prefers.put("adblock", adblock);
+    }
+
     public static boolean isDanmakuShow() {
         return Prefers.getBoolean("danmaku_show");
     }

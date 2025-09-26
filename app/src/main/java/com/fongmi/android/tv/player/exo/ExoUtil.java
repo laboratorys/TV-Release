@@ -28,7 +28,6 @@ import com.fongmi.android.tv.BuildConfig;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.bean.Drm;
 import com.fongmi.android.tv.bean.Sub;
-import com.fongmi.android.tv.utils.Sniffer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +119,7 @@ public class ExoUtil {
         builder.setSubtitleConfigurations(getSubtitleConfigs(subs));
         if (drm != null) builder.setDrmConfiguration(drm.get());
         if (mimeType != null) builder.setMimeType(mimeType);
-        builder.setAds(Sniffer.getRegex(uri));
+        builder.setAdblock(Setting.isAdblock());
         builder.setMediaId(uri.toString());
         builder.setImageDurationMs(15000);
         builder.setDecode(decode);
