@@ -54,7 +54,7 @@ public class ImgUtil {
     }
 
     public static void load(File file, ImageView view) {
-        Glide.with(view).load(file).diskCacheStrategy(DiskCacheStrategy.NONE).error(R.drawable.wallpaper_1).signature(new ObjectKey(file.lastModified())).into(new CustomTarget<Drawable>() {
+        Glide.with(view).load(file).diskCacheStrategy(DiskCacheStrategy.NONE).error(R.drawable.wallpaper_1).signature(new ObjectKey(file.lastModified())).into(new CustomTarget<Drawable>(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()) {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 if (resource instanceof GifDrawable) ((GifDrawable) resource).start();
