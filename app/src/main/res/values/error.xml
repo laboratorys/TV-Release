@@ -1,0 +1,44 @@
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+    <string name="error_unspecified">An unexpected error occurred</string>
+    <string name="error_remote_error">A remote error occurred</string>
+    <string name="error_behind_live_window">Fell too far behind the live stream</string>
+    <string name="error_timeout">The operation timed out</string>
+    <string name="error_failed_runtime_check">An internal player error occurred</string>
+    <string name="error_io_unspecified">An unknown I/O error occurred</string>
+    <string name="error_io_network_connection_failed">Network connection failed</string>
+    <string name="error_io_network_connection_timeout">Network connection timed out</string>
+    <string name="error_io_invalid_http_content_type">Invalid server response</string>
+    <string name="error_io_bad_http_status">Unable to connect to the server</string>
+    <string name="error_io_file_not_found">File not found</string>
+    <string name="error_io_no_permission">I/O permission denied</string>
+    <string name="error_io_cleartext_not_permitted">A secure connection is required for this content</string>
+    <string name="error_io_read_position_out_of_range">Failed to read data from the source</string>
+    <string name="error_parsing_container_malformed">The media file is corrupted or in an unsupported format</string>
+    <string name="error_parsing_manifest_malformed">The stream manifest is invalid</string>
+    <string name="error_parsing_container_unsupported">The media container format is not supported</string>
+    <string name="error_parsing_manifest_unsupported">The stream manifest format is not supported</string>
+    <string name="error_decoder_init_failed">Failed to initialize the media decoder</string>
+    <string name="error_decoder_query_failed">Failed to find a suitable media decoder for the format</string>
+    <string name="error_decoding_failed">An error occurred while decoding the media</string>
+    <string name="error_decoding_format_exceeds_capabilities">The media quality exceeds the device\'s capabilities</string>
+    <string name="error_decoding_format_unsupported">The media format is not supported by this device</string>
+    <string name="error_decoding_resources_reclaimed">Decoding resources were reclaimed by the system</string>
+    <string name="error_audio_track_init_failed">Failed to initialize the audio track</string>
+    <string name="error_audio_track_write_failed">Failed to write audio data</string>
+    <string name="error_audio_track_offload_write_failed">Failed to write offloaded audio data</string>
+    <string name="error_audio_track_offload_init_failed">Failed to initialize the offloaded audio track</string>
+    <string name="error_drm_unspecified">An unknown DRM error occurred</string>
+    <string name="error_drm_provisioning_failed">Failed to configure DRM on this device</string>
+    <string name="error_drm_content_error">An error occurred with the protected content</string>
+    <string name="error_drm_license_acquisition_failed">Failed to acquire the content license</string>
+    <string name="error_drm_disallowed_operation">The requested DRM operation is not allowed</string>
+    <string name="error_drm_system_error">A DRM system error occurred</string>
+    <string name="error_drm_device_revoked">Access to this content has been revoked for this device</string>
+    <string name="error_drm_license_expired">The content license has expired</string>
+    <string name="error_video_frame_processor_init_failed">Failed to initialize the video frame processor</string>
+    <string name="error_video_frame_processing_failed">An error occurred while processing a video frame</string>
+    <string name="error_no_decoder">This device does not provide a decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
+    <string name="error_no_secure_decoder">This device does not provide a secure decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
+    <string name="error_querying_decoders">Unable to query device decoders</string>
+    <string name="error_instantiating_decoder">Unable to instantiate decoder <xliff:g id="decoder_name">%1$s</xliff:g></string>
+</resources>

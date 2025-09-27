@@ -1,0 +1,44 @@
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+    <string name="error_unspecified">發生未預期的錯誤</string>
+    <string name="error_remote_error">發生遠端錯誤</string>
+    <string name="error_behind_live_window">已落後直播串流過多</string>
+    <string name="error_timeout">操作逾時</string>
+    <string name="error_failed_runtime_check">發生內部播放器錯誤</string>
+    <string name="error_io_unspecified">發生未知的 I/O 錯誤</string>
+    <string name="error_io_network_connection_failed">網路連線失敗</string>
+    <string name="error_io_network_connection_timeout">網路連線逾時</string>
+    <string name="error_io_invalid_http_content_type">無效的伺服器回應</string>
+    <string name="error_io_bad_http_status">無法連接至伺服器</string>
+    <string name="error_io_file_not_found">找不到檔案</string>
+    <string name="error_io_no_permission">I/O 權限不足</string>
+    <string name="error_io_cleartext_not_permitted">此內容需要安全的網路連線</string>
+    <string name="error_io_read_position_out_of_range">讀取來源資料失敗</string>
+    <string name="error_parsing_container_malformed">媒體檔案已損毀或格式不受支援</string>
+    <string name="error_parsing_manifest_malformed">串流清單無效</string>
+    <string name="error_parsing_container_unsupported">不支援此媒體容器格式</string>
+    <string name="error_parsing_manifest_unsupported">不支援此串流清單格式</string>
+    <string name="error_decoder_init_failed">初始化媒體解碼器失敗</string>
+    <string name="error_decoder_query_failed">找不到適合此格式的媒體解碼器</string>
+    <string name="error_decoding_failed">解碼媒體時發生錯誤</string>
+    <string name="error_decoding_format_exceeds_capabilities">媒體品質超過裝置能力上限</string>
+    <string name="error_decoding_format_unsupported">此裝置不支援該媒體格式</string>
+    <string name="error_decoding_resources_reclaimed">解碼資源已被系統收回</string>
+    <string name="error_audio_track_init_failed">初始化音軌失敗</string>
+    <string name="error_audio_track_write_failed">寫入音訊資料失敗</string>
+    <string name="error_audio_track_offload_write_failed">寫入 Offload 音訊資料失敗</string>
+    <string name="error_audio_track_offload_init_failed">初始化 Offload 音軌失敗</string>
+    <string name="error_drm_unspecified">發生未知的 DRM 錯誤</string>
+    <string name="error_drm_provisioning_failed">設定裝置 DRM 失敗</string>
+    <string name="error_drm_content_error">受保護的內容發生錯誤</string>
+    <string name="error_drm_license_acquisition_failed">取得內容授權失敗</string>
+    <string name="error_drm_disallowed_operation">不允許此 DRM 操作</string>
+    <string name="error_drm_system_error">發生 DRM 系統錯誤</string>
+    <string name="error_drm_device_revoked">此裝置的內容存取權已被撤銷</string>
+    <string name="error_drm_license_expired">內容授權已過期</string>
+    <string name="error_video_frame_processor_init_failed">初始化影片影格處理器失敗</string>
+    <string name="error_video_frame_processing_failed">處理影片影格時發生錯誤</string>
+    <string name="error_no_decoder">此裝置未提供 <xliff:g id="mime_type">%1$s</xliff:g> 格式的解碼器</string>
+    <string name="error_no_secure_decoder">此裝置未提供 <xliff:g id="mime_type">%1$s</xliff:g> 格式的安全解碼器</string>
+    <string name="error_querying_decoders">無法查詢裝置的解碼器</string>
+    <string name="error_instantiating_decoder">無法將解碼器 <xliff:g id="decoder_name">%1$s</xliff:g> 實例化</string>
+</resources>
