@@ -602,8 +602,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void setEpisodeAdapter(List<Episode> items) {
         mBinding.control.action.episodes.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
-        mBinding.control.nextRoot.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
-        mBinding.control.prevRoot.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
+        mBinding.control.next.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
+        mBinding.control.prev.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
         mBinding.reverse.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
         mBinding.episode.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.more.setVisibility(items.size() < 10 ? View.GONE : View.VISIBLE);
