@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
@@ -92,7 +91,7 @@ public class WallConfig {
     }
 
     private void createSnapshot(byte[] data) throws Exception {
-        Bitmap bitmap = Glide.with(App.get()).asBitmap().load(data).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).submit().get();
+        Bitmap bitmap = Glide.with(App.get()).asBitmap().load(data).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).submit().get();
         try (FileOutputStream fos = new FileOutputStream(FileUtil.getWallCache())) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         }

@@ -20,8 +20,8 @@ import androidx.media3.common.MediaItem;
 import androidx.media3.exoplayer.ExoPlayer;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fongmi.android.tv.App;
+import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.databinding.ViewWallBinding;
 import com.fongmi.android.tv.event.RefreshEvent;
@@ -117,14 +117,15 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
         player.clearMediaItems();
         binding.video.setPlayer(null);
         binding.video.setVisibility(GONE);
-        Glide.with(binding.image).asGif().load(file).placeholder(cache).error(cache).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).into(binding.image);
+        Glide.with(binding.image).load(file).placeholder(cache).error(cache).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).into(binding.image);
     }
 
     private void loadImage() {
         player.clearMediaItems();
         binding.video.setPlayer(null);
         binding.video.setVisibility(GONE);
-        binding.image.setImageDrawable(cache);
+        if (cache != null) binding.image.setImageDrawable(cache);
+        else binding.image.setImageResource(R.drawable.wallpaper_1);
     }
 
     @Override
