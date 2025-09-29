@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.Player;
 import androidx.media3.exoplayer.ExoPlayer;
 
 import com.bumptech.glide.Glide;
@@ -35,7 +36,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 
-public class CustomWallView extends FrameLayout implements DefaultLifecycleObserver {
+public class CustomWallView extends FrameLayout implements DefaultLifecycleObserver, Player.Listener {
 
     private ViewWallBinding binding;
     private ExoPlayer player;
@@ -62,6 +63,7 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
         player = new ExoPlayer.Builder(App.get()).setRenderersFactory(ExoUtil.buildRenderersFactory(EXTENSION_RENDERER_MODE_ON)).setMediaSourceFactory(ExoUtil.buildMediaSourceFactory()).build();
         player.setRepeatMode(ExoPlayer.REPEAT_MODE_ALL);
         player.setPlayWhenReady(true);
+        player.addListener(this);
         player.setVolume(0);
     }
 
@@ -107,7 +109,6 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
 
     private void loadVideo(File file) {
         binding.video.setPlayer(player);
-        binding.video.setVisibility(VISIBLE);
         binding.image.setImageDrawable(cache);
         player.setMediaItem(MediaItem.fromUri(Uri.fromFile(file)));
         player.prepare();
@@ -126,6 +127,11 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
         binding.video.setVisibility(GONE);
         if (cache != null) binding.image.setImageDrawable(cache);
         else binding.image.setImageResource(R.drawable.wallpaper_1);
+    }
+
+    @Override
+    public void onRenderedFirstFrame() {
+        binding.video.setVisibility(VISIBLE);
     }
 
     @Override
