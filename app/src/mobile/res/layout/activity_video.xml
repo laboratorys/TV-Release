@@ -48,11 +48,11 @@
 
     </FrameLayout>
 
-    <include
-        layout="@layout/view_shadow"
+    <View
         android:layout_width="match_parent"
         android:layout_height="4dp"
-        android:layout_below="@+id/video" />
+        android:layout_below="@+id/video"
+        android:background="@drawable/shadow" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeLayout"

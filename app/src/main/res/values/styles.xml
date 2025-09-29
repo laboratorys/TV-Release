@@ -24,7 +24,6 @@
     </style>
 
     <style name="Player">
-        <item name="auto_show">false</item>
         <item name="resize_mode">fit</item>
         <item name="use_artwork">true</item>
         <item name="use_controller">false</item>
