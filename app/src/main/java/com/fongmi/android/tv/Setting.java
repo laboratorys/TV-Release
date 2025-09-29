@@ -236,7 +236,7 @@ public class Setting {
     }
 
     public static boolean isAdblock() {
-        return Prefers.getBoolean("adblock");
+        return Prefers.getBoolean("adblock", true);
     }
 
     public static void putAdblock(boolean adblock) {
