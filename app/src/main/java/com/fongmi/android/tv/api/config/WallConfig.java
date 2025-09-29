@@ -80,10 +80,10 @@ public class WallConfig {
             byte[] data = OkHttp.bytes(UrlUtil.convert(getUrl()));
             if (data.length == 0) throw new RuntimeException();
             Path.write(FileUtil.getWall(0), data);
-            App.post(callback::success);
+            createSnapshot(data);
             config.update();
-            writeCache();
             refresh(0);
+            App.post(callback::success);
         } catch (Throwable e) {
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
             else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
@@ -91,10 +91,11 @@ public class WallConfig {
         }
     }
 
-    private void writeCache() throws Exception {
-        Bitmap bitmap = Glide.with(App.get()).asBitmap().load(FileUtil.getWall(0)).diskCacheStrategy(DiskCacheStrategy.NONE).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).submit().get();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(FileUtil.getWallCache()));
-        bitmap.recycle();
+    private void createSnapshot(byte[] data) throws Exception {
+        Bitmap bitmap = Glide.with(App.get()).asBitmap().load(data).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).submit().get();
+        try (FileOutputStream fos = new FileOutputStream(FileUtil.getWallCache())) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+        }
     }
 
     public boolean needSync(String url) {

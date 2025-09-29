@@ -117,7 +117,7 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
         player.clearMediaItems();
         binding.video.setPlayer(null);
         binding.video.setVisibility(GONE);
-        Glide.with(binding.image).asGif().load(file).placeholder(cache).error(cache).diskCacheStrategy(DiskCacheStrategy.NONE).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).into(binding.image);
+        Glide.with(binding.image).asGif().load(file).placeholder(cache).error(cache).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).into(binding.image);
     }
 
     private void loadImage() {
