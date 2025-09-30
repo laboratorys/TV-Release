@@ -1,7 +1,5 @@
 package com.fongmi.android.tv.ui.custom;
 
-import static androidx.media3.exoplayer.DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
-
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -20,12 +18,10 @@ import androidx.media3.common.MediaItem;
 import androidx.media3.exoplayer.ExoPlayer;
 
 import com.bumptech.glide.Glide;
-import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.databinding.ViewWallBinding;
 import com.fongmi.android.tv.event.RefreshEvent;
-import com.fongmi.android.tv.player.exo.ExoUtil;
 import com.fongmi.android.tv.utils.FileUtil;
 import com.fongmi.android.tv.utils.ResUtil;
 
@@ -59,7 +55,7 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
     }
 
     private void createPlayer() {
-        player = new ExoPlayer.Builder(App.get()).setRenderersFactory(ExoUtil.buildRenderersFactory(EXTENSION_RENDERER_MODE_ON)).setMediaSourceFactory(ExoUtil.buildMediaSourceFactory()).build();
+        player = new ExoPlayer.Builder(getContext()).build();
         player.setRepeatMode(ExoPlayer.REPEAT_MODE_ALL);
         player.setPlayWhenReady(true);
         player.setVolume(0);
@@ -131,6 +127,20 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
     @Override
     public void onCreate(@NonNull LifecycleOwner owner) {
         EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onResume(@NonNull LifecycleOwner owner) {
+        if (binding.video.getVisibility() != VISIBLE || player == null || player.getMediaItemCount() == 0) return;
+        binding.video.setPlayer(player);
+        player.play();
+    }
+
+    @Override
+    public void onPause(@NonNull LifecycleOwner owner) {
+        if (binding.video.getVisibility() != VISIBLE || player == null || player.getMediaItemCount() == 0) return;
+        binding.video.setPlayer(null);
+        player.pause();
     }
 
     @Override

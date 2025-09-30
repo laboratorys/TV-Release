@@ -14,6 +14,8 @@
         android:id="@+id/video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
+        app:keep_content_on_player_reset="false"
         app:resize_mode="zoom"
         app:shutter_background_color="@color/transparent"
         app:surface_type="texture_view"
