@@ -912,7 +912,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void setArtwork() {
-        ImgUtil.load(mHistory.getVodPic(), new CustomTarget<>(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()) {
+        ImgUtil.load(this, mHistory.getVodPic(), new CustomTarget<>(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()) {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 mBinding.exo.setDefaultArtwork(resource);

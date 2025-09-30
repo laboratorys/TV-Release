@@ -508,7 +508,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void setArtwork() {
-        ImgUtil.load(mChannel.getLogo(), new CustomTarget<>(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()) {
+        ImgUtil.load(this, mChannel.getLogo(), new CustomTarget<>(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()) {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 mBinding.exo.setDefaultArtwork(resource);
