@@ -35,7 +35,11 @@ public class ImgUtil {
     private static final Set<String> failed = new HashSet<>();
 
     public static void load(Context context, String url, CustomTarget<Drawable> target) {
-        Glide.with(context).load(getUrl(url)).error(R.drawable.artwork).into(target);
+        try {
+            Glide.with(context).load(getUrl(url)).error(R.drawable.artwork).into(target);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void load(String text, String url, ImageView view) {
