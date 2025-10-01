@@ -128,9 +128,8 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
 
     @Override
     public void onItemClick(int position, Collect item) {
-        mBinding.recycler.scrollToPosition(0);
+        mSearchAdapter.setItems(item.getList(), () -> mBinding.recycler.scrollToPosition(0));
         mCollectAdapter.setActivated(position);
-        mSearchAdapter.setItems(item.getList());
         mScroller.setPage(item.getPage());
     }
 
