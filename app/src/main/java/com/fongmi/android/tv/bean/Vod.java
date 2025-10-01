@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.fongmi.android.tv.App;
+import com.fongmi.android.tv.impl.Diffable;
 import com.fongmi.android.tv.utils.Sniffer;
 import com.fongmi.android.tv.utils.Util;
 import com.github.catvod.utils.Trans;
@@ -25,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Root(strict = false)
-public class Vod implements Parcelable {
+public class Vod implements Parcelable, Diffable<Vod> {
 
     @Element(name = "id", required = false)
     @SerializedName("vod_id")
@@ -304,7 +305,7 @@ public class Vod implements Parcelable {
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Vod it)) return false;
-        return getVodId().equals(it.getVodId());
+        return getVodId().equals(it.getVodId()) && getVodName().equals(it.getVodName()) && getVodPic().equals(it.getVodPic()) && getVodRemarks().equals(it.getVodRemarks());
     }
 
     @Override
@@ -372,4 +373,14 @@ public class Vod implements Parcelable {
             return new Vod[size];
         }
     };
+
+    @Override
+    public boolean isSameItem(Vod other) {
+        return getVodId().equals(other.getVodId());
+    }
+
+    @Override
+    public boolean isSameContent(Vod other) {
+        return equals(other);
+    }
 }

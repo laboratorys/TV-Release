@@ -83,14 +83,6 @@ public class Setting {
         Prefers.put("size", size);
     }
 
-    public static int getViewType(int viewType) {
-        return Prefers.getInt("viewType", viewType);
-    }
-
-    public static void putViewType(int viewType) {
-        Prefers.put("viewType", viewType);
-    }
-
     public static int getScale() {
         return Prefers.getInt("scale");
     }
