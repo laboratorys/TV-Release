@@ -48,7 +48,7 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
     }
 
     private void init() {
-        binding = ViewWallBinding.inflate(LayoutInflater.from(getContext()), this);
+        binding = ViewWallBinding.inflate(LayoutInflater.from(getContext()), this, true);
         ((ComponentActivity) getContext()).getLifecycle().addObserver(this);
         createPlayer();
         refresh();
