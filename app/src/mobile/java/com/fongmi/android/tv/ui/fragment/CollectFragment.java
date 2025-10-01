@@ -42,6 +42,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     private CustomScroller mScroller;
     private SiteViewModel mViewModel;
     private PauseExecutor mExecutor;
+    private int maxWidth;
 
     public static CollectFragment newInstance(String keyword) {
         Bundle args = new Bundle();
@@ -72,6 +73,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
 
     @Override
     protected void initView() {
+        maxWidth = ResUtil.getScreenWidth() / (ResUtil.isLand(requireActivity()) ? 3 : 2) - ResUtil.dp2px(32);
         mScroller = new CustomScroller(this);
         setRecyclerView();
         setViewModel();
@@ -79,10 +81,10 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     private void setRecyclerView() {
+        mBinding.collect.setMaxWidth(maxWidth);
         mBinding.collect.setItemAnimator(null);
         mBinding.collect.setHasFixedSize(false);
         mBinding.collect.setAdapter(mCollectAdapter = new CollectAdapter(this));
-        mBinding.collect.setMaxWidth(ResUtil.getScreenWidth() / 2 - ResUtil.dp2px(32));
         mBinding.recycler.setHasFixedSize(true);
         mBinding.recycler.addOnScrollListener(mScroller);
         mBinding.recycler.setAdapter(mSearchAdapter = new SearchAdapter(this));
