@@ -2,6 +2,7 @@ package com.fongmi.android.tv.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -122,7 +123,7 @@ public class Vod implements Parcelable, Diffable<Vod> {
     }
 
     public String getVodName() {
-        return TextUtils.isEmpty(vodName) ? "" : vodName.trim();
+        return TextUtils.isEmpty(vodName) ? "" : Html.fromHtml(vodName, Html.FROM_HTML_MODE_LEGACY).toString().trim();
     }
 
     public void setVodName(String vodName) {
