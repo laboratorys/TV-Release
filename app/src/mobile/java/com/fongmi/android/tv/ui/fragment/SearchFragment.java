@@ -120,7 +120,8 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
     }
 
     private void checkKeyword() {
-        if (TextUtils.isEmpty(getKeyword())) Util.showKeyboard(mBinding.keyword);
+        boolean visible = requireActivity().getSupportFragmentManager().findFragmentByTag(CollectFragment.class.getSimpleName()) != null;
+        if (TextUtils.isEmpty(getKeyword()) && !visible) Util.showKeyboard(mBinding.keyword);
         else setKeyword(getKeyword());
     }
 
