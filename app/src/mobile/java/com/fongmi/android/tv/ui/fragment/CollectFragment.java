@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.api.config.VodConfig;
@@ -88,6 +89,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
         mBinding.recycler.setHasFixedSize(true);
         mBinding.recycler.addOnScrollListener(mScroller);
         mBinding.recycler.setAdapter(mSearchAdapter = new SearchAdapter(this));
+        ((GridLayoutManager) (mBinding.recycler.getLayoutManager())).setSpanCount(getCount());
     }
 
     private void setViewModel() {
@@ -115,6 +117,12 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
             mViewModel.searchContent(site, keyword, false);
         } catch (Throwable ignored) {
         }
+    }
+
+    private int getCount() {
+        int count = ResUtil.isLand(requireActivity()) ? 2 : 1;
+        if (ResUtil.isPad()) count++;
+        return count;
     }
 
     private void setCollect(Result result) {
