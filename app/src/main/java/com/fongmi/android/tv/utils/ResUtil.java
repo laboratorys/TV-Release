@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -42,7 +43,8 @@ public class ResUtil {
         if (windowManager == null) {
             return getDisplayMetrics(context).widthPixels;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return windowManager.getCurrentWindowMetrics().getBounds().width();
+            Rect rect = windowManager.getCurrentWindowMetrics().getBounds();
+            return isLand(context) ? Math.max(rect.width(), rect.height()) : Math.min(rect.width(), rect.height());
         } else {
             DisplayMetrics displayMetrics = new DisplayMetrics();
             windowManager.getDefaultDisplay().getMetrics(displayMetrics);
@@ -59,7 +61,8 @@ public class ResUtil {
         if (windowManager == null) {
             return getDisplayMetrics(context).heightPixels;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return windowManager.getCurrentWindowMetrics().getBounds().height();
+            Rect rect = windowManager.getCurrentWindowMetrics().getBounds();
+            return isLand(context) ? Math.min(rect.width(), rect.height()) : Math.max(rect.width(), rect.height());
         } else {
             DisplayMetrics displayMetrics = new DisplayMetrics();
             windowManager.getDefaultDisplay().getMetrics(displayMetrics);
