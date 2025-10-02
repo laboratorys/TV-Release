@@ -91,18 +91,9 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     private void setViewModel() {
-        mViewModel = new ViewModelProvider(this).get(SiteViewModel.class);
-        mViewModel.search.observe(this, result -> {
-            if (mCollectAdapter.getPosition() == 0) mSearchAdapter.addItems(result.getList());
-            mCollectAdapter.addItem(Collect.create(result.getList()));
-            mCollectAdapter.add(result.getList());
-        });
-        mViewModel.result.observe(this, result -> {
-            boolean same = !result.getList().isEmpty() && mCollectAdapter.getActivated().getSite().equals(result.getList().get(0).getSite());
-            if (same) mCollectAdapter.getActivated().getList().addAll(result.getList());
-            if (same) mSearchAdapter.addItems(result.getList());
-            mScroller.endLoading(result);
-        });
+        mViewModel = new ViewModelProvider(this).get(SiteViewModel.class).init();
+        mViewModel.search.observe(this, this::setCollect);
+        mViewModel.result.observe(this, this::setSearch);
     }
 
     private List<Site> getSites() {
@@ -112,9 +103,11 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     private void search() {
+        if (mExecutor != null) mExecutor.shutdownNow();
         mExecutor = new PauseExecutor(20);
-        mCollectAdapter.setItems(List.of(Collect.all()));
-        for (Site site : getSites()) mExecutor.execute(() -> search(site, getKeyword()));
+        mCollectAdapter.setItems(List.of(Collect.all()), () -> {
+            for (Site site : getSites()) mExecutor.execute(() -> search(site, getKeyword()));
+        });
     }
 
     private void search(Site site, String keyword) {
@@ -122,6 +115,21 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
             mViewModel.searchContent(site, keyword, false);
         } catch (Throwable ignored) {
         }
+    }
+
+    private void setCollect(Result result) {
+        if (result == null) return;
+        if (mCollectAdapter.getPosition() == 0) mSearchAdapter.addItems(result.getList());
+        mCollectAdapter.addItem(Collect.create(result.getList()));
+        mCollectAdapter.add(result.getList());
+    }
+
+    private void setSearch(Result result) {
+        if (result == null) return;
+        boolean same = !result.getList().isEmpty() && mCollectAdapter.getActivated().getSite().equals(result.getList().get(0).getSite());
+        if (same) mCollectAdapter.getActivated().getList().addAll(result.getList());
+        if (same) mSearchAdapter.addItems(result.getList());
+        mScroller.endLoading(result);
     }
 
     @Override
