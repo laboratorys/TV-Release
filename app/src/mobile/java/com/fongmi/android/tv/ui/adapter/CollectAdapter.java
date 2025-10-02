@@ -26,6 +26,7 @@ public class CollectAdapter extends BaseDiffAdapter<Collect, CollectAdapter.View
     }
 
     public void add(List<Vod> items) {
+        if (getItemCount() == 0) return;
         getItem(0).getList().addAll(items);
     }
 
@@ -43,12 +44,6 @@ public class CollectAdapter extends BaseDiffAdapter<Collect, CollectAdapter.View
         notifyItemRangeChanged(0, getItemCount());
     }
 
-    @Override
-    public void clear() {
-        super.clear();
-        addItem(Collect.all());
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -58,6 +53,7 @@ public class CollectAdapter extends BaseDiffAdapter<Collect, CollectAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Collect item = getItem(position);
+        holder.binding.text.setSelected(item.isActivated());
         holder.binding.text.setActivated(item.isActivated());
         holder.binding.text.setText(item.getSite().getName());
         holder.binding.text.setOnClickListener(v -> listener.onItemClick(position, item));

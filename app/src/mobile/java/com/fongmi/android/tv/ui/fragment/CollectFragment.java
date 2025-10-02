@@ -112,10 +112,8 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     private void search() {
-        mSearchAdapter.clear();
-        mCollectAdapter.clear();
-        if (mExecutor != null) mExecutor.shutdownNow();
         mExecutor = new PauseExecutor(20);
+        mCollectAdapter.setItems(List.of(Collect.all()));
         for (Site site : getSites()) mExecutor.execute(() -> search(site, getKeyword()));
     }
 
