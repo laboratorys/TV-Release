@@ -266,12 +266,13 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mBinding.group.getLayoutParams().width = live.getWidth() == 0 ? 0 : Math.min(live.getWidth() + padding, ResUtil.getScreenWidth() / 4);
     }
 
-    private void setWidth(Group group) {
+    private Group setWidth(Group group) {
         int logo = ResUtil.dp2px(60);
         int padding = ResUtil.dp2px(60);
         if (group.isKeep()) group.setWidth(0);
         if (group.getWidth() == 0) for (Channel item : group.getChannel()) group.setWidth(Math.max(group.getWidth(), (item.getLogo().isEmpty() ? 0 : logo) + ResUtil.getTextWidth(item.getNumber() + item.getName(), 16)));
-        mBinding.channel.getLayoutParams().width = group.getWidth() == 0 ? 1 : Math.min(group.getWidth() + padding, ResUtil.getScreenWidth() / 2);
+        mBinding.channel.getLayoutParams().width = group.getWidth() == 0 ? 0 : Math.min(group.getWidth() + padding, ResUtil.getScreenWidth() / 2);
+        return group;
     }
 
     private void setWidth(Epg epg) {
@@ -309,7 +310,6 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mOldView = child.itemView;
         mOldView.setSelected(true);
         onItemClick(group);
-        setWidth(group);
         resetPass();
     }
 
@@ -525,7 +525,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Override
     public void onItemClick(Group item) {
-        mChannelAdapter.setItems(item.getChannel(), null);
+        mChannelAdapter.setItems(setWidth(item).getChannel(), null);
         mBinding.channel.setSelectedPosition(Math.max(item.getPosition(), 0));
         if (!item.isKeep() || ++count < 5 || mHides.isEmpty()) return;
         PassDialog.create().show(this);
