@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -263,7 +264,8 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     private void setWidth(Live live) {
         int padding = ResUtil.dp2px(48);
         if (live.getWidth() == 0) for (Group item : live.getGroups()) live.setWidth(Math.max(live.getWidth(), ResUtil.getTextWidth(item.getName(), 16)));
-        mBinding.group.getLayoutParams().width = live.getWidth() == 0 ? 0 : Math.min(live.getWidth() + padding, ResUtil.getScreenWidth() / 4);
+        int width = live.getWidth() == 0 ? 0 : Math.min(live.getWidth() + padding, ResUtil.getScreenWidth() / 4);
+        setWidth(mBinding.group, width);
     }
 
     private Group setWidth(Group group) {
@@ -271,8 +273,8 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         int padding = ResUtil.dp2px(60);
         if (group.isKeep()) group.setWidth(0);
         if (group.getWidth() == 0) for (Channel item : group.getChannel()) group.setWidth(Math.max(group.getWidth(), (item.getLogo().isEmpty() ? 0 : logo) + ResUtil.getTextWidth(item.getNumber() + item.getName(), 16)));
-        mBinding.channel.post(() -> mBinding.channel.getLayoutParams().width = group.getWidth() == 0 ? 0 : Math.min(group.getWidth() + padding, ResUtil.getScreenWidth() / 2));
-        mBinding.channel.post(() -> mBinding.channel.requestLayout());
+        int width = group.getWidth() == 0 ? 0 : Math.min(group.getWidth() + padding, ResUtil.getScreenWidth() / 2);
+        setWidth(mBinding.channel, width);
         return group;
     }
 
@@ -281,7 +283,17 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         if (epg.getList().isEmpty()) return;
         int minWidth = ResUtil.getTextWidth(epg.getList().get(0).getTime(), 16);
         if (epg.getWidth() == 0) for (EpgData item : epg.getList()) epg.setWidth(Math.max(epg.getWidth(), ResUtil.getTextWidth(item.getTitle(), 16)));
-        mBinding.epgData.getLayoutParams().width = epg.getWidth() == 0 ? 0 : Math.min(Math.max(epg.getWidth(), minWidth) + padding, ResUtil.getScreenWidth() / 2);
+        int width = epg.getWidth() == 0 ? 0 : Math.min(Math.max(epg.getWidth(), minWidth) + padding, ResUtil.getScreenWidth() / 2);
+        setWidth(mBinding.epgData, width);
+    }
+
+    private void setWidth(View view, int width) {
+        view.post(() -> {
+            ViewGroup.LayoutParams params = view.getLayoutParams();
+            if (params.width == width) return;
+            params.width = width;
+            view.setLayoutParams(params);
+        });
     }
 
     private void setPosition(int[] position) {
