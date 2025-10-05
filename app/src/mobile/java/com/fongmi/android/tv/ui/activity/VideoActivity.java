@@ -276,6 +276,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> setStatusBar(insets));
         mKeyDown = CustomKeyDown.create(this, mBinding.exo);
         mFrameParams = mBinding.video.getLayoutParams();
         mBinding.progressLayout.showProgress();
@@ -347,6 +348,15 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.control.seek.setListener(mPlayers);
     }
 
+    private WindowInsetsCompat setStatusBar(WindowInsetsCompat insets) {
+        if (getActivity().isInPictureInPictureMode()) return insets;
+        int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+        ViewGroup.LayoutParams lp = mBinding.statusBar.getLayoutParams();
+        lp.height = top;
+        mBinding.statusBar.setLayoutParams(lp);
+        return insets;
+    }
+
     private void setRecyclerView() {
         mBinding.flag.setHasFixedSize(true);
         mBinding.flag.setItemAnimator(null);
@@ -378,13 +388,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.control.action.danmaku.setVisibility(Setting.isDanmakuLoad() ? View.VISIBLE : View.GONE);
         mBinding.control.action.reset.setText(ResUtil.getStringArray(R.array.select_reset)[Setting.getReset()]);
         mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(this, view));
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, windowInsets) -> {
-            int top = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
-            ViewGroup.LayoutParams lp = mBinding.statusBar.getLayoutParams();
-            lp.height = top;
-            mBinding.statusBar.setLayoutParams(lp);
-            return windowInsets;
-        });
     }
 
     private void setVideoView(boolean isInPictureInPictureMode) {
@@ -874,7 +877,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void enterFullscreen() {
         if (isFullscreen()) return;
         if (isLand()) setTransition();
-        mBinding.video.postDelayed(() -> mBinding.video.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)), 100);
+        mBinding.video.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         setRequestedOrientation(mPlayers.isPortrait() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         mBinding.control.title.setVisibility(View.VISIBLE);
         setRotate(mPlayers.isPortrait(), true);
@@ -949,7 +952,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void showControl() {
-        if (mPiP.isInMode(this)) return;
+        if (isInPictureInPictureMode()) return;
         mBinding.control.danmaku.setVisibility(isLock() || !mPlayers.haveDanmaku() ? View.GONE : View.VISIBLE);
         mBinding.control.setting.setVisibility(mHistory == null || isFullscreen() ? View.GONE : View.VISIBLE);
         mBinding.control.right.rotate.setVisibility(isFullscreen() && !isLock() ? View.VISIBLE : View.GONE);
@@ -1214,9 +1217,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         ValueAnimator animator = ValueAnimator.ofInt(mBinding.video.getHeight(), finalHeight).setDuration(300);
         animator.setInterpolator(new DecelerateInterpolator());
         animator.addUpdateListener(animation -> {
-            ViewGroup.LayoutParams params = mBinding.video.getLayoutParams();
-            params.height = (int) animation.getAnimatedValue();
-            mBinding.video.setLayoutParams(params);
+            mFrameParams = mBinding.video.getLayoutParams();
+            mFrameParams.height = (int) animation.getAnimatedValue();
+            mBinding.video.setLayoutParams(mFrameParams);
         });
         animator.start();
     }

@@ -479,7 +479,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     }
 
     private void showControl() {
-        if (mPiP.isInMode(this)) return;
+        if (isInPictureInPictureMode()) return;
         mBinding.control.info.setVisibility(mPlayers.isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.control.cast.setVisibility(mPlayers.isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.control.right.rotate.setVisibility(isLock() ? View.GONE : View.VISIBLE);
@@ -498,8 +498,8 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     }
 
     private void showInfo() {
-        mBinding.widget.infoPip.setVisibility(mPiP.isInMode(this) ? View.VISIBLE : View.GONE);
-        mBinding.widget.info.setVisibility(mPiP.isInMode(this) ? View.GONE : View.VISIBLE);
+        mBinding.widget.infoPip.setVisibility(isInPictureInPictureMode() ? View.VISIBLE : View.GONE);
+        mBinding.widget.info.setVisibility(isInPictureInPictureMode() ? View.GONE : View.VISIBLE);
         setR3Callback();
         hideControl();
         setInfo();

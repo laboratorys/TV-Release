@@ -2,7 +2,6 @@ package com.fongmi.android.tv.utils;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.StatFs;
 import android.text.TextUtils;
 
@@ -117,7 +116,7 @@ public class FileUtil {
     }
 
     public static Uri getShareUri(File file) {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.N ? Uri.fromFile(file) : FileProvider.getUriForFile(App.get(), App.get().getPackageName() + ".provider", file);
+        return FileProvider.getUriForFile(App.get(), App.get().getPackageName() + ".provider", file);
     }
 
     private static String getMimeType(String fileName) {
