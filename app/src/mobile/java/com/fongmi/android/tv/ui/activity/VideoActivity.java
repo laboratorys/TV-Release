@@ -349,7 +349,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private WindowInsetsCompat setStatusBar(WindowInsetsCompat insets) {
-        if (getActivity().isInPictureInPictureMode()) return insets;
         int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
         ViewGroup.LayoutParams lp = mBinding.statusBar.getLayoutParams();
         lp.height = top;
@@ -670,7 +669,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void onBack() {
-        if (isFullscreen()) toggleFullscreen();
+        if (isFullscreen()) exitFullscreen();
         else finish();
     }
 
@@ -861,11 +860,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void onSwipeRefresh() {
         if (mBinding.progressLayout.isEmpty()) getDetail();
         else onRefresh();
-    }
-
-    private void toggleFullscreen() {
-        if (isFullscreen()) exitFullscreen();
-        else enterFullscreen();
     }
 
     private boolean shouldEnterFullscreen(Episode item) {
@@ -1204,7 +1198,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void checkHeight() {
-        if (isLand() || isFullscreen() || mPlayers.getVideoHeight() == 0) return;
+        if (isLand() || isFullscreen() || isInPictureInPictureMode() || mPlayers.getVideoHeight() == 0) return;
         mBinding.video.post(this::changeHeight);
     }
 
