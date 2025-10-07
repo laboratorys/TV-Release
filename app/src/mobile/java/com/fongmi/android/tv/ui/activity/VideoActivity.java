@@ -14,6 +14,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,6 +125,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private Observer<Result> mObserveSearch;
     private EpisodeAdapter mEpisodeAdapter;
     private QualityAdapter mQualityAdapter;
+    private ValueAnimator mHeightAnimator;
     private ControlDialog mControlDialog;
     private QuickAdapter mQuickAdapter;
     private ParseAdapter mParseAdapter;
@@ -298,6 +300,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         setViewModel();
         showProgress();
         showDanmaku();
+        setAnimator();
         checkId();
     }
 
@@ -395,6 +398,15 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         } else {
             mBinding.video.setLayoutParams(mFrameParams);
         }
+    }
+
+    private void setAnimator() {
+        mHeightAnimator = new ValueAnimator();
+        mHeightAnimator.setInterpolator(new DecelerateInterpolator());
+        mHeightAnimator.addUpdateListener(animation -> {
+            mFrameParams.height = (int) animation.getAnimatedValue();
+            mBinding.video.setLayoutParams(mFrameParams);
+        });
     }
 
     private void setDecode() {
@@ -870,6 +882,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void enterFullscreen() {
         if (isFullscreen()) return;
+        Log.e("DDD", "enterFullscreen");
         if (isLand()) setTransition();
         mBinding.video.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         setRequestedOrientation(mPlayers.isPortrait() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
@@ -883,6 +896,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void exitFullscreen() {
         if (!isFullscreen()) return;
+        Log.e("DDD", "exitFullscreen");
         if (isLand()) setTransition();
         setRequestedOrientation(isPort() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_FULL_USER);
         mBinding.episode.postDelayed(() -> mBinding.episode.scrollToPosition(mEpisodeAdapter.getPosition()), 100);
@@ -1177,7 +1191,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 mClock.setCallback(this);
                 break;
             case PlayerEvent.SIZE:
-                checkHeight();
+                mBinding.video.post(this::changeHeight);
                 checkOrientation();
                 break;
         }
@@ -1197,25 +1211,21 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         }
     }
 
-    private void checkHeight() {
-        if (isLand() || isFullscreen() || isInPictureInPictureMode() || mPlayers.getVideoHeight() == 0) return;
-        mBinding.video.post(this::changeHeight);
-    }
-
     private void changeHeight() {
+        if (isLand() || isFullscreen() || isInPictureInPictureMode()) return;
+        int videoWidth = mPlayers.getVideoWidth();
+        int videoHeight = mPlayers.getVideoHeight();
+        if (videoWidth == 0 || videoHeight == 0) return;
         int minHeight = ResUtil.dp2px(150);
         int maxHeight = ResUtil.getScreenHeight() / 2;
         int parentWidth = ((View) mBinding.video.getParent()).getWidth();
-        int calculated = (int) (parentWidth * ((float) mPlayers.getVideoHeight() / mPlayers.getVideoWidth()));
+        int calculated = (int) (parentWidth * ((float) videoHeight / videoWidth));
         int finalHeight = Math.max(minHeight, Math.min(maxHeight, calculated));
-        ValueAnimator animator = ValueAnimator.ofInt(mBinding.video.getHeight(), finalHeight).setDuration(300);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.addUpdateListener(animation -> {
-            mFrameParams = mBinding.video.getLayoutParams();
-            mFrameParams.height = (int) animation.getAnimatedValue();
-            mBinding.video.setLayoutParams(mFrameParams);
-        });
-        animator.start();
+        if (finalHeight == mBinding.video.getHeight()) return;
+        if (mHeightAnimator.isRunning()) mHeightAnimator.cancel();
+        mHeightAnimator.setIntValues(mBinding.video.getHeight(), finalHeight);
+        mHeightAnimator.setDuration(300);
+        mHeightAnimator.start();
     }
 
     private void checkEnded(boolean notify) {
