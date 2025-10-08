@@ -49,7 +49,11 @@ public class ImgUtil {
     public static void load(String text, String url, ImageView view, boolean vod) {
         if (!vod) view.setVisibility(TextUtils.isEmpty(url) ? View.GONE : View.VISIBLE);
         if (TextUtils.isEmpty(url) || failed.contains(url)) view.setImageDrawable(getTextDrawable(text, vod));
-        else view.post(() -> Glide.with(view).load(getUrl(url)).override(view.getWidth(), view.getHeight()).listener(getListener(text, url, view, vod)).into(view));
+        else try {
+            Glide.with(view).load(getUrl(url)).listener(getListener(text, url, view, vod)).into(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static Object getUrl(String url) {
