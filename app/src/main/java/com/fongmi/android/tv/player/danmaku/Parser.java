@@ -42,14 +42,17 @@ public class Parser extends BaseDanmakuParser {
             }
             Danmakus result = new Danmakus(IDanmakus.ST_BY_TIME);
             for (int i = 0; i < items.size(); i++) {
-                BaseDanmaku item = mContext.mDanmakuFactory.createDanmaku(items.get(i).getType(), mContext);
-                if (item.getType() == BaseDanmaku.TYPE_SPECIAL) continue;
-                DanmakuUtils.fillText(item, items.get(i).getText());
-                item.textShadowColor = items.get(i).getShadow();
-                item.textColor = items.get(i).getColor();
+                DanmakuData data = items.get(i);
+                int type = data.getType();
+                if (type == 2 || type == 3) type = 1;
+                BaseDanmaku item = mContext.mDanmakuFactory.createDanmaku(type, mContext);
+                if (item == null || item.getType() == BaseDanmaku.TYPE_SPECIAL) continue;
+                DanmakuUtils.fillText(item, data.getText());
+                item.textShadowColor = data.getShadow();
+                item.textColor = data.getColor();
                 item.flags = mContext.mGlobalFlagValues;
-                item.textSize = items.get(i).getSize();
-                item.setTime(items.get(i).getTime());
+                item.textSize = data.getSize();
+                item.setTime(data.getTime());
                 item.setTimer(mTimer);
                 item.index = i;
                 synchronized (result.obtainSynchronizer()) {
