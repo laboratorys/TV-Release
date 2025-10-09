@@ -93,9 +93,9 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.core:core-splashscreen:1.0.1'
     implementation 'androidx.media:media:1.7.1'
-    implementation 'androidx.room:room-runtime:2.8.1'
+    implementation 'androidx.room:room-runtime:2.8.2'
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
-    implementation 'com.airbnb.android:lottie:6.6.9'
+    implementation 'com.airbnb.android:lottie:6.6.10'
     implementation 'com.github.bassaer:materialdesigncolors:1.0.0'
     implementation 'com.github.bumptech.glide:glide:' + glideVersion
     implementation 'com.github.bumptech.glide:annotations:' + glideVersion
@@ -118,13 +118,14 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation('org.simpleframework:simple-xml:2.7.1') { exclude group: 'stax', module: 'stax-api' exclude group: 'xpp3', module: 'xpp3' }
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.29'
     leanbackImplementation 'androidx.leanback:leanback:1.2.0'
     leanbackImplementation 'com.github.JessYanCoding:AndroidAutoSize:1.2.1'
     mobileImplementation 'androidx.biometric:biometric:1.1.0'
     mobileImplementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     mobileImplementation 'com.google.android.flexbox:flexbox:3.0.0'
     mobileImplementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
-    annotationProcessor 'androidx.room:room-compiler:2.8.1'
+    annotationProcessor 'androidx.room:room-compiler:2.8.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:' + glideVersion
     annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.3.1'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
