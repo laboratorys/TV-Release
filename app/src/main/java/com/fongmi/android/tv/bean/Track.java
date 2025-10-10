@@ -96,7 +96,7 @@ public class Track {
     }
 
     public Track save() {
-        if (TextUtils.isEmpty(getKey()) || !isSelected()) return this;
+        if (TextUtils.isEmpty(getKey())) return this;
         AppDatabase.get().getTrackDao().insert(this);
         return this;
     }
