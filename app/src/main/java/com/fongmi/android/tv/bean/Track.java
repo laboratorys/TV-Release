@@ -23,7 +23,6 @@ public class Track {
     private String key;
     private String name;
     private boolean selected;
-    private boolean adaptive;
 
     public Track(int type, String name) {
         this.type = type;
@@ -86,14 +85,6 @@ public class Track {
         this.selected = selected;
     }
 
-    public boolean isAdaptive() {
-        return adaptive;
-    }
-
-    public void setAdaptive(boolean adaptive) {
-        this.adaptive = adaptive;
-    }
-
     public Track key(String key) {
         setKey(key);
         return this;
@@ -105,7 +96,7 @@ public class Track {
     }
 
     public Track save() {
-        if (TextUtils.isEmpty(getKey())) return this;
+        if (TextUtils.isEmpty(getKey()) || !isSelected()) return this;
         AppDatabase.get().getTrackDao().insert(this);
         return this;
     }
