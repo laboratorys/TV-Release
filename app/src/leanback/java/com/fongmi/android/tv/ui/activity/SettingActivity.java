@@ -104,8 +104,10 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
     @Override
     protected void initEvent() {
         mBinding.vod.setOnClickListener(this::onVod);
+        mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.live.setOnClickListener(this::onLive);
         mBinding.wall.setOnClickListener(this::onWall);
+        mBinding.size.setOnClickListener(this::setSize);
         mBinding.cache.setOnClickListener(this::onCache);
         mBinding.backup.setOnClickListener(this::onBackup);
         mBinding.player.setOnClickListener(this::onPlayer);
@@ -116,14 +118,13 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
         mBinding.live.setOnLongClickListener(this::onLiveEdit);
         mBinding.liveHome.setOnClickListener(this::onLiveHome);
         mBinding.wall.setOnLongClickListener(this::onWallEdit);
+        mBinding.incognito.setOnClickListener(this::setIncognito);
         mBinding.vodHistory.setOnClickListener(this::onVodHistory);
         mBinding.version.setOnLongClickListener(this::onVersionDev);
         mBinding.liveHistory.setOnClickListener(this::onLiveHistory);
         mBinding.wallDefault.setOnClickListener(this::setWallDefault);
         mBinding.wallRefresh.setOnClickListener(this::setWallRefresh);
-        mBinding.incognito.setOnClickListener(this::setIncognito);
-        mBinding.size.setOnClickListener(this::setSize);
-        mBinding.doh.setOnClickListener(this::setDoh);
+        mBinding.wallRefresh.setOnLongClickListener(this::onWallHistory);
     }
 
     @Override
@@ -279,7 +280,18 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
                 Notify.dismiss();
                 setCacheText();
             }
+
+            @Override
+            public void error(String msg) {
+                Notify.dismiss();
+                Notify.show(msg);
+            }
         });
+    }
+
+    private boolean onWallHistory(View view) {
+        HistoryDialog.create(this).type(type = 2).show();
+        return true;
     }
 
     private void setIncognito(View view) {

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fongmi.android.tv.api.config.LiveConfig;
 import com.fongmi.android.tv.api.config.VodConfig;
+import com.fongmi.android.tv.api.config.WallConfig;
 import com.fongmi.android.tv.bean.Config;
 import com.fongmi.android.tv.databinding.AdapterConfigBinding;
 
@@ -31,8 +32,16 @@ public class ConfigAdapter extends RecyclerView.Adapter<ConfigAdapter.ViewHolder
 
     public ConfigAdapter addAll(int type) {
         mItems = Config.getAll(type);
-        mItems.remove(type == 0 ? VodConfig.get().getConfig() : LiveConfig.get().getConfig());
+        mItems.remove(getConfig(type));
         return this;
+    }
+
+    private Config getConfig(int type) {
+        return switch (type) {
+            case 0 -> VodConfig.get().getConfig();
+            case 1 -> LiveConfig.get().getConfig();
+            default -> WallConfig.get().getConfig();
+        };
     }
 
     public int remove(Config item) {
