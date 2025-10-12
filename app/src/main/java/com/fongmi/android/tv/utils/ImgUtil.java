@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.model.GlideUrl;
@@ -47,10 +48,13 @@ public class ImgUtil {
     }
 
     public static void load(String text, String url, ImageView view, boolean vod) {
+        view.setScaleType(vod ? CENTER_CROP : FIT_CENTER);
         if (!vod) view.setVisibility(TextUtils.isEmpty(url) ? View.GONE : View.VISIBLE);
         if (TextUtils.isEmpty(url) || failed.contains(url)) view.setImageDrawable(getTextDrawable(text, vod));
         else try {
-            Glide.with(view).load(getUrl(url)).listener(getListener(text, url, view, vod)).into(view);
+            RequestBuilder<Drawable> builder = Glide.with(view).load(getUrl(url)).listener(getListener(text, url, view, vod));
+            if (vod) builder.centerCrop().into(view);
+            else builder.fitCenter().into(view);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -91,8 +95,7 @@ public class ImgUtil {
             }
 
             @Override
-            public boolean onResourceReady(@NonNull Drawable resource, @NonNull Object model, Target<Drawable> target, @NonNull DataSource dataSource, boolean isFirstResource) {
-                view.setScaleType(vod ? CENTER_CROP : FIT_CENTER);
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                 return false;
             }
         };

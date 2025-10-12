@@ -24,7 +24,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:scaleType="fitCenter"
         android:src="@drawable/ic_site_search" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -33,7 +32,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:scaleType="fitCenter"
         android:src="@drawable/ic_site_change" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

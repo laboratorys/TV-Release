@@ -29,7 +29,6 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:padding="8dp"
-        android:scaleType="fitCenter"
         android:src="@drawable/ic_live_pass" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -41,7 +40,6 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:padding="8dp"
-        android:scaleType="fitCenter"
         android:src="@drawable/ic_live_boot" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

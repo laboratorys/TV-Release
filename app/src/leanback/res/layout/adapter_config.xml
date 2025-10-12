@@ -29,7 +29,6 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:padding="8dp"
-        android:scaleType="fitCenter"
         android:src="@drawable/ic_setting_delete" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

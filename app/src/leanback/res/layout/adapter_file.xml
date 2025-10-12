@@ -19,7 +19,6 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="16dp"
-            android:scaleType="fitCenter"
             tools:src="@drawable/ic_folder" />
 
         <com.google.android.material.textview.MaterialTextView

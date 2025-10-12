@@ -70,7 +70,6 @@
                     android:layout_marginEnd="12dp"
                     android:background="@drawable/shape_item"
                     android:padding="7dp"
-                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_setting_home" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -79,7 +78,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_item"
                     android:padding="7dp"
-                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_setting_history" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -128,7 +126,6 @@
                     android:layout_marginEnd="12dp"
                     android:background="@drawable/shape_item"
                     android:padding="7dp"
-                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_setting_home" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -137,7 +134,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_item"
                     android:padding="7dp"
-                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_setting_history" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -186,7 +182,6 @@
                     android:layout_marginEnd="12dp"
                     android:background="@drawable/shape_item"
                     android:padding="7dp"
-                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_setting_home" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -195,7 +190,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_item"
                     android:padding="7dp"
-                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_setting_refresh" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>

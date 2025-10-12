@@ -20,7 +20,6 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="16dp"
-            android:scaleType="fitCenter"
             app:shapeAppearanceOverlay="@style/Vod.Grid.Large" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
