@@ -334,7 +334,8 @@ public class VodConfig {
 
     private void setWall(String wall) {
         this.wall = wall;
-        boolean load = !TextUtils.isEmpty(wall) && WallConfig.get().needSync(wall);
-        if (load) WallConfig.get().config(Config.find(wall, config.getName(), 2).update());
+        boolean sync = !TextUtils.isEmpty(wall) && WallConfig.get().needSync(wall);
+        Config temp = Config.find(wall, config.getName(), 2).save();
+        if (sync) WallConfig.get().config(temp);
     }
 }
