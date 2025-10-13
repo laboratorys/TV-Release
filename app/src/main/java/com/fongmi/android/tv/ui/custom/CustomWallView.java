@@ -1,9 +1,7 @@
 package com.fongmi.android.tv.ui.custom;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -64,22 +62,6 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
         player.setVolume(0);
     }
 
-    private boolean isVideo(File file) {
-        try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
-            retriever.setDataSource(file.getAbsolutePath());
-            return "yes".equalsIgnoreCase(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO));
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private boolean isGif(File file) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-        return "image/gif".equals(options.outMimeType);
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
         if (event.getType() == RefreshEvent.Type.WALL) refresh();
@@ -92,8 +74,8 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
 
     private void load(File file) {
         if (!file.getName().endsWith("0")) loadRes(ResUtil.getDrawable(file.getName()));
-        else if (isVideo(file)) loadVideo(file);
-        else if (isGif(file)) loadGif(file);
+        else if (Setting.getWallType() == 2) loadVideo(file);
+        else if (Setting.getWallType() == 1) loadGif(file);
         else loadImage();
     }
 

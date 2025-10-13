@@ -1,6 +1,8 @@
 package com.fongmi.android.tv.api.config;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
@@ -71,6 +73,10 @@ public class WallConfig {
         return config == null ? Config.wall() : config;
     }
 
+    public void load() {
+        load(new Callback());
+    }
+
     public void load(Callback callback) {
         if (executor != null) executor.shutdownNow();
         executor = Executors.newSingleThreadExecutor();
@@ -80,33 +86,59 @@ public class WallConfig {
     private void loadConfig(Callback callback) {
         try {
             download();
-            refresh(0);
             config.update();
+            RefreshEvent.wall();
             App.post(callback::success);
         } catch (Throwable e) {
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
             else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
+            Setting.putWall(1);
+            RefreshEvent.wall();
             e.printStackTrace();
         }
     }
 
     private void download() throws Exception {
+        Path.clear(FileUtil.getWallCache());
+        Path.clear(FileUtil.getWall(0));
         File file = FileUtil.getWall(0);
         if (getUrl().startsWith("file")) Path.copy(Path.local(getUrl()), file);
         else Download.create(UrlUtil.convert(getUrl()), file).start();
         if (!Path.exists(file)) throw new FileNotFoundException();
+        createSnapshot(file);
+        Setting.putWallType(0);
+        if (isGif(file)) Setting.putWallType(1);
+        else if (isVideo(file)) Setting.putWallType(2);
+    }
+
+    private void createSnapshot(File file) throws Exception {
         Bitmap bitmap = Glide.with(App.get()).asBitmap().load(file).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).submit().get();
         try (FileOutputStream fos = new FileOutputStream(FileUtil.getWallCache())) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         }
     }
 
-    public boolean needSync(String url) {
-        return sync || TextUtils.isEmpty(config.getUrl()) || url.equals(config.getUrl());
+    private boolean isVideo(File file) {
+        try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
+            retriever.setDataSource(file.getAbsolutePath());
+            return "yes".equalsIgnoreCase(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    public static void refresh(int index) {
-        Setting.putWall(index);
-        RefreshEvent.wall();
+    private boolean isGif(File file) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+            return "image/gif".equals(options.outMimeType);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean needSync(String url) {
+        return sync || TextUtils.isEmpty(config.getUrl()) || url.equals(config.getUrl());
     }
 }

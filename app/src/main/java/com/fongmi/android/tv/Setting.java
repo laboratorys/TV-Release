@@ -51,6 +51,14 @@ public class Setting {
         Prefers.put("wall", wall);
     }
 
+    public static int getWallType() {
+        return Prefers.getInt("wall_type", 0);
+    }
+
+    public static void putWallType(int type) {
+        Prefers.put("wall_type", type);
+    }
+
     public static int getReset() {
         return Prefers.getInt("reset", 0);
     }

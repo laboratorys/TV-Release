@@ -149,6 +149,7 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
                 mBinding.liveUrl.setText(config.getDesc());
                 break;
             case 2:
+                Setting.putWall(0);
                 Notify.progress(this);
                 WallConfig.load(config, getCallback(2));
                 mBinding.wallUrl.setText(config.getDesc());
@@ -269,24 +270,14 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
     }
 
     private void setWallDefault(View view) {
-        WallConfig.refresh(Setting.getWall() == 4 ? 1 : Setting.getWall() + 1);
+        Setting.putWall(Setting.getWall() == 4 ? 1 : Setting.getWall() + 1);
+        RefreshEvent.wall();
     }
 
     private void setWallRefresh(View view) {
+        Setting.putWall(0);
         Notify.progress(this);
-        WallConfig.get().load(new Callback() {
-            @Override
-            public void success() {
-                Notify.dismiss();
-                setCacheText();
-            }
-
-            @Override
-            public void error(String msg) {
-                Notify.dismiss();
-                Notify.show(msg);
-            }
-        });
+        WallConfig.get().load(getCallback(2));
     }
 
     private boolean onWallHistory(View view) {
@@ -361,7 +352,7 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
     }
 
     private void initConfig() {
-        WallConfig.get().init();
+        WallConfig.get().init().load();
         LiveConfig.get().init().load();
         VodConfig.get().init().load(getCallback(0));
     }
