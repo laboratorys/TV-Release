@@ -4,19 +4,21 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.bean.Config;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.impl.Callback;
+import com.fongmi.android.tv.utils.Download;
 import com.fongmi.android.tv.utils.FileUtil;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
-import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -76,12 +78,9 @@ public class WallConfig {
 
     private void loadConfig(Callback callback) {
         try {
-            byte[] data = OkHttp.bytes(UrlUtil.convert(getUrl()));
-            if (data.length == 0) throw new RuntimeException();
-            Path.write(FileUtil.getWall(0), data);
-            createSnapshot(data);
-            config.update();
+            download();
             refresh(0);
+            config.update();
             App.post(callback::success);
         } catch (Throwable e) {
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
@@ -90,8 +89,12 @@ public class WallConfig {
         }
     }
 
-    private void createSnapshot(byte[] data) throws Exception {
-        Bitmap bitmap = Glide.with(App.get()).asBitmap().load(data).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).submit().get();
+    private void download() throws Exception {
+        File file = FileUtil.getWall(0);
+        if (getUrl().startsWith("file")) Path.copy(Path.local(getUrl()), file);
+        else Download.create(UrlUtil.convert(getUrl()), file).start();
+        if (file.length() == 0) throw new RuntimeException();
+        Bitmap bitmap = Glide.with(App.get()).asBitmap().load(file).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).submit().get();
         try (FileOutputStream fos = new FileOutputStream(FileUtil.getWallCache())) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         }
