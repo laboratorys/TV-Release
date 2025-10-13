@@ -19,6 +19,7 @@ import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.utils.Path;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -93,7 +94,7 @@ public class WallConfig {
         File file = FileUtil.getWall(0);
         if (getUrl().startsWith("file")) Path.copy(Path.local(getUrl()), file);
         else Download.create(UrlUtil.convert(getUrl()), file).start();
-        if (file.length() == 0) throw new RuntimeException();
+        if (!Path.exists(file)) throw new FileNotFoundException();
         Bitmap bitmap = Glide.with(App.get()).asBitmap().load(file).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).submit().get();
         try (FileOutputStream fos = new FileOutputStream(FileUtil.getWallCache())) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);

@@ -181,7 +181,7 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
 
     private void onSite() {
         Util.hideKeyboard(mBinding.keyword);
-        SiteDialog.create(this).search().show();
+        mBinding.keyword.post(() -> SiteDialog.create(this).search().show());
     }
 
     @Override
