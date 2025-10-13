@@ -195,8 +195,6 @@ public class Config {
     }
 
     public static void delete(String url, int type) {
-        if (type == 2) Path.clear(FileUtil.getWall(0));
-        if (type == 2) Path.clear(FileUtil.getWallCache());
         AppDatabase.get().getConfigDao().delete(url, type);
     }
 

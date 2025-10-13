@@ -99,9 +99,9 @@ public class WallConfig {
     }
 
     private void download() throws Exception {
-        Path.clear(FileUtil.getWallCache());
         Path.clear(FileUtil.getWall(0));
         File file = FileUtil.getWall(0);
+        Path.clear(FileUtil.getWallCache());
         if (getUrl().startsWith("file")) Path.copy(Path.local(getUrl()), file);
         else Download.create(UrlUtil.convert(getUrl()), file).start();
         if (!Path.exists(file)) throw new FileNotFoundException();
