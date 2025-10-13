@@ -13,7 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.Player;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.ui.PlayerView;
 
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
@@ -35,6 +37,7 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
 
     private ViewWallBinding binding;
     private GifDrawable drawable;
+    private PlayerView video;
     private ExoPlayer player;
     private Drawable cache;
 
@@ -57,7 +60,7 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
 
     private void createPlayer() {
         player = new ExoPlayer.Builder(getContext()).build();
-        player.setRepeatMode(ExoPlayer.REPEAT_MODE_ALL);
+        player.setRepeatMode(Player.REPEAT_MODE_ALL);
         player.setPlayWhenReady(true);
         player.setVolume(0);
     }
@@ -67,7 +70,23 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
         if (event.getType() == RefreshEvent.Type.WALL) refresh();
     }
 
+    private void stopAll() {
+        if (player.isPlaying()) {
+            player.stop();
+            player.clearMediaItems();
+        }
+        if (video != null) {
+            video.setPlayer(null);
+            video.setVisibility(GONE);
+        }
+        if (drawable != null) {
+            drawable.stop();
+            drawable.recycle();
+        }
+    }
+
     private void refresh() {
+        stopAll();
         cache = Drawable.createFromPath(FileUtil.getWallCache().getAbsolutePath());
         load(FileUtil.getWall(Setting.getWall()));
     }
@@ -80,33 +99,24 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
     }
 
     private void loadRes(int resId) {
-        player.clearMediaItems();
-        binding.video.setPlayer(null);
-        binding.video.setVisibility(GONE);
         binding.image.setImageResource(resId);
     }
 
     private void loadVideo(File file) {
-        binding.video.setPlayer(player);
-        binding.video.setVisibility(VISIBLE);
+        ensureVideoView();
+        video.setPlayer(player);
+        video.setVisibility(VISIBLE);
         binding.image.setImageDrawable(cache);
         player.setMediaItem(MediaItem.fromUri(Uri.fromFile(file)));
         player.prepare();
     }
 
     private void loadGif(File file) {
-        player.clearMediaItems();
-        binding.video.setPlayer(null);
-        binding.video.setVisibility(GONE);
         binding.image.setImageDrawable(cache);
-        if (drawable != null) drawable.recycle();
         binding.image.setImageDrawable(drawable = gif(file));
     }
 
     private void loadImage() {
-        player.clearMediaItems();
-        binding.video.setPlayer(null);
-        binding.video.setVisibility(GONE);
         if (cache != null) binding.image.setImageDrawable(cache);
         else binding.image.setImageResource(R.drawable.wallpaper_1);
     }
@@ -119,6 +129,13 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
         }
     }
 
+    private void ensureVideoView() {
+        if (video != null) return;
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        video = (PlayerView) inflater.inflate(R.layout.view_wall_video, this, false);
+        addView(video, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+    }
+
     @Override
     public void onCreate(@NonNull LifecycleOwner owner) {
         EventBus.getDefault().register(this);
@@ -127,28 +144,25 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
     @Override
     public void onResume(@NonNull LifecycleOwner owner) {
         if (drawable != null) drawable.start();
-        if (binding.video.getVisibility() != VISIBLE || player == null || player.getMediaItemCount() == 0) return;
-        binding.video.setPlayer(player);
-        player.play();
+        if (video != null && video.getVisibility() == VISIBLE && !player.isPlaying()) player.play();
     }
 
     @Override
     public void onPause(@NonNull LifecycleOwner owner) {
         if (drawable != null) drawable.pause();
-        if (binding.video.getVisibility() != VISIBLE || player == null || player.getMediaItemCount() == 0) return;
-        binding.video.setPlayer(null);
-        player.pause();
+        if (player.isPlaying()) player.pause();
     }
 
     @Override
     public void onDestroy(@NonNull LifecycleOwner owner) {
         EventBus.getDefault().unregister(this);
         if (drawable != null) drawable.recycle();
-        binding.video.setPlayer(null);
+        if (video != null) removeView(video);
         player.release();
         drawable = null;
         binding = null;
         player = null;
         cache = null;
+        video = null;
     }
 }
