@@ -70,7 +70,7 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
         if (event.getType() == RefreshEvent.Type.WALL) refresh();
     }
 
-    private void stopAll() {
+    private void stop() {
         if (player.isPlaying()) {
             player.stop();
             player.clearMediaItems();
@@ -86,12 +86,13 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
     }
 
     private void refresh() {
-        stopAll();
-        cache = Drawable.createFromPath(FileUtil.getWallCache().getAbsolutePath());
-        load(FileUtil.getWall(Setting.getWall()));
+        stop();
+        load();
     }
 
-    private void load(File file) {
+    private void load() {
+        File file = FileUtil.getWall(Setting.getWall());
+        cache = Drawable.createFromPath(FileUtil.getWallCache().getAbsolutePath());
         if (!file.getName().endsWith("0")) loadRes(ResUtil.getDrawable(file.getName()));
         else if (Setting.getWallType() == 2) loadVideo(file);
         else if (Setting.getWallType() == 1) loadGif(file);
@@ -144,13 +145,17 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
     @Override
     public void onResume(@NonNull LifecycleOwner owner) {
         if (drawable != null) drawable.start();
-        if (video != null && video.getVisibility() == VISIBLE && !player.isPlaying()) player.play();
+        if (video == null || video.getVisibility() != VISIBLE || player.getMediaItemCount() == 0) return;
+        video.setPlayer(player);
+        player.play();
     }
 
     @Override
     public void onPause(@NonNull LifecycleOwner owner) {
         if (drawable != null) drawable.pause();
-        if (player.isPlaying()) player.pause();
+        if (video == null || video.getVisibility() != VISIBLE || player.getMediaItemCount() == 0) return;
+        video.setPlayer(null);
+        player.pause();
     }
 
     @Override
