@@ -70,6 +70,11 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
         if (event.getType() == RefreshEvent.Type.WALL) refresh();
     }
 
+    private void refresh() {
+        stop();
+        load();
+    }
+
     private void stop() {
         if (player.isPlaying()) {
             player.stop();
@@ -83,11 +88,6 @@ public class CustomWallView extends FrameLayout implements DefaultLifecycleObser
             drawable.stop();
             drawable.recycle();
         }
-    }
-
-    private void refresh() {
-        stop();
-        load();
     }
 
     private void load() {
