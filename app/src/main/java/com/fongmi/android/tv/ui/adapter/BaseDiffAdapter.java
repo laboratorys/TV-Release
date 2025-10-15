@@ -37,9 +37,13 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
     }
 
     public void addItem(T item) {
+        addItem(item, null);
+    }
+
+    public void addItem(T item, Runnable commitCallback) {
         List<T> current = new ArrayList<>(getItems());
         current.add(item);
-        setItems(current);
+        setItems(current, commitCallback);
     }
 
     public void addItems(List<T> items) {

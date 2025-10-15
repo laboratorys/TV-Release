@@ -124,13 +124,13 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private Observer<Result> mObserveSearch;
     private EpisodeAdapter mEpisodeAdapter;
     private QualityAdapter mQualityAdapter;
-    private ValueAnimator mHeightAnimator;
     private ControlDialog mControlDialog;
     private QuickAdapter mQuickAdapter;
     private ParseAdapter mParseAdapter;
     private ExecutorService mExecutor;
     private SiteViewModel mViewModel;
     private FlagAdapter mFlagAdapter;
+    private ValueAnimator mAnimator;
     private CustomKeyDown mKeyDown;
     private List<String> mBroken;
     private History mHistory;
@@ -400,9 +400,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setAnimator() {
-        mHeightAnimator = new ValueAnimator();
-        mHeightAnimator.setInterpolator(new DecelerateInterpolator());
-        mHeightAnimator.addUpdateListener(animation -> {
+        mAnimator = new ValueAnimator();
+        mAnimator.setInterpolator(new DecelerateInterpolator());
+        mAnimator.addUpdateListener(animation -> {
             mFrameParams.height = (int) animation.getAnimatedValue();
             mBinding.video.setLayoutParams(mFrameParams);
         });
@@ -1219,10 +1219,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         int calculated = (int) (parentWidth * ((float) videoHeight / videoWidth));
         int finalHeight = Math.max(minHeight, Math.min(maxHeight, calculated));
         if (finalHeight == mBinding.video.getHeight()) return;
-        if (mHeightAnimator.isRunning()) mHeightAnimator.cancel();
-        mHeightAnimator.setIntValues(mBinding.video.getHeight(), finalHeight);
-        mHeightAnimator.setDuration(300);
-        mHeightAnimator.start();
+        if (mAnimator.isRunning()) mAnimator.cancel();
+        mAnimator.setIntValues(mBinding.video.getHeight(), finalHeight);
+        mAnimator.setDuration(300);
+        mAnimator.start();
     }
 
     private void checkEnded(boolean notify) {

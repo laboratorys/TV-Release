@@ -1,5 +1,6 @@
 package com.fongmi.android.tv.ui.fragment;
 
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,6 +44,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     private CustomScroller mScroller;
     private SiteViewModel mViewModel;
     private PauseExecutor mExecutor;
+    private ValueAnimator mAnimator;
     private int maxWidth;
 
     public static CollectFragment newInstance(String keyword) {
@@ -74,17 +76,17 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
 
     @Override
     protected void initView() {
-        maxWidth = ResUtil.getScreenWidth() / (ResUtil.isLand(requireActivity()) ? 3 : 2) - ResUtil.dp2px(32);
+        maxWidth = ResUtil.getScreenWidth() / (getCount() + 1) - ResUtil.dp2px(32);
         mScroller = new CustomScroller(this);
         setRecyclerView();
         setViewModel();
+        setAnimator();
         search();
     }
 
     private void setRecyclerView() {
-        mBinding.collect.setMaxWidth(maxWidth);
         mBinding.collect.setItemAnimator(null);
-        mBinding.collect.setHasFixedSize(false);
+        mBinding.collect.setHasFixedSize(true);
         mBinding.collect.setAdapter(mCollectAdapter = new CollectAdapter(this));
         mBinding.recycler.setHasFixedSize(true);
         mBinding.recycler.addOnScrollListener(mScroller);
@@ -96,6 +98,15 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
         mViewModel = new ViewModelProvider(this).get(SiteViewModel.class).init();
         mViewModel.search.observe(this, this::setCollect);
         mViewModel.result.observe(this, this::setSearch);
+    }
+
+    private void setAnimator() {
+        mAnimator = new ValueAnimator();
+        mAnimator.addUpdateListener(animation -> {
+            ViewGroup.LayoutParams params = mBinding.collect.getLayoutParams();
+            params.width = (Integer) animation.getAnimatedValue();
+            mBinding.collect.setLayoutParams(params);
+        });
     }
 
     private List<Site> getSites() {
@@ -128,8 +139,23 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     private void setCollect(Result result) {
         if (result == null) return;
         if (mCollectAdapter.getPosition() == 0) mSearchAdapter.addItems(result.getList());
-        mCollectAdapter.addItem(Collect.create(result.getList()));
+        mCollectAdapter.addItem(Collect.create(result.getList()), this::setWidth);
         mCollectAdapter.add(result.getList());
+    }
+
+    private void setWidth() {
+        int maxTextWidth = 0;
+        int space = ResUtil.dp2px(48);
+        for (Collect item : mCollectAdapter.getItems()) maxTextWidth = Math.max(maxTextWidth, ResUtil.getTextWidth(item.getSite().getName(), 14));
+        int contentWidth = maxTextWidth + space;
+        int minWidth = ResUtil.dp2px(120);
+        int finalWidth = Math.max(minWidth, Math.min(contentWidth, maxWidth));
+        int startWidth = mBinding.collect.getWidth();
+        if (finalWidth == startWidth) return;
+        if (mAnimator.isRunning()) mAnimator.cancel();
+        mAnimator.setIntValues(startWidth, finalWidth);
+        mAnimator.setDuration(300);
+        mAnimator.start();
     }
 
     private void setSearch(Result result) {
