@@ -616,6 +616,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     private void setInfo() {
         mViewModel.getEpg(mChannel);
         mBinding.widget.play.setText("");
+        mBinding.widget.name.setMaxEms(48);
         mChannel.loadLogo(mBinding.widget.logo);
         mBinding.control.title.setSelected(true);
         mBinding.widget.name.setText(mChannel.getName());

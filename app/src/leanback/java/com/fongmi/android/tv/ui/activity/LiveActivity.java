@@ -604,6 +604,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     private void setInfo() {
         mViewModel.getEpg(mChannel);
         mBinding.widget.play.setText("");
+        mBinding.widget.name.setMaxEms(48);
         mChannel.loadLogo(mBinding.widget.logo);
         mBinding.widget.title.setSelected(true);
         mBinding.widget.name.setText(mChannel.getName());
