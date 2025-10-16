@@ -755,7 +755,6 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
                 checkNext();
                 break;
             case PlayerEvent.TRACK:
-                setMetadata();
                 setTrackVisible();
                 break;
             case PlayerEvent.SIZE:

@@ -324,7 +324,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
                 setState(RenderState.STOPPED);
                 break;
             case PlayerEvent.TRACK:
-                setMetadata();
                 setTrackVisible();
                 mClock.setCallback(this);
                 break;

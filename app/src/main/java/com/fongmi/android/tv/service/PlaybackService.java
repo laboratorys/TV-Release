@@ -1,5 +1,6 @@
 package com.fongmi.android.tv.service;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
@@ -8,7 +9,6 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.media.MediaMetadataCompat;
-import android.util.LruCache;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
@@ -21,13 +21,11 @@ import androidx.media.app.NotificationCompat.MediaStyle;
 import androidx.media.session.MediaButtonReceiver;
 import androidx.palette.graphics.Palette;
 
-import com.bumptech.glide.Glide;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.event.ActionEvent;
 import com.fongmi.android.tv.player.Players;
 import com.fongmi.android.tv.receiver.ActionReceiver;
-import com.fongmi.android.tv.utils.ImgUtil;
 import com.fongmi.android.tv.utils.Notify;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,8 +36,6 @@ import java.util.Objects;
 
 public class PlaybackService extends Service {
 
-    private static final int MAX_CACHE_SIZE_BYTES = 10 * 1024 * 1024;
-    private LruCache<String, Bitmap> cache;
     private static Players player;
 
     public static void start(Players player) {
@@ -84,8 +80,8 @@ public class PlaybackService extends Service {
         return getMetadata() == null || getMetadata().getString(MediaMetadataCompat.METADATA_KEY_ARTIST).isEmpty() ? null : getMetadata().getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
     }
 
-    private String getArtUri() {
-        return getMetadata() == null ? "" : getMetadata().getString(MediaMetadataCompat.METADATA_KEY_ART_URI);
+    private Bitmap getArt() {
+        return getMetadata() == null ? null : getMetadata().getBitmap(MediaMetadataCompat.METADATA_KEY_ART);
     }
 
     private void addAction(NotificationCompat.Builder builder) {
@@ -106,38 +102,16 @@ public class PlaybackService extends Service {
         builder.setDeleteIntent(ActionReceiver.getPendingIntent(this, ActionEvent.STOP));
         if (nonNull()) builder.setContentIntent(player.getSession().getController().getSessionActivity());
         if (nonNull()) builder.setStyle(new MediaStyle().setMediaSession(player.getSession().getSessionToken()).setShowActionsInCompactView(0, 1, 2));
+        if (getArt() != null) setIconColor(builder, getArt());
         addAction(builder);
-        setArtwork(builder);
         return builder.build();
     }
 
-    private void setArtwork(NotificationCompat.Builder builder) {
-        Bitmap bitmap = cache.get(getArtUri());
-        if (bitmap != null) {
-            setLargeIcon(builder, bitmap);
-        } else if (!getArtUri().isEmpty()) {
-            App.execute(() -> glide(builder));
-        }
-    }
-
-    private void glide(NotificationCompat.Builder builder) {
-        try {
-            Bitmap bitmap = Glide.with(this).asBitmap().load(ImgUtil.getUrl(getArtUri())).error(R.drawable.artwork).override(256, 256).submit().get();
-            cache.put(getArtUri(), bitmap);
-            setLargeIcon(builder, bitmap);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void setLargeIcon(NotificationCompat.Builder builder, Bitmap art) {
+    private void setIconColor(NotificationCompat.Builder builder, Bitmap art) {
         builder.setLargeIcon(art);
-        Palette.from(art).generate(palette -> {
-            int white = ContextCompat.getColor(this, R.color.white);
-            int color = palette != null ? palette.getMutedColor(palette.getVibrantColor(white)) : white;
-            builder.setColor(color);
-            Notify.show(builder.build());
-        });
+        Palette palette = Palette.from(art).generate();
+        int white = ContextCompat.getColor(this, R.color.white);
+        builder.setColor(palette.getMutedColor(palette.getVibrantColor(white)));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -149,15 +123,10 @@ public class PlaybackService extends Service {
     public void onCreate() {
         super.onCreate();
         EventBus.getDefault().register(this);
-        cache = new LruCache<>(MAX_CACHE_SIZE_BYTES) {
-            @Override
-            protected int sizeOf(String key, Bitmap bitmap) {
-                return bitmap.getByteCount();
-            }
-        };
     }
 
     @Override
+    @SuppressLint("ForegroundServiceType")
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (nonNull()) MediaButtonReceiver.handleIntent(player.getSession(), intent);
         int type = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK : 0;

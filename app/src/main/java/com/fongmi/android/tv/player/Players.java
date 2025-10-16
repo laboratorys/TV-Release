@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -31,6 +32,7 @@ import androidx.media3.exoplayer.drm.FrameworkMediaDrm;
 import androidx.media3.exoplayer.util.EventLogger;
 import androidx.media3.ui.PlayerView;
 
+import com.bumptech.glide.Glide;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.R;
@@ -546,14 +548,6 @@ public class Players implements Player.Listener, ParseCallback {
         return scheme.isEmpty() || "file".equals(scheme) ? !Path.exists(url) : host.isEmpty();
     }
 
-    private MediaMetadataCompat.Builder putBitmap(MediaMetadataCompat.Builder builder, Drawable drawable) {
-        try {
-            return builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, ((BitmapDrawable) drawable).getBitmap());
-        } catch (Exception ignored) {
-            return builder;
-        }
-    }
-
     public void setMetadata(String title, String artist, String artUri, Drawable drawable) {
         MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
         builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, title);
@@ -562,8 +556,24 @@ public class Players implements Player.Listener, ParseCallback {
         builder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, artUri);
         builder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI, artUri);
         builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, getDuration());
-        session.setMetadata(putBitmap(builder, drawable).build());
-        ActionEvent.update();
+        App.execute(() -> putBitmap(builder, drawable));
+    }
+
+    private void putBitmap(MediaMetadataCompat.Builder builder, Drawable drawable) {
+        if (drawable == null) {
+            session.setMetadata(builder.build());
+            ActionEvent.update();
+            return;
+        }
+        try {
+            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+            bitmap = Glide.with(App.get()).asBitmap().load(bitmap).submit(512, 512).get();
+            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap);
+            session.setMetadata(builder.build());
+            ActionEvent.update();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void share(Activity activity, CharSequence title) {
