@@ -112,7 +112,7 @@ public class WallConfig {
     }
 
     private void createSnapshot(File file) throws Exception {
-        Bitmap bitmap = Glide.with(App.get()).asBitmap().frame(0).load(file).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).submit().get();
+        Bitmap bitmap = Glide.with(App.get()).asBitmap().frame(0).load(file).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).submit(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).get();
         try (FileOutputStream fos = new FileOutputStream(FileUtil.getWallCache())) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         }
