@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.github.catvod.Init;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -128,34 +129,33 @@ public class Path {
 
     public static String read(File file) {
         try {
-            return read(new FileInputStream(file));
-        } catch (Exception e) {
+            return new String(readToByte(file), StandardCharsets.UTF_8);
+        } catch (IOException e) {
             return "";
         }
     }
 
     public static String read(InputStream is) {
         try {
-            byte[] data = new byte[is.available()];
-            is.read(data);
-            is.close();
-            return new String(data, StandardCharsets.UTF_8);
+            return new String(readToByte(is), StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
             return "";
         }
     }
 
-    public static byte[] readToByte(File file) {
-        try {
-            FileInputStream is = new FileInputStream(file);
-            byte[] data = new byte[is.available()];
-            is.read(data);
-            is.close();
-            return data;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new byte[0];
+    private static byte[] readToByte(File file) throws IOException {
+        try (FileInputStream is = new FileInputStream(file)) {
+            return readToByte(is);
+        }
+    }
+
+    private static byte[] readToByte(InputStream is) throws IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            int read;
+            byte[] buffer = new byte[16384];
+            while ((read = is.read(buffer)) != -1) bos.write(buffer, 0, read);
+            return bos.toByteArray();
         }
     }
 
@@ -166,13 +166,14 @@ public class Path {
             fos.flush();
             fos.close();
             return file;
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return file;
         }
     }
 
     public static void move(File in, File out) {
+        if (in.renameTo(out)) return;
         copy(in, out);
         clear(in);
     }
@@ -180,19 +181,19 @@ public class Path {
     public static void copy(File in, File out) {
         try {
             copy(new FileInputStream(in), out);
-        } catch (Exception ignored) {
+        } catch (IOException ignored) {
         }
     }
 
     public static void copy(InputStream in, File out) {
         try {
             int read;
-            byte[] buffer = new byte[8192];
+            byte[] buffer = new byte[16384];
             FileOutputStream fos = new FileOutputStream(create(out));
             while ((read = in.read(buffer)) != -1) fos.write(buffer, 0, read);
             fos.close();
             in.close();
-        } catch (Exception ignored) {
+        } catch (IOException ignored) {
         }
     }
 
@@ -223,7 +224,7 @@ public class Path {
             if (!file.exists()) file.createNewFile();
             Shell.exec("chmod 777 " + file);
             return file;
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return file;
         }
