@@ -1074,6 +1074,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
                 checkEnded(true);
                 break;
             case PlayerEvent.TRACK:
+                setMetadata();
                 setTrackVisible();
                 mClock.setCallback(this);
                 break;

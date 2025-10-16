@@ -785,6 +785,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
                 checkNext();
                 break;
             case PlayerEvent.TRACK:
+                setMetadata();
                 setTrackVisible();
                 break;
         }
