@@ -45,7 +45,7 @@ public class FileUtil {
     }
 
     public static void gzipCompress(File target) {
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[16384];
         try (FileInputStream is = new FileInputStream(target); GZIPOutputStream os = new GZIPOutputStream(new FileOutputStream(target.getAbsolutePath() + ".gz"))) {
             int read;
             while ((read = is.read(buffer)) > 0) os.write(buffer, 0, read);
@@ -57,7 +57,7 @@ public class FileUtil {
     }
 
     public static void gzipDecompress(File target, File path) {
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[16384];
         try (GZIPInputStream is = new GZIPInputStream(new BufferedInputStream(new FileInputStream(target))); BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(path))) {
             int read;
             while ((read = is.read(buffer)) != -1) os.write(buffer, 0, read);

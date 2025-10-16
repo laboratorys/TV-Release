@@ -90,7 +90,7 @@ public class Util {
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             FileInputStream fis = new FileInputStream(file);
-            byte[] bytes = new byte[4096];
+            byte[] bytes = new byte[16384];
             int count;
             while ((count = fis.read(bytes)) != -1) digest.update(bytes, 0, count);
             fis.close();
