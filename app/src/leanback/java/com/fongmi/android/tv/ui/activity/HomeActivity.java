@@ -390,6 +390,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     public boolean onLongClick(Vod item) {
+        if (item.isAction()) return false;
         CollectActivity.start(this, item.getVodName());
         return true;
     }
