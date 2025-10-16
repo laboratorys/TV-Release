@@ -1183,7 +1183,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 checkEnded(true);
                 break;
             case PlayerEvent.TRACK:
-                setMetadata();
                 setTrackVisible();
                 mClock.setCallback(this);
                 break;
