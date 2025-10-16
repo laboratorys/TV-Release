@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -99,59 +100,82 @@ public class Local implements Process {
 
     private NanoHTTPD.Response getFile(Map<String, String> headers, File file, String mime) throws IOException {
         long fileLen = file.length();
-        long startFrom = 0, endAt = fileLen - 1;
-        String range = headers.get("range");
-        if (range != null && range.startsWith("bytes=")) {
-            try {
-                String[] parts = range.substring(6).split("-", 2);
-                if (!parts[0].isEmpty()) startFrom = Long.parseLong(parts[0]);
-                if (parts.length > 1 && !parts[1].isEmpty()) endAt = Long.parseLong(parts[1]);
-                if (startFrom > endAt) startFrom = 0;
-                if (endAt >= fileLen) endAt = fileLen - 1;
-            } catch (NumberFormatException ignored) {
-                startFrom = 0;
-                endAt = fileLen - 1;
-            }
-        }
-        long contentLength;
-        NanoHTTPD.Response res;
-        String ifRange = headers.get("if-range");
         String ifNoneMatch = headers.get("if-none-match");
         String etag = Integer.toHexString((file.getAbsolutePath() + file.lastModified() + fileLen).hashCode());
-        boolean ifRangeMatch = ifRange == null || ifRange.equals(etag);
-        boolean ifNoneMatchHit = ifNoneMatch != null && ("*".equals(ifNoneMatch) || ifNoneMatch.equals(etag));
-        if (ifRangeMatch && range != null && startFrom < fileLen) {
-            if (ifNoneMatchHit) {
-                res = NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.NOT_MODIFIED, mime, "");
-                contentLength = 0;
-            } else {
-                long newLen = endAt - startFrom + 1;
-                FileInputStream fis = new FileInputStream(file);
-                long skipped = 0;
-                while (skipped < startFrom) {
-                    long s = fis.skip(startFrom - skipped);
-                    if (s <= 0) break;
-                    skipped += s;
-                }
-                res = NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.PARTIAL_CONTENT, mime, fis, newLen);
-                res.addHeader("Content-Range", "bytes " + startFrom + "-" + endAt + "/" + fileLen);
-                contentLength = newLen;
-            }
-        } else if (range != null && startFrom >= fileLen) {
-            res = NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.RANGE_NOT_SATISFIABLE, NanoHTTPD.MIME_PLAINTEXT, "");
-            res.addHeader("Content-Range", "bytes */" + fileLen);
-            contentLength = 0;
-        } else if (ifNoneMatchHit) {
-            res = NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.NOT_MODIFIED, mime, "");
-            contentLength = 0;
-        } else {
-            FileInputStream fis = new FileInputStream(file);
-            res = NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.OK, mime, fis, fileLen);
-            contentLength = fileLen;
+        if (ifNoneMatch != null && (ifNoneMatch.equals("*") || ifNoneMatch.equals(etag))) {
+            return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.NOT_MODIFIED, mime, "");
         }
-        res.addHeader("Content-Length", String.valueOf(contentLength));
+        HttpRange range = HttpRange.from(fileLen, headers, etag);
+        if (!range.valid()) {
+            return createRangeNotSatisfiableResponse(fileLen);
+        }
+        FileInputStream fis = new FileInputStream(file);
+        robustSkip(fis, range.start);
+        NanoHTTPD.Response res;
+        if (range.isPartial(fileLen)) {
+            res = NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.PARTIAL_CONTENT, mime, fis, range.length);
+            res.addHeader("Content-Range", "bytes " + range.start + "-" + range.end + "/" + fileLen);
+        } else {
+            res = NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.OK, mime, fis, range.length);
+        }
+        res.addHeader("Content-Length", String.valueOf(range.length));
         res.addHeader("Accept-Ranges", "bytes");
         res.addHeader("ETag", etag);
         return res;
+    }
+
+    private NanoHTTPD.Response createRangeNotSatisfiableResponse(long fileLen) {
+        NanoHTTPD.Response res = NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.RANGE_NOT_SATISFIABLE, NanoHTTPD.MIME_PLAINTEXT, "");
+        res.addHeader("Content-Range", "bytes */" + fileLen);
+        return res;
+    }
+
+    private void robustSkip(InputStream fis, long bytesToSkip) throws IOException {
+        if (bytesToSkip <= 0) return;
+        long remaining = bytesToSkip;
+        while (remaining > 0) {
+            long skipped = fis.skip(remaining);
+            if (skipped <= 0) {
+                throw new IOException("Failed to skip desired number of bytes");
+            }
+            remaining -= skipped;
+        }
+    }
+
+    private record HttpRange(long start, long end, long length, boolean valid) {
+
+        public boolean isPartial(long fileTotalLength) {
+            return this.length < fileTotalLength;
+        }
+
+        public static HttpRange from(long fileLen, Map<String, String> headers, String etag) {
+            long start = 0;
+            long end = fileLen - 1;
+            String rangeHeader = headers.get("range");
+            String ifRangeHeader = headers.get("if-range");
+            if (ifRangeHeader != null && !ifRangeHeader.equals(etag)) {
+                rangeHeader = null;
+            }
+            if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
+                try {
+                    String[] parts = rangeHeader.substring(6).split("-", 2);
+                    if (!parts[0].isEmpty()) {
+                        start = Long.parseLong(parts[0]);
+                    }
+                    if (parts.length > 1 && !parts[1].isEmpty()) {
+                        end = Long.parseLong(parts[1]);
+                    }
+                    if (start >= fileLen || start > end) {
+                        return new HttpRange(0, 0, 0, false);
+                    }
+                } catch (NumberFormatException e) {
+                    return new HttpRange(0, 0, 0, false);
+                }
+            }
+            if (end >= fileLen) {
+                end = fileLen - 1;
+            }
+            return new HttpRange(start, end, end - start + 1, true);
+        }
     }
 }
