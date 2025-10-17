@@ -260,14 +260,19 @@ public class History implements Diffable<History> {
     }
 
     public static List<History> findByName(String name) {
-        return AppDatabase.get().getHistoryDao().findByName(VodConfig.getCid(), name);
+        try {
+            return AppDatabase.get().getHistoryDao().findByName(VodConfig.getCid(), name);
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     public static void delete(int cid) {
         AppDatabase.get().getHistoryDao().delete(cid);
     }
 
-    private boolean shouldMerge(History item) {
+    private boolean shouldMerge(History item, boolean force) {
+        if (!force && getKey().equals(item.getKey())) return false;
         if (getDuration() <= 0 || item.getDuration() <= 0) return true;
         return Math.abs(getDuration() - item.getDuration()) <= TimeUnit.MINUTES.toMillis(10);
     }
@@ -279,13 +284,21 @@ public class History implements Diffable<History> {
         return this;
     }
 
-    private History merge(List<History> items) {
-        for (History item : items) if (item.shouldMerge(this)) item.copyTo(this).delete();
+    public void merge() {
+        merge(false);
+    }
+
+    private History merge(boolean force) {
+        return merge(findByName(getVodName()), force);
+    }
+
+    private History merge(List<History> items, boolean force) {
+        for (History item : items) if (item.shouldMerge(this, force)) item.copyTo(this).delete();
         return this;
     }
 
     public History save(int cid) {
-        return cid(cid).merge(findByName(getVodName())).save();
+        return cid(cid).merge(true).save();
     }
 
     public History save() {
@@ -300,21 +313,17 @@ public class History implements Diffable<History> {
     }
 
     public void findEpisode(List<Flag> flags) {
-        if (!flags.isEmpty()) {
-            setVodFlag(flags.get(0).getFlag());
-            if (!flags.get(0).getEpisodes().isEmpty()) {
-                setVodRemarks(flags.get(0).getEpisodes().get(0).getName());
-            }
-        }
+        if (flags.isEmpty()) return;
+        setVodFlag(flags.get(0).getFlag());
+        if (!flags.get(0).getEpisodes().isEmpty()) setVodRemarks(flags.get(0).getEpisodes().get(0).getName());
         for (History item : findByName(getVodName())) {
-            if (getPosition() > 0) break;
             for (Flag flag : flags) {
                 Episode episode = flag.find(item.getVodRemarks(), true);
                 if (episode == null) continue;
+                item.copyTo(this);
                 setVodFlag(flag.getFlag());
                 setPosition(item.getPosition());
                 setVodRemarks(episode.getName());
-                item.copyTo(this);
                 break;
             }
         }
@@ -327,11 +336,14 @@ public class History implements Diffable<History> {
                 target.cid(VodConfig.getCid()).save();
                 continue;
             }
+            long latestLocalTime = 0;
             for (History item : items) {
-                if (target.getCreateTime() > item.getCreateTime()) {
-                    target.cid(VodConfig.getCid()).merge(items).save();
-                    break;
+                if (item.getCreateTime() > latestLocalTime) {
+                    latestLocalTime = item.getCreateTime();
                 }
+            }
+            if (target.getCreateTime() > latestLocalTime) {
+                target.cid(VodConfig.getCid()).merge(items, true).save();
             }
         }
     }

@@ -1403,6 +1403,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     protected void onPause() {
         super.onPause();
         if (isRedirect()) onPaused();
+        if (mHistory != null) mHistory.merge();
     }
 
     @Override

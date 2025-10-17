@@ -1646,6 +1646,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     protected void onPause() {
         super.onPause();
         if (isRedirect()) onPaused();
+        if (mHistory != null) mHistory.merge();
     }
 
     @Override
