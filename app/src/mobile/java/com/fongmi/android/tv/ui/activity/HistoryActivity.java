@@ -87,8 +87,9 @@ public class HistoryActivity extends BaseActivity implements HistoryAdapter.OnCl
 
     @Override
     public void onItemDelete(History item) {
-        mAdapter.remove(item.delete());
-        if (mAdapter.getItemCount() == 0) mAdapter.setDelete(false);
+        mAdapter.remove(item.delete(), () -> {
+            if (mAdapter.getItemCount() == 0) mAdapter.setDelete(false);
+        });
     }
 
     @Override

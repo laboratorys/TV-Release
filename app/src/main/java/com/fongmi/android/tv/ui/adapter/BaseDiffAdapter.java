@@ -28,22 +28,22 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
         return differ.getCurrentList();
     }
 
-    public void setItems(List<T> items, Runnable commitCallback) {
-        differ.submitList(items, commitCallback);
-    }
-
     public void setItems(List<T> items) {
         setItems(items, null);
+    }
+
+    public void setItems(List<T> items, Runnable runnable) {
+        differ.submitList(items, runnable);
     }
 
     public void addItem(T item) {
         addItem(item, null);
     }
 
-    public void addItem(T item, Runnable commitCallback) {
+    public void addItem(T item, Runnable runnable) {
         List<T> current = new ArrayList<>(getItems());
         current.add(item);
-        setItems(current, commitCallback);
+        setItems(current, runnable);
     }
 
     public void addItems(List<T> items) {
@@ -60,8 +60,12 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
     }
 
     public void remove(T item) {
+        remove(item, null);
+    }
+
+    public void remove(T item, Runnable runnable) {
         List<T> current = new ArrayList<>(getItems());
-        if (current.remove(item)) setItems(current);
+        if (current.remove(item)) setItems(current, runnable);
     }
 
     public void clear() {
