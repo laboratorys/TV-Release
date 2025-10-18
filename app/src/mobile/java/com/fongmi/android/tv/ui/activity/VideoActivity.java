@@ -1384,6 +1384,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void onPaused() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mPlayers.pause();
+        saveHistory();
     }
 
     private void onPlay() {
@@ -1656,7 +1657,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     protected void onPause() {
         super.onPause();
         if (isRedirect()) onPaused();
-        saveHistory();
     }
 
     @Override
@@ -1684,6 +1684,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     protected void onDestroy() {
         super.onDestroy();
         stopSearch();
+        saveHistory();
         mClock.release();
         mPlayers.release();
         Timer.get().reset();

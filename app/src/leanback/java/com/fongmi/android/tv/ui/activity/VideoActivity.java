@@ -1254,6 +1254,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         if (isFullscreen()) showInfo();
         else hideInfo();
         mPlayers.pause();
+        saveHistory();
     }
 
     private void onPlay() {
@@ -1413,7 +1414,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     protected void onPause() {
         super.onPause();
         if (isRedirect()) onPaused();
-        saveHistory();
     }
 
     @Override
@@ -1442,6 +1442,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     protected void onDestroy() {
         super.onDestroy();
         stopSearch();
+        saveHistory();
         mClock.release();
         mPlayers.release();
         RefreshEvent.keep();
