@@ -1075,9 +1075,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
                 break;
             case PlayerEvent.TRACK:
                 setMetadata();
+                mergeHistory();
                 setTrackVisible();
                 mClock.setCallback(this);
-                App.execute(() -> mHistory.merge());
                 break;
             case PlayerEvent.SIZE:
                 mBinding.widget.size.setText(mPlayers.getSizeText());
@@ -1096,6 +1096,11 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             checkNext(notify);
         }
+    }
+
+    private void mergeHistory() {
+        mHistory.setDuration(mPlayers.getDuration());
+        App.execute(() -> mHistory.merge());
     }
 
     private void setTrackVisible() {

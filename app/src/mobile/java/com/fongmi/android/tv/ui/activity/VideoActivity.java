@@ -1184,9 +1184,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 break;
             case PlayerEvent.TRACK:
                 setMetadata();
+                mergeHistory();
                 setTrackVisible();
                 mClock.setCallback(this);
-                App.execute(() -> mHistory.merge());
                 break;
             case PlayerEvent.SIZE:
                 mBinding.video.post(this::changeHeight);
@@ -1233,6 +1233,11 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             checkNext(notify);
         }
+    }
+
+    private void mergeHistory() {
+        mHistory.setDuration(mPlayers.getDuration());
+        App.execute(() -> mHistory.merge());
     }
 
     private void setTrackVisible() {
