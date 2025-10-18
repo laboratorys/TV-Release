@@ -52,10 +52,10 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
         setItems(current);
     }
 
-    public void sort(Comparator<T> comparator) {
+    public void addItemSort(T item, Comparator<T> comparator) {
         List<T> current = new ArrayList<>(getItems());
-        if (current.size() < 2) return;
-        current.sort(comparator);
+        current.add(item);
+        if (current.size() >= 2) current.sort(comparator);
         setItems(current);
     }
 

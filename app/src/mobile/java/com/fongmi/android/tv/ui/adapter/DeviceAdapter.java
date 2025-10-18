@@ -29,19 +29,6 @@ public class DeviceAdapter extends BaseDiffAdapter<Device, DeviceAdapter.ViewHol
     }
 
     @Override
-    public void addItem(Device item) {
-        super.addItem(item);
-        sort(new Device.Sorter());
-    }
-
-    @Override
-    public void addItems(List<Device> items) {
-        if (items.isEmpty()) return;
-        super.addItems(items);
-        sort(new Device.Sorter());
-    }
-
-    @Override
     public void clear() {
         super.clear();
         Device.delete();

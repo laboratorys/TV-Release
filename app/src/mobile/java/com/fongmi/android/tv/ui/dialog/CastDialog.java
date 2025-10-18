@@ -52,6 +52,7 @@ import okhttp3.Response;
 public class CastDialog extends BaseDialog implements DeviceAdapter.OnClickListener, ScanTask.Listener, OnDeviceRegistryListener, OnDeviceControlListener, ServiceActionCallback<Unit>, okhttp3.Callback {
 
     private final FormBody.Builder body;
+    private final Device.Sorter sorter;
     private final OkHttpClient client;
     private final ScanTask scanTask;
 
@@ -67,6 +68,7 @@ public class CastDialog extends BaseDialog implements DeviceAdapter.OnClickListe
     }
 
     public CastDialog() {
+        sorter = new Device.Sorter();
         scanTask = new ScanTask(this);
         body = new FormBody.Builder();
         body.add("device", Device.get().toString());
@@ -159,12 +161,12 @@ public class CastDialog extends BaseDialog implements DeviceAdapter.OnClickListe
 
     @Override
     public void onFind(Device device) {
-        adapter.addItem(device);
+        adapter.addItemSort(device, sorter);
     }
 
     @Override
     public void onDeviceAdded(@NonNull org.fourthline.cling.model.meta.Device<?, ?, ?> device) {
-        adapter.addItem(DLNADevice.get().add(device));
+        adapter.addItemSort(DLNADevice.get().add(device), sorter);
     }
 
     @Override
