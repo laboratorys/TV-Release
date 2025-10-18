@@ -284,8 +284,9 @@ public class History implements Diffable<History> {
         return this;
     }
 
-    public void merge() {
+    public History merge() {
         merge(false);
+        return this;
     }
 
     private History merge(boolean force) {

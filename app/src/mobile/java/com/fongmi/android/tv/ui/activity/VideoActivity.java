@@ -793,6 +793,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void onReset(boolean replay) {
+        saveHistory();
         mPlayers.stop();
         mPlayers.clear();
         mClock.setCallback(null);
@@ -1048,6 +1049,17 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         return history;
     }
 
+    private void saveHistory() {
+        if (mHistory == null) return;
+        long position = mPlayers.getPosition();
+        long duration = mPlayers.getDuration();
+        if (position >= 0 && duration > 0 && !Setting.isIncognito()) {
+            mHistory.setPosition(position);
+            mHistory.setDuration(duration);
+            App.execute(() -> mHistory.merge().save());
+        }
+    }
+
     private void updateHistory(Episode item, boolean replay) {
         replay = replay || !item.equals(mHistory.getEpisode());
         mHistory.setEpisodeUrl(item.getUrl());
@@ -1118,10 +1130,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     @Override
     public void onTimeChanged() {
-        long position, duration;
-        mHistory.setPosition(position = mPlayers.getPosition());
-        mHistory.setDuration(duration = mPlayers.getDuration());
-        if (position >= 0 && duration > 0 && !Setting.isIncognito()) App.execute(() -> mHistory.save());
+        long position = mPlayers.getPosition();
+        long duration = mPlayers.getDuration();
         if (mHistory.getEnding() > 0 && duration > 0 && mHistory.getEnding() + position >= duration) {
             checkEnded(false);
         }
@@ -1184,7 +1194,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 break;
             case PlayerEvent.TRACK:
                 setMetadata();
-                mergeHistory();
                 setTrackVisible();
                 mClock.setCallback(this);
                 break;
@@ -1233,11 +1242,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             checkNext(notify);
         }
-    }
-
-    private void mergeHistory() {
-        mHistory.setDuration(mPlayers.getDuration());
-        App.execute(() -> mHistory.merge());
     }
 
     private void setTrackVisible() {
@@ -1652,6 +1656,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     protected void onPause() {
         super.onPause();
         if (isRedirect()) onPaused();
+        saveHistory();
     }
 
     @Override
