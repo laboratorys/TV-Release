@@ -317,6 +317,7 @@ public class History implements Diffable<History> {
         setVodFlag(flags.get(0).getFlag());
         if (!flags.get(0).getEpisodes().isEmpty()) setVodRemarks(flags.get(0).getEpisodes().get(0).getName());
         for (History item : findByName(getVodName())) {
+            if (getPosition() > 0) break;
             for (Flag flag : flags) {
                 Episode episode = flag.find(item.getVodRemarks(), true);
                 if (episode == null) continue;

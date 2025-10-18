@@ -1186,6 +1186,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 setMetadata();
                 setTrackVisible();
                 mClock.setCallback(this);
+                App.execute(() -> mHistory.merge());
                 break;
             case PlayerEvent.SIZE:
                 mBinding.video.post(this::changeHeight);
@@ -1646,7 +1647,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     protected void onPause() {
         super.onPause();
         if (isRedirect()) onPaused();
-        if (mHistory != null) mHistory.merge();
     }
 
     @Override

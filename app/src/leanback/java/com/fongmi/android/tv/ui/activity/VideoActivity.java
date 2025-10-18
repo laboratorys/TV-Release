@@ -1077,6 +1077,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
                 setMetadata();
                 setTrackVisible();
                 mClock.setCallback(this);
+                App.execute(() -> mHistory.merge());
                 break;
             case PlayerEvent.SIZE:
                 mBinding.widget.size.setText(mPlayers.getSizeText());
@@ -1403,7 +1404,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     protected void onPause() {
         super.onPause();
         if (isRedirect()) onPaused();
-        if (mHistory != null) mHistory.merge();
     }
 
     @Override
