@@ -69,7 +69,11 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
     }
 
     public void clear() {
-        setItems(new ArrayList<>());
+        clear(null);
+    }
+
+    public void clear(Runnable runnable) {
+        setItems(new ArrayList<>(), runnable);
     }
 
     @Override

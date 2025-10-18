@@ -141,8 +141,10 @@ public class SyncDialog extends BaseDialog implements DeviceAdapter.OnClickListe
     }
 
     private void onRefresh() {
-        adapter.clear();
-        scanTask.start(adapter.getIps());
+        adapter.clear(() -> {
+            Device.delete();
+            scanTask.start(adapter.getIps());
+        });
     }
 
     private void onSuccess() {
