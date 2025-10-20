@@ -15,35 +15,34 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/player"
-            style="@style/Control.Action"
+            style="@style/Control"
             android:text="@string/play_exo" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/decode"
-            style="@style/Control.Action"
-            tools:text="硬解" />
+            style="@style/Control"
+            android:text="@string/play_decode" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/speed"
-            style="@style/Control.Action"
-            tools:text="速度" />
+            style="@style/Control"
+            android:fontFeatureSettings="tnum"
+            android:text="@string/play_speed" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/scale"
-            style="@style/Control.Action"
-            tools:text="縮放" />
+            style="@style/Control"
+            android:text="@string/play_scale" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/reset"
-            style="@style/Control.Action"
-            android:textColor="@color/text"
-            tools:text="刷新" />
+            style="@style/Control"
+            android:text="@string/play_reset" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/loop"
-            style="@style/Control.Action"
-            android:text="@string/play_loop"
-            android:textColor="@color/text" />
+            style="@style/Control"
+            android:text="@string/play_loop" />
 
         <View
             android:layout_width="0dp"
@@ -52,48 +51,42 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text"
-            style="@style/Control.Action"
+            style="@style/Control"
             android:tag="3"
-            android:text="@string/play_track_text"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:text="@string/play_track_text" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/audio"
-            style="@style/Control.Action"
+            style="@style/Control"
             android:tag="1"
-            android:text="@string/play_track_audio"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:text="@string/play_track_audio" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/video"
-            style="@style/Control.Action"
+            style="@style/Control"
             android:tag="2"
-            android:text="@string/play_track_video"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:text="@string/play_track_video" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/opening"
-            style="@style/Control.Action"
-            tools:text="片頭" />
+            style="@style/Control"
+            android:text="@string/play_op" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/ending"
-            style="@style/Control.Action"
-            tools:text="片尾" />
+            style="@style/Control"
+            android:text="@string/play_ed" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/danmaku"
-            style="@style/Control.Action"
+            style="@style/Control"
             android:text="@string/danmaku"
             android:visibility="gone"
             tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/episodes"
-            style="@style/Control.Action"
+            style="@style/Control"
             android:text="@string/detail_episode" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
