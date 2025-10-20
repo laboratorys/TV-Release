@@ -59,5 +59,6 @@ public class VodPresenter extends Presenter {
 
     @Override
     public void onUnbindViewHolder(Presenter.ViewHolder viewHolder) {
+        ((BaseVodHolder) viewHolder).unbind();
     }
 }

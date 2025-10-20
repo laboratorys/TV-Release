@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.leanback.widget.Presenter;
 
+import com.bumptech.glide.Glide;
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.databinding.AdapterChannelBinding;
 
@@ -46,6 +47,8 @@ public class ChannelPresenter extends Presenter {
 
     @Override
     public void onUnbindViewHolder(Presenter.ViewHolder viewHolder) {
+        ViewHolder holder = (ViewHolder) viewHolder;
+        Glide.with(holder.binding.logo).clear(holder.binding.logo);
     }
 
     public static class ViewHolder extends Presenter.ViewHolder {
