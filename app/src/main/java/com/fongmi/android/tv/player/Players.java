@@ -115,7 +115,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     private Players(Activity activity) {
-        decode = Setting.getDecode();
+        decode = HARD;
         builder = new StringBuilder();
         provider = new ErrorMsgProvider();
         runnable = () -> ErrorEvent.timeout(tag);
@@ -350,7 +350,6 @@ public class Players implements Player.Listener, ParseCallback {
 
     public void toggleDecode() {
         decode = isHard() ? SOFT : HARD;
-        Setting.putDecode(decode);
         init(view);
     }
 

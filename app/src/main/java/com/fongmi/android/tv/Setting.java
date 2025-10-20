@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 
-import com.fongmi.android.tv.player.Players;
 import com.github.catvod.utils.Prefers;
 
 public class Setting {
@@ -65,14 +64,6 @@ public class Setting {
 
     public static void putReset(int reset) {
         Prefers.put("reset", reset);
-    }
-
-    public static int getDecode() {
-        return Prefers.getInt("decode", Players.HARD);
-    }
-
-    public static void putDecode(int decode) {
-        Prefers.put("decode", decode);
     }
 
     public static int getRender() {
