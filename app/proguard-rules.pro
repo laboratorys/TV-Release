@@ -38,10 +38,6 @@
 -keep class org.fourthline.cling.** { *; }
 -keep class javax.xml.** { *; }
 
-# Cronet
--keep class org.chromium.net.** { *; }
--keep class com.google.net.cronet.** { *; }
-
 # EXO
 -dontwarn org.kxml2.io.**
 -dontwarn org.xmlpull.v1.**
@@ -49,9 +45,6 @@
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 -keep class org.xmlpull.** { *; }
 -keepclassmembers class org.xmlpull.** { *; }
-
-# IJK
--keep class tv.danmaku.ijk.media.player.** { *; }
 
 # Jianpian
 -keep class com.p2p.** { *; }
@@ -86,9 +79,6 @@
 # XunLei
 -keep class com.xunlei.downloadlib.** { *; }
 
-# ZLive
--keep class com.sun.jna.** { *; }
--keep class com.east.android.zlive.** { *; }
-
 # Zxing
--keep class com.google.zxing.** { *; }
+-keep class com.google.zxing.EncodeHintType { *; }
+-keep class com.google.zxing.MultiFormatWriter { *; }
