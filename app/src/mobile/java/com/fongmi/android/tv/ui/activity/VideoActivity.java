@@ -306,6 +306,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     @Override
     @SuppressLint("ClickableViewAccessibility")
     protected void initEvent() {
+        mBinding.control.seek.setPlayer(mPlayers);
         mBinding.name.setOnClickListener(view -> onName());
         mBinding.more.setOnClickListener(view -> onMore());
         mBinding.actor.setOnClickListener(view -> onActor());
@@ -347,7 +348,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.video.setOnTouchListener((view, event) -> mKeyDown.onTouchEvent(event));
         mBinding.control.action.getRoot().setOnTouchListener(this::onActionTouch);
         mBinding.swipeLayout.setOnRefreshListener(this::onSwipeRefresh);
-        mBinding.control.seek.setListener(mPlayers);
     }
 
     private WindowInsetsCompat setStatusBar(WindowInsetsCompat insets) {

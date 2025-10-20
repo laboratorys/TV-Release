@@ -103,7 +103,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
     @Override
     @SuppressLint("ClickableViewAccessibility")
     protected void initEvent() {
-        mBinding.control.seek.setListener(mPlayers);
+        mBinding.control.seek.setPlayer(mPlayers);
         mBinding.control.speed.setUpListener(this::onSpeedAdd);
         mBinding.control.speed.setDownListener(this::onSpeedSub);
         mBinding.control.text.setUpListener(this::onSubtitleClick);
