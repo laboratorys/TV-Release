@@ -124,12 +124,14 @@ public class CollectActivity extends BaseActivity {
     }
 
     private void search() {
+        List<Site> sites = getSites();
+        if (sites.isEmpty()) return;
         mAdapter.add(Collect.all());
         if (mExecutor != null) stop();
         mBinding.pager.getAdapter().notifyDataSetChanged();
-        mExecutor = new PauseExecutor(10);
+        mExecutor = new PauseExecutor(10, sites.size());
         mBinding.result.setText(getString(R.string.collect_result, getKeyword()));
-        for (Site site : getSites()) mExecutor.execute(() -> search(site));
+        for (Site site : sites) mExecutor.execute(() -> search(site));
     }
 
     private void search(Site site) {
