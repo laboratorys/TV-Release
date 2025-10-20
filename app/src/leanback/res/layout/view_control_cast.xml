@@ -26,118 +26,56 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/reset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Control"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/selector_text"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:nextFocusLeft="@id/video"
-                android:nextFocusDown="@id/timeBar"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                tools:text="刷新" />
+                android:text="@string/play_reset" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/player"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Control"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/selector_text"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:nextFocusDown="@id/timeBar"
-                android:text="@string/play_exo"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:text="@string/play_exo" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/decode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Control"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/selector_text"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:nextFocusDown="@id/timeBar"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                tools:text="硬解" />
+                android:text="@string/play_decode" />
 
             <com.fongmi.android.tv.ui.custom.CustomUpDownView
                 android:id="@+id/speed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Control"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/selector_text"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:nextFocusDown="@id/timeBar"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                tools:text="1.00" />
+                android:fontFeatureSettings="tnum"
+                android:text="@string/play_speed" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/scale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Control"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/selector_text"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:nextFocusDown="@id/timeBar"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                tools:text="預設" />
+                android:text="@string/play_scale" />
 
             <com.fongmi.android.tv.ui.custom.CustomUpDownView
                 android:id="@+id/text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Control"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/selector_text"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:nextFocusDown="@id/timeBar"
                 android:tag="3"
-                android:text="@string/play_track_text"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:visibility="gone"
-                tools:visibility="visible" />
+                android:text="@string/play_track_text" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/audio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Control"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/selector_text"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:nextFocusDown="@id/timeBar"
                 android:tag="1"
-                android:text="@string/play_track_audio"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:visibility="gone"
-                tools:visibility="visible" />
+                android:text="@string/play_track_audio" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/video"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/selector_text"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
+                style="@style/Control"
                 android:nextFocusRight="@id/reset"
-                android:nextFocusDown="@id/timeBar"
                 android:tag="2"
-                android:text="@string/play_track_video"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:visibility="gone"
-                tools:visibility="visible" />
+                android:text="@string/play_track_video" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </HorizontalScrollView>

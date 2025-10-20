@@ -12,6 +12,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/title"
+            style="@style/Shadow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -24,6 +25,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/size"
+            style="@style/Shadow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/title"
@@ -35,9 +37,11 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/clock"
+            style="@style/Shadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:fontFeatureSettings="tnum"
             android:textColor="@color/white"
             android:textSize="24sp"
             tools:text="09:20:00" />
