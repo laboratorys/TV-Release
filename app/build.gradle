@@ -104,12 +104,9 @@ dependencies {
     implementation 'com.github.bumptech.glide:avif-integration:' + glideVersion
     implementation 'com.github.bumptech.glide:okhttp3-integration:' + glideVersion
     implementation 'com.github.jahirfiquitiva:TextDrawable:1.0.3'
-    implementation 'com.github.thegrizzlylabs:sardine-android:0.9'
     implementation 'com.github.teamnewpipe:NewPipeExtractor:v0.24.8'
     implementation 'com.google.android.material:material:1.13.0'
-    implementation 'com.google.zxing:core:3.5.3'
     implementation 'com.guolindev.permissionx:permissionx:1.8.1'
-    implementation 'com.hierynomus:smbj:0.14.0'
     implementation 'io.antmedia:rtmp-client:3.2.0'
     implementation 'javax.servlet:javax.servlet-api:3.1.0'
     implementation 'org.eclipse.jetty:jetty-client:8.1.21.v20160908'
