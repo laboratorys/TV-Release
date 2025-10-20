@@ -901,7 +901,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void setTraffic() {
         Traffic.setSpeed(mBinding.widget.traffic);
-        App.post(mR3, Constant.INTERVAL_TRAFFIC);
+        App.post(mR3, 1000);
     }
 
     private void setR1Callback() {

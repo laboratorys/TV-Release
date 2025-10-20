@@ -269,7 +269,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
 
     private void setTraffic() {
         Traffic.setSpeed(mBinding.widget.traffic);
-        App.post(mR2, Constant.INTERVAL_TRAFFIC);
+        App.post(mR2, 1000);
     }
 
     private void setR1Callback() {
