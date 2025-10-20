@@ -80,5 +80,6 @@
 -keep class com.xunlei.downloadlib.** { *; }
 
 # Zxing
+-keep class com.google.zxing.BarcodeFormat { *; }
 -keep class com.google.zxing.EncodeHintType { *; }
 -keep class com.google.zxing.MultiFormatWriter { *; }
