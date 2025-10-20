@@ -15,12 +15,12 @@ import java.util.List;
 
 public class LiveAdapter extends RecyclerView.Adapter<LiveAdapter.ViewHolder> {
 
-    private final OnClickListener mListener;
+    private final OnClickListener listener;
     private final List<Live> mItems;
     private boolean action;
 
     public LiveAdapter(OnClickListener listener) {
-        this.mListener = listener;
+        this.listener = listener;
         this.mItems = LiveConfig.get().getLives();
     }
 
@@ -62,11 +62,11 @@ public class LiveAdapter extends RecyclerView.Adapter<LiveAdapter.ViewHolder> {
         holder.binding.pass.setImageResource(item.getPassIcon());
         holder.binding.boot.setVisibility(action ? View.VISIBLE : View.GONE);
         holder.binding.pass.setVisibility(action ? View.VISIBLE : View.GONE);
-        holder.binding.text.setOnClickListener(v -> mListener.onItemClick(item));
-        holder.binding.boot.setOnClickListener(v -> mListener.onBootClick(position, item));
-        holder.binding.pass.setOnClickListener(v -> mListener.onPassClick(position, item));
-        holder.binding.boot.setOnLongClickListener(v -> mListener.onBootLongClick(item));
-        holder.binding.pass.setOnLongClickListener(v -> mListener.onPassLongClick(item));
+        holder.binding.text.setOnClickListener(v -> listener.onItemClick(item));
+        holder.binding.boot.setOnClickListener(v -> listener.onBootClick(position, item));
+        holder.binding.pass.setOnClickListener(v -> listener.onPassClick(position, item));
+        holder.binding.boot.setOnLongClickListener(v -> listener.onBootLongClick(item));
+        holder.binding.pass.setOnLongClickListener(v -> listener.onPassLongClick(item));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

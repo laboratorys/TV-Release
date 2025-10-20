@@ -16,11 +16,11 @@ import java.util.List;
 
 public class ConfigAdapter extends RecyclerView.Adapter<ConfigAdapter.ViewHolder> {
 
-    private final OnClickListener mListener;
+    private final OnClickListener listener;
     private List<Config> mItems;
 
     public ConfigAdapter(OnClickListener listener) {
-        this.mListener = listener;
+        this.listener = listener;
     }
 
     public interface OnClickListener {
@@ -68,8 +68,8 @@ public class ConfigAdapter extends RecyclerView.Adapter<ConfigAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Config item = mItems.get(position);
         holder.binding.text.setText(item.getDesc());
-        holder.binding.text.setOnClickListener(v -> mListener.onTextClick(item));
-        holder.binding.delete.setOnClickListener(v -> mListener.onDeleteClick(item));
+        holder.binding.text.setOnClickListener(v -> listener.onTextClick(item));
+        holder.binding.delete.setOnClickListener(v -> listener.onDeleteClick(item));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

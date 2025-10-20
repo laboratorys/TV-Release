@@ -13,12 +13,12 @@ import java.util.List;
 
 public class WordAdapter extends RecyclerView.Adapter<WordAdapter.ViewHolder> {
 
-    private final OnClickListener mListener;
+    private final OnClickListener listener;
     private final List<String> mItems;
 
     public WordAdapter(OnClickListener listener) {
         this.mItems = new ArrayList<>();
-        this.mListener = listener;
+        this.listener = listener;
     }
 
     public interface OnClickListener {
@@ -47,7 +47,7 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String item = mItems.get(position);
         holder.binding.text.setText(item);
-        holder.binding.text.setOnClickListener(v -> mListener.onItemClick(item));
+        holder.binding.text.setOnClickListener(v -> listener.onItemClick(item));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

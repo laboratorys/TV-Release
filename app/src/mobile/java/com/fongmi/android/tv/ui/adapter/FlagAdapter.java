@@ -16,11 +16,11 @@ import java.util.List;
 
 public class FlagAdapter extends RecyclerView.Adapter<FlagAdapter.ViewHolder> {
 
-    private final OnClickListener mListener;
+    private final OnClickListener listener;
     private final List<Flag> mItems;
 
     public FlagAdapter(OnClickListener listener) {
-        this.mListener = listener;
+        this.listener = listener;
         this.mItems = new ArrayList<>();
     }
 
@@ -82,7 +82,7 @@ public class FlagAdapter extends RecyclerView.Adapter<FlagAdapter.ViewHolder> {
         Flag item = mItems.get(position);
         holder.binding.text.setText(item.getShow());
         holder.binding.text.setActivated(item.isActivated());
-        holder.binding.text.setOnClickListener(v -> mListener.onItemClick(item));
+        holder.binding.text.setOnClickListener(v -> listener.onItemClick(item));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

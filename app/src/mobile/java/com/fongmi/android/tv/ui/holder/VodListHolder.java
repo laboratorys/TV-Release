@@ -2,6 +2,7 @@ package com.fongmi.android.tv.ui.holder;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.fongmi.android.tv.bean.Vod;
 import com.fongmi.android.tv.databinding.AdapterVodListBinding;
 import com.fongmi.android.tv.ui.adapter.VodAdapter;
@@ -28,5 +29,10 @@ public class VodListHolder extends BaseVodHolder {
         binding.getRoot().setOnClickListener(v -> listener.onItemClick(item));
         binding.getRoot().setOnLongClickListener(v -> listener.onLongClick(item));
         ImgUtil.load(item.getVodName(), item.getVodPic(), binding.image);
+    }
+
+    @Override
+    public void unbind() {
+        Glide.with(binding.image).clear(binding.image);
     }
 }

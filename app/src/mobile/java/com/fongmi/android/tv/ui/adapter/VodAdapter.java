@@ -22,13 +22,13 @@ import java.util.List;
 
 public class VodAdapter extends RecyclerView.Adapter<BaseVodHolder> {
 
-    private final OnClickListener mListener;
+    private final OnClickListener listener;
     private final List<Vod> mItems;
     private final Style style;
     private final int[] size;
 
     public VodAdapter(OnClickListener listener, Style style, int[] size) {
-        this.mListener = listener;
+        this.listener = listener;
         this.mItems = new ArrayList<>();
         this.style = style;
         this.size = size;
@@ -71,16 +71,18 @@ public class VodAdapter extends RecyclerView.Adapter<BaseVodHolder> {
         holder.initView(mItems.get(position));
     }
 
+    @Override
+    public void onViewRecycled(@NonNull BaseVodHolder holder) {
+        holder.unbind();
+    }
+
     @NonNull
     @Override
     public BaseVodHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case ViewType.LIST:
-                return new VodListHolder(AdapterVodListBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), mListener);
-            case ViewType.OVAL:
-                return new VodOvalHolder(AdapterVodOvalBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), mListener).size(size);
-            default:
-                return new VodRectHolder(AdapterVodRectBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), mListener).size(size);
-        }
+        return switch (viewType) {
+            case ViewType.LIST -> new VodListHolder(AdapterVodListBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), listener);
+            case ViewType.OVAL -> new VodOvalHolder(AdapterVodOvalBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), listener).size(size);
+            default -> new VodRectHolder(AdapterVodRectBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), listener).size(size);
+        };
     }
 }

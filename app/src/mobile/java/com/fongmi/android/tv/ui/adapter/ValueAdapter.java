@@ -15,12 +15,12 @@ import java.util.List;
 
 public class ValueAdapter extends RecyclerView.Adapter<ValueAdapter.ViewHolder> {
 
-    private final FilterCallback mListener;
+    private final FilterCallback listener;
     private final List<Value> mItems;
     private final String mKey;
 
     public ValueAdapter(FilterCallback listener, Filter filter) {
-        this.mListener = listener;
+        this.listener = listener;
         this.mItems = filter.getValue();
         this.mKey = filter.getKey();
     }
@@ -47,7 +47,7 @@ public class ValueAdapter extends RecyclerView.Adapter<ValueAdapter.ViewHolder> 
     private void onItemClick(Value value) {
         for (Value item : mItems) item.setActivated(value);
         notifyItemRangeChanged(0, getItemCount());
-        mListener.setFilter(mKey, value);
+        listener.setFilter(mKey, value);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

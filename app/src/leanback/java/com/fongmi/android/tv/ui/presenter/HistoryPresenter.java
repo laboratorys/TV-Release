@@ -15,12 +15,12 @@ import com.fongmi.android.tv.utils.ResUtil;
 
 public class HistoryPresenter extends Presenter {
 
-    private final OnClickListener mListener;
+    private final OnClickListener listener;
     private int width, height;
     private boolean delete;
 
     public HistoryPresenter(OnClickListener listener) {
-        this.mListener = listener;
+        this.listener = listener;
         setLayoutSize();
     }
 
@@ -48,8 +48,9 @@ public class HistoryPresenter extends Presenter {
         height = (int) (width / 0.75f);
     }
 
+    @NonNull
     @Override
-    public Presenter.ViewHolder onCreateViewHolder(ViewGroup parent) {
+    public Presenter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent) {
         ViewHolder holder = new ViewHolder(AdapterVodBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
         holder.binding.getRoot().getLayoutParams().width = width;
         holder.binding.image.getLayoutParams().height = height;
@@ -57,7 +58,7 @@ public class HistoryPresenter extends Presenter {
     }
 
     @Override
-    public void onBindViewHolder(Presenter.ViewHolder viewHolder, Object object) {
+    public void onBindViewHolder(@NonNull Presenter.ViewHolder viewHolder, Object object) {
         History item = (History) object;
         ViewHolder holder = (ViewHolder) viewHolder;
         setClickListener(holder.view, item);
@@ -71,15 +72,15 @@ public class HistoryPresenter extends Presenter {
     }
 
     private void setClickListener(View root, History item) {
-        root.setOnLongClickListener(view -> mListener.onLongClick());
+        root.setOnLongClickListener(view -> listener.onLongClick());
         root.setOnClickListener(view -> {
-            if (isDelete()) mListener.onItemDelete(item);
-            else mListener.onItemClick(item);
+            if (isDelete()) listener.onItemDelete(item);
+            else listener.onItemClick(item);
         });
     }
 
     @Override
-    public void onUnbindViewHolder(Presenter.ViewHolder viewHolder) {
+    public void onUnbindViewHolder(@NonNull Presenter.ViewHolder viewHolder) {
     }
 
     public static class ViewHolder extends Presenter.ViewHolder {

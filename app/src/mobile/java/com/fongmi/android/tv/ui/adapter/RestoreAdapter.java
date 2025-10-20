@@ -18,14 +18,14 @@ import java.util.Locale;
 
 public class RestoreAdapter extends RecyclerView.Adapter<RestoreAdapter.ViewHolder> {
 
-    private final OnClickListener mListener;
+    private final OnClickListener listener;
     private final SimpleDateFormat format;
     private final List<File> mItems;
 
     public RestoreAdapter(OnClickListener listener) {
         this.format = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
         this.mItems = new ArrayList<>();
-        this.mListener = listener;
+        this.listener = listener;
         this.addAll();
     }
 
@@ -69,8 +69,8 @@ public class RestoreAdapter extends RecyclerView.Adapter<RestoreAdapter.ViewHold
         File item = mItems.get(position);
         holder.binding.name.setText(item.getName());
         holder.binding.time.setText(format.format(item.lastModified()));
-        holder.binding.delete.setOnClickListener(v -> mListener.onDeleteClick(item));
-        holder.binding.getRoot().setOnClickListener(v -> mListener.onItemClick(item));
+        holder.binding.delete.setOnClickListener(v -> listener.onDeleteClick(item));
+        holder.binding.getRoot().setOnClickListener(v -> listener.onItemClick(item));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -19,7 +19,7 @@ import java.util.List;
 
 public class EpisodeAdapter extends RecyclerView.Adapter<BaseEpisodeHolder> {
 
-    private final OnClickListener mListener;
+    private final OnClickListener listener;
     private final List<Episode> mItems;
     private final int viewType;
 
@@ -28,7 +28,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<BaseEpisodeHolder> {
     }
 
     public EpisodeAdapter(OnClickListener listener, int viewType, ArrayList<Episode> items) {
-        this.mListener = listener;
+        this.listener = listener;
         this.viewType = viewType;
         this.mItems = items;
     }
@@ -97,9 +97,9 @@ public class EpisodeAdapter extends RecyclerView.Adapter<BaseEpisodeHolder> {
     @Override
     public BaseEpisodeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ViewType.HORI) {
-            return new EpisodeHoriHolder(AdapterEpisodeHoriBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), mListener);
+            return new EpisodeHoriHolder(AdapterEpisodeHoriBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), listener);
         } else {
-            return new EpisodeGridHolder(AdapterEpisodeGridBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), mListener);
+            return new EpisodeGridHolder(AdapterEpisodeGridBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), listener);
         }
     }
 }
