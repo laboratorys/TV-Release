@@ -913,17 +913,15 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void setArtwork() {
-        ImgUtil.load(this, mHistory.getVodPic(), new CustomTarget<>(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()) {
+        ImgUtil.load(this, mHistory.getVodPic(), new CustomTarget<>() {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 mBinding.exo.setDefaultArtwork(resource);
-                setMetadata();
             }
 
             @Override
             public void onLoadFailed(@Nullable Drawable errorDrawable) {
                 mBinding.exo.setDefaultArtwork(errorDrawable);
-                setMetadata();
             }
         });
     }
@@ -957,6 +955,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mHistory.setVodPic(item.getVodPic());
         setScale(getScale());
         setPartAdapter();
+        setMetadata();
         setArtwork();
     }
 
@@ -1023,8 +1022,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         setText(mBinding.director, R.string.detail_director, item.getVodDirector());
         mBinding.content.setMaxLines(getMaxLines());
         setPartAdapter();
-        setArtwork();
         updateKeep();
+        setArtwork();
+        setMetadata();
     }
 
     @Override
@@ -1119,7 +1119,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         String episode = getEpisode().getName();
         boolean empty = title.equals(episode) || episode == null;
         String artist = empty ? "" : getString(R.string.play_now, episode);
-        mPlayers.setMetadata(title, artist, mHistory.getVodPic(), mBinding.exo.getDefaultArtwork());
+        mPlayers.setMetadata(title, artist, mHistory.getVodPic());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

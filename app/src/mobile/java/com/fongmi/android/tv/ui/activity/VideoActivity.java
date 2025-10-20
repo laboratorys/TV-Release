@@ -1000,17 +1000,15 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setArtwork() {
-        ImgUtil.load(this, mHistory.getVodPic(), new CustomTarget<>(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()) {
+        ImgUtil.load(this, mHistory.getVodPic(), new CustomTarget<>() {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 mBinding.exo.setDefaultArtwork(resource);
-                setMetadata();
             }
 
             @Override
             public void onLoadFailed(@Nullable Drawable errorDrawable) {
                 mBinding.exo.setDefaultArtwork(errorDrawable);
-                setMetadata();
             }
         });
     }
@@ -1037,6 +1035,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mHistory.setVodName(item.getVodName());
         mHistory.setVodPic(item.getVodPic());
         setScale(getScale());
+        setMetadata();
         setArtwork();
     }
 
@@ -1119,8 +1118,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         setText(mBinding.content, 0, item.getVodContent());
         setText(mBinding.director, R.string.detail_director, item.getVodDirector());
         mBinding.contentLayout.setVisibility(mBinding.content.getVisibility());
-        setArtwork();
         updateKeep();
+        setArtwork();
+        setMetadata();
     }
 
     @Override
@@ -1257,7 +1257,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         String episode = getEpisode().getName();
         boolean empty = title.equals(episode) || episode == null;
         String artist = empty ? "" : getString(R.string.play_now, episode);
-        mPlayers.setMetadata(title, artist, mHistory.getVodPic(), mBinding.exo.getDefaultArtwork());
+        mPlayers.setMetadata(title, artist, mHistory.getVodPic());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

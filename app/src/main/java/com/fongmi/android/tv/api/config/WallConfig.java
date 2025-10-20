@@ -98,7 +98,7 @@ public class WallConfig {
         }
     }
 
-    private void download() throws Exception {
+    private void download() throws Throwable {
         Path.clear(FileUtil.getWall(0));
         File file = FileUtil.getWall(0);
         Path.clear(FileUtil.getWallCache());
@@ -111,8 +111,8 @@ public class WallConfig {
         else if (isVideo(file)) Setting.putWallType(2);
     }
 
-    private void createSnapshot(File file) throws Exception {
-        Bitmap bitmap = Glide.with(App.get()).asBitmap().frame(0).load(file).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).submit(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).get();
+    private void createSnapshot(File file) throws Throwable {
+        Bitmap bitmap = Glide.with(App.get()).asBitmap().frame(0).load(file).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).submit().get();
         try (FileOutputStream fos = new FileOutputStream(FileUtil.getWallCache())) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         }

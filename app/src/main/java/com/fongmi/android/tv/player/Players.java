@@ -21,6 +21,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
 import androidx.media3.common.PlaybackException;
@@ -32,7 +33,7 @@ import androidx.media3.exoplayer.drm.FrameworkMediaDrm;
 import androidx.media3.exoplayer.util.EventLogger;
 import androidx.media3.ui.PlayerView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.transition.Transition;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.R;
@@ -46,6 +47,7 @@ import com.fongmi.android.tv.bean.Track;
 import com.fongmi.android.tv.event.ActionEvent;
 import com.fongmi.android.tv.event.ErrorEvent;
 import com.fongmi.android.tv.event.PlayerEvent;
+import com.fongmi.android.tv.impl.CustomTarget;
 import com.fongmi.android.tv.impl.ParseCallback;
 import com.fongmi.android.tv.impl.SessionCallback;
 import com.fongmi.android.tv.player.danmaku.DanPlayer;
@@ -54,6 +56,7 @@ import com.fongmi.android.tv.player.exo.ErrorMsgProvider;
 import com.fongmi.android.tv.player.exo.ExoUtil;
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.FileUtil;
+import com.fongmi.android.tv.utils.ImgUtil;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
@@ -548,7 +551,7 @@ public class Players implements Player.Listener, ParseCallback {
         return scheme.isEmpty() || "file".equals(scheme) ? !Path.exists(url) : host.isEmpty();
     }
 
-    public void setMetadata(String title, String artist, String artUri, Drawable drawable) {
+    public void setMetadata(String title, String artist, String artUri) {
         MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
         builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, title);
         builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist);
@@ -556,24 +559,25 @@ public class Players implements Player.Listener, ParseCallback {
         builder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, artUri);
         builder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI, artUri);
         builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, getDuration());
-        App.execute(() -> putBitmap(builder, drawable));
+        putBitmap(builder, artUri);
     }
 
-    private void putBitmap(MediaMetadataCompat.Builder builder, Drawable drawable) {
-        if (drawable == null) {
-            session.setMetadata(builder.build());
-            ActionEvent.update();
-            return;
-        }
-        try {
-            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            bitmap = Glide.with(App.get()).asBitmap().load(bitmap).submit(512, 512).get();
-            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap);
-            session.setMetadata(builder.build());
-            ActionEvent.update();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void putBitmap(MediaMetadataCompat.Builder builder, String artUri) {
+        ImgUtil.load(artUri, new CustomTarget<>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, resource);
+                session.setMetadata(builder.build());
+                ActionEvent.update();
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, ((BitmapDrawable) errorDrawable).getBitmap());
+                session.setMetadata(builder.build());
+                ActionEvent.update();
+            }
+        });
     }
 
     public void share(Activity activity, CharSequence title) {
