@@ -17,8 +17,7 @@
             android:ellipsize="middle"
             android:linksClickable="false"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="20sp" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/header"

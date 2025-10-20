@@ -19,7 +19,6 @@
         android:duplicateParentState="true"
         android:textColor="@color/channel"
         android:textSize="16sp"
-        android:textStyle="bold"
         tools:text="01" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -38,7 +37,6 @@
         android:singleLine="true"
         android:textColor="@color/channel"
         android:textSize="16sp"
-        android:textStyle="bold"
         tools:text="CNN" />
 
 </com.fongmi.android.tv.ui.custom.CustomLeftRightLayout>

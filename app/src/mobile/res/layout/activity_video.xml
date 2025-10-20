@@ -90,7 +90,6 @@
                         android:maxLines="3"
                         android:textColor="@color/white"
                         android:textSize="20sp"
-                        android:textStyle="bold"
                         tools:text="慶餘年第二季" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -162,8 +161,7 @@
                         android:layout_marginEnd="16dp"
                         android:text="@string/detail_flag"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/flag"
@@ -187,7 +185,6 @@
                         android:text="@string/detail_quality"
                         android:textColor="@color/white"
                         android:textSize="16sp"
-                        android:textStyle="bold"
                         android:visibility="gone"
                         tools:visibility="visible" />
 
@@ -218,8 +215,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/detail_episode"
                             android:textColor="@color/white"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textSize="16sp" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/reverse"
@@ -274,8 +270,7 @@
                             android:layout_marginEnd="16dp"
                             android:text="@string/detail_content"
                             android:textColor="@color/white"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textSize="16sp" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/content"

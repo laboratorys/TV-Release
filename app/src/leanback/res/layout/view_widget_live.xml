@@ -19,10 +19,6 @@
             android:layout_marginEnd="16dp"
             android:layout_toStartOf="@+id/clock"
             android:ellipsize="marquee"
-            android:shadowColor="@color/grey_900"
-            android:shadowDx="4"
-            android:shadowDy="4"
-            android:shadowRadius="2"
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="20sp"
@@ -34,10 +30,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/title"
             android:layout_alignStart="@+id/title"
-            android:shadowColor="@color/grey_900"
-            android:shadowDx="4"
-            android:shadowDy="4"
-            android:shadowRadius="2"
             android:textColor="@color/white"
             android:textSize="16sp"
             tools:text="1920 x 1080" />
@@ -47,10 +39,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:shadowColor="@color/grey_900"
-            android:shadowDx="4"
-            android:shadowDy="4"
-            android:shadowRadius="2"
             android:textColor="@color/white"
             android:textSize="24sp"
             tools:text="09:20:00" />
@@ -118,7 +106,6 @@
         android:padding="16dp"
         android:textColor="@color/white"
         android:textSize="64sp"
-        android:textStyle="bold"
         android:visibility="gone"
         tools:text="05"
         tools:visibility="visible" />
@@ -196,7 +183,6 @@
             android:layout_marginEnd="12dp"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold"
             tools:text="005" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -215,7 +201,6 @@
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold"
             tools:text="民視" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -227,7 +212,6 @@
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold"
             tools:text="正在播放：食神" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -236,7 +220,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold"
             tools:text="來源 1" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
