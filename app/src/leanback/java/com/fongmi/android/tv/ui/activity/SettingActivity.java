@@ -191,6 +191,7 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
             case 1:
                 setCacheText();
                 Notify.dismiss();
+                RefreshEvent.config();
                 mBinding.liveUrl.setText(LiveConfig.getDesc());
                 break;
             case 2:
