@@ -90,7 +90,7 @@ public class Collect implements Parcelable, Diffable<Collect> {
 
     @Override
     public boolean isSameItem(Collect other) {
-        return getSite().equals(other.getSite());
+        return equals(other);
     }
 
     @Override

@@ -6,10 +6,11 @@ import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
+import com.fongmi.android.tv.impl.Diffable;
 import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.SerializedName;
 
-public class Value implements Parcelable {
+public class Value implements Parcelable, Diffable<Value> {
 
     @SerializedName("n")
     private String n;
@@ -96,4 +97,14 @@ public class Value implements Parcelable {
             return new Value[size];
         }
     };
+
+    @Override
+    public boolean isSameItem(Value other) {
+        return equals(other);
+    }
+
+    @Override
+    public boolean isSameContent(Value other) {
+        return equals(other);
+    }
 }

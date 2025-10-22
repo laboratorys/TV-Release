@@ -306,7 +306,7 @@ public class Vod implements Parcelable, Diffable<Vod> {
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Vod it)) return false;
-        return getVodId().equals(it.getVodId()) && getVodName().equals(it.getVodName()) && getVodPic().equals(it.getVodPic()) && getVodRemarks().equals(it.getVodRemarks()) && getSite().equals(it.getSite());
+        return getVodId().equals(it.getVodId());
     }
 
     @Override
@@ -377,11 +377,11 @@ public class Vod implements Parcelable, Diffable<Vod> {
 
     @Override
     public boolean isSameItem(Vod other) {
-        return getVodId().equals(other.getVodId());
+        return equals(other);
     }
 
     @Override
     public boolean isSameContent(Vod other) {
-        return equals(other);
+        return getVodName().equals(other.getVodName()) && getVodPic().equals(other.getVodPic()) && getVodRemarks().equals(other.getVodRemarks()) && getSite().equals(other.getSite());
     }
 }

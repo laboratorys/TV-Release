@@ -15,7 +15,6 @@ import androidx.leanback.widget.ListRow;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewbinding.ViewBinding;
 
-import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Product;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.config.VodConfig;
@@ -29,6 +28,7 @@ import com.fongmi.android.tv.databinding.FragmentTypeBinding;
 import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.ui.activity.CollectActivity;
 import com.fongmi.android.tv.ui.activity.VideoActivity;
+import com.fongmi.android.tv.ui.adapter.BaseDiffCallback;
 import com.fongmi.android.tv.ui.base.BaseFragment;
 import com.fongmi.android.tv.ui.custom.CustomRowPresenter;
 import com.fongmi.android.tv.ui.custom.CustomScroller;
@@ -129,15 +129,8 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
 
     private void setViewModel() {
         mViewModel = new ViewModelProvider(this).get(SiteViewModel.class);
+        mViewModel.result.observe(getViewLifecycleOwner(), this::setAdapter);
         mViewModel.action.observe(getViewLifecycleOwner(), result -> Notify.show(result.getMsg()));
-        mViewModel.result.observe(getViewLifecycleOwner(), result -> {
-            boolean first = mScroller.first();
-            int size = result.getList().size();
-            mBinding.progressLayout.showContent(first, size);
-            if (size > 0) addVideo(result);
-            mScroller.endLoading(result);
-            checkMore(size);
-        });
     }
 
     private void setFilters() {
@@ -164,11 +157,21 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     private void getVideo(String typeId, String page) {
         boolean first = "1".equals(page);
         if (first) mLast = null;
-        if (first) showProgress();
         int filterSize = filterVisible ? mFilters.size() : 0;
         boolean clear = first && mAdapter.size() > filterSize;
+        if (first && mAdapter.size() == filterSize) showProgress();
         if (clear) mAdapter.removeItems(filterSize, mAdapter.size() - filterSize);
         mViewModel.categoryContent(getKey(), typeId, page, true, mExtends);
+    }
+
+    private void setAdapter(Result result) {
+        boolean first = mScroller.first();
+        boolean flag = mExtends.isEmpty();
+        int size = result.getList().size();
+        mBinding.progressLayout.showContent(first & flag, size);
+        if (size > 0) addVideo(result);
+        mScroller.endLoading(result);
+        checkMore(size);
     }
 
     private void addVideo(Result result) {
@@ -197,7 +200,7 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
         List<ListRow> rows = new ArrayList<>();
         for (List<Vod> part : Lists.partition(items, Product.getColumn(style))) {
             mLast = new ArrayObjectAdapter(new VodPresenter(this, style));
-            mLast.setItems(part, null);
+            mLast.setItems(part, new BaseDiffCallback<Vod>());
             rows.add(new ListRow(mLast));
         }
         mAdapter.addAll(mAdapter.size(), rows);
@@ -218,7 +221,7 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     private void showFilter() {
         List<ListRow> rows = new ArrayList<>();
         for (Filter filter : mFilters) rows.add(getRow(filter));
-        App.post(() -> mBinding.recycler.scrollToPosition(0), 48);
+        mBinding.recycler.postDelayed(() -> mBinding.recycler.scrollToPosition(0), 48);
         mAdapter.addAll(0, rows);
     }
 

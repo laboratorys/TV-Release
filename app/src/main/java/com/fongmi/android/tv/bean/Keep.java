@@ -175,16 +175,16 @@ public class Keep implements Diffable<Keep> {
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Keep it)) return false;
-        return getKey().equals(it.getKey()) && getVodName().equals(it.getVodName()) && getVodPic().equals(it.getVodPic()) && getCreateTime() == it.getCreateTime();
+        return getKey().equals(it.getKey());
     }
 
     @Override
     public boolean isSameItem(Keep other) {
-        return getKey().equals(other.getKey());
+        return equals(other);
     }
 
     @Override
     public boolean isSameContent(Keep other) {
-        return equals(other);
+        return getVodName().equals(other.getVodName()) && getVodPic().equals(other.getVodPic()) && getCreateTime() == other.getCreateTime();
     }
 }

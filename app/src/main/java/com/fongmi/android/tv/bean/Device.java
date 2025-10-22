@@ -167,7 +167,7 @@ public class Device implements Diffable<Device> {
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Device it)) return false;
-        return getUuid().equals(it.getUuid()) && getName().equals(it.getName()) && getType() == it.getType();
+        return getUuid().equals(it.getUuid());
     }
 
     @NonNull
@@ -178,12 +178,12 @@ public class Device implements Diffable<Device> {
 
     @Override
     public boolean isSameItem(Device other) {
-        return getUuid().equals(other.getUuid());
+        return equals(other);
     }
 
     @Override
     public boolean isSameContent(Device other) {
-        return equals(other);
+        return getName().equals(other.getName()) && getType() == other.getType();
     }
 
     public static class Sorter implements Comparator<Device> {

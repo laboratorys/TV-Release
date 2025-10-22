@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
+import com.fongmi.android.tv.impl.Diffable;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.utils.Json;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Parse {
+public class Parse implements Diffable<Parse> {
 
     @SerializedName("name")
     private String name;
@@ -136,6 +137,16 @@ public class Parse {
         map.put("ext", getExt().toString());
         map.put("url", getUrl());
         return map;
+    }
+
+    @Override
+    public boolean isSameItem(Parse other) {
+        return equals(other);
+    }
+
+    @Override
+    public boolean isSameContent(Parse other) {
+        return equals(other);
     }
 
     public static class Ext {
