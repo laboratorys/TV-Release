@@ -232,9 +232,9 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     }
 
     private void checkFilter() {
-        int filterCount = filterVisible ? mFilters.size() : 0;
-        if (mAdapter.size() == filterCount) showProgress();
-        else mAdapter.removeItems(filterCount, mAdapter.size() - filterCount);
+        int filterSize = filterVisible ? mFilters.size() : 0;
+        if (mAdapter.size() > filterSize) mAdapter.removeItems(filterSize, mAdapter.size() - filterSize);
+        else showProgress();
     }
 
     public void onRefresh() {
