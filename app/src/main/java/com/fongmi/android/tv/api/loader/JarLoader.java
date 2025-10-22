@@ -8,7 +8,6 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderNull;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
-import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.Util;
 
 import org.json.JSONObject;
@@ -114,21 +113,16 @@ public class JarLoader {
     }
 
     public Spider getSpider(String key, String api, String ext, String jar) {
-        String jaKey = Util.md5(jar);
-        String spKey = jaKey + key;
-        String crash = "crash_" + spKey;
-        if (Prefers.getBoolean(crash)) return new SpiderNull();
-        if (spiders.containsKey(spKey)) return spiders.get(spKey);
         try {
-            Prefers.put(crash, true);
+            String jaKey = Util.md5(jar);
+            String spKey = jaKey + key;
+            if (spiders.containsKey(spKey)) return spiders.get(spKey);
             if (!loaders.containsKey(jaKey)) parseJar(jaKey, jar);
             Spider spider = (Spider) loaders.get(jaKey).loadClass("com.github.catvod.spider." + api.split("csp_")[1]).newInstance();
             spider.init(App.get(), ext);
             spiders.put(spKey, spider);
-            Prefers.put(crash, false);
             return spider;
         } catch (Throwable e) {
-            Prefers.put(crash, false);
             e.printStackTrace();
             return new SpiderNull();
         }
