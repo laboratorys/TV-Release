@@ -10,7 +10,6 @@ import com.fongmi.android.tv.impl.Diffable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,9 +44,9 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
     }
 
     public void addAll(List<T> items) {
-        LinkedHashSet<T> current = new LinkedHashSet<>(getItems());
+        List<T> current = new ArrayList<>(getItems());
         current.addAll(items);
-        setItems(new ArrayList<>(current));
+        setItems(current);
     }
 
     public void sort(T item, Comparator<T> comparator) {
