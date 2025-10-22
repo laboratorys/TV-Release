@@ -163,12 +163,12 @@ public class CastDialog extends BaseDialog implements DeviceAdapter.OnClickListe
 
     @Override
     public void onFind(Device device) {
-        adapter.addItemSort(device, sorter);
+        adapter.sort(device, sorter);
     }
 
     @Override
     public void onDeviceAdded(@NonNull org.fourthline.cling.model.meta.Device<?, ?, ?> device) {
-        adapter.addItemSort(DLNADevice.get().add(device), sorter);
+        adapter.sort(DLNADevice.get().add(device), sorter);
     }
 
     @Override

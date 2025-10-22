@@ -158,7 +158,7 @@ public class SyncDialog extends BaseDialog implements DeviceAdapter.OnClickListe
 
     @Override
     public void onFind(Device device) {
-        adapter.addItemSort(device, sorter);
+        adapter.sort(device, sorter);
     }
 
     @Override

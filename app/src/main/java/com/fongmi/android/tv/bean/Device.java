@@ -20,6 +20,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(indices = @Index(value = {"uuid", "name"}, unique = true))
 public class Device implements Diffable<Device> {
@@ -168,6 +169,11 @@ public class Device implements Diffable<Device> {
         if (this == obj) return true;
         if (!(obj instanceof Device it)) return false;
         return getUuid().equals(it.getUuid());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getUuid());
     }
 
     @NonNull

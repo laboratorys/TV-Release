@@ -10,7 +10,9 @@ import com.fongmi.android.tv.impl.Diffable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
@@ -33,26 +35,22 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
     }
 
     public void setItems(List<T> items, Runnable runnable) {
-        if (items == null || items.isEmpty()) {
-            differ.submitList(new ArrayList<>(), runnable);
-        } else {
-            differ.submitList(items, runnable);
-        }
+        differ.submitList(Objects.requireNonNullElseGet(items, ArrayList::new), runnable);
     }
 
-    public void addItem(T item, Runnable runnable) {
+    public void add(T item, Runnable runnable) {
         List<T> current = new ArrayList<>(getItems());
         current.add(item);
         setItems(current, runnable);
     }
 
-    public void addItems(List<T> items) {
-        List<T> current = new ArrayList<>(getItems());
+    public void addAll(List<T> items) {
+        LinkedHashSet<T> current = new LinkedHashSet<>(getItems());
         current.addAll(items);
-        setItems(current);
+        setItems(new ArrayList<>(current));
     }
 
-    public void addItemSort(T item, Comparator<T> comparator) {
+    public void sort(T item, Comparator<T> comparator) {
         List<T> current = new ArrayList<>(getItems());
         current.add(item);
         if (current.size() >= 2) current.sort(comparator);

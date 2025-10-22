@@ -16,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Keep implements Diffable<Keep> {
@@ -176,6 +177,11 @@ public class Keep implements Diffable<Keep> {
         if (this == obj) return true;
         if (!(obj instanceof Keep it)) return false;
         return getKey().equals(it.getKey());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getKey());
     }
 
     @Override

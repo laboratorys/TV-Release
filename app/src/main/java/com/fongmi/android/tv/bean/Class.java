@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @Root(strict = false)
 public class Class implements Parcelable, Diffable<Class> {
@@ -147,6 +148,11 @@ public class Class implements Parcelable, Diffable<Class> {
         if (this == obj) return true;
         if (!(obj instanceof Class it)) return false;
         return getTypeId().equals(it.getTypeId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getTypeId());
     }
 
     @Override

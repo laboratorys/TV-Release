@@ -11,6 +11,8 @@ import com.fongmi.android.tv.utils.Util;
 import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 public class Episode implements Parcelable, Diffable<Episode> {
 
     @SerializedName("name")
@@ -117,6 +119,11 @@ public class Episode implements Parcelable, Diffable<Episode> {
         if (this == obj) return true;
         if (!(obj instanceof Episode it)) return false;
         return getName().equals(it.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getName());
     }
 
     @Override

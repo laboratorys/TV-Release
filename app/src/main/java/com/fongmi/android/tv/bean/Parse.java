@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Parse implements Diffable<Parse> {
 
@@ -118,13 +119,6 @@ public class Parse implements Diffable<Parse> {
         return getType() == 0 && getUrl().isEmpty();
     }
 
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Parse it)) return false;
-        return getName().equals(it.getName());
-    }
-
     public String extUrl() {
         int index = getUrl().indexOf("?");
         if (getExt().isEmpty() || index == -1) return getUrl();
@@ -137,6 +131,18 @@ public class Parse implements Diffable<Parse> {
         map.put("ext", getExt().toString());
         map.put("url", getUrl());
         return map;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Parse it)) return false;
+        return getName().equals(it.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getName());
     }
 
     @Override

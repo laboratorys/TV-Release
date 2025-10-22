@@ -140,8 +140,8 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
 
     private void setCollect(Result result) {
         if (result == null) return;
-        if (mCollectAdapter.getPosition() == 0) mSearchAdapter.addItems(result.getList());
-        mCollectAdapter.addItem(Collect.create(result.getList()), this::setWidth);
+        if (mCollectAdapter.getPosition() == 0) mSearchAdapter.addAll(result.getList());
+        mCollectAdapter.add(Collect.create(result.getList()), this::setWidth);
         mCollectAdapter.add(result.getList());
     }
 
@@ -164,7 +164,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
         if (result == null) return;
         boolean same = !result.getList().isEmpty() && mCollectAdapter.getActivated().getSite().equals(result.getList().get(0).getSite());
         if (same) mCollectAdapter.getActivated().getList().addAll(result.getList());
-        if (same) mSearchAdapter.addItems(result.getList());
+        if (same) mSearchAdapter.addAll(result.getList());
         mScroller.endLoading(result);
     }
 

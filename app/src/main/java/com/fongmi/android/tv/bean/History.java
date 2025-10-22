@@ -22,6 +22,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Entity
@@ -361,6 +362,11 @@ public class History implements Diffable<History> {
         if (this == obj) return true;
         if (!(obj instanceof History it)) return false;
         return getKey().equals(it.getKey());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getKey());
     }
 
     @NonNull

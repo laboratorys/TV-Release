@@ -11,6 +11,7 @@ import com.fongmi.android.tv.utils.ResUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Collect implements Parcelable, Diffable<Collect> {
 
@@ -66,6 +67,11 @@ public class Collect implements Parcelable, Diffable<Collect> {
         if (this == obj) return true;
         if (!(obj instanceof Collect it)) return false;
         return getSite().equals(it.getSite());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getSite());
     }
 
     @Override
