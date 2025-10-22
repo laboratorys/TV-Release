@@ -152,7 +152,7 @@ public class Class implements Parcelable, Diffable<Class> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getTypeId());
+        return getTypeId().hashCode();
     }
 
     @Override

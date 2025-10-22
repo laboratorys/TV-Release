@@ -173,7 +173,7 @@ public class Device implements Diffable<Device> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getUuid());
+        return getUuid().hashCode();
     }
 
     @NonNull

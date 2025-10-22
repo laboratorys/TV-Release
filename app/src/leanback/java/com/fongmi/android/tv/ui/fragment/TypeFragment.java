@@ -150,17 +150,13 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     }
 
     private void getVideo() {
+        mLast = null;
+        checkFilter();
         mScroller.reset();
         getVideo(getTypeId(), "1");
     }
 
     private void getVideo(String typeId, String page) {
-        boolean first = "1".equals(page);
-        if (first) mLast = null;
-        int filterSize = filterVisible ? mFilters.size() : 0;
-        boolean clear = first && mAdapter.size() > filterSize;
-        if (first && mAdapter.size() == filterSize) showProgress();
-        if (clear) mAdapter.removeItems(filterSize, mAdapter.size() - filterSize);
         mViewModel.categoryContent(getKey(), typeId, page, true, mExtends);
     }
 
@@ -233,6 +229,12 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
         this.filterVisible = visible;
         if (visible) showFilter();
         else hideFilter();
+    }
+
+    private void checkFilter() {
+        int filterCount = filterVisible ? mFilters.size() : 0;
+        if (mAdapter.size() == filterCount) showProgress();
+        else mAdapter.removeItems(filterCount, mAdapter.size() - filterCount);
     }
 
     public void onRefresh() {

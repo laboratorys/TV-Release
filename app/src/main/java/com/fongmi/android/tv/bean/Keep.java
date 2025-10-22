@@ -181,7 +181,7 @@ public class Keep implements Diffable<Keep> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getKey());
+        return getKey().hashCode();
     }
 
     @Override

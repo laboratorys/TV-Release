@@ -136,13 +136,15 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
 
     private void getVideo() {
         mScroller.reset();
-        mAdapter.clear(() -> getVideo(getTypeId(), "1"));
+        mAdapter.clear(() -> {
+            if (!mBinding.swipeLayout.isRefreshing()) mBinding.progressLayout.showProgress();
+            if (isHome()) setAdapter(getParent().getResult());
+            else getVideo(getTypeId(), "1");
+        });
     }
 
     private void getVideo(String typeId, String page) {
-        if ("1".equals(page) && !mBinding.swipeLayout.isRefreshing()) mBinding.progressLayout.showProgress();
-        if (isHome() && "1".equals(page)) setAdapter(getParent().getResult());
-        else mViewModel.categoryContent(getKey(), typeId, page, true, mExtends);
+        mViewModel.categoryContent(getKey(), typeId, page, true, mExtends);
     }
 
     private void setAdapter(Result result) {

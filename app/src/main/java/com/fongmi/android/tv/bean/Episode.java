@@ -123,7 +123,7 @@ public class Episode implements Parcelable, Diffable<Episode> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getName());
+        return getName().hashCode();
     }
 
     @Override

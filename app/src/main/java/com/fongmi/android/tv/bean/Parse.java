@@ -142,7 +142,7 @@ public class Parse implements Diffable<Parse> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getName());
+        return getName().hashCode();
     }
 
     @Override

@@ -138,7 +138,7 @@ public class Flag implements Parcelable, Diffable<Flag> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getFlag());
+        return getFlag().hashCode();
     }
 
     @NonNull

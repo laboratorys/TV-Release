@@ -307,12 +307,12 @@ public class Vod implements Parcelable, Diffable<Vod> {
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Vod it)) return false;
-        return getVodId().equals(it.getVodId());
+        return !getVodId().isEmpty() && !it.getVodId().isEmpty() ? getVodId().equals(it.getVodId()) : getVodName().equals(it.getVodName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getVodId());
+        return !getVodId().isEmpty() ? getVodId().hashCode() : getVodName().hashCode();
     }
 
     @Override

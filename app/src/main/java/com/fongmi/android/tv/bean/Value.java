@@ -72,7 +72,7 @@ public class Value implements Parcelable, Diffable<Value> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getV());
+        return getV().hashCode();
     }
 
     @Override

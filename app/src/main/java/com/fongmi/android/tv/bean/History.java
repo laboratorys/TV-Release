@@ -366,7 +366,7 @@ public class History implements Diffable<History> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getKey());
+        return getKey().hashCode();
     }
 
     @NonNull
