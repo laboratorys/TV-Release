@@ -60,7 +60,10 @@ public class HistoryActivity extends BaseActivity implements HistoryAdapter.OnCl
     }
 
     private void getHistory() {
-        mAdapter.setItems(History.get(), () -> mBinding.progressLayout.showContent(true, mAdapter.getItemCount()));
+        mAdapter.setItems(History.get(), () -> {
+            mBinding.progressLayout.showContent(true, mAdapter.getItemCount());
+            mBinding.recycler.post(() -> mBinding.recycler.smoothScrollToPosition(0));
+        });
     }
 
     private void onSync() {
