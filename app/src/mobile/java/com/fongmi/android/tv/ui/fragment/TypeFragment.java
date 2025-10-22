@@ -131,17 +131,15 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     }
 
     private void getHome() {
-        mViewModel.homeContent();
-        mAdapter.clear();
+        mAdapter.clear(() -> mViewModel.homeContent());
     }
 
     private void getVideo() {
         mScroller.reset();
-        getVideo(getTypeId(), "1");
+        mAdapter.clear(() -> getVideo(getTypeId(), "1"));
     }
 
     private void getVideo(String typeId, String page) {
-        if ("1".equals(page)) mAdapter.clear();
         if ("1".equals(page) && !mBinding.swipeLayout.isRefreshing()) mBinding.progressLayout.showProgress();
         if (isHome() && "1".equals(page)) setAdapter(getParent().getResult());
         else mViewModel.categoryContent(getKey(), typeId, page, true, mExtends);
@@ -160,7 +158,7 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     private void addVideo(Result result) {
         Style style = result.getList().get(0).getStyle(getStyle());
         if (!style.equals(mAdapter.getStyle())) setStyle(style);
-        mAdapter.addAll(result.getList());
+        mAdapter.addItems(result.getList());
     }
 
     private void checkMore(int count) {

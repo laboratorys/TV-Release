@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Root(strict = false)
 public class Vod implements Parcelable, Diffable<Vod> {
@@ -310,6 +311,11 @@ public class Vod implements Parcelable, Diffable<Vod> {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(getVodId());
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -382,6 +388,6 @@ public class Vod implements Parcelable, Diffable<Vod> {
 
     @Override
     public boolean isSameContent(Vod other) {
-        return getVodName().equals(other.getVodName()) && getVodPic().equals(other.getVodPic()) && getVodRemarks().equals(other.getVodRemarks()) && getSite().equals(other.getSite());
+        return getVodName().equals(other.getVodName()) && getVodPic().equals(other.getVodPic()) && getVodRemarks().equals(other.getVodRemarks()) && Objects.equals(getSite(), other.getSite());
     }
 }

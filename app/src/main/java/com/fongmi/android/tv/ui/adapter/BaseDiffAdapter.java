@@ -33,11 +33,11 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
     }
 
     public void setItems(List<T> items, Runnable runnable) {
-        differ.submitList(items, runnable);
-    }
-
-    public void addItem(T item) {
-        addItem(item, null);
+        if (items == null || items.isEmpty()) {
+            differ.submitList(new ArrayList<>(), runnable);
+        } else {
+            differ.submitList(items, runnable);
+        }
     }
 
     public void addItem(T item, Runnable runnable) {
