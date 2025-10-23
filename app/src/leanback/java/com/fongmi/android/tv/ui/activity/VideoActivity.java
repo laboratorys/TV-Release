@@ -418,6 +418,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mClock.setCallback(null);
         mPlayers.reset();
         mPlayers.stop();
+        saveHistory();
         getDetail();
     }
 
@@ -969,13 +970,8 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void saveHistory() {
-        if (mHistory == null) return;
-        if (Setting.isIncognito()) return;
-        long position = mPlayers.getPosition();
-        long duration = mPlayers.getDuration();
-        if (position >= 0 && duration > 0) {
-            mHistory.setPosition(position);
-            mHistory.setDuration(duration);
+        if (mHistory == null || Setting.isIncognito()) return;
+        if (mHistory.getPosition() > 0 && mHistory.getDuration() > 0) {
             App.execute(() -> mHistory.merge().save());
         }
     }
@@ -1035,8 +1031,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     @Override
     public void onTimeChanged() {
-        long position = mPlayers.getPosition();
-        long duration = mPlayers.getDuration();
+        long position, duration;
+        mHistory.setPosition(position = mPlayers.getPosition());
+        mHistory.setDuration(duration = mPlayers.getDuration());
         if (mHistory.getEnding() > 0 && duration > 0 && mHistory.getEnding() + position >= duration) {
             checkEnded(false);
         }
@@ -1255,7 +1252,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         if (isFullscreen()) showInfo();
         else hideInfo();
         mPlayers.pause();
-        saveHistory();
     }
 
     private void onPlay() {
