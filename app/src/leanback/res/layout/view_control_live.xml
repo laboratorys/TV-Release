@@ -18,10 +18,16 @@
         android:orientation="horizontal">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/home"
+            android:id="@+id/config"
             style="@style/Control"
             android:layout_marginEnd="12dp"
             android:nextFocusLeft="@id/change"
+            android:text="@string/play_config" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/home"
+            style="@style/Control"
+            android:layout_marginEnd="12dp"
             tools:text="首頁" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -103,7 +109,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/change"
             style="@style/Control"
-            android:nextFocusRight="@id/home"
+            android:nextFocusRight="@id/config"
             android:text="@string/play_change" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

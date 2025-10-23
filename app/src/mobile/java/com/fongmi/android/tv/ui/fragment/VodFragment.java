@@ -174,7 +174,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     }
 
     private void onLogo(View view) {
-        HistoryDialog.create(this).type(0).show();
+        HistoryDialog.create(this).readOnly().type(0).show();
     }
 
     private void onSite(View view) {
@@ -261,8 +261,8 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
 
             @Override
             public void error(String msg) {
-                Notify.show(msg);
                 Notify.dismiss();
+                Notify.show(msg);
             }
         });
     }

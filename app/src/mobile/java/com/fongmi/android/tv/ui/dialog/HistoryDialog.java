@@ -1,5 +1,6 @@
 package com.fongmi.android.tv.ui.dialog;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,9 +17,14 @@ public class HistoryDialog implements ConfigAdapter.OnClickListener {
 
     private final DialogHistoryBinding binding;
     private final ConfigCallback callback;
-    private final ConfigAdapter adapter;
     private final AlertDialog dialog;
+    private ConfigAdapter adapter;
+    private boolean readOnly;
     private int type;
+
+    public static HistoryDialog create(Activity activity) {
+        return new HistoryDialog(activity);
+    }
 
     public static HistoryDialog create(Fragment fragment) {
         return new HistoryDialog(fragment);
@@ -29,11 +35,21 @@ public class HistoryDialog implements ConfigAdapter.OnClickListener {
         return this;
     }
 
+    public HistoryDialog(Activity activity) {
+        this.callback = (ConfigCallback) activity;
+        this.binding = DialogHistoryBinding.inflate(LayoutInflater.from(activity));
+        this.dialog = new MaterialAlertDialogBuilder(activity).setView(binding.getRoot()).create();
+    }
+
     public HistoryDialog(Fragment fragment) {
         this.callback = (ConfigCallback) fragment;
         this.binding = DialogHistoryBinding.inflate(LayoutInflater.from(fragment.getContext()));
         this.dialog = new MaterialAlertDialogBuilder(fragment.requireActivity()).setView(binding.getRoot()).create();
-        this.adapter = new ConfigAdapter(this);
+    }
+
+    public HistoryDialog readOnly() {
+        this.readOnly = true;
+        return this;
     }
 
     public void show() {
@@ -42,11 +58,11 @@ public class HistoryDialog implements ConfigAdapter.OnClickListener {
     }
 
     private void setRecyclerView() {
+        adapter = new ConfigAdapter(this);
         binding.recycler.setItemAnimator(null);
         binding.recycler.setHasFixedSize(false);
-        binding.recycler.setAdapter(adapter.addAll(type));
         binding.recycler.addItemDecoration(new SpaceItemDecoration(1, 8));
-        binding.recycler.post(() -> binding.recycler.scrollToPosition(0));
+        binding.recycler.setAdapter(adapter.readOnly(readOnly).addAll(type));
     }
 
     private void setDialog() {

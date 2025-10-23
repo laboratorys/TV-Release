@@ -1,6 +1,7 @@
 package com.fongmi.android.tv.ui.adapter;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ public class ConfigAdapter extends RecyclerView.Adapter<ConfigAdapter.ViewHolder
 
     private final OnClickListener listener;
     private List<Config> mItems;
+    private boolean readOnly;
 
     public ConfigAdapter(OnClickListener listener) {
         this.listener = listener;
@@ -30,9 +32,14 @@ public class ConfigAdapter extends RecyclerView.Adapter<ConfigAdapter.ViewHolder
         void onDeleteClick(Config item);
     }
 
+    public ConfigAdapter readOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+        return this;
+    }
+
     public ConfigAdapter addAll(int type) {
         mItems = Config.getAll(type);
-        mItems.remove(getConfig(type));
+        if (!readOnly) mItems.remove(getConfig(type));
         return this;
     }
 
@@ -69,6 +76,7 @@ public class ConfigAdapter extends RecyclerView.Adapter<ConfigAdapter.ViewHolder
         Config item = mItems.get(position);
         holder.binding.text.setText(item.getDesc());
         holder.binding.text.setOnClickListener(v -> listener.onTextClick(item));
+        holder.binding.delete.setVisibility(readOnly ? View.GONE : View.VISIBLE);
         holder.binding.delete.setOnClickListener(v -> listener.onDeleteClick(item));
     }
 
