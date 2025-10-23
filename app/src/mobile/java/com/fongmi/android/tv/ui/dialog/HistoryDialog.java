@@ -11,6 +11,7 @@ import com.fongmi.android.tv.databinding.DialogHistoryBinding;
 import com.fongmi.android.tv.impl.ConfigCallback;
 import com.fongmi.android.tv.ui.adapter.ConfigAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
+import com.fongmi.android.tv.utils.ResUtil;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class HistoryDialog implements ConfigAdapter.OnClickListener {
@@ -63,6 +64,7 @@ public class HistoryDialog implements ConfigAdapter.OnClickListener {
         binding.recycler.setHasFixedSize(false);
         binding.recycler.addItemDecoration(new SpaceItemDecoration(1, 8));
         binding.recycler.setAdapter(adapter.readOnly(readOnly).addAll(type));
+        if (readOnly && type == 1) binding.recycler.setMaxHeight(ResUtil.dp2px(264));
     }
 
     private void setDialog() {
