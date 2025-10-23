@@ -13,6 +13,7 @@ import androidx.leanback.widget.HorizontalGridView;
 import androidx.leanback.widget.ItemBridgeAdapter;
 import androidx.leanback.widget.ListRow;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.Product;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TypeFragment extends BaseFragment implements CustomScroller.Callback, VodPresenter.OnClickListener {
+public class TypeFragment extends BaseFragment implements CustomScroller.Callback, VodPresenter.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private HashMap<String, String> mExtends;
     private FragmentTypeBinding mBinding;
@@ -107,6 +108,8 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
 
     @Override
     protected void initView() {
+        mBinding.swipeLayout.setColorSchemeResources(R.color.accent);
+        mScroller = new CustomScroller(this);
         mExtends = getExtend();
         mFilters = getFilter();
         setRecyclerView();
@@ -115,13 +118,18 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
         getVideo();
     }
 
+    @Override
+    protected void initEvent() {
+        mBinding.swipeLayout.setOnRefreshListener(this);
+        mBinding.recycler.addOnScrollListener(mScroller);
+    }
+
     @SuppressLint("RestrictedApi")
     private void setRecyclerView() {
         CustomSelector selector = new CustomSelector();
         selector.addPresenter(Vod.class, new VodPresenter(this, Style.list()));
         selector.addPresenter(ListRow.class, new CustomRowPresenter(16), VodPresenter.class);
         selector.addPresenter(ListRow.class, new CustomRowPresenter(8, FocusHighlight.ZOOM_FACTOR_NONE, HorizontalGridView.FOCUS_SCROLL_ALIGNED), FilterPresenter.class);
-        mBinding.recycler.addOnScrollListener(mScroller = new CustomScroller(this));
         mBinding.recycler.setAdapter(new ItemBridgeAdapter(mAdapter = new ArrayObjectAdapter(selector)));
         mBinding.recycler.setHeader(requireActivity().findViewById(R.id.recycler));
         mBinding.recycler.setVerticalSpacing(ResUtil.dp2px(16));
@@ -165,6 +173,7 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
         boolean flag = mExtends.isEmpty();
         int size = result.getList().size();
         mBinding.progressLayout.showContent(first & flag, size);
+        mBinding.swipeLayout.setRefreshing(false);
         if (size > 0) addVideo(result);
         mScroller.endLoading(result);
         checkMore(size);
@@ -210,10 +219,6 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
         return new ListRow(adapter);
     }
 
-    private void showProgress() {
-        if (!filterVisible) mBinding.progressLayout.showProgress();
-    }
-
     private void showFilter() {
         List<ListRow> rows = new ArrayList<>();
         for (Filter filter : mFilters) rows.add(getRow(filter));
@@ -232,9 +237,11 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     }
 
     private void checkFilter() {
+        int adapterSize = mAdapter.size();
         int filterSize = filterVisible ? mFilters.size() : 0;
-        if (mAdapter.size() > filterSize) mAdapter.removeItems(filterSize, mAdapter.size() - filterSize);
-        else showProgress();
+        if (adapterSize > filterSize) mAdapter.removeItems(filterSize, mAdapter.size() - filterSize);
+        if (adapterSize == 0) mBinding.progressLayout.showProgress();
+        else mBinding.swipeLayout.setRefreshing(true);
     }
 
     public void onRefresh() {
