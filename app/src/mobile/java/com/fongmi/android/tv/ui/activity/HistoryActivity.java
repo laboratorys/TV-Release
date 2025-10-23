@@ -60,9 +60,9 @@ public class HistoryActivity extends BaseActivity implements HistoryAdapter.OnCl
     }
 
     private void getHistory() {
-        mAdapter.setItems(History.get(), () -> {
+        mAdapter.setItems(History.get(), (hasChange) -> {
             mBinding.progressLayout.showContent(true, mAdapter.getItemCount());
-            mBinding.recycler.scrollToPosition(0);
+            if (hasChange) mBinding.recycler.scrollToPosition(0);
         });
     }
 

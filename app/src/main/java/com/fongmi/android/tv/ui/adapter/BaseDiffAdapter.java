@@ -21,6 +21,16 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
         this.differ = new AsyncListDiffer<>(this, new BaseItemCallback<T>());
     }
 
+    private boolean listsAreSame(List<T> oldList, List<T> newList) {
+        if (oldList.size() != newList.size()) return false;
+        for (int i = 0; i < oldList.size(); i++) {
+            T oldItem = oldList.get(i);
+            T newItem = newList.get(i);
+            if (!oldItem.isSameItem(newItem) || !oldItem.isSameContent(newItem)) return false;
+        }
+        return true;
+    }
+
     public T getItem(int position) {
         return differ.getCurrentList().get(position);
     }
@@ -30,11 +40,19 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
     }
 
     public void setItems(List<T> items) {
-        setItems(items, null);
+        setItems(items, () -> {});
     }
 
     public void setItems(List<T> items, Runnable runnable) {
         differ.submitList(Objects.requireNonNullElseGet(items, ArrayList::new), runnable);
+    }
+
+    public void setItems(List<T> items, Callback callback) {
+        List<T> oldItems = getItems();
+        List<T> newItems = Objects.requireNonNullElseGet(items, ArrayList::new);
+        boolean hasChange = !listsAreSame(oldItems, newItems);
+        if (!hasChange) callback.onUpdateFinished(false);
+        else differ.submitList(newItems, () -> callback.onUpdateFinished(true));
     }
 
     public void add(T item, Runnable runnable) {
@@ -84,4 +102,9 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
 
     @Override
     public abstract void onBindViewHolder(@NonNull VH holder, int position);
+
+    public interface Callback {
+
+        void onUpdateFinished(boolean hasChange);
+    }
 }
