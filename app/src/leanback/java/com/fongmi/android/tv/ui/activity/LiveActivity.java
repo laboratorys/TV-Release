@@ -388,6 +388,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     private void onConfig() {
         HistoryDialog.create(this).readOnly().type(1).show();
+        hideControl();
     }
 
     private void onAction() {
