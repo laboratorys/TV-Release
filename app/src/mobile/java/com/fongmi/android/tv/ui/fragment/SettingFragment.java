@@ -2,6 +2,7 @@ package com.fongmi.android.tv.ui.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,10 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +86,12 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         return mBinding = FragmentSettingBinding.inflate(inflater, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -190,15 +201,11 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
                 Notify.dismiss();
                 RefreshEvent.video();
                 RefreshEvent.config();
-                mBinding.vodUrl.setText(VodConfig.getDesc());
-                mBinding.liveUrl.setText(LiveConfig.getDesc());
-                mBinding.wallUrl.setText(WallConfig.getDesc());
                 break;
             case 1:
                 setCacheText();
                 Notify.dismiss();
                 RefreshEvent.config();
-                mBinding.liveUrl.setText(LiveConfig.getDesc());
                 break;
             case 2:
                 setCacheText();
@@ -362,6 +369,14 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
         VodConfig.get().init().load(getCallback(0));
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshEvent(RefreshEvent event) {
+        if (event.getType() != RefreshEvent.Type.CONFIG) return;
+        mBinding.vodUrl.setText(VodConfig.getDesc());
+        mBinding.liveUrl.setText(LiveConfig.getDesc());
+        mBinding.wallUrl.setText(WallConfig.getDesc());
+    }
+
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (hidden) return;
@@ -369,6 +384,12 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
         mBinding.liveUrl.setText(LiveConfig.getDesc());
         mBinding.wallUrl.setText(WallConfig.getDesc());
         setCacheText();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
     }
 
     private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {

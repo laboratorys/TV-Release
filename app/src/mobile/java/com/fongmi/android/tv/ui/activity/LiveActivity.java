@@ -721,6 +721,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
             public void success() {
                 Notify.dismiss();
                 setLive(getHome());
+                RefreshEvent.config();
             }
 
             @Override

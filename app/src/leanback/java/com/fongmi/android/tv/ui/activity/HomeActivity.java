@@ -110,7 +110,6 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         mBinding.progressLayout.showProgress();
         PermissionUtil.requestNotify(this);
         Updater.create().start(this);
-        mResult = Result.empty();
         Server.get().start();
         setRecyclerView();
         setViewModel();
@@ -199,7 +198,6 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
             @Override
             public void error(String msg) {
                 mBinding.progressLayout.showContent();
-                mResult = Result.empty();
                 Notify.show(msg);
                 setFocus();
                 setFunc();
