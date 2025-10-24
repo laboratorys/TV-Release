@@ -89,13 +89,8 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
     protected void initView() {
+        EventBus.getDefault().register(this);
         mBinding.vodUrl.setText(VodConfig.getDesc());
         mBinding.liveUrl.setText(LiveConfig.getDesc());
         mBinding.wallUrl.setText(WallConfig.getDesc());
@@ -158,18 +153,15 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
             case 0:
                 Notify.progress(requireActivity());
                 VodConfig.load(config, getCallback(0));
-                mBinding.vodUrl.setText(config.getDesc());
                 break;
             case 1:
                 Notify.progress(requireActivity());
                 LiveConfig.load(config, getCallback(1));
-                mBinding.liveUrl.setText(config.getDesc());
                 break;
             case 2:
                 Setting.putWall(0);
                 Notify.progress(requireActivity());
                 WallConfig.load(config, getCallback(2));
-                mBinding.wallUrl.setText(config.getDesc());
                 break;
         }
     }
@@ -195,24 +187,10 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     }
 
     private void setConfig(int type) {
-        switch (type) {
-            case 0:
-                setCacheText();
-                Notify.dismiss();
-                RefreshEvent.video();
-                RefreshEvent.config();
-                break;
-            case 1:
-                setCacheText();
-                Notify.dismiss();
-                RefreshEvent.config();
-                break;
-            case 2:
-                setCacheText();
-                Notify.dismiss();
-                mBinding.wallUrl.setText(WallConfig.getDesc());
-                break;
-        }
+        setCacheText();
+        Notify.dismiss();
+        RefreshEvent.config();
+        if (type == 0) RefreshEvent.video();
     }
 
     @Override
@@ -380,9 +358,6 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (hidden) return;
-        mBinding.vodUrl.setText(VodConfig.getDesc());
-        mBinding.liveUrl.setText(LiveConfig.getDesc());
-        mBinding.wallUrl.setText(WallConfig.getDesc());
         setCacheText();
     }
 

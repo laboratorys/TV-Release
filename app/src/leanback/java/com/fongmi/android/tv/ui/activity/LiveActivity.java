@@ -699,6 +699,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
             public void success() {
                 Notify.dismiss();
                 setLive(getHome());
+                RefreshEvent.config();
             }
 
             @Override
