@@ -76,8 +76,8 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     private ActivityHomeBinding mBinding;
     private ArrayObjectAdapter mHistoryAdapter;
     private ArrayObjectAdapter mFuncAdapter;
-    private HistoryPresenter mPresenter;
     private ArrayObjectAdapter mAdapter;
+    private HistoryPresenter mPresenter;
     private SiteViewModel mViewModel;
     private boolean loading;
     private Result mResult;

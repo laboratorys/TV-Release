@@ -558,7 +558,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     public void onItemClick(Channel item) {
         if (!item.getData().getList().isEmpty() && item.isSelected() && mChannel != null && mChannel.equals(item) && mChannel.getGroup().equals(mGroup)) {
             showEpg(item);
-        } else {
+        } else if (mGroup != null) {
             mGroup.setPosition(mBinding.channel.getSelectedPosition());
             setChannel(item.group(mGroup));
             hideUI();

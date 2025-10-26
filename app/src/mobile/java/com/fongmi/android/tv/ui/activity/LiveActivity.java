@@ -574,7 +574,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     public void onItemClick(Channel item) {
         if (!item.getData().getList().isEmpty() && item.isSelected() && mChannel != null && mChannel.equals(item) && mChannel.getGroup().equals(mGroup)) {
             showEpg(item);
-        } else {
+        } else if (mGroup != null) {
             mGroup.setPosition(mChannelAdapter.setSelected(item.group(mGroup)));
             mChannel = item;
             setMetadata();
