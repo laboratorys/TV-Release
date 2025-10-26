@@ -135,9 +135,9 @@ public class XLTaskHelper {
         stopTask(taskId);
     }
 
-    private synchronized void deleteFile(File dir) {
-        if (dir.isDirectory()) for (File file : Path.list(dir)) deleteFile(file);
-        if (!dir.getAbsolutePath().endsWith(".torrent")) dir.delete();
+    private synchronized void deleteFile(File file) {
+        if (file.isDirectory()) for (File f : Path.list(file)) deleteFile(f);
+        if (file.isFile() && !file.getAbsolutePath().endsWith(".torrent")) Path.clear(file);
     }
 
     public synchronized void stopTask(GetTaskId taskId) {
@@ -160,6 +160,8 @@ public class XLTaskHelper {
 
     public synchronized void release() {
         if (manager != null) manager.release();
+        Path.clear(Path.files("setting.cfg"));
+        Path.clear(Path.files("seq_id"));
         manager = null;
         seq = null;
     }
