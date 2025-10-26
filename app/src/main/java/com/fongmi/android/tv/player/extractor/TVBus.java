@@ -83,14 +83,14 @@ public class TVBus implements Source.Extractor, Listener {
 
     @Override
     public void exit() {
-        if (tvcore != null) tvcore.quit();
-        tvcore = null;
+        if (tvcore != null) tvcore.stop();
+        hls = null;
     }
 
     @Override
     public void onPrepared(String result) {
         JsonObject json = App.gson().fromJson(result, JsonObject.class);
-        if (json.get("hls") == null) return;
+        if (!json.has("hls")) return;
         hls = json.get("hls").getAsString();
         latch.countDown();
     }
