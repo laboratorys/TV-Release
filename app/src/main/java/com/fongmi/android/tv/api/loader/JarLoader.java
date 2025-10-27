@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import dalvik.system.DexClassLoader;
@@ -141,17 +142,13 @@ public class JarLoader {
     }
 
     public Object[] proxyInvoke(Map<String, String> params) {
+        if (recent == null) return tryOthers(params);
         Object[] result = proxyInvoke(methods.get(recent), params);
         return result != null ? result : tryOthers(params);
     }
 
-    private Object[] tryOthers(Map<String, String> params) {
-        for (Map.Entry<String, Method> entry : methods.entrySet()) {
-            if (entry.getKey().equals(recent)) continue;
-            Object[] result = proxyInvoke(entry.getValue(), params);
-            if (result != null) return result;
-        }
-        return null;
+    private Object[] tryOthers(Map<String, String> p) {
+        return methods.entrySet().stream().filter(e -> !e.getKey().equals(recent)).map(e -> proxyInvoke(e.getValue(), p)).filter(Objects::nonNull).findFirst().orElse(null);
     }
 
     private Object[] proxyInvoke(Method method, Map<String, String> params) {
