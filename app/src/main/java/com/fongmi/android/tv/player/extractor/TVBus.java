@@ -84,7 +84,7 @@ public class TVBus implements Source.Extractor, Listener {
     @Override
     public void exit() {
         if (tvcore != null) tvcore.stop();
-        hls = null;
+        tvcore = null;
     }
 
     @Override
