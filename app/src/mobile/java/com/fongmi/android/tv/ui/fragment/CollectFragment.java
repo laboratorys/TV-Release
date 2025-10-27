@@ -1,6 +1,5 @@
 package com.fongmi.android.tv.ui.fragment;
 
-import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,8 +43,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     private CustomScroller mScroller;
     private SiteViewModel mViewModel;
     private PauseExecutor mExecutor;
-    private ValueAnimator mAnimator;
-    private int maxWidth;
+    private List<Site> sites;
 
     public static CollectFragment newInstance(String keyword) {
         Bundle args = new Bundle();
@@ -76,11 +74,11 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
 
     @Override
     protected void initView() {
-        maxWidth = ResUtil.getScreenWidth() / (getCount() + 1) - ResUtil.dp2px(32);
         mScroller = new CustomScroller(this);
         setRecyclerView();
         setViewModel();
-        setAnimator();
+        setSites();
+        setWidth();
         search();
     }
 
@@ -100,23 +98,25 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
         mViewModel.result.observe(this, this::setSearch);
     }
 
-    private void setAnimator() {
-        mAnimator = new ValueAnimator();
-        mAnimator.addUpdateListener(animation -> {
-            ViewGroup.LayoutParams params = mBinding.collect.getLayoutParams();
-            params.width = (Integer) animation.getAnimatedValue();
-            mBinding.collect.setLayoutParams(params);
-        });
+    private void setSites() {
+        sites = new ArrayList<>();
+        for (Site site : VodConfig.get().getSites()) if (site.isSearchable()) sites.add(site);
     }
 
-    private List<Site> getSites() {
-        List<Site> items = new ArrayList<>();
-        for (Site site : VodConfig.get().getSites()) if (site.isSearchable()) items.add(site);
-        return items;
+    private void setWidth() {
+        int width = 0;
+        int space = ResUtil.dp2px(48);
+        int maxWidth = ResUtil.getScreenWidth() / (getCount() + 1) - ResUtil.dp2px(32);
+        for (Site site : sites) width = Math.max(width, ResUtil.getTextWidth(site.getName(), 14));
+        int contentWidth = width + space;
+        int minWidth = ResUtil.dp2px(120);
+        int finalWidth = Math.max(minWidth, Math.min(contentWidth, maxWidth));
+        ViewGroup.LayoutParams params = mBinding.collect.getLayoutParams();
+        params.width = finalWidth;
+        mBinding.collect.setLayoutParams(params);
     }
 
     private void search() {
-        List<Site> sites = getSites();
         if (sites.isEmpty()) return;
         if (mExecutor != null) mExecutor.shutdownNow();
         mExecutor = new PauseExecutor(20, sites.size());
@@ -141,23 +141,8 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     private void setCollect(Result result) {
         if (result == null) return;
         if (mCollectAdapter.getPosition() == 0) mSearchAdapter.addAll(result.getList());
-        mCollectAdapter.add(Collect.create(result.getList()), this::setWidth);
+        mCollectAdapter.add(Collect.create(result.getList()));
         mCollectAdapter.add(result.getList());
-    }
-
-    private void setWidth() {
-        int maxTextWidth = 0;
-        int space = ResUtil.dp2px(48);
-        for (Collect item : mCollectAdapter.getItems()) maxTextWidth = Math.max(maxTextWidth, ResUtil.getTextWidth(item.getSite().getName(), 14));
-        int contentWidth = maxTextWidth + space;
-        int minWidth = ResUtil.dp2px(120);
-        int finalWidth = Math.max(minWidth, Math.min(contentWidth, maxWidth));
-        int startWidth = mBinding.collect.getWidth();
-        if (finalWidth == startWidth) return;
-        if (mAnimator.isRunning()) mAnimator.cancel();
-        mAnimator.setIntValues(startWidth, finalWidth);
-        mAnimator.setDuration(300);
-        mAnimator.start();
     }
 
     private void setSearch(Result result) {

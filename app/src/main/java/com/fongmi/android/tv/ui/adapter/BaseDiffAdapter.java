@@ -55,6 +55,10 @@ public abstract class BaseDiffAdapter<T extends Diffable<T>, VH extends Recycler
         else differ.submitList(newItems, () -> callback.onUpdateFinished(true));
     }
 
+    public void add(T item) {
+        add(item, null);
+    }
+
     public void add(T item, Runnable runnable) {
         List<T> current = new ArrayList<>(getItems());
         current.add(item);
