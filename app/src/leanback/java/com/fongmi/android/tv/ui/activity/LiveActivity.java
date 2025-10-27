@@ -225,7 +225,6 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mViewModel.epg.observeForever(mObserveEpg);
         mViewModel.live.observe(this, live -> {
             mViewModel.getXml(live);
-            hideProgress();
             setGroup(live);
             setWidth(live);
         });
@@ -689,25 +688,24 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Override
     public void setConfig(Config config) {
-        Notify.progress(this);
         Config current = LiveConfig.get().getConfig();
         LiveConfig.load(config, getCallback(current));
+        showProgress();
     }
 
     private Callback getCallback(Config config) {
         return new Callback() {
             @Override
             public void success() {
-                Notify.dismiss();
-                setLive(getHome());
                 RefreshEvent.config();
+                setLive(getHome());
             }
 
             @Override
             public void error(String msg) {
-                Notify.dismiss();
-                Notify.show(msg);
                 LiveConfig.get().clear().config(config).load();
+                Notify.show(msg);
+                hideProgress();
             }
         };
     }
