@@ -426,6 +426,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     }
 
     private boolean onTextLong() {
+        if (!mPlayers.haveTrack(C.TRACK_TYPE_TEXT)) return false;
         onSubtitleClick();
         return true;
     }

@@ -862,6 +862,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private boolean onTextLong() {
+        if (!mPlayers.haveTrack(C.TRACK_TYPE_TEXT)) return false;
         onSubtitleClick();
         return true;
     }
@@ -885,10 +886,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void enterFullscreen() {
         if (isFullscreen()) return;
         if (isLand()) setTransition();
+        setRotate(mPlayers.isPortrait(), true);
         mBinding.video.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         setRequestedOrientation(mPlayers.isPortrait() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         mBinding.control.title.setVisibility(View.VISIBLE);
-        setRotate(mPlayers.isPortrait(), true);
         mPlayers.setDanmakuSize(1.0f);
         mKeyDown.resetScale();
         App.post(mR3, 2000);
@@ -1122,8 +1123,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     @Override
     public void onSubtitleClick() {
-        App.post(this::hideControl, 200);
-        App.post(() -> SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).full(isFullscreen()).show(this), 200);
+        SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).full(isFullscreen()).show(this);
+        hideControl();
     }
 
     @Override
@@ -1576,7 +1577,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     public void onDoubleTap() {
         if (isLock()) return;
         if (!isFullscreen()) {
-            App.post(this::enterFullscreen, 200);
+            enterFullscreen();
         } else if (mPlayers.isPlaying()) {
             showControl();
             onPaused();
