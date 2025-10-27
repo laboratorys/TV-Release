@@ -341,6 +341,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
 
     private void onLock() {
         setLock(!isLock());
+        setRequestedOrientation(getLockOrient());
         mKeyDown.setLock(isLock());
         checkLockImg();
         showControl();
@@ -434,6 +435,16 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     private boolean onActionTouch(View v, MotionEvent e) {
         if (e.getAction() == MotionEvent.ACTION_UP) setR1Callback();
         return false;
+    }
+
+    private int getLockOrient() {
+        if (isLock()) {
+            return ResUtil.isLand(this) ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        } else if (isRotate()) {
+            return ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT;
+        } else {
+            return ResUtil.isLand(this) ? ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT;
+        }
     }
 
     private void hideUI() {
