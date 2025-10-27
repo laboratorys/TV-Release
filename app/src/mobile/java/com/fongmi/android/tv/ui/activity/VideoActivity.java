@@ -404,6 +404,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mAnimator = new ValueAnimator();
         mAnimator.setInterpolator(new DecelerateInterpolator());
         mAnimator.addUpdateListener(animation -> {
+            if (isLand() || isFullscreen() || isInPictureInPictureMode()) return;
             mFrameParams.height = (int) animation.getAnimatedValue();
             mBinding.video.setLayoutParams(mFrameParams);
         });
@@ -1198,7 +1199,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 mClock.setCallback(this);
                 break;
             case PlayerEvent.SIZE:
-                mBinding.video.post(this::changeHeight);
+                changeHeight();
                 checkOrientation();
                 break;
         }
@@ -1223,10 +1224,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         int videoWidth = mPlayers.getVideoWidth();
         int videoHeight = mPlayers.getVideoHeight();
         if (videoWidth == 0 || videoHeight == 0) return;
+        int viewWidth = ResUtil.getScreenWidth();
         int minHeight = ResUtil.dp2px(150);
         int maxHeight = ResUtil.getScreenHeight() / 2;
-        int parentWidth = ((View) mBinding.video.getParent()).getWidth();
-        int calculated = (int) (parentWidth * ((float) videoHeight / videoWidth));
+        int calculated = (int) (viewWidth * ((float) videoHeight / videoWidth));
         int finalHeight = Math.max(minHeight, Math.min(maxHeight, calculated));
         if (finalHeight == mBinding.video.getHeight()) return;
         if (mAnimator.isRunning()) mAnimator.cancel();
