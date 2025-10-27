@@ -78,7 +78,7 @@ public class Util {
         try {
             float value = activity.getWindow().getAttributes().screenBrightness;
             if (WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL >= value && value >= WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF) return value;
-            return Settings.System.getFloat(activity.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS) / 128;
+            return Settings.System.getFloat(activity.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS) / 255;
         } catch (Exception e) {
             return 0.5f;
         }

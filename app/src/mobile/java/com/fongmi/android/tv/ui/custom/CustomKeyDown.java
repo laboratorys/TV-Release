@@ -66,8 +66,8 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     public void resetScale() {
         if (scale == 1.0f) return;
         videoView.animate().scaleX(1.0f).scaleY(1.0f).translationX(0f).translationY(0f).setDuration(250).withEndAction(() -> {
-            videoView.setPivotY(videoView.getHeight() / 2f);
-            videoView.setPivotX(videoView.getWidth() / 2f);
+            videoView.setPivotY(videoView.getHeight() / 2.0f);
+            videoView.setPivotX(videoView.getWidth() / 2.0f);
             scale = 1.0f;
         }).start();
     }
@@ -167,9 +167,8 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     }
 
     private void setBright(float deltaY) {
-        if (bright == -1.0f) bright = 0.5f;
         int height = videoView.getMeasuredHeight();
-        float brightness = deltaY * 2 / height + bright;
+        float brightness = deltaY * 2.0f / height + bright;
         if (brightness < 0) brightness = 0f;
         if (brightness > 1.0f) brightness = 1.0f;
         WindowManager.LayoutParams attributes = activity.getWindow().getAttributes();
@@ -181,12 +180,12 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     private void setVolume(float deltaY) {
         int height = videoView.getMeasuredHeight();
         int maxVolume = manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        float deltaV = deltaY * 2 / height * maxVolume;
+        float deltaV = deltaY * 2.0f / height * maxVolume;
         float index = volume + deltaV;
         if (index > maxVolume) index = maxVolume;
         if (index < 0) index = 0;
         manager.setStreamVolume(AudioManager.STREAM_MUSIC, (int) index, 0);
-        listener.onVolume((int) (index / maxVolume * 100));
+        listener.onVolume((int) (index / maxVolume * 100.0f));
     }
 
     @Override
