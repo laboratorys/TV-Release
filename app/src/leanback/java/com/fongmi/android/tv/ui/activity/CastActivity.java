@@ -390,7 +390,7 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
     @Override
     public void onSubtitleClick() {
         SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).full(true).show(this);
-        hideControl();
+        App.post(this::hideControl, 100);
     }
 
     @Override

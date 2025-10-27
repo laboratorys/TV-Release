@@ -683,7 +683,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     @Override
     public void onSubtitleClick() {
         SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).full(true).show(this);
-        hideControl();
+        App.post(this::hideControl, 100);
     }
 
     @Override
