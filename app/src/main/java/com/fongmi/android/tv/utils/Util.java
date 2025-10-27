@@ -48,6 +48,7 @@ public class Util {
     public static void hideSystemUI(Window window) {
         WindowInsetsControllerCompat insets = WindowCompat.getInsetsController(window, window.getDecorView());
         insets.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         insets.hide(WindowInsetsCompat.Type.systemBars());
     }
 
@@ -57,6 +58,7 @@ public class Util {
 
     public static void showSystemUI(Window window) {
         WindowCompat.getInsetsController(window, window.getDecorView()).show(WindowInsetsCompat.Type.systemBars());
+        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     public static void showKeyboard(View view) {
