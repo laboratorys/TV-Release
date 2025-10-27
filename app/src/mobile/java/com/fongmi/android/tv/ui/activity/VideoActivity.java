@@ -920,7 +920,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private int getLockOrient() {
         if (isLock()) {
-            return ResUtil.isLand(this) ? ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
+            return ResUtil.isLand(this) ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         } else if (isRotate()) {
             return ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT;
         } else if (isPort() && isAutoRotate()) {
