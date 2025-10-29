@@ -23,6 +23,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
+import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.impl.CustomTarget;
 import com.github.catvod.utils.Json;
 import com.google.common.net.HttpHeaders;
@@ -36,6 +37,14 @@ import jahirfiquitiva.libs.textdrawable.TextDrawable;
 public class ImgUtil {
 
     private static final Set<String> failed = new HashSet<>();
+
+    public static void logo(ImageView view) {
+        try {
+            Glide.with(view).load(UrlUtil.convert(VodConfig.get().getConfig().getLogo())).circleCrop().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).error(R.drawable.ic_logo).into(view);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void load(String url, CustomTarget<Bitmap> target) {
         try {
