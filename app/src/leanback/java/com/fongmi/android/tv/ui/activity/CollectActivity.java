@@ -30,19 +30,20 @@ import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.ui.base.BaseActivity;
 import com.fongmi.android.tv.ui.fragment.CollectFragment;
 import com.fongmi.android.tv.ui.presenter.CollectPresenter;
-import com.fongmi.android.tv.utils.PauseExecutor;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CollectActivity extends BaseActivity {
 
     private ActivityCollectBinding mBinding;
     private ArrayObjectAdapter mAdapter;
+    private ExecutorService mExecutor;
     private SiteViewModel mViewModel;
-    private PauseExecutor mExecutor;
     private View mOldView;
 
     public static void start(Activity activity, String keyword) {
@@ -128,8 +129,8 @@ public class CollectActivity extends BaseActivity {
         if (sites.isEmpty()) return;
         mAdapter.add(Collect.all());
         if (mExecutor != null) stop();
+        mExecutor = Executors.newCachedThreadPool();
         mBinding.pager.getAdapter().notifyDataSetChanged();
-        mExecutor = new PauseExecutor(10, sites.size());
         mBinding.result.setText(getString(R.string.collect_result, getKeyword()));
         for (Site site : sites) mExecutor.execute(() -> search(site));
     }
@@ -169,18 +170,6 @@ public class CollectActivity extends BaseActivity {
             mBinding.pager.setCurrentItem(mBinding.recycler.getSelectedPosition());
         }
     };
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mExecutor != null) mExecutor.resume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mExecutor != null) mExecutor.pause();
-    }
 
     @Override
     protected void onBackInvoked() {

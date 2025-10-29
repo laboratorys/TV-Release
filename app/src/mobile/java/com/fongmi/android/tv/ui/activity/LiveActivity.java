@@ -1158,12 +1158,12 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mPlayers.release();
         Source.get().exit();
         PlaybackService.stop();
         App.removeCallbacks(mR1, mR2, mR3);
         mViewModel.url.removeObserver(mObserveUrl);
         mViewModel.epg.removeObserver(mObserveEpg);
+        super.onDestroy();
     }
 }

@@ -1053,12 +1053,12 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mPlayers.release();
         Source.get().exit();
         PlaybackService.stop();
         mViewModel.url.removeObserver(mObserveUrl);
         mViewModel.epg.removeObserver(mObserveEpg);
         App.removeCallbacks(mR0, mR1, mR3, mR3, mR4);
+        super.onDestroy();
     }
 }

@@ -1682,7 +1682,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         stopSearch();
         saveHistory();
         mClock.release();
@@ -1695,5 +1694,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mViewModel.result.removeObserver(mObserveDetail);
         mViewModel.player.removeObserver(mObservePlayer);
         mViewModel.search.removeObserver(mObserveSearch);
+        super.onDestroy();
     }
 }

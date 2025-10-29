@@ -549,12 +549,12 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mClock.release();
         mPlayers.release();
         unbindService(this);
         PlaybackService.stop();
         mService.bindRealPlayer(null);
         App.removeCallbacks(mR1, mR2);
+        super.onDestroy();
     }
 }

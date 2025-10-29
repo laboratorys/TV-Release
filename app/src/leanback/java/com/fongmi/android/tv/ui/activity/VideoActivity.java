@@ -1184,7 +1184,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     private void startSearch(String keyword) {
         mQuickAdapter.clear();
         List<Site> sites = new ArrayList<>();
-        mExecutor = Executors.newFixedThreadPool(10);
+        mExecutor = Executors.newCachedThreadPool();
         for (Site site : VodConfig.get().getSites()) if (isPass(site)) sites.add(site);
         for (Site site : sites) mExecutor.execute(() -> search(site, keyword));
     }
@@ -1437,7 +1437,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         stopSearch();
         saveHistory();
         mClock.release();
@@ -1449,5 +1448,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         mViewModel.result.removeObserver(mObserveDetail);
         mViewModel.player.removeObserver(mObservePlayer);
         mViewModel.search.removeObserver(mObserveSearch);
+        super.onDestroy();
     }
 }
