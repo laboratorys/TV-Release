@@ -29,20 +29,21 @@ import com.fongmi.android.tv.ui.adapter.CollectAdapter;
 import com.fongmi.android.tv.ui.adapter.SearchAdapter;
 import com.fongmi.android.tv.ui.base.BaseFragment;
 import com.fongmi.android.tv.ui.custom.CustomScroller;
-import com.fongmi.android.tv.utils.PauseExecutor;
 import com.fongmi.android.tv.utils.ResUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CollectFragment extends BaseFragment implements MenuProvider, CollectAdapter.OnClickListener, SearchAdapter.OnClickListener, CustomScroller.Callback {
 
     private FragmentCollectBinding mBinding;
     private CollectAdapter mCollectAdapter;
     private SearchAdapter mSearchAdapter;
+    private ExecutorService mExecutor;
     private CustomScroller mScroller;
     private SiteViewModel mViewModel;
-    private PauseExecutor mExecutor;
     private List<Site> sites;
 
     public static CollectFragment newInstance(String keyword) {
@@ -118,8 +119,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
 
     private void search() {
         if (sites.isEmpty()) return;
-        if (mExecutor != null) mExecutor.shutdownNow();
-        mExecutor = new PauseExecutor(20, sites.size());
+        mExecutor = Executors.newCachedThreadPool();
         mCollectAdapter.setItems(List.of(Collect.all()), () -> {
             for (Site site : sites) mExecutor.execute(() -> search(site, getKeyword()));
         });
@@ -183,18 +183,6 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) requireActivity().getOnBackPressedDispatcher().onBackPressed();
         return true;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mExecutor != null) mExecutor.resume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mExecutor != null) mExecutor.pause();
     }
 
     @Override

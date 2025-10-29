@@ -1,6 +1,5 @@
 package com.fongmi.android.tv.player;
 
-import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.Episode;
 import com.fongmi.android.tv.bean.Flag;
@@ -65,13 +64,13 @@ public class Source {
     }
 
     public void parse(List<Flag> flags) throws Exception {
-        for (Flag flag : flags) {
-            ExecutorService executor = Executors.newFixedThreadPool(Constant.THREAD_POOL);
-            List<Callable<List<Episode>>> items = new ArrayList<>();
-            Iterator<Episode> iterator = flag.getEpisodes().iterator();
-            while (iterator.hasNext()) addCallable(iterator, items);
-            for (Future<List<Episode>> future : executor.invokeAll(items, 30, TimeUnit.SECONDS)) flag.getEpisodes().addAll(future.get());
-            executor.shutdownNow();
+        try (ExecutorService executor = Executors.newCachedThreadPool()) {
+            for (Flag flag : flags) {
+                List<Callable<List<Episode>>> items = new ArrayList<>();
+                Iterator<Episode> iterator = flag.getEpisodes().iterator();
+                while (iterator.hasNext()) addCallable(iterator, items);
+                for (Future<List<Episode>> future : executor.invokeAll(items, 30, TimeUnit.SECONDS)) flag.getEpisodes().addAll(future.get());
+            }
         }
     }
 
