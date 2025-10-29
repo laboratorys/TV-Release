@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -41,14 +42,16 @@ import okhttp3.Response;
 
 public class SiteViewModel extends ViewModel {
 
+    private final ExecutorService executor;
     public MutableLiveData<Episode> episode;
     public MutableLiveData<Result> result;
     public MutableLiveData<Result> player;
     public MutableLiveData<Result> search;
     public MutableLiveData<Result> action;
-    private ExecutorService executor;
+    private Future<Result> future;
 
     public SiteViewModel() {
+        executor = Executors.newFixedThreadPool(2);
         episode = new MutableLiveData<>();
         result = new MutableLiveData<>();
         player = new MutableLiveData<>();
@@ -91,11 +94,11 @@ public class SiteViewModel extends ViewModel {
                 SpiderDebug.log(homeContent);
                 return Result.fromJson(homeContent);
             } else {
-                Response response = OkHttp.newCall(site.getApi(), site.getHeaders()).execute();
-                String homeContent = response.body().string();
-                SpiderDebug.log(homeContent);
-                response.close();
-                return fetchPic(site, Result.fromType(site.getType(), homeContent));
+                try (Response response = OkHttp.newCall(site.getApi(), site.getHeaders()).execute()) {
+                    String homeContent = response.body().string();
+                    SpiderDebug.log(homeContent);
+                    return fetchPic(site, Result.fromType(site.getType(), homeContent));
+                }
             }
         });
     }
@@ -256,10 +259,9 @@ public class SiteViewModel extends ViewModel {
         if (!site.getExt().isEmpty()) params.put("extend", site.getExt());
         Call get = OkHttp.newCall(site.getApi(), site.getHeaders(), params);
         Call post = OkHttp.newCall(site.getApi(), site.getHeaders(), OkHttp.toBody(params));
-        Response response = (site.getExt().length() <= 1000 ? get : post).execute();
-        String result = response.body().string();
-        response.close();
-        return result;
+        try (Response response = (site.getExt().length() <= 1000 ? get : post).execute()) {
+            return response.body().string();
+        }
     }
 
     private Result fetchPic(Site site, Result result) throws Exception {
@@ -284,14 +286,15 @@ public class SiteViewModel extends ViewModel {
     }
 
     private void execute(MutableLiveData<Result> result, Callable<Result> callable) {
-        if (executor != null) executor.shutdownNow();
-        executor = Executors.newFixedThreadPool(2);
+        if (future != null && !future.isDone()) future.cancel(true);
+        future = executor.submit(callable);
         executor.execute(() -> {
             try {
-                if (Thread.interrupted()) return;
-                result.postValue(executor.submit(callable).get(Constant.TIMEOUT_VOD, TimeUnit.MILLISECONDS));
+                Result taskResult = future.get(Constant.TIMEOUT_VOD, TimeUnit.MILLISECONDS);
+                if (!future.isCancelled()) result.postValue(taskResult);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             } catch (Throwable e) {
-                if (e instanceof InterruptedException || Thread.interrupted()) return;
                 if (e.getCause() instanceof ExtractException) result.postValue(Result.error(e.getCause().getMessage()));
                 else result.postValue(Result.empty());
                 e.printStackTrace();
@@ -302,5 +305,6 @@ public class SiteViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         if (executor != null) executor.shutdownNow();
+        super.onCleared();
     }
 }
