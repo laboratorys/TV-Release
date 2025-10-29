@@ -1,5 +1,7 @@
 package com.fongmi.android.tv.api;
 
+import android.util.Log;
+
 import androidx.media3.common.MimeTypes;
 
 import com.fongmi.android.tv.bean.Catchup;
@@ -112,9 +114,9 @@ public class LiveParser {
                 unknown.setReplace(extract(line, CATCHUP_REPLACE));
                 channel.setCatchup(Catchup.decide(unknown, catchup));
             } else if (!line.startsWith("#") && line.contains("://")) {
-                String[] split = line.split("\\|");
-                if (split.length > 1) setting.headers(Arrays.copyOfRange(split, 1, split.length));
-                channel.getUrls().add(split[0]);
+                String[] parts = line.split("\\|");
+                if (parts.length > 1) setting.headers(Arrays.copyOfRange(parts, 1, parts.length));
+                channel.getUrls().add(parts[0]);
                 setting.copy(channel).clear();
             }
         }
@@ -131,9 +133,12 @@ public class LiveParser {
             if (line.contains("#genre#")) live.getGroups().add(Group.create(split[0], live.isPass()));
             if (split.length > 1 && live.getGroups().isEmpty()) live.getGroups().add(Group.create());
             if (split.length > 1 && split[1].contains("://")) {
+                String[] parts = split[1].split("\\|");
+                if (parts.length > 1) setting.headers(Arrays.copyOfRange(parts, 1, parts.length));
                 Group group = live.getGroups().get(live.getGroups().size() - 1);
                 Channel channel = group.find(Channel.create(split[0]));
-                channel.addUrls(split[1].split("#"));
+                if (parts.length > 1) channel.getUrls().add(parts[0]);
+                else channel.addUrls(split[1].split("#"));
                 setting.copy(channel);
             }
         }
@@ -299,10 +304,21 @@ public class LiveParser {
         private void headers(String[] params) {
             if (header == null) header = new HashMap<>();
             for (String param : params) {
+                param = drmCheck(param);
                 if (!param.contains("=")) continue;
                 String[] a = param.split("=", 2);
-                header.put(a[0].trim(), a[1].trim().replace("\"", ""));
+                String k = a[0].trim().replace("\"", "");
+                String v = a[1].trim().replace("\"", "");
+                header.put(k, v);
             }
+        }
+
+        private String drmCheck(String text) {
+            type = find(text, "(^|[?&])drmScheme=([^&]*)");
+            key = find(text, "(^|[?&])drmLicense=([^&]*)");
+            if (type == null && key == null) return text;
+            if (key != null && !key.startsWith("http")) convert();
+            return text.replaceAll("(^|[?&])drmScheme=[^&]*", "").replaceAll("(^|[?&])drmLicense=[^&]*", "").replaceAll("^[?&]+|[?&]+$", "").replaceAll("&{2,}", "&").trim();
         }
 
         private void convert() {
@@ -311,6 +327,11 @@ public class LiveParser {
             } catch (Exception e) {
                 key = ClearKey.get(key.replace("\"", "").replace("{", "").replace("}", "")).toString();
             }
+        }
+
+        private String find(String text, String regex) {
+            Matcher m = Pattern.compile(regex).matcher(text);
+            return m.find() ? m.group(2) : null;
         }
 
         private void clear() {
