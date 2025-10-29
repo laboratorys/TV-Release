@@ -76,7 +76,6 @@ import com.fongmi.android.tv.utils.FileChooser;
 import com.fongmi.android.tv.utils.ImgUtil;
 import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.Notify;
-import com.fongmi.android.tv.utils.PermissionUtil;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Sniffer;
 import com.fongmi.android.tv.utils.Traffic;
@@ -145,7 +144,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     public static void file(FragmentActivity activity, String path) {
         if (TextUtils.isEmpty(path)) return;
         String name = new File(path).getName();
-        PermissionUtil.requestFile(activity, allGranted -> start(activity, "push_agent", "file://" + path, name));
+        start(activity, "push_agent", "file://" + path, name);
     }
 
     public static void cast(Activity activity, History history) {
