@@ -291,10 +291,12 @@ public class SiteViewModel extends ViewModel {
         executor.execute(() -> {
             try {
                 Result taskResult = future.get(Constant.TIMEOUT_VOD, TimeUnit.MILLISECONDS);
-                if (!future.isCancelled()) result.postValue(taskResult);
+                if (future.isCancelled()) return;
+                result.postValue(taskResult);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             } catch (Throwable e) {
+                if (future.isCancelled()) return;
                 if (e.getCause() instanceof ExtractException) result.postValue(Result.error(e.getCause().getMessage()));
                 else result.postValue(Result.empty());
                 e.printStackTrace();
@@ -304,7 +306,8 @@ public class SiteViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
-        if (executor != null) executor.shutdownNow();
         super.onCleared();
+        if (future != null) future.cancel(true);
+        if (executor != null) executor.shutdownNow();
     }
 }
