@@ -2,7 +2,6 @@ package com.fongmi.android.tv.ui.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,6 +142,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
         if (config.getUrl().startsWith("file")) {
             PermissionUtil.requestFile(this, allGranted -> load(config));
         } else {
+            Notify.progress(requireActivity());
             load(config);
         }
     }
@@ -150,16 +150,13 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     private void load(Config config) {
         switch (config.getType()) {
             case 0:
-                Notify.progress(requireActivity());
                 VodConfig.load(config, getCallback(0));
                 break;
             case 1:
-                Notify.progress(requireActivity());
                 LiveConfig.load(config, getCallback(1));
                 break;
             case 2:
                 Setting.putWall(0);
-                Notify.progress(requireActivity());
                 WallConfig.load(config, getCallback(2));
                 break;
         }

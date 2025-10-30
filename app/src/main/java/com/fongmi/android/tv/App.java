@@ -72,6 +72,10 @@ public class App extends Application {
         return get().executor.submit(task);
     }
 
+    public static Future<?> submit(Runnable task) {
+        return get().executor.submit(task);
+    }
+
     public static void execute(Runnable runnable) {
         get().executor.execute(runnable);
     }

@@ -25,23 +25,22 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class VodConfig {
 
-    private Site home;
-    private String wall;
-    private Parse parse;
-    private Config config;
-    private List<Doh> doh;
-    private List<Rule> rules;
-    private List<Site> sites;
-    private List<String> ads;
-    private List<String> flags;
-    private List<Parse> parses;
-    private ExecutorService executor;
-    private boolean loadLive;
+    private volatile Site home;
+    private volatile String wall;
+    private volatile Parse parse;
+    private volatile Config config;
+    private volatile List<Doh> doh;
+    private volatile List<Rule> rules;
+    private volatile List<Site> sites;
+    private volatile List<String> ads;
+    private volatile List<String> flags;
+    private volatile List<Parse> parses;
+    private volatile Future<?> future;
+    private volatile boolean loadLive;
 
     private static class Loader {
         static volatile VodConfig INSTANCE = new VodConfig();
@@ -111,33 +110,44 @@ public class VodConfig {
     }
 
     public void load(Callback callback) {
-        if (executor != null) executor.shutdownNow();
-        executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> loadConfig(callback));
+        if (future != null && !future.isDone()) future.cancel(true);
+        future = App.submit(() -> loadConfig(callback));
     }
 
     private void loadConfig(Callback callback) {
+        loadConfig(callback, loadCache(callback));
+    }
+
+    private void loadConfig(Callback callback, boolean silent) {
         try {
-            checkJson(Json.parse(Decoder.getJson(UrlUtil.convert(config.getUrl()))).getAsJsonObject(), callback);
+            String json = Decoder.getJson(UrlUtil.convert(config.getUrl()));
+            JsonObject object = Json.parse(json).getAsJsonObject();
+            checkJson(object, callback, silent);
         } catch (Throwable e) {
-            if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
-            else loadCache(callback, e);
+            String error = TextUtils.isEmpty(config.getUrl()) ? "" : Notify.getError(R.string.error_config_get, e);
+            if (!silent) App.post(() -> callback.error(error));
             e.printStackTrace();
         }
     }
 
-    private void loadCache(Callback callback, Throwable e) {
-        if (!TextUtils.isEmpty(config.getJson())) checkJson(Json.parse(config.getJson()).getAsJsonObject(), callback);
-        else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
+    private boolean loadCache(Callback callback) {
+        try {
+            if (TextUtils.isEmpty(config.getJson())) return false;
+            parseConfig(Json.parse(config.getJson()).getAsJsonObject(), callback, false);
+            return true;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    private void checkJson(JsonObject object, Callback callback) {
+    private void checkJson(JsonObject object, Callback callback, boolean silent) {
         if (object.has("msg")) {
             App.post(() -> callback.error(object.get("msg").getAsString()));
         } else if (object.has("urls")) {
             parseDepot(object, callback);
         } else {
-            parseConfig(object, callback);
+            parseConfig(object, callback, silent);
         }
     }
 
@@ -150,7 +160,7 @@ public class VodConfig {
         loadConfig(callback);
     }
 
-    private void parseConfig(JsonObject object, Callback callback) {
+    private void parseConfig(JsonObject object, Callback callback, boolean silent) {
         try {
             initSite(object);
             initParse(object);
@@ -160,9 +170,11 @@ public class VodConfig {
             config.logo(Json.safeString(object, "logo"));
             App.post(() -> callback.success(notice));
             config.json(object.toString()).update();
+            if (silent || future.isCancelled()) return;
             App.post(callback::success);
         } catch (Throwable e) {
             e.printStackTrace();
+            if (silent) return;
             App.post(() -> callback.error(Notify.getError(R.string.error_config_parse, e)));
         }
     }
@@ -172,16 +184,14 @@ public class VodConfig {
             initSite(object.getAsJsonObject("video"));
             return;
         }
+        List<Site> sites = new ArrayList<>();
         String spider = Json.safeString(object, "spider");
         BaseLoader.get().parseJar(spider, true);
         for (JsonElement element : Json.safeListElement(object, "sites")) {
-            Site site = Site.objectFrom(element);
-            if (sites.contains(site)) continue;
-            site.setApi(UrlUtil.convert(site.getApi()));
-            site.setExt(UrlUtil.convert(site.getExt()));
-            site.setJar(parseJar(site, spider));
-            sites.add(site.trans().sync());
+            Site site = Site.objectFrom(element, spider);
+            if (!sites.contains(site)) sites.add(site);
         }
+        setSites(sites);
         for (Site site : sites) {
             if (site.getKey().equals(config.getHome())) {
                 setHome(site);
@@ -189,18 +199,14 @@ public class VodConfig {
         }
     }
 
-    private void initLive(JsonObject object) {
-        Config temp = Config.find(config, 1).save();
-        boolean sync = LiveConfig.get().needSync(config.getUrl());
-        if (sync) LiveConfig.get().clear().config(temp.update()).parse(object);
-    }
-
     private void initParse(JsonObject object) {
+        List<Parse> parses = new ArrayList<>();
         for (JsonElement element : Json.safeListElement(object, "parses")) {
             Parse parse = Parse.objectFrom(element);
             if (parse.getName().equals(config.getParse()) && parse.getType() > 1) setParse(parse);
             if (!parses.contains(parse)) parses.add(parse);
         }
+        setParses(parses);
     }
 
     private void initOther(JsonObject object) {
@@ -217,8 +223,10 @@ public class VodConfig {
         setAds(Json.safeListString(object, "ads"));
     }
 
-    private String parseJar(Site site, String spider) {
-        return site.getJar().isEmpty() ? spider : site.getJar();
+    private void initLive(JsonObject object) {
+        Config temp = Config.find(config, 1).save();
+        boolean sync = LiveConfig.get().needSync(config.getUrl());
+        if (sync) LiveConfig.get().clear().config(temp.update()).parse(object);
     }
 
     public List<Doh> getDoh() {
@@ -271,12 +279,20 @@ public class VodConfig {
         OkHttp.selector().addAll(proxy);
     }
 
+    public void setSites(List<Site> sites) {
+        this.sites = sites;
+    }
+
+    public void setParses(List<Parse> parses) {
+        this.parses = parses;
+    }
+
     public List<String> getFlags() {
         return flags == null ? Collections.emptyList() : flags;
     }
 
     private void setFlags(List<String> flags) {
-        this.flags.addAll(flags);
+        this.flags = flags;
     }
 
     private void setHosts(List<String> hosts) {

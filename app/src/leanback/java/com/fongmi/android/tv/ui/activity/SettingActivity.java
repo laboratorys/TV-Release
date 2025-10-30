@@ -133,6 +133,7 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
         if (config.getUrl().startsWith("file")) {
             PermissionUtil.requestFile(this, allGranted -> load(config));
         } else {
+            Notify.progress(this);
             load(config);
         }
     }
@@ -140,16 +141,13 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
     private void load(Config config) {
         switch (config.getType()) {
             case 0:
-                Notify.progress(this);
                 VodConfig.load(config, getCallback(0));
                 break;
             case 1:
-                Notify.progress(this);
                 LiveConfig.load(config, getCallback(1));
                 break;
             case 2:
                 Setting.putWall(0);
-                Notify.progress(this);
                 WallConfig.load(config, getCallback(2));
                 break;
         }

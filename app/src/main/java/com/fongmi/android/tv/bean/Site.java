@@ -15,6 +15,7 @@ import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.api.loader.BaseLoader;
 import com.fongmi.android.tv.db.AppDatabase;
 import com.fongmi.android.tv.gson.ExtAdapter;
+import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
@@ -104,9 +105,13 @@ public class Site implements Parcelable {
     @Ignore
     private boolean activated;
 
-    public static Site objectFrom(JsonElement element) {
+    public static Site objectFrom(JsonElement element, String spider) {
         try {
-            return App.gson().fromJson(element, Site.class);
+            Site site = App.gson().fromJson(element, Site.class);
+            if (site.getJar().isEmpty()) site.setJar(spider);
+            site.setApi(UrlUtil.convert(site.getApi()));
+            site.setExt(UrlUtil.convert(site.getExt()));
+            return site.trans().sync();
         } catch (Exception e) {
             return new Site();
         }
