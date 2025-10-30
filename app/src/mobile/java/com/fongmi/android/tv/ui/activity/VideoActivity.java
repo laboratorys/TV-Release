@@ -1648,7 +1648,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     @Override
     protected void onResume() {
         super.onResume();
-        if (isRedirect()) onPlay();
         setRedirect(false);
     }
 

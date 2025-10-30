@@ -1020,7 +1020,6 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     @Override
     protected void onResume() {
         super.onResume();
-        if (isRedirect()) onPlay();
         setRedirect(false);
     }
 

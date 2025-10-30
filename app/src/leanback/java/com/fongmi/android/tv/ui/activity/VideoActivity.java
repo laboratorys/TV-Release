@@ -1402,7 +1402,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     @Override
     protected void onResume() {
         super.onResume();
-        if (isRedirect()) onPlay();
         setRedirect(false);
     }
 

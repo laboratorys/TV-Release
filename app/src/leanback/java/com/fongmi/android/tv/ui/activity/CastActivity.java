@@ -518,7 +518,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
     @Override
     protected void onResume() {
         super.onResume();
-        if (isRedirect()) onPlay();
         setRedirect(false);
     }
 

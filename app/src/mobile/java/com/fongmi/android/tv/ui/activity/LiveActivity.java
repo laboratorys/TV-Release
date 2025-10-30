@@ -1125,7 +1125,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     @Override
     protected void onResume() {
         super.onResume();
-        if (isRedirect()) onPlay();
         setRedirect(false);
     }
 
