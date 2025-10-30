@@ -130,13 +130,14 @@ public class LiveParser {
             if (line.contains("#genre#")) live.getGroups().add(Group.create(split[0], live.isPass()));
             if (split.length > 1 && live.getGroups().isEmpty()) live.getGroups().add(Group.create());
             if (split.length > 1 && split[1].contains("://")) {
-                String[] parts = split[1].split("\\|", 2);
-                if (parts.length > 1) setting.headers(parts[1]);
                 Group group = live.getGroups().get(live.getGroups().size() - 1);
                 Channel channel = group.find(Channel.create(split[0]));
-                if (parts.length > 1) channel.getUrls().add(parts[0]);
-                else channel.addUrls(split[1].split("#"));
-                setting.copy(channel);
+                for (String url : split[1].split("#")) {
+                    String[] parts = url.split("\\|", 2);
+                    if (parts.length > 1) setting.headers(parts[1]);
+                    channel.getUrls().add(parts[0]);
+                    setting.copy(channel);
+                }
             }
         }
     }

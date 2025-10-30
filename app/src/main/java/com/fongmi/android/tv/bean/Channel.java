@@ -16,7 +16,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -282,10 +281,6 @@ public class Channel {
 
     public void loadLogo(ImageView view) {
         ImgUtil.load(getName(), getLogo(), view, false);
-    }
-
-    public void addUrls(String... urls) {
-        getUrls().addAll(new ArrayList<>(Arrays.asList(urls)));
     }
 
     public void nextLine() {
