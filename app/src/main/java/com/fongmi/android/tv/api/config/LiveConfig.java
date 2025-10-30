@@ -30,21 +30,20 @@ import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class LiveConfig {
 
-    private Live home;
-    private Config config;
-    private List<Live> lives;
-    private List<Rule> rules;
-    private List<String> ads;
-    private ExecutorService executor;
-
-    private boolean sync;
+    private volatile Live home;
+    private volatile Config config;
+    private volatile List<Live> lives;
+    private volatile List<Rule> rules;
+    private volatile List<String> ads;
+    private volatile Future<?> future;
+    private volatile boolean sync;
 
     private static class Loader {
         static volatile LiveConfig INSTANCE = new LiveConfig();
@@ -114,14 +113,15 @@ public class LiveConfig {
     }
 
     public void load(Callback callback) {
-        if (executor != null) executor.shutdownNow();
-        executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> loadConfig(callback));
+        if (future != null && !future.isDone()) future.cancel(true);
+        future = App.submit(() -> loadConfig(callback));
     }
 
     private void loadConfig(Callback callback) {
         try {
-            parseConfig(Decoder.getJson(UrlUtil.convert(config.getUrl())), callback);
+            String text = Decoder.getJson(UrlUtil.convert(config.getUrl()));
+            if (!Json.isObj(text)) parseText(text, callback);
+            else checkJson(Json.parse(text).getAsJsonObject(), callback);
         } catch (Throwable e) {
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
             else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
@@ -129,18 +129,10 @@ public class LiveConfig {
         }
     }
 
-    private void parseConfig(String text, Callback callback) {
-        if (!Json.isObj(text)) {
-            parseText(text, callback);
-        } else {
-            checkJson(Json.parse(text).getAsJsonObject(), callback);
-        }
-    }
-
     private void parseText(String text, Callback callback) {
         Live live = new Live(parseName(config.getUrl()), config.getUrl()).sync();
         LiveParser.text(live, text);
-        lives.add(live);
+        lives = Arrays.asList(live);
         setHome(live, true);
         App.post(callback::success);
     }
@@ -177,7 +169,6 @@ public class LiveConfig {
         try {
             initLive(object);
             initOther(object);
-            config.json(object.toString()).update();
         } catch (Throwable e) {
             e.printStackTrace();
         } finally {
@@ -186,16 +177,14 @@ public class LiveConfig {
     }
 
     private void initLive(JsonObject object) {
+        List<Live> lives = new ArrayList<>();
         String spider = Json.safeString(object, "spider");
         BaseLoader.get().parseJar(spider, false);
         for (JsonElement element : Json.safeListElement(object, "lives")) {
-            Live live = Live.objectFrom(element);
-            if (lives.contains(live)) continue;
-            live.setApi(UrlUtil.convert(live.getApi()));
-            live.setExt(UrlUtil.convert(live.getExt()));
-            live.setJar(parseJar(live, spider));
-            lives.add(live.sync());
+            Live live = Live.objectFrom(element, spider);
+            if (!lives.contains(live)) lives.add(live);
         }
+        setLives(lives);
         for (Live live : lives) {
             if (live.getName().equals(config.getHome())) {
                 setHome(live, true);
@@ -210,10 +199,6 @@ public class LiveConfig {
         setRules(Rule.arrayFrom(object.getAsJsonArray("rules")));
         setHosts(Json.safeListString(object, "hosts"));
         setAds(Json.safeListString(object, "ads"));
-    }
-
-    private String parseJar(Live live, String spider) {
-        return live.getJar().isEmpty() ? spider : live.getJar();
     }
 
     private void bootLive() {
@@ -268,6 +253,14 @@ public class LiveConfig {
         return sync || TextUtils.isEmpty(config.getUrl()) || url.equals(config.getUrl());
     }
 
+    public List<Live> getLives() {
+        return lives == null ? lives = new ArrayList<>() : lives;
+    }
+
+    private void setLives(List<Live> lives) {
+        this.lives = lives;
+    }
+
     public List<Rule> getRules() {
         return rules == null ? Collections.emptyList() : rules;
     }
@@ -295,10 +288,6 @@ public class LiveConfig {
 
     private void setAds(List<String> ads) {
         this.ads = ads;
-    }
-
-    public List<Live> getLives() {
-        return lives == null ? lives = new ArrayList<>() : lives;
     }
 
     public Config getConfig() {

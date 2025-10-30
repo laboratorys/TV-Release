@@ -14,17 +14,15 @@ import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.loader.BaseLoader;
 import com.fongmi.android.tv.db.AppDatabase;
 import com.fongmi.android.tv.gson.ExtAdapter;
+import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Json;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -117,14 +115,16 @@ public class Live {
     @Ignore
     private int width;
 
-    public static Live objectFrom(JsonElement element) {
-        return App.gson().fromJson(element, Live.class);
-    }
-
-    public static List<Live> arrayFrom(String str) {
-        Type listType = new TypeToken<List<Live>>() {}.getType();
-        List<Live> items = App.gson().fromJson(str, listType);
-        return items == null ? Collections.emptyList() : items;
+    public static Live objectFrom(JsonElement element, String spider) {
+        try {
+            Live live = App.gson().fromJson(element, Live.class);
+            if (live.getJar().isEmpty()) live.setJar(spider);
+            live.setApi(UrlUtil.convert(live.getApi()));
+            live.setExt(UrlUtil.convert(live.getExt()));
+            return live.sync();
+        } catch (Exception e) {
+            return new Live();
+        }
     }
 
     public static Live get(String name) {

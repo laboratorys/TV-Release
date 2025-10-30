@@ -229,6 +229,22 @@ public class VodConfig {
         if (sync) LiveConfig.get().clear().config(temp.update()).parse(object);
     }
 
+    public List<Site> getSites() {
+        return sites == null ? Collections.emptyList() : sites;
+    }
+
+    private void setSites(List<Site> sites) {
+        this.sites = sites;
+    }
+
+    public List<Parse> getParses() {
+        return parses == null ? Collections.emptyList() : parses;
+    }
+
+    private void setParses(List<Parse> parses) {
+        this.parses = parses;
+    }
+
     public List<Doh> getDoh() {
         List<Doh> items = Doh.get(App.get());
         if (doh == null) return items;
@@ -247,14 +263,6 @@ public class VodConfig {
 
     private void setRules(List<Rule> rules) {
         this.rules = rules;
-    }
-
-    public List<Site> getSites() {
-        return sites == null ? Collections.emptyList() : sites;
-    }
-
-    public List<Parse> getParses() {
-        return parses == null ? Collections.emptyList() : parses;
     }
 
     public List<Parse> getParses(int type) {
@@ -277,14 +285,6 @@ public class VodConfig {
     private void setProxy(List<Proxy> proxy) {
         OkHttp.authenticator().addAll(proxy);
         OkHttp.selector().addAll(proxy);
-    }
-
-    public void setSites(List<Site> sites) {
-        this.sites = sites;
-    }
-
-    public void setParses(List<Parse> parses) {
-        this.parses = parses;
     }
 
     public List<String> getFlags() {
