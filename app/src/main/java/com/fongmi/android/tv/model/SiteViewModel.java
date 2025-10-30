@@ -294,7 +294,6 @@ public class SiteViewModel extends ViewModel {
                 if (future.isCancelled()) return;
                 result.postValue(taskResult);
             } catch (InterruptedException e) {
-                e.printStackTrace();
                 Thread.currentThread().interrupt();
             } catch (Throwable e) {
                 if (future.isCancelled()) return;
