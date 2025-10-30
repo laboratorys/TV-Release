@@ -180,6 +180,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mViewModel.cancelAll();
         requireActivity().removeMenuProvider(this);
     }
 }

@@ -3,7 +3,6 @@ package com.fongmi.android.tv.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -156,9 +155,9 @@ public class CollectActivity extends BaseActivity {
     };
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.e("DDD", "onDestroy");
+    protected void onBackInvoked() {
+        mViewModel.cancelAll();
+        super.onBackInvoked();
     }
 
     class PageAdapter extends FragmentStatePagerAdapter {

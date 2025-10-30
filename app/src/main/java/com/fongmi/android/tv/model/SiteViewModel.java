@@ -1,7 +1,6 @@
 package com.fongmi.android.tv.model;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.collection.ArrayMap;
 import androidx.lifecycle.MutableLiveData;
@@ -278,12 +277,16 @@ public class SiteViewModel extends ViewModel {
         });
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        Log.e("DDD", "onCleared");
+    public void cancelAll() {
         if (future != null) future.cancel(true);
         if (executor != null) executor.shutdownNow();
         for (Future<?> f : searchFutures) f.cancel(true);
+        searchFutures.clear();
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        cancelAll();
     }
 }

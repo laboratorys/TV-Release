@@ -1653,6 +1653,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         } else if (isFullscreen() && !isLock()) {
             exitFullscreen();
         } else if (!isLock()) {
+            mViewModel.cancelAll();
             super.onBackInvoked();
         }
     }
