@@ -267,16 +267,16 @@ public class SiteViewModel extends ViewModel {
     private Result fetchPic(Site site, Result result) throws Exception {
         if (site.getType() > 2 || result.getList().isEmpty() || !result.getList().get(0).getVodPic().isEmpty()) return result;
         ArrayList<String> ids = new ArrayList<>();
-        if (site.getCategories().isEmpty()) for (Vod item : result.getList()) ids.add(item.getVodId());
-        else for (Vod item : result.getList()) if (site.getCategories().contains(item.getTypeName())) ids.add(item.getVodId());
+        boolean empty = site.getCategories().isEmpty();
+        for (Vod item : result.getList()) if (empty || site.getCategories().contains(item.getTypeName())) ids.add(item.getVodId());
         if (ids.isEmpty()) return result.clear();
         ArrayMap<String, String> params = new ArrayMap<>();
         params.put("ac", site.getType() == 0 ? "videolist" : "detail");
         params.put("ids", TextUtils.join(",", ids));
-        Response response = OkHttp.newCall(site.getApi(), site.getHeaders(), params).execute();
-        result.setList(Result.fromType(site.getType(), response.body().string()).getList());
-        response.close();
-        return result;
+        try (Response response = OkHttp.newCall(site.getApi(), site.getHeaders(), params).execute()) {
+            result.setList(Result.fromType(site.getType(), response.body().string()).getList());
+            return result;
+        }
     }
 
     private void post(Site site, Result result) {
