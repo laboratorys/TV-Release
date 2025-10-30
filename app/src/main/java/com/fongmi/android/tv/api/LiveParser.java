@@ -12,7 +12,6 @@ import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -112,8 +111,8 @@ public class LiveParser {
                 unknown.setReplace(extract(line, CATCHUP_REPLACE));
                 channel.setCatchup(Catchup.decide(unknown, catchup));
             } else if (!line.startsWith("#") && line.contains("://")) {
-                String[] parts = line.split("\\|");
-                if (parts.length > 1) setting.headers(Arrays.copyOfRange(parts, 1, parts.length));
+                String[] parts = line.split("\\|", 2);
+                if (parts.length > 1) setting.headers(parts[1]);
                 channel.getUrls().add(parts[0]);
                 setting.copy(channel).clear();
             }
@@ -131,8 +130,8 @@ public class LiveParser {
             if (line.contains("#genre#")) live.getGroups().add(Group.create(split[0], live.isPass()));
             if (split.length > 1 && live.getGroups().isEmpty()) live.getGroups().add(Group.create());
             if (split.length > 1 && split[1].contains("://")) {
-                String[] parts = split[1].split("\\|");
-                if (parts.length > 1) setting.headers(Arrays.copyOfRange(parts, 1, parts.length));
+                String[] parts = split[1].split("\\|", 2);
+                if (parts.length > 1) setting.headers(parts[1]);
                 Group group = live.getGroups().get(live.getGroups().size() - 1);
                 Channel channel = group.find(Channel.create(split[0]));
                 if (parts.length > 1) channel.getUrls().add(parts[0]);
@@ -256,7 +255,7 @@ public class LiveParser {
 
         private void key(String line) {
             try {
-                key = line.split("license_key=")[1].trim();
+                key = line.contains("license_key=") ? line.split("license_key=")[1].trim() : line;
                 if (!key.startsWith("http")) convert();
             } catch (Exception e) {
                 key = null;
@@ -265,7 +264,7 @@ public class LiveParser {
 
         private void type(String line) {
             try {
-                type = line.split("license_type=")[1].trim();
+                type = line.contains("license_type=") ? line.split("license_type=")[1].trim() : line;
             } catch (Exception e) {
                 type = null;
             }
@@ -274,9 +273,8 @@ public class LiveParser {
         public void drmLegacy(String line) {
             try {
                 line = line.split("drm_legacy=")[1].trim();
-                type = line.split("\\|")[0].trim();
-                key = line.split("\\|")[1].trim();
-                if (!key.startsWith("http")) convert();
+                type(line.split("\\|")[0].trim());
+                key(line.split("\\|")[1].trim());
             } catch (Exception e) {
                 type = null;
                 key = null;
@@ -294,7 +292,9 @@ public class LiveParser {
 
         private void headers(String line) {
             try {
-                headers(line.split("headers=")[1].trim().split("&"));
+                if (line.contains("headers=")) headers(line.split("headers=")[1].trim().split("&"));
+                else if (line.contains("|")) for (String text : line.split("\\|")) headers(text);
+                else headers(line.trim().split("&"));
             } catch (Exception ignored) {
             }
         }
@@ -302,21 +302,14 @@ public class LiveParser {
         private void headers(String[] params) {
             if (header == null) header = new HashMap<>();
             for (String param : params) {
-                param = drmCheck(param);
                 if (!param.contains("=")) continue;
                 String[] a = param.split("=", 2);
                 String k = a[0].trim().replace("\"", "");
                 String v = a[1].trim().replace("\"", "");
-                header.put(k, v);
+                if ("drmScheme".equals(k)) type(v);
+                else if ("drmLicense".equals(k)) key(v);
+                else header.put(k, v);
             }
-        }
-
-        private String drmCheck(String text) {
-            type = find(text, "(^|[?&])drmScheme=([^&]*)");
-            key = find(text, "(^|[?&])drmLicense=([^&]*)");
-            if (type == null && key == null) return text;
-            if (key != null && !key.startsWith("http")) convert();
-            return text.replaceAll("(^|[?&])drmScheme=[^&]*", "").replaceAll("(^|[?&])drmLicense=[^&]*", "").replaceAll("^[?&]+|[?&]+$", "").replaceAll("&{2,}", "&").trim();
         }
 
         private void convert() {
@@ -325,11 +318,6 @@ public class LiveParser {
             } catch (Exception e) {
                 key = ClearKey.get(key.replace("\"", "").replace("{", "").replace("}", "")).toString();
             }
-        }
-
-        private String find(String text, String regex) {
-            Matcher m = Pattern.compile(regex).matcher(text);
-            return m.find() ? m.group(2) : null;
         }
 
         private void clear() {
