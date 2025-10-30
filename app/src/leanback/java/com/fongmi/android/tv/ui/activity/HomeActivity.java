@@ -41,6 +41,7 @@ import com.fongmi.android.tv.event.ServerEvent;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.player.Source;
+import com.fongmi.android.tv.player.exo.CacheManager;
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.ui.adapter.BaseDiffCallback;
 import com.fongmi.android.tv.ui.base.BaseActivity;
@@ -468,6 +469,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     protected void onDestroy() {
+        CacheManager.get().release();
         WallConfig.get().clear();
         LiveConfig.get().clear();
         VodConfig.get().clear();
