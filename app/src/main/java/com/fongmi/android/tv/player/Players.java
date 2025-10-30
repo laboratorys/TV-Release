@@ -30,7 +30,6 @@ import androidx.media3.common.Tracks;
 import androidx.media3.common.VideoSize;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.drm.FrameworkMediaDrm;
-import androidx.media3.exoplayer.util.EventLogger;
 import androidx.media3.ui.PlayerView;
 
 import com.bumptech.glide.request.transition.Transition;
@@ -405,7 +404,6 @@ public class Players implements Player.Listener, ParseCallback {
         session.release();
         removeTimeoutCheck();
         Server.get().setPlayer(null);
-        CacheManager.get().release();
         App.execute(() -> Source.get().stop());
     }
 
