@@ -12,15 +12,14 @@ import androidx.room.PrimaryKey;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Product;
 import com.fongmi.android.tv.db.AppDatabase;
-import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.impl.Diffable;
+import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.fongmi.android.tv.utils.Util;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 @Entity(indices = @Index(value = {"uuid", "name"}, unique = true))
 public class Device implements Diffable<Device> {

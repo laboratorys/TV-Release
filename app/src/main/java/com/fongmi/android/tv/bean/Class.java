@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 @Root(strict = false)
 public class Class implements Parcelable, Diffable<Class> {

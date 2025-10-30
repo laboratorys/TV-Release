@@ -10,8 +10,6 @@ import com.fongmi.android.tv.impl.Diffable;
 import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Objects;
-
 public class Value implements Parcelable, Diffable<Value> {
 
     @SerializedName("n")
