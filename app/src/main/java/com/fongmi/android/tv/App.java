@@ -27,8 +27,10 @@ import com.orhanobut.logger.PrettyFormatStrategy;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import cat.ereza.customactivityoncrash.config.CaocConfig;
 
@@ -64,6 +66,10 @@ public class App extends Application {
 
     public static Activity activity() {
         return get().activity;
+    }
+
+    public static <T> Future<T> submit(Callable<T> task) {
+        return get().executor.submit(task);
     }
 
     public static void execute(Runnable runnable) {

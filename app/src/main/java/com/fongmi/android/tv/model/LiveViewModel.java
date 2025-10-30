@@ -3,6 +3,7 @@ package com.fongmi.android.tv.model;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.EpgParser;
@@ -141,7 +142,7 @@ public class LiveViewModel extends ViewModel {
     private <T> void execute(TaskType type, Callable<T> callable) {
         Future<?> oldFuture = futures.get(type);
         if (oldFuture != null && !oldFuture.isDone()) oldFuture.cancel(true);
-        final Future<T> newFuture = executor.submit(callable);
+        final Future<T> newFuture = App.submit(callable);
         futures.put(type, newFuture);
         executor.execute(() -> {
             try {

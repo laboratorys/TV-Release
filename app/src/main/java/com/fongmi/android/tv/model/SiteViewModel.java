@@ -43,20 +43,21 @@ import okhttp3.Response;
 public class SiteViewModel extends ViewModel {
 
     private final ExecutorService executor;
-    public MutableLiveData<Episode> episode;
-    public MutableLiveData<Result> result;
-    public MutableLiveData<Result> player;
-    public MutableLiveData<Result> search;
-    public MutableLiveData<Result> action;
     private Future<Result> future;
 
+    public final MutableLiveData<Episode> episode;
+    public final MutableLiveData<Result> result;
+    public final MutableLiveData<Result> player;
+    public final MutableLiveData<Result> search;
+    public final MutableLiveData<Result> action;
+
     public SiteViewModel() {
-        executor = Executors.newFixedThreadPool(2);
         episode = new MutableLiveData<>();
         result = new MutableLiveData<>();
         player = new MutableLiveData<>();
         search = new MutableLiveData<>();
         action = new MutableLiveData<>();
+        executor = Executors.newSingleThreadExecutor();
     }
 
     public SiteViewModel init() {
@@ -287,7 +288,7 @@ public class SiteViewModel extends ViewModel {
 
     private void execute(MutableLiveData<Result> result, Callable<Result> callable) {
         if (future != null && !future.isDone()) future.cancel(true);
-        future = executor.submit(callable);
+        future = App.submit(callable);
         executor.execute(() -> {
             try {
                 Result taskResult = future.get(Constant.TIMEOUT_VOD, TimeUnit.MILLISECONDS);
