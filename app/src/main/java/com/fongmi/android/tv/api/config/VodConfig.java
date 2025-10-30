@@ -41,7 +41,6 @@ public class VodConfig {
     private List<String> flags;
     private List<Parse> parses;
     private ExecutorService executor;
-
     private boolean loadLive;
 
     private static class Loader {
@@ -193,7 +192,7 @@ public class VodConfig {
     private void initLive(JsonObject object) {
         Config temp = Config.find(config, 1).save();
         boolean sync = LiveConfig.get().needSync(config.getUrl());
-        if (sync) LiveConfig.get().clear().config(temp).parse(object);
+        if (sync) LiveConfig.get().clear().config(temp.update()).parse(object);
     }
 
     private void initParse(JsonObject object) {
@@ -325,9 +324,9 @@ public class VodConfig {
         for (Parse item : getParses()) item.setActivated(parse);
     }
 
-    public void setHome(Site home) {
-        this.home = home;
-        this.home.setActivated(true);
+    public void setHome(Site site) {
+        home = site;
+        home.setActivated(true);
         config.home(home.getKey()).save();
         for (Site item : getSites()) item.setActivated(home);
     }
@@ -336,6 +335,6 @@ public class VodConfig {
         this.wall = wall;
         boolean sync = !TextUtils.isEmpty(wall) && WallConfig.get().needSync(wall);
         Config temp = Config.find(wall, config.getName(), 2).save();
-        if (sync) WallConfig.get().config(temp);
+        if (sync) WallConfig.get().config(temp.update());
     }
 }

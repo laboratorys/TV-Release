@@ -177,6 +177,7 @@ public class LiveConfig {
         try {
             initLive(object);
             initOther(object);
+            config.json(object.toString()).update();
         } catch (Throwable e) {
             e.printStackTrace();
         } finally {
@@ -317,10 +318,10 @@ public class LiveConfig {
         setHome(home, false);
     }
 
-    private void setHome(Live home, boolean check) {
-        this.home = home;
-        this.home.setActivated(true);
-        config.home(home.getName()).update();
+    private void setHome(Live live, boolean check) {
+        home = live;
+        home.setActivated(true);
+        config.home(home.getName()).save();
         for (Live item : getLives()) item.setActivated(home);
         if (App.activity() != null && App.activity() instanceof LiveActivity) return;
         if (check) if (home.isBoot() || Setting.isBootLive()) App.post(this::bootLive);

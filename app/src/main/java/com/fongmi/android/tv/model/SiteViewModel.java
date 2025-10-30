@@ -51,7 +51,7 @@ public class SiteViewModel extends ViewModel {
     private Future<Result> future;
 
     public SiteViewModel() {
-        executor = Executors.newFixedThreadPool(2);
+        executor = Executors.newSingleThreadExecutor();
         episode = new MutableLiveData<>();
         result = new MutableLiveData<>();
         player = new MutableLiveData<>();

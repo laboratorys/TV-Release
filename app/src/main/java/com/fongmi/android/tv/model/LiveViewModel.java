@@ -64,7 +64,7 @@ public class LiveViewModel extends ViewModel {
         this.url = new MutableLiveData<>();
         this.formatTime = new ArrayList<>();
         this.futures = new EnumMap<>(TaskType.class);
-        this.executor = Executors.newFixedThreadPool(4);
+        this.executor = Executors.newFixedThreadPool(2);
         this.formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         this.formatTime.add(new SimpleDateFormat("yyyy-MM-ddHH:mm", Locale.getDefault()));
         this.formatTime.add(new SimpleDateFormat("yyyy-MM-ddHH:mm:ss", Locale.getDefault()));
