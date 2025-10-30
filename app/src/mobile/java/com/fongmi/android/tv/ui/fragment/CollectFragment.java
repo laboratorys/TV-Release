@@ -33,15 +33,12 @@ import com.fongmi.android.tv.utils.ResUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class CollectFragment extends BaseFragment implements MenuProvider, CollectAdapter.OnClickListener, SearchAdapter.OnClickListener, CustomScroller.Callback {
 
     private FragmentCollectBinding mBinding;
     private CollectAdapter mCollectAdapter;
     private SearchAdapter mSearchAdapter;
-    private ExecutorService mExecutor;
     private CustomScroller mScroller;
     private SiteViewModel mViewModel;
     private List<Site> sites;
@@ -118,18 +115,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     private void search() {
-        if (sites.isEmpty()) return;
-        mExecutor = Executors.newCachedThreadPool();
-        mCollectAdapter.setItems(List.of(Collect.all()), () -> {
-            for (Site site : sites) mExecutor.execute(() -> search(site, getKeyword()));
-        });
-    }
-
-    private void search(Site site, String keyword) {
-        try {
-            mViewModel.searchContent(site, keyword, false);
-        } catch (Throwable ignored) {
-        }
+        if (!sites.isEmpty()) mCollectAdapter.setItems(List.of(Collect.all()), () -> mViewModel.searchContent(sites, getKeyword(), false));
     }
 
     private int getCount() {
@@ -170,7 +156,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     public void onLoadMore(String page) {
         Collect activated = mCollectAdapter.getActivated();
         if ("all".equals(activated.getSite().getKey())) return;
-        mViewModel.searchContent(activated.getSite(), getKeyword(), page);
+        mViewModel.searchContent(activated.getSite(), getKeyword(), false, page);
         activated.setPage(Integer.parseInt(page));
         mScroller.setLoading(true);
     }
@@ -195,6 +181,5 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     public void onDestroyView() {
         super.onDestroyView();
         requireActivity().removeMenuProvider(this);
-        if (mExecutor != null) mExecutor.shutdownNow();
     }
 }

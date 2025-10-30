@@ -110,8 +110,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 
 public class VideoActivity extends BaseActivity implements Clock.Callback, CustomKeyDown.Listener, TrackDialog.Listener, ControlDialog.Listener, FlagAdapter.OnClickListener, EpisodeAdapter.OnClickListener, QualityAdapter.OnClickListener, QuickAdapter.OnClickListener, ParseAdapter.OnClickListener, CastDialog.Listener, InfoDialog.Listener {
@@ -126,7 +124,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private ControlDialog mControlDialog;
     private QuickAdapter mQuickAdapter;
     private ParseAdapter mParseAdapter;
-    private ExecutorService mExecutor;
     private SiteViewModel mViewModel;
     private FlagAdapter mFlagAdapter;
     private ValueAnimator mAnimator;
@@ -269,7 +266,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         if (TextUtils.isEmpty(id) || id.equals(getId())) return;
         mBinding.swipeLayout.setRefreshing(true);
         getIntent().putExtras(intent);
-        stopSearch();
         setOrient();
         checkId();
     }
@@ -477,7 +473,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         showError(getString(R.string.error_detail));
         mBinding.swipeLayout.setEnabled(true);
         mBinding.progressLayout.showEmpty();
-        stopSearch();
     }
 
     private void setDetail(Vod item) {
@@ -1309,7 +1304,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void initSearch(String keyword, boolean auto) {
-        stopSearch();
         setAutoMode(auto);
         setInitAuto(auto);
         startSearch(keyword);
@@ -1323,22 +1317,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void startSearch(String keyword) {
         mQuickAdapter.clear();
         List<Site> sites = new ArrayList<>();
-        mExecutor = Executors.newCachedThreadPool();
         for (Site item : VodConfig.get().getSites()) if (isPass(item)) sites.add(item);
-        for (Site site : sites) mExecutor.execute(() -> search(site, keyword));
-    }
-
-    private void stopSearch() {
-        if (mExecutor == null) return;
-        mExecutor.shutdownNow();
-        mExecutor = null;
-    }
-
-    private void search(Site site, String keyword) {
-        try {
-            mViewModel.searchContent(site, keyword, true);
-        } catch (Throwable ignored) {
-        }
+        mViewModel.searchContent(sites, keyword, true);
     }
 
     private void setSearch(Result result) {
@@ -1673,14 +1653,12 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         } else if (isFullscreen() && !isLock()) {
             exitFullscreen();
         } else if (!isLock()) {
-            stopSearch();
             super.onBackInvoked();
         }
     }
 
     @Override
     protected void onDestroy() {
-        stopSearch();
         saveHistory();
         mClock.release();
         mPlayers.release();

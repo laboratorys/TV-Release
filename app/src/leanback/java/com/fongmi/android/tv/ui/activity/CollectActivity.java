@@ -3,6 +3,7 @@ package com.fongmi.android.tv.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -35,14 +36,11 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class CollectActivity extends BaseActivity {
 
     private ActivityCollectBinding mBinding;
     private ArrayObjectAdapter mAdapter;
-    private ExecutorService mExecutor;
     private SiteViewModel mViewModel;
     private View mOldView;
 
@@ -128,32 +126,18 @@ public class CollectActivity extends BaseActivity {
         List<Site> sites = getSites();
         if (sites.isEmpty()) return;
         mAdapter.add(Collect.all());
-        if (mExecutor != null) stop();
-        mExecutor = Executors.newCachedThreadPool();
         mBinding.pager.getAdapter().notifyDataSetChanged();
         mBinding.result.setText(getString(R.string.collect_result, getKeyword()));
-        for (Site site : sites) mExecutor.execute(() -> search(site));
-    }
-
-    private void search(Site site) {
-        try {
-            mViewModel.searchContent(site, getKeyword(), false);
-        } catch (Throwable ignored) {
-        }
+        mViewModel.searchContent(sites, getKeyword(), false);
     }
 
     private void saveKeyword() {
-        List<String> items = Setting.getKeyword().isEmpty() ? new ArrayList<>() : App.gson().fromJson(Setting.getKeyword(), new TypeToken<List<String>>() {}.getType());
+        List<String> items = Setting.getKeyword().isEmpty() ? new ArrayList<>() : App.gson().fromJson(Setting.getKeyword(), new TypeToken<List<String>>() {
+        }.getType());
         items.remove(getKeyword());
         items.add(0, getKeyword());
         if (items.size() > 8) items.remove(8);
         Setting.putKeyword(App.gson().toJson(items));
-    }
-
-    private void stop() {
-        if (mExecutor == null) return;
-        mExecutor.shutdownNow();
-        mExecutor = null;
     }
 
     private void onChildSelected(@Nullable RecyclerView.ViewHolder child) {
@@ -172,15 +156,9 @@ public class CollectActivity extends BaseActivity {
     };
 
     @Override
-    protected void onBackInvoked() {
-        super.onBackInvoked();
-        stop();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        stop();
+        Log.e("DDD", "onDestroy");
     }
 
     class PageAdapter extends FragmentStatePagerAdapter {
