@@ -51,7 +51,7 @@ public class SiteViewModel extends ViewModel {
     private Future<Result> future;
 
     public SiteViewModel() {
-        executor = Executors.newSingleThreadExecutor();
+        executor = Executors.newFixedThreadPool(2);
         episode = new MutableLiveData<>();
         result = new MutableLiveData<>();
         player = new MutableLiveData<>();
@@ -294,6 +294,7 @@ public class SiteViewModel extends ViewModel {
                 if (future.isCancelled()) return;
                 result.postValue(taskResult);
             } catch (InterruptedException e) {
+                e.printStackTrace();
                 Thread.currentThread().interrupt();
             } catch (Throwable e) {
                 if (future.isCancelled()) return;
