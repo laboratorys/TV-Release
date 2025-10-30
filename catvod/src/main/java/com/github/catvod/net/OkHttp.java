@@ -40,6 +40,7 @@ public class OkHttp {
     private OkAuthenticator authenticator;
     private OkProxySelector selector;
     private OkHttpClient client;
+    private OkHttpClient player;
     private OkDns dns;
 
     private static class Loader {
@@ -63,6 +64,7 @@ public class OkHttp {
     public void setDoh(Doh doh) {
         dns().setDoh(doh.getUrl().isEmpty() ? null : new DnsOverHttps.Builder().client(new OkHttpClient()).url(HttpUrl.get(doh.getUrl())).bootstrapDnsHosts(doh.getHosts()).build());
         client = null;
+        player = null;
     }
 
     public static OkDns dns() {
@@ -98,6 +100,11 @@ public class OkHttp {
     public static OkHttpClient client() {
         if (get().client != null) return get().client;
         return get().client = getBuilder().build();
+    }
+
+    public static OkHttpClient player() {
+        if (get().player != null) return get().player;
+        return get().player = getBuilder().build();
     }
 
     public static OkHttpClient client(long timeout) {
