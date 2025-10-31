@@ -83,23 +83,23 @@ public class SiteViewModel extends ViewModel {
                 boolean crash = Prefers.getBoolean("crash");
                 String homeContent = crash ? "" : spider.homeContent(true);
                 Prefers.put("crash", false);
-                SpiderDebug.log(homeContent);
+                SpiderDebug.log("home", homeContent);
                 Result result = Result.fromJson(homeContent);
                 if (!result.getList().isEmpty()) return result;
                 String homeVideoContent = spider.homeVideoContent();
-                SpiderDebug.log(homeVideoContent);
+                SpiderDebug.log("homeVideo", homeVideoContent);
                 result.setList(Result.fromJson(homeVideoContent).getList());
                 return result;
             } else if (site.getType() == 4) {
                 ArrayMap<String, String> params = new ArrayMap<>();
                 params.put("filter", "true");
                 String homeContent = call(site.fetchExt(), params);
-                SpiderDebug.log(homeContent);
+                SpiderDebug.log("home", homeContent);
                 return Result.fromJson(homeContent);
             } else {
                 try (Response response = OkHttp.newCall(site.getApi(), site.getHeaders()).execute()) {
                     String homeContent = response.body().string();
-                    SpiderDebug.log(homeContent);
+                    SpiderDebug.log("home", homeContent);
                     return fetchPic(site, Result.fromType(site.getType(), homeContent));
                 }
             }
@@ -107,12 +107,13 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void categoryContent(String key, String tid, String page, boolean filter, HashMap<String, String> extend) {
+        SpiderDebug.log("category", "key=%s,tid=%s,page=%s,filter=%s,extend=%s", key, tid, page, filter, extend);
         execute(result, () -> {
             Site site = VodConfig.get().getSite(key);
             if (site.getType() == 3) {
                 Spider spider = site.recent().spider();
                 String categoryContent = spider.categoryContent(tid, page, filter, extend);
-                SpiderDebug.log(categoryContent);
+                SpiderDebug.log("category", categoryContent);
                 return Result.fromJson(categoryContent);
             } else {
                 ArrayMap<String, String> params = new ArrayMap<>();
@@ -122,19 +123,20 @@ public class SiteViewModel extends ViewModel {
                 params.put("t", tid);
                 params.put("pg", page);
                 String categoryContent = call(site, params);
-                SpiderDebug.log(categoryContent);
+                SpiderDebug.log("category", categoryContent);
                 return Result.fromType(site.getType(), categoryContent);
             }
         });
     }
 
     public void detailContent(String key, String id) {
+        SpiderDebug.log("detail", "key=%s,id=%s", key, id);
         execute(result, () -> {
             Site site = VodConfig.get().getSite(key);
             if (site.getType() == 3) {
                 Spider spider = site.recent().spider();
                 String detailContent = spider.detailContent(Arrays.asList(id));
-                SpiderDebug.log(detailContent);
+                SpiderDebug.log("detail", detailContent);
                 Result result = Result.fromJson(detailContent);
                 if (!result.getList().isEmpty()) result.getList().get(0).setVodFlags();
                 if (!result.getList().isEmpty()) Source.get().parse(result.getList().get(0).getVodFlags());
@@ -152,7 +154,7 @@ public class SiteViewModel extends ViewModel {
                 params.put("ac", site.getType() == 0 ? "videolist" : "detail");
                 params.put("ids", id);
                 String detailContent = call(site, params);
-                SpiderDebug.log(detailContent);
+                SpiderDebug.log("detail", detailContent);
                 Result result = Result.fromType(site.getType(), detailContent);
                 if (!result.getList().isEmpty()) result.getList().get(0).setVodFlags();
                 if (!result.getList().isEmpty()) Source.get().parse(result.getList().get(0).getVodFlags());
@@ -162,13 +164,14 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void playerContent(String key, String flag, String id) {
+        SpiderDebug.log("player", "key=%s,flag=%s,id=%s", key, flag, id);
         execute(player, () -> {
             Source.get().stop();
             Site site = VodConfig.get().getSite(key);
             if (site.getType() == 3) {
                 Spider spider = site.recent().spider();
                 String playerContent = spider.playerContent(flag, id, VodConfig.get().getFlags());
-                SpiderDebug.log(playerContent);
+                SpiderDebug.log("player", playerContent);
                 Result result = Result.fromJson(playerContent);
                 if (result.getFlag().isEmpty()) result.setFlag(flag);
                 result.setUrl(Source.get().fetch(result));
@@ -180,7 +183,7 @@ public class SiteViewModel extends ViewModel {
                 params.put("play", id);
                 params.put("flag", flag);
                 String playerContent = call(site, params);
-                SpiderDebug.log(playerContent);
+                SpiderDebug.log("player", playerContent);
                 Result result = Result.fromJson(playerContent);
                 if (result.getFlag().isEmpty()) result.setFlag(flag);
                 result.setUrl(Source.get().fetch(result));
@@ -202,7 +205,7 @@ public class SiteViewModel extends ViewModel {
                 result.setPlayUrl(site.getPlayUrl());
                 result.setParse(Sniffer.isVideoFormat(url.v()) && result.getPlayUrl().isEmpty() ? 0 : 1);
                 result.setUrl(Source.get().fetch(result));
-                SpiderDebug.log(result.toString());
+                SpiderDebug.log("player", result.toString());
                 return result;
             }
         });
@@ -220,6 +223,7 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void action(String key, String action) {
+        SpiderDebug.log("action", "key=%s,action=%s", key, action);
         execute(this.action, () -> {
             Site site = VodConfig.get().getSite(key);
             if (site.getType() == 3) return Result.fromJson(site.recent().spider().action(action));

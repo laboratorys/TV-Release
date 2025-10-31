@@ -6,7 +6,6 @@ import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.player.Players;
 import com.fongmi.android.tv.utils.ResUtil;
-import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
 
@@ -83,7 +82,6 @@ public class DanPlayer implements DrawHandler.Callback {
         App.execute(() -> {
             view.release();
             if (item.isEmpty()) return;
-            Logger.t(TAG).d(item.getUrl());
             view.prepare(new Parser().load(new Loader(item).getDataSource()), context);
         });
     }

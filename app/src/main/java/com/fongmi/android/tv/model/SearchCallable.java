@@ -41,7 +41,7 @@ public class SearchCallable implements Callable<Result> {
         boolean hasPage = !page.equals("1");
         if (site.getType() == 3) {
             String searchContent = hasPage ? site.spider().searchContent(keyword, quick, page) : site.spider().searchContent(keyword, quick);
-            SpiderDebug.log(site.getName() + "," + searchContent);
+            SpiderDebug.log("search", "site=%s,keyword=%s,quick=%s,page=%s\n%s", site.getName(), keyword, quick, page, searchContent.trim());
             Result result = Result.fromJson(searchContent);
             for (Vod vod : result.getList()) vod.setSite(site);
             return result;
@@ -52,7 +52,7 @@ public class SearchCallable implements Callable<Result> {
             params.put("extend", "");
             if (hasPage) params.put("pg", page);
             String searchContent = model.call(site, params);
-            SpiderDebug.log(site.getName() + "," + searchContent);
+            SpiderDebug.log("search", "site=%s,keyword=%s,quick=%s,page=%s\n%s", site.getName(), keyword, quick, page, searchContent.trim());
             Result result = model.fetchPic(site, Result.fromType(site.getType(), searchContent));
             for (Vod vod : result.getList()) vod.setSite(site);
             return result;

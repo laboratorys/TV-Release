@@ -17,7 +17,7 @@ public class Value implements Parcelable, Diffable<Value> {
     @SerializedName("v")
     private String v;
 
-    private boolean activated;
+    private transient boolean activated;
 
     public Value() {
     }
