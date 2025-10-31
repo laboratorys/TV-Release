@@ -39,6 +39,7 @@ import com.fongmi.android.tv.ui.fragment.SettingPlayerFragment;
 import com.fongmi.android.tv.ui.fragment.VodFragment;
 import com.fongmi.android.tv.utils.FileChooser;
 import com.fongmi.android.tv.utils.Notify;
+import com.fongmi.android.tv.utils.PermissionUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 import com.google.android.material.navigation.NavigationBarView;
@@ -88,11 +89,15 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         if (Intent.ACTION_SEND.equals(intent.getAction())) {
             VideoActivity.push(this, intent.getStringExtra(Intent.EXTRA_TEXT));
         } else if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
-            if ("text/plain".equals(intent.getType()) || UrlUtil.path(intent.getData()).endsWith(".m3u")) {
-                loadLive("file:/" + FileChooser.getPathFromUri(intent.getData()));
-            } else {
-                VideoActivity.push(this, intent.getData().toString());
-            }
+            PermissionUtil.requestFile(this, allGranted -> checkType(intent));
+        }
+    }
+
+    private void checkType(Intent intent) {
+        if ("text/plain".equals(intent.getType()) || UrlUtil.path(intent.getData()).endsWith(".m3u")) {
+            loadLive("file:/" + FileChooser.getPathFromUri(intent.getData()));
+        } else {
+            VideoActivity.push(this, intent.getData().toString());
         }
     }
 
