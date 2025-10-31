@@ -216,7 +216,7 @@ public class SiteViewModel extends ViewModel {
     public void searchContent(Site site, String keyword, boolean quick, String page) {
         SearchCallable callable = new SearchCallable(this, site, keyword, quick, page);
         if (!page.equals("1")) execute(result, callable);
-        else searchFuture.add(App.submit(callable::run));
+        else searchFuture.add(App.submit(callable.run()));
     }
 
     public void action(String key, String action) {
