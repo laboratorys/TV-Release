@@ -26,6 +26,15 @@ public class SearchCallable implements Callable<Result> {
         this.site = site;
     }
 
+    public Runnable run() {
+        return () -> {
+            try {
+                model.search.postValue(call());
+            } catch (Throwable ignored) {
+            }
+        };
+    }
+
     @Override
     public Result call() throws Exception {
         if (quick && !site.isQuickSearch()) return Result.empty();

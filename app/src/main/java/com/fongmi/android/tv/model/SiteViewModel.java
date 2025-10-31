@@ -42,7 +42,7 @@ import okhttp3.Response;
 
 public class SiteViewModel extends ViewModel {
 
-    private final List<Future<?>> searchFutures;
+    private final List<Future<?>> searchFuture;
     private final ExecutorService executor;
     private Future<Result> future;
 
@@ -58,7 +58,7 @@ public class SiteViewModel extends ViewModel {
         player = new MutableLiveData<>();
         search = new MutableLiveData<>();
         action = new MutableLiveData<>();
-        searchFutures = new ArrayList<>();
+        searchFuture = new ArrayList<>();
         executor = Executors.newSingleThreadExecutor();
     }
 
@@ -214,14 +214,9 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void searchContent(Site site, String keyword, boolean quick, String page) {
-        Callable<Result> callable = new SearchCallable(this, site, keyword, quick, page);
+        SearchCallable callable = new SearchCallable(this, site, keyword, quick, page);
         if (!page.equals("1")) execute(result, callable);
-        else searchFutures.add(App.submit(() -> {
-            try {
-                search.postValue(callable.call());
-            } catch (Throwable ignored) {
-            }
-        }));
+        else searchFuture.add(App.submit(callable::run));
     }
 
     public void action(String key, String action) {
@@ -277,8 +272,8 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void stopSearch() {
-        for (Future<?> f : searchFutures) f.cancel(true);
-        searchFutures.clear();
+        for (Future<?> f : searchFuture) f.cancel(true);
+        searchFuture.clear();
     }
 
     @Override
