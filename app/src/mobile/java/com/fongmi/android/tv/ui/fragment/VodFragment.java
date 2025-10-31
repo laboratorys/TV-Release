@@ -2,6 +2,7 @@ package com.fongmi.android.tv.ui.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,7 +56,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class VodFragment extends BaseFragment implements ConfigCallback, SiteCallback, FilterCallback, TypeAdapter.OnClickListener {
 
@@ -76,6 +79,10 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
         return VodConfig.get().getHome();
     }
 
+    private Config getConfig() {
+        return VodConfig.get().getConfig();
+    }
+
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         return mBinding = FragmentVodBinding.inflate(inflater, container, false);
@@ -88,6 +95,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
         setRecyclerView();
         setViewModel();
         showProgress();
+        setTitle();
         setLogo();
     }
 
@@ -159,6 +167,12 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
         }
     }
 
+    private void setTitle() {
+        List<String> items = Arrays.asList(getSite().getName(), getConfig().getName(), getString(R.string.app_name));
+        Optional<String> optional = items.stream().filter(s -> !TextUtils.isEmpty(s)).findFirst();
+        optional.ifPresent(s -> mBinding.title.setText(s));
+    }
+
     private void onTop(View view) {
         getFragment().scrollToTop();
         mBinding.top.setVisibility(View.INVISIBLE);
@@ -209,13 +223,12 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     }
 
     private void homeContent() {
+        setTitle();
         showProgress();
         setFabVisible(0);
         mAdapter.clear();
         mViewModel.homeContent();
-        String title = getSite().getName();
         mBinding.pager.setAdapter(new PageAdapter(getChildFragmentManager()));
-        mBinding.title.setText(title.isEmpty() ? getString(R.string.app_name) : title);
     }
 
     public Result getResult() {
@@ -258,9 +271,15 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
 
     @Override
     public void setConfig(Config config) {
-        hideContent();
-        showProgress();
         VodConfig.load(config, new Callback() {
+            @Override
+            public void start() {
+                showProgress();
+                hideContent();
+                setTitle();
+                setLogo();
+            }
+
             @Override
             public void success() {
                 RefreshEvent.config();

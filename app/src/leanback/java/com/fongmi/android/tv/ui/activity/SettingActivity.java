@@ -133,7 +133,6 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
         if (config.getUrl().startsWith("file")) {
             PermissionUtil.requestFile(this, allGranted -> load(config));
         } else {
-            Notify.progress(this);
             load(config);
         }
     }
@@ -155,6 +154,11 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
 
     private Callback getCallback(int type) {
         return new Callback() {
+            @Override
+            public void start() {
+                Notify.progress(getActivity());
+            }
+
             @Override
             public void success(String result) {
                 Notify.show(result);
@@ -251,7 +255,6 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
 
     private void setWallRefresh(View view) {
         Setting.putWall(0);
-        Notify.progress(this);
         WallConfig.get().load(getCallback(2));
     }
 
@@ -278,7 +281,6 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
 
     @Override
     public void setDoh(Doh doh) {
-        Notify.progress(this);
         OkHttp.get().setDoh(doh);
         Setting.putDoh(doh.toString());
         mBinding.dohText.setText(doh.getName());
@@ -313,7 +315,6 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
             @Override
             public void success() {
                 Notify.show(R.string.restore_success);
-                Notify.progress(getActivity());
                 setOtherText();
                 initConfig();
             }

@@ -690,11 +690,15 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     public void setConfig(Config config) {
         Config current = LiveConfig.get().getConfig();
         LiveConfig.load(config, getCallback(current));
-        showProgress();
     }
 
     private Callback getCallback(Config config) {
         return new Callback() {
+            @Override
+            public void start() {
+                showProgress();
+            }
+
             @Override
             public void success() {
                 RefreshEvent.config();

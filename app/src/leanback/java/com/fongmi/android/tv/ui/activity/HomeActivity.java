@@ -3,6 +3,7 @@ package com.fongmi.android.tv.ui.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -69,7 +70,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class HomeActivity extends BaseActivity implements CustomTitleView.Listener, VodPresenter.OnClickListener, FuncPresenter.OnClickListener, HistoryPresenter.OnClickListener {
 
@@ -83,8 +86,12 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     private Result mResult;
     private Clock mClock;
 
-    private Site getHome() {
+    private Site getSite() {
         return VodConfig.get().getHome();
+    }
+
+    private Config getConfig() {
+        return VodConfig.get().getConfig();
     }
 
     @Override
@@ -106,6 +113,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     protected void initView() {
+        mResult = Result.empty();
         mClock = Clock.create(mBinding.clock);
         mBinding.progressLayout.showProgress();
         Updater.create().start(this);
@@ -114,6 +122,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         setViewModel();
         setAdapter();
         initConfig();
+        setTitle();
         setLogo();
     }
 
@@ -166,6 +175,12 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         mAdapter.add(new ListRow(mFuncAdapter = new ArrayObjectAdapter(new FuncPresenter(this))));
         mAdapter.add(R.string.home_history);
         mAdapter.add(R.string.home_recommend);
+    }
+
+    private void setTitle() {
+        List<String> items = Arrays.asList(getSite().getName(), getConfig().getName(), getString(R.string.app_name));
+        Optional<String> optional = items.stream().filter(s -> !TextUtils.isEmpty(s)).findFirst();
+        optional.ifPresent(s -> mBinding.title.setText(s));
     }
 
     private void initConfig() {
@@ -222,18 +237,17 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void getVideo() {
+        setTitle();
         mResult = Result.empty();
         int index = getRecommendIndex();
-        String title = getHome().getName();
-        mBinding.title.setText(title.isEmpty() ? getString(R.string.app_name) : title);
         if (mAdapter.size() > index) mAdapter.removeItems(index, mAdapter.size() - index);
-        if (getHome().getKey().isEmpty()) return;
+        if (getSite().getKey().isEmpty()) return;
         mViewModel.homeContent();
         mAdapter.add("progress");
     }
 
     private void addVideo(Result result) {
-        Style style = result.getStyle(getHome().getStyle());
+        Style style = result.getStyle(getSite().getStyle());
         for (List<Vod> items : Lists.partition(result.getList(), Product.getColumn(style))) {
             ArrayObjectAdapter adapter = new ArrayObjectAdapter(new VodPresenter(this, style));
             adapter.setItems(items, new BaseDiffCallback<Vod>());
@@ -387,9 +401,9 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     public void onItemClick(Vod item) {
-        if (item.isAction()) mViewModel.action(getHome().getKey(), item.getAction());
-        else if (getHome().isIndex()) CollectActivity.start(this, item.getVodName());
-        else VideoActivity.start(this, getHome().getKey(), item.getVodId(), item.getVodName(), item.getVodPic());
+        if (item.isAction()) mViewModel.action(getSite().getKey(), item.getAction());
+        else if (getSite().isIndex()) CollectActivity.start(this, item.getVodName());
+        else VideoActivity.start(this, getSite().getKey(), item.getVodId(), item.getVodName(), item.getVodPic());
     }
 
     @Override

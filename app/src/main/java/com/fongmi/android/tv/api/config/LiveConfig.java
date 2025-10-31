@@ -30,7 +30,6 @@ import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -115,6 +114,7 @@ public class LiveConfig {
     public void load(Callback callback) {
         if (future != null && !future.isDone()) future.cancel(true);
         future = App.submit(() -> loadConfig(callback));
+        callback.start();
     }
 
     private void loadConfig(Callback callback) {
@@ -131,8 +131,8 @@ public class LiveConfig {
 
     private void parseText(String text, Callback callback) {
         Live live = new Live(parseName(config.getUrl()), config.getUrl()).sync();
+        lives = new ArrayList<>(List.of(live));
         LiveParser.text(live, text);
-        lives = Arrays.asList(live);
         setHome(live, true);
         App.post(callback::success);
     }

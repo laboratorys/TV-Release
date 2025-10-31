@@ -142,7 +142,6 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
         if (config.getUrl().startsWith("file")) {
             PermissionUtil.requestFile(this, allGranted -> load(config));
         } else {
-            Notify.progress(requireActivity());
             load(config);
         }
     }
@@ -164,6 +163,11 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
 
     private Callback getCallback(int type) {
         return new Callback() {
+            @Override
+            public void start() {
+                Notify.progress(requireActivity());
+            }
+
             @Override
             public void success(String result) {
                 Notify.show(result);
@@ -258,7 +262,6 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
 
     private void setWallRefresh(View view) {
         Setting.putWall(0);
-        Notify.progress(requireActivity());
         WallConfig.get().load(getCallback(2));
     }
 
@@ -290,7 +293,6 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
 
     private void setDoh(Doh doh) {
         OkHttp.get().setDoh(doh);
-        Notify.progress(requireActivity());
         Setting.putDoh(doh.toString());
         mBinding.dohText.setText(doh.getName());
         VodConfig.load(Config.vod(), getCallback(0));
@@ -324,7 +326,6 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
             @Override
             public void success() {
                 Notify.show(R.string.restore_success);
-                Notify.progress(requireActivity());
                 setOtherText();
                 initConfig();
             }

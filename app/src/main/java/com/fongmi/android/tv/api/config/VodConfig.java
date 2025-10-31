@@ -112,6 +112,7 @@ public class VodConfig {
     public void load(Callback callback) {
         if (future != null && !future.isDone()) future.cancel(true);
         future = App.submit(() -> loadConfig(callback));
+        callback.start();
     }
 
     private void loadConfig(Callback callback) {
