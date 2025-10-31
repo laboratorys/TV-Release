@@ -108,7 +108,6 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     protected void initView() {
         mClock = Clock.create(mBinding.clock);
         mBinding.progressLayout.showProgress();
-        PermissionUtil.requestNotify(this);
         Updater.create().start(this);
         Server.get().start();
         setRecyclerView();
@@ -186,6 +185,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
             @Override
             public void success() {
+                PermissionUtil.requestNotify(getActivity());
                 mBinding.progressLayout.showContent();
                 checkAction(getIntent());
                 getHistory();

@@ -73,7 +73,6 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     @Override
     protected void initView(Bundle savedInstanceState) {
         orientation = getResources().getConfiguration().orientation;
-        PermissionUtil.requestNotify(this);
         initFragment(savedInstanceState);
         Updater.create().start(this);
         Server.get().start();
@@ -126,6 +125,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
 
             @Override
             public void success() {
+                PermissionUtil.requestNotify(getActivity());
                 checkAction(getIntent());
                 RefreshEvent.config();
                 RefreshEvent.video();

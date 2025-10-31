@@ -168,9 +168,9 @@ public class VodConfig {
             if (loadLive && !Json.isEmpty(object, "lives")) initLive(object);
             String notice = Json.safeString(object, "notice");
             config.logo(Json.safeString(object, "logo"));
-            App.post(() -> callback.success(notice));
             config.json(object.toString()).update();
             if (silent || future.isCancelled()) return;
+            App.post(() -> callback.success(notice));
             App.post(callback::success);
         } catch (Throwable e) {
             e.printStackTrace();
@@ -226,7 +226,7 @@ public class VodConfig {
     private void initLive(JsonObject object) {
         Config temp = Config.find(config, 1).save();
         boolean sync = LiveConfig.get().needSync(config.getUrl());
-        if (sync) LiveConfig.get().clear().config(temp.update()).parse(object);
+        if (sync) LiveConfig.get().clear().config(temp).parse(object);
     }
 
     public List<Site> getSites() {

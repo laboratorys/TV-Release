@@ -198,6 +198,16 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
         mBinding.progress.getRoot().setVisibility(View.GONE);
     }
 
+    private void hideContent() {
+        mBinding.type.setVisibility(View.INVISIBLE);
+        mBinding.pager.setVisibility(View.INVISIBLE);
+    }
+
+    private void showContent() {
+        mBinding.type.setVisibility(View.VISIBLE);
+        mBinding.pager.setVisibility(View.VISIBLE);
+    }
+
     private void homeContent() {
         showProgress();
         setFabVisible(0);
@@ -248,13 +258,14 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
 
     @Override
     public void setConfig(Config config) {
-        Notify.progress(requireActivity());
+        hideContent();
+        showProgress();
         VodConfig.load(config, new Callback() {
             @Override
             public void success() {
                 RefreshEvent.config();
                 RefreshEvent.video();
-                Notify.dismiss();
+                showContent();
             }
 
             @Override
