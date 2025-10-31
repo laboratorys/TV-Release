@@ -105,10 +105,19 @@ public class CollectActivity extends BaseActivity {
     private void setViewModel() {
         mViewModel = new ViewModelProvider(this).get(SiteViewModel.class);
         mViewModel.search.observe(this, result -> {
+            if (result.getList().isEmpty()) return;
             getFragment().addVideo(result.getList());
             mAdapter.add(Collect.create(result.getList()));
             mBinding.pager.getAdapter().notifyDataSetChanged();
         });
+    }
+
+    private void saveKeyword() {
+        List<String> items = Setting.getKeyword().isEmpty() ? new ArrayList<>() : App.gson().fromJson(Setting.getKeyword(), new TypeToken<List<String>>() {}.getType());
+        items.remove(getKeyword());
+        items.add(0, getKeyword());
+        if (items.size() > 8) items.remove(8);
+        Setting.putKeyword(App.gson().toJson(items));
     }
 
     private void setPager() {
@@ -130,15 +139,6 @@ public class CollectActivity extends BaseActivity {
         mViewModel.searchContent(sites, getKeyword(), false);
     }
 
-    private void saveKeyword() {
-        List<String> items = Setting.getKeyword().isEmpty() ? new ArrayList<>() : App.gson().fromJson(Setting.getKeyword(), new TypeToken<List<String>>() {
-        }.getType());
-        items.remove(getKeyword());
-        items.add(0, getKeyword());
-        if (items.size() > 8) items.remove(8);
-        Setting.putKeyword(App.gson().toJson(items));
-    }
-
     private void onChildSelected(@Nullable RecyclerView.ViewHolder child) {
         if (mOldView != null) mOldView.setActivated(false);
         if (child == null) return;
@@ -156,7 +156,7 @@ public class CollectActivity extends BaseActivity {
 
     @Override
     protected void onBackInvoked() {
-        mViewModel.cancelAll();
+        mViewModel.stopSearch();
         super.onBackInvoked();
     }
 

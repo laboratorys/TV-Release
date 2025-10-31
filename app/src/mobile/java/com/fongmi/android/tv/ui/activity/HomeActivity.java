@@ -39,7 +39,6 @@ import com.fongmi.android.tv.ui.fragment.SettingPlayerFragment;
 import com.fongmi.android.tv.ui.fragment.VodFragment;
 import com.fongmi.android.tv.utils.FileChooser;
 import com.fongmi.android.tv.utils.Notify;
-import com.fongmi.android.tv.utils.PermissionUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 import com.google.android.material.navigation.NavigationBarView;
@@ -125,7 +124,6 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
 
             @Override
             public void success() {
-                PermissionUtil.requestNotify(getActivity());
                 checkAction(getIntent());
                 RefreshEvent.config();
                 RefreshEvent.video();
@@ -133,6 +131,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
 
             @Override
             public void error(String msg) {
+                checkAction(getIntent());
                 RefreshEvent.config();
                 StateEvent.empty();
                 Notify.show(msg);

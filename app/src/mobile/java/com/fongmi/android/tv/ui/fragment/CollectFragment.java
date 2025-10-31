@@ -125,7 +125,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     private void setCollect(Result result) {
-        if (result == null) return;
+        if (result == null || result.getList().isEmpty()) return;
         if (mCollectAdapter.getPosition() == 0) mSearchAdapter.addAll(result.getList());
         mCollectAdapter.add(Collect.create(result.getList()));
         mCollectAdapter.add(result.getList());
@@ -180,7 +180,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mViewModel.cancelAll();
+        mViewModel.stopSearch();
         requireActivity().removeMenuProvider(this);
     }
 }

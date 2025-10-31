@@ -1407,7 +1407,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         } else if (isFullscreen()) {
             exitFullscreen();
         } else {
-            mViewModel.cancelAll();
+            mViewModel.stopSearch();
             super.onBackInvoked();
         }
     }

@@ -60,7 +60,6 @@ import com.fongmi.android.tv.utils.FileChooser;
 import com.fongmi.android.tv.utils.ImgUtil;
 import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.Notify;
-import com.fongmi.android.tv.utils.PermissionUtil;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
@@ -200,7 +199,6 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
             @Override
             public void success() {
-                PermissionUtil.requestNotify(getActivity());
                 mBinding.progressLayout.showContent();
                 checkAction(getIntent());
                 getHistory();
@@ -213,6 +211,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
             @Override
             public void error(String msg) {
                 mBinding.progressLayout.showContent();
+                checkAction(getIntent());
                 Notify.show(msg);
                 setFocus();
                 setFunc();

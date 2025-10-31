@@ -23,8 +23,4 @@ public class PermissionUtil {
     public static void requestFile(Fragment fragment, Consumer<Boolean> callback) {
         PermissionX.init(fragment).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE).request(new PermissionCallback(callback));
     }
-
-    public static void requestNotify(FragmentActivity activity) {
-        PermissionX.init(activity).permissions(PermissionX.permission.POST_NOTIFICATIONS).request(new PermissionCallback());
-    }
 }

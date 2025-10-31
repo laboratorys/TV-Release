@@ -209,7 +209,7 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void searchContent(List<Site> sites, String keyword, boolean quick) {
-        for (Future<?> f : searchFutures) f.cancel(true);
+        stopSearch();
         for (Site site : sites) searchContent(site, keyword, quick, "1");
     }
 
@@ -218,8 +218,7 @@ public class SiteViewModel extends ViewModel {
         if (!page.equals("1")) execute(result, callable);
         else searchFutures.add(App.submit(() -> {
             try {
-                Result taskResult = callable.call();
-                if (!taskResult.getList().isEmpty()) search.postValue(taskResult);
+                search.postValue(callable.call());
             } catch (Throwable ignored) {
             }
         }));
@@ -277,9 +276,7 @@ public class SiteViewModel extends ViewModel {
         });
     }
 
-    public void cancelAll() {
-        if (future != null) future.cancel(true);
-        if (executor != null) executor.shutdownNow();
+    public void stopSearch() {
         for (Future<?> f : searchFutures) f.cancel(true);
         searchFutures.clear();
     }
@@ -287,6 +284,7 @@ public class SiteViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        cancelAll();
+        if (future != null) future.cancel(true);
+        if (executor != null) executor.shutdownNow();
     }
 }
