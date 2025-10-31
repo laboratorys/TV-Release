@@ -1622,7 +1622,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mClock.stop().start();
         setAudioOnly(false);
         setStop(false);
-        onPlay();
     }
 
     @Override

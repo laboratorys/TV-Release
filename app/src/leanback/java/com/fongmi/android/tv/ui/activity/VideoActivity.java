@@ -1376,7 +1376,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         super.onStart();
         mBinding.exo.setPlayer(mPlayers.get());
         mClock.stop().start();
-        onPlay();
     }
 
     @Override

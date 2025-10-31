@@ -1018,7 +1018,6 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         super.onStart();
         mBinding.exo.setPlayer(mPlayers.get());
         mClock.stop().start();
-        onPlay();
     }
 
     @Override

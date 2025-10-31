@@ -512,7 +512,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
         super.onStart();
         mBinding.exo.setPlayer(mPlayers.get());
         mClock.stop().start();
-        onPlay();
     }
 
     @Override
