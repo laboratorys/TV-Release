@@ -107,9 +107,9 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void categoryContent(String key, String tid, String page, boolean filter, HashMap<String, String> extend) {
-        SpiderDebug.log("category", "key=%s,tid=%s,page=%s,filter=%s,extend=%s", key, tid, page, filter, extend);
         execute(result, () -> {
             Site site = VodConfig.get().getSite(key);
+            SpiderDebug.log("category", "key=%s,tid=%s,page=%s,filter=%s,extend=%s", key, tid, page, filter, extend);
             if (site.getType() == 3) {
                 Spider spider = site.recent().spider();
                 String categoryContent = spider.categoryContent(tid, page, filter, extend);
@@ -130,9 +130,9 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void detailContent(String key, String id) {
-        SpiderDebug.log("detail", "key=%s,id=%s", key, id);
         execute(result, () -> {
             Site site = VodConfig.get().getSite(key);
+            SpiderDebug.log("detail", "key=%s,id=%s", key, id);
             if (site.getType() == 3) {
                 Spider spider = site.recent().spider();
                 String detailContent = spider.detailContent(Arrays.asList(id));
@@ -164,10 +164,10 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void playerContent(String key, String flag, String id) {
-        SpiderDebug.log("player", "key=%s,flag=%s,id=%s", key, flag, id);
         execute(player, () -> {
             Source.get().stop();
             Site site = VodConfig.get().getSite(key);
+            SpiderDebug.log("player", "key=%s,flag=%s,id=%s", key, flag, id);
             if (site.getType() == 3) {
                 Spider spider = site.recent().spider();
                 String playerContent = spider.playerContent(flag, id, VodConfig.get().getFlags());
@@ -195,6 +195,7 @@ public class SiteViewModel extends ViewModel {
                 result.setFlag(flag);
                 result.setUrl(Url.create().add(id));
                 result.setUrl(Source.get().fetch(result));
+                SpiderDebug.log("player", result.toString());
                 return result;
             } else {
                 Url url = Url.create().add(id);
@@ -223,9 +224,9 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void action(String key, String action) {
-        SpiderDebug.log("action", "key=%s,action=%s", key, action);
         execute(this.action, () -> {
             Site site = VodConfig.get().getSite(key);
+            SpiderDebug.log("action", "key=%s,action=%s", key, action);
             if (site.getType() == 3) return Result.fromJson(site.recent().spider().action(action));
             if (site.getType() == 4) return Result.fromJson(OkHttp.string(action));
             return Result.empty();
