@@ -116,39 +116,24 @@ public class VodConfig {
     }
 
     private void loadConfig(Callback callback) {
-        loadConfig(callback, loadCache(callback));
-    }
-
-    private void loadConfig(Callback callback, boolean silent) {
         try {
             String json = Decoder.getJson(UrlUtil.convert(config.getUrl()));
             JsonObject object = Json.parse(json).getAsJsonObject();
-            checkJson(object, callback, silent);
+            checkJson(object, callback);
         } catch (Throwable e) {
-            String error = TextUtils.isEmpty(config.getUrl()) ? "" : Notify.getError(R.string.error_config_get, e);
-            if (!silent) App.post(() -> callback.error(error));
+            if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
+            else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
             e.printStackTrace();
         }
     }
 
-    private boolean loadCache(Callback callback) {
-        try {
-            if (TextUtils.isEmpty(config.getJson())) return false;
-            parseConfig(Json.parse(config.getJson()).getAsJsonObject(), callback, false);
-            return true;
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private void checkJson(JsonObject object, Callback callback, boolean silent) {
+    private void checkJson(JsonObject object, Callback callback) {
         if (object.has("msg")) {
             App.post(() -> callback.error(object.get("msg").getAsString()));
         } else if (object.has("urls")) {
             parseDepot(object, callback);
         } else {
-            parseConfig(object, callback, silent);
+            parseConfig(object, callback);
         }
     }
 
@@ -161,7 +146,7 @@ public class VodConfig {
         loadConfig(callback);
     }
 
-    private void parseConfig(JsonObject object, Callback callback, boolean silent) {
+    private void parseConfig(JsonObject object, Callback callback) {
         try {
             initSite(object);
             initParse(object);
@@ -170,12 +155,11 @@ public class VodConfig {
             String notice = Json.safeString(object, "notice");
             config.logo(Json.safeString(object, "logo"));
             config.json(object.toString()).update();
-            if (silent || future.isCancelled()) return;
+            if (future.isCancelled()) return;
             App.post(() -> callback.success(notice));
             App.post(callback::success);
         } catch (Throwable e) {
             e.printStackTrace();
-            if (silent) return;
             App.post(() -> callback.error(Notify.getError(R.string.error_config_parse, e)));
         }
     }
