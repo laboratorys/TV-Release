@@ -9,8 +9,6 @@ import com.fongmi.android.tv.utils.ResUtil;
 
 public class Product {
 
-    public static final int THREAD_COUNT = 20;
-
     public static int getDeviceType() {
         return 1;
     }

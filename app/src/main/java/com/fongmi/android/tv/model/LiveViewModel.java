@@ -81,11 +81,7 @@ public class LiveViewModel extends ViewModel {
     }
 
     public void getXml(Live item) {
-        execute(TaskType.XML, () -> {
-            boolean result = false;
-            for (String url : item.getEpgXml()) if (parseXml(item, url)) result = true;
-            return result;
-        });
+        execute(TaskType.XML, () -> item.getEpgXml().stream().anyMatch(url -> parseXml(item, url)));
     }
 
     private boolean parseXml(Live item, String url) {
@@ -126,7 +122,7 @@ public class LiveViewModel extends ViewModel {
     private void setTimeZone(Live live) {
         try {
             TimeZone timeZone = live.getTimeZone().isEmpty() ? TimeZone.getDefault() : TimeZone.getTimeZone(live.getTimeZone());
-            for (SimpleDateFormat format : formatTime) format.setTimeZone(timeZone);
+            formatTime.forEach(simpleDateFormat -> simpleDateFormat.setTimeZone(timeZone));
             formatDate.setTimeZone(timeZone);
         } catch (Exception ignored) {
         }
@@ -142,7 +138,7 @@ public class LiveViewModel extends ViewModel {
     private <T> void execute(TaskType type, Callable<T> callable) {
         Future<?> oldFuture = futures.get(type);
         if (oldFuture != null && !oldFuture.isDone()) oldFuture.cancel(true);
-        final Future<T> newFuture = App.submit(callable);
+        Future<T> newFuture = App.submit(callable);
         futures.put(type, newFuture);
         executor.execute(() -> {
             try {
@@ -169,7 +165,7 @@ public class LiveViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        for (Future<?> future : futures.values()) if (future != null) future.cancel(true);
+        futures.values().forEach(future -> future.cancel(true));
         if (executor != null) executor.shutdownNow();
     }
 }

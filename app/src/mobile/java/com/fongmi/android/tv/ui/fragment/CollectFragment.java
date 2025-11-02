@@ -97,8 +97,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     private void setSites() {
-        sites = new ArrayList<>();
-        for (Site site : VodConfig.get().getSites()) if (site.isSearchable()) sites.add(site);
+        sites = VodConfig.get().getSites().stream().filter(Site::isSearchable).collect(Collectors.toList());
     }
 
     private void setWidth() {
@@ -115,6 +114,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     private void search() {
+        mViewModel.stopSearch();
         if (!sites.isEmpty()) mCollectAdapter.setItems(List.of(Collect.all()), () -> mViewModel.searchContent(sites, getKeyword(), false));
     }
 

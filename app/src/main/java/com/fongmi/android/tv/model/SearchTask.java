@@ -10,7 +10,7 @@ import com.github.catvod.utils.Trans;
 
 import java.util.concurrent.Callable;
 
-public class SearchCallable implements Callable<Result> {
+public class SearchTask implements Callable<Result> {
 
     private final SiteViewModel model;
     private final String keyword;
@@ -18,7 +18,7 @@ public class SearchCallable implements Callable<Result> {
     private final String page;
     private final Site site;
 
-    public SearchCallable(SiteViewModel model, Site site, String keyword, boolean quick, String page) {
+    public SearchTask(SiteViewModel model, Site site, String keyword, boolean quick, String page) {
         this.keyword = Trans.t2s(keyword);
         this.model = model;
         this.quick = quick;

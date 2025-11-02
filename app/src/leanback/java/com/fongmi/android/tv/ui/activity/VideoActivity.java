@@ -1176,6 +1176,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void startSearch(String keyword) {
         mQuickAdapter.clear();
+        mViewModel.stopSearch();
         List<Site> sites = new ArrayList<>();
         for (Site site : VodConfig.get().getSites()) if (isPass(site)) sites.add(site);
         mViewModel.searchContent(sites, keyword, true);

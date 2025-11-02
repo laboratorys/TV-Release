@@ -46,7 +46,7 @@ public class App extends Application {
 
     public App() {
         instance = this;
-        executor = Executors.newFixedThreadPool(Product.THREAD_COUNT);
+        executor = Executors.newFixedThreadPool(5);
         handler = HandlerCompat.createAsync(Looper.getMainLooper());
         time = System.currentTimeMillis();
         gson = new Gson();

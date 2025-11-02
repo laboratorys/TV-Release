@@ -213,14 +213,11 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void searchContent(List<Site> sites, String keyword, boolean quick) {
-        stopSearch();
-        for (Site site : sites) searchContent(site, keyword, quick, "1");
+        //sites.forEach(site -> searchFuture.add(new SearchTask(this, site, keyword, quick, "1")));
     }
 
     public void searchContent(Site site, String keyword, boolean quick, String page) {
-        SearchCallable callable = new SearchCallable(this, site, keyword, quick, page);
-        if (!page.equals("1")) execute(result, callable);
-        else searchFuture.add(App.submit(callable.run()));
+        execute(result, new SearchTask(this, site, keyword, quick, page));
     }
 
     public void action(String key, String action) {
@@ -277,7 +274,7 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void stopSearch() {
-        for (Future<?> f : searchFuture) f.cancel(true);
+        searchFuture.forEach(future -> future.cancel(true));
         searchFuture.clear();
     }
 

@@ -35,6 +35,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CollectActivity extends BaseActivity {
 
@@ -125,12 +126,11 @@ public class CollectActivity extends BaseActivity {
     }
 
     private List<Site> getSites() {
-        List<Site> items = new ArrayList<>();
-        for (Site site : VodConfig.get().getSites()) if (site.isSearchable()) items.add(site);
-        return items;
+        return VodConfig.get().getSites().stream().filter(Site::isSearchable).collect(Collectors.toList());
     }
 
     private void search() {
+        mViewModel.stopSearch();
         List<Site> sites = getSites();
         if (sites.isEmpty()) return;
         mAdapter.add(Collect.all());

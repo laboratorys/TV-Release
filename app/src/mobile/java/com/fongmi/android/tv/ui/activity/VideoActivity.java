@@ -1316,6 +1316,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void startSearch(String keyword) {
         mQuickAdapter.clear();
+        mViewModel.stopSearch();
         List<Site> sites = new ArrayList<>();
         for (Site item : VodConfig.get().getSites()) if (isPass(item)) sites.add(item);
         mViewModel.searchContent(sites, keyword, true);
