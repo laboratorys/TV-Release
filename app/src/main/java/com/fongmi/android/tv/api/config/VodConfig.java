@@ -105,7 +105,7 @@ public class VodConfig {
         this.flags.clear();
         this.parses.clear();
         this.loadLive = true;
-        BaseLoader.get().clear();
+        App.execute(() -> BaseLoader.get().clear());
         return this;
     }
 

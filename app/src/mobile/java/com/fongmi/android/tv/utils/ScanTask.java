@@ -27,8 +27,8 @@ public class ScanTask {
         this.listener = listener;
     }
 
-    public void start(List<String> ips) {
-        App.execute(() -> run(getUrl(ips)));
+    public void start() {
+        App.execute(() -> run(getUrl()));
     }
 
     public void start(String url) {
@@ -61,8 +61,8 @@ public class ScanTask {
         for (String url : urls) executor.execute(() -> findDevice(url));
     }
 
-    private List<String> getUrl(List<String> ips) {
-        Set<String> urls = new HashSet<>(ips);
+    private List<String> getUrl() {
+        Set<String> urls = new HashSet<>();
         String local = Server.get().getAddress();
         String base = local.substring(0, local.lastIndexOf(".") + 1);
         for (int i = 1; i < 256; i++) urls.add(base + i + ":9978");
