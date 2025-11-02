@@ -338,8 +338,8 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
     }
 
     private void initConfig() {
-        WallConfig.get().init();
-        LiveConfig.get().init();
+        WallConfig.get().init().load();
+        LiveConfig.get().init().load();
         VodConfig.get().init().load(getCallback(0));
     }
 
