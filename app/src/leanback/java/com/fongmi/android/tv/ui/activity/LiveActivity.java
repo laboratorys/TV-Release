@@ -640,7 +640,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void setEpg(Epg epg) {
-        if (mChannel != null && mChannel.getTvgName().equals(epg.getKey())) setEpg();
+        if (mChannel != null && mChannel.getTvgId().equals(epg.getKey())) setEpg();
     }
 
     private void fetch(EpgData item) {
@@ -707,7 +707,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
             @Override
             public void error(String msg) {
-                LiveConfig.get().clear().config(config).load();
+                LiveConfig.get().config(config).load();
                 Notify.show(msg);
                 hideProgress();
             }

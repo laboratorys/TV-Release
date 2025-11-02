@@ -741,7 +741,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
 
             @Override
             public void error(String msg) {
-                LiveConfig.get().clear().config(config).load();
+                LiveConfig.get().config(config).load();
                 Notify.show(msg);
                 hideProgress();
             }
