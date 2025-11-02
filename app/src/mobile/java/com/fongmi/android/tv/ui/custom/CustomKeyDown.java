@@ -19,7 +19,7 @@ import com.fongmi.android.tv.utils.Util;
 public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
 
     private static final int DISTANCE = 250;
-    private static final int VELOCITY = 10;
+    private static final int VELOCITY = 150;
 
     private final ScaleGestureDetector scaleDetector;
     private final GestureDetector detector;
@@ -134,7 +134,7 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     @Override
     public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
         if (isEdge(e1) || changeScale || !center || animating || e1.getPointerCount() > 1) return true;
-        checkFunc(e1, e2, velocityY);
+        checkFunc(e1, e2, velocityX, velocityY);
         return true;
     }
 
@@ -152,10 +152,11 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
         touch = false;
     }
 
-    private void checkFunc(MotionEvent e1, MotionEvent e2, float velocityY) {
-        if (e1.getY() - e2.getY() > DISTANCE && Math.abs(velocityY) > VELOCITY) {
+    private void checkFunc(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        boolean isVertical = Math.abs(velocityX) < (Math.abs(velocityY) * 0.5);
+        if (isVertical && e1.getY() - e2.getY() > DISTANCE && Math.abs(velocityY) > VELOCITY) {
             videoView.animate().translationYBy(ResUtil.dp2px(Setting.isInvert() ? 24 : -24)).setDuration(150).withStartAction(() -> animating = true).withEndAction(() -> videoView.animate().translationY(0).setDuration(100).withStartAction(listener::onFlingUp).withEndAction(() -> animating = false).start()).start();
-        } else if (e2.getY() - e1.getY() > DISTANCE && Math.abs(velocityY) > VELOCITY) {
+        } else if (isVertical && e2.getY() - e1.getY() > DISTANCE && Math.abs(velocityY) > VELOCITY) {
             videoView.animate().translationYBy(ResUtil.dp2px(Setting.isInvert() ? -24 : 24)).setDuration(150).withStartAction(() -> animating = true).withEndAction(() -> videoView.animate().translationY(0).setDuration(100).withStartAction(listener::onFlingDown).withEndAction(() -> animating = false).start()).start();
         }
     }
