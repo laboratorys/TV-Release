@@ -14,7 +14,6 @@ import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.db.AppDatabase;
-import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.impl.Diffable;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -330,29 +329,14 @@ public class History implements Diffable<History> {
         }
     }
 
-    private static void startSync(List<History> targets) {
-        for (History target : targets) {
-            List<History> items = findByName(target.getVodName());
-            if (items.isEmpty()) {
-                target.cid(VodConfig.getCid()).save();
-                continue;
-            }
-            long latestLocalTime = 0;
-            for (History item : items) {
-                if (item.getCreateTime() > latestLocalTime) {
-                    latestLocalTime = item.getCreateTime();
-                }
-            }
-            if (target.getCreateTime() > latestLocalTime) {
-                target.cid(VodConfig.getCid()).merge(items, true).save();
-            }
-        }
-    }
-
     public static void sync(List<History> targets) {
-        App.execute(() -> {
-            startSync(targets);
-            RefreshEvent.history();
+        targets.forEach(target -> {
+            List<History> items = findByName(target.getVodName());
+            if (items.isEmpty()) target.cid(VodConfig.getCid()).save();
+            else {
+                long latestTime = items.stream().mapToLong(History::getCreateTime).max().orElse(0L);
+                if (target.getCreateTime() > latestTime) target.cid(VodConfig.getCid()).merge(items, true).save();
+            }
         });
     }
 

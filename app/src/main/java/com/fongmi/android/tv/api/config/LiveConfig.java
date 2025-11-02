@@ -2,6 +2,7 @@ package com.fongmi.android.tv.api.config;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
@@ -81,7 +82,7 @@ public class LiveConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().clear().config(config).load(callback);
+        get().config(config).load(callback);
     }
 
     public LiveConfig init() {
@@ -108,7 +109,7 @@ public class LiveConfig {
     }
 
     public void load() {
-        if (isEmpty()) load(new Callback());
+        load(new Callback());
     }
 
     public void load(Callback callback) {
@@ -120,7 +121,7 @@ public class LiveConfig {
     private void loadConfig(Callback callback) {
         try {
             String text = Decoder.getJson(UrlUtil.convert(config.getUrl()));
-            if (!Json.isObj(text)) parseText(text, callback);
+            if (!Json.isObj(text)) clear().parseText(text, callback);
             else checkJson(Json.parse(text).getAsJsonObject(), callback);
         } catch (Throwable e) {
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
@@ -167,6 +168,7 @@ public class LiveConfig {
 
     private void parseConfig(JsonObject object, Callback callback) {
         try {
+            clear();
             initLive(object);
             initOther(object);
         } catch (Throwable e) {
@@ -177,6 +179,7 @@ public class LiveConfig {
     }
 
     private void initLive(JsonObject object) {
+        Log.e("DDD", "initLive");
         List<Live> lives = new ArrayList<>();
         String spider = Json.safeString(object, "spider");
         BaseLoader.get().parseJar(spider, false);

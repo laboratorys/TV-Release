@@ -1,5 +1,6 @@
 package com.fongmi.android.tv.player;
 
+import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.Episode;
 import com.fongmi.android.tv.bean.Flag;
@@ -92,12 +93,12 @@ public class Source {
 
     public void stop() {
         if (extractors == null) return;
-        for (Extractor extractor : extractors) extractor.stop();
+        App.execute(() -> extractors.forEach(Extractor::stop));
     }
 
     public void exit() {
         if (extractors == null) return;
-        for (Extractor extractor : extractors) extractor.exit();
+        App.execute(() -> extractors.forEach(Extractor::exit));
     }
 
     public interface Extractor {

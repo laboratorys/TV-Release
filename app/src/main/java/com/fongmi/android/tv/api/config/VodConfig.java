@@ -71,13 +71,14 @@ public class VodConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().clear().config(config).load(callback);
+        get().config(config).live(true).load(callback);
     }
 
     public VodConfig init() {
         this.wall = null;
         this.home = null;
         this.parse = null;
+        this.loadLive = false;
         this.config = Config.vod();
         this.ads = new ArrayList<>();
         this.doh = new ArrayList<>();
@@ -85,12 +86,16 @@ public class VodConfig {
         this.sites = new ArrayList<>();
         this.flags = new ArrayList<>();
         this.parses = new ArrayList<>();
-        this.loadLive = false;
         return this;
     }
 
     public VodConfig config(Config config) {
         this.config = config;
+        return this;
+    }
+
+    public VodConfig live(boolean loadLive) {
+        this.loadLive = loadLive;
         return this;
     }
 
@@ -104,8 +109,7 @@ public class VodConfig {
         this.sites.clear();
         this.flags.clear();
         this.parses.clear();
-        this.loadLive = true;
-        App.execute(() -> BaseLoader.get().clear());
+        BaseLoader.get().clear();
         return this;
     }
 
@@ -148,6 +152,7 @@ public class VodConfig {
 
     private void parseConfig(JsonObject object, Callback callback) {
         try {
+            clear();
             initSite(object);
             initParse(object);
             initOther(object);
@@ -211,7 +216,7 @@ public class VodConfig {
     private void initLive(JsonObject object) {
         Config temp = Config.find(config, 1).save();
         boolean sync = LiveConfig.get().needSync(config.getUrl());
-        if (sync) LiveConfig.get().clear().config(temp).parse(object);
+        if (sync) LiveConfig.get().config(temp).parse(object);
     }
 
     public List<Site> getSites() {
