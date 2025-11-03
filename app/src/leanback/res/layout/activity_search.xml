@@ -29,6 +29,7 @@
             android:id="@+id/recordRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="-8dp"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:overScrollMode="never"
@@ -51,7 +52,6 @@
             android:layout_marginEnd="12dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:nextFocusLeft="@id/record"
             android:src="@drawable/ic_search_mic" />
 
         <com.fongmi.android.tv.ui.custom.CustomSearchView
@@ -69,7 +69,6 @@
             android:inputType="textCapWords|textAutoCorrect|textAutoComplete"
             android:letterSpacing="0.02"
             android:maxLength="255"
-            android:nextFocusRight="@id/word"
             android:singleLine="true"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
@@ -96,7 +95,7 @@
         android:orientation="vertical">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/hint"
+            android:id="@+id/word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -108,6 +107,7 @@
             android:id="@+id/wordRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="-8dp"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:overScrollMode="never"
