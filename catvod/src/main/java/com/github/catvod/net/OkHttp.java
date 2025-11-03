@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 
 import androidx.collection.ArrayMap;
 
-import com.github.catvod.bean.Doh;
 import com.github.catvod.net.interceptor.AuthInterceptor;
 import com.github.catvod.net.interceptor.RequestInterceptor;
 import com.github.catvod.net.interceptor.ResponseInterceptor;
@@ -27,7 +26,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.dnsoverhttps.DnsOverHttps;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public class OkHttp {
@@ -59,12 +57,6 @@ public class OkHttp {
         authInterceptor().clear();
         requestInterceptor().clear();
         responseInterceptor().clear();
-    }
-
-    public void setDoh(Doh doh) {
-        dns().setDoh(doh.getUrl().isEmpty() ? null : new DnsOverHttps.Builder().client(new OkHttpClient()).url(HttpUrl.get(doh.getUrl())).bootstrapDnsHosts(doh.getHosts()).build());
-        client = null;
-        player = null;
     }
 
     public static OkDns dns() {

@@ -131,7 +131,7 @@ public class App extends Application {
         super.onCreate();
         Notify.createChannel();
         Logger.addLogAdapter(getLogAdapter());
-        OkHttp.get().setDoh(Doh.objectFrom(Setting.getDoh()));
+        OkHttp.dns().setDoh(Doh.objectFrom(Setting.getDoh()));
         EventBus.builder().addIndex(new EventIndex()).installDefaultEventBus();
         CaocConfig.Builder.create().trackActivities(true).backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT).errorActivity(CrashActivity.class).apply();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
