@@ -75,7 +75,6 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         orientation = getResources().getConfiguration().orientation;
         initFragment(savedInstanceState);
         Updater.create().start(this);
-        Server.get().start();
         initConfig();
     }
 

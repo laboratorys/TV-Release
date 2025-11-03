@@ -12,6 +12,7 @@ import com.fongmi.android.tv.bean.Parse;
 import com.fongmi.android.tv.bean.Rule;
 import com.fongmi.android.tv.bean.Site;
 import com.fongmi.android.tv.impl.Callback;
+import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Doh;
@@ -123,6 +124,7 @@ public class VodConfig {
 
     private void loadConfig(Callback callback) {
         try {
+            Server.get().start();
             String json = Decoder.getJson(UrlUtil.convert(config.getUrl()));
             JsonObject object = Json.parse(json).getAsJsonObject();
             checkJson(object, callback);

@@ -18,6 +18,7 @@ import com.fongmi.android.tv.bean.Live;
 import com.fongmi.android.tv.bean.Rule;
 import com.fongmi.android.tv.db.AppDatabase;
 import com.fongmi.android.tv.impl.Callback;
+import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.ui.activity.LiveActivity;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.UrlUtil;
@@ -122,6 +123,7 @@ public class LiveConfig {
 
     private void loadConfig(Callback callback) {
         try {
+            Server.get().start();
             String text = Decoder.getJson(UrlUtil.convert(config.getUrl()));
             if (!Json.isObj(text)) clear().parseText(text, callback);
             else checkJson(Json.parse(text).getAsJsonObject(), callback);
