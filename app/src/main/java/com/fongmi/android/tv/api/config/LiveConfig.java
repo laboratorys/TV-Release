@@ -224,13 +224,15 @@ public class LiveConfig {
 
     public int[] find(List<Group> items) {
         String[] splits = getHome().getKeep().split(AppDatabase.SYMBOL);
-        if (splits.length < 2) return new int[]{1, 0};
+        if (splits.length < 3) return new int[]{1, 0};
         for (int i = 0; i < items.size(); i++) {
             Group group = items.get(i);
             if (group.getName().equals(splits[0])) {
                 int j = group.find(splits[1]);
-                if (j != -1 && splits.length > 2) group.getChannel().get(j).setLine(splits[2]);
-                if (j != -1) return new int[]{i, j};
+                if (j != -1) {
+                    group.getChannel().get(j).setLine(splits[2]);
+                    return new int[]{i, j};
+                }
             }
         }
         return new int[]{1, 0};
