@@ -22,6 +22,7 @@ import com.fongmi.android.tv.ui.adapter.WordAdapter;
 import com.fongmi.android.tv.ui.base.BaseActivity;
 import com.fongmi.android.tv.ui.custom.CustomKeyboard;
 import com.fongmi.android.tv.ui.custom.CustomTextListener;
+import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 import com.fongmi.android.tv.ui.dialog.SiteDialog;
 import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.Util;
@@ -87,9 +88,12 @@ public class SearchActivity extends BaseActivity implements WordAdapter.OnClickL
     }
 
     private void setRecyclerView() {
+        mBinding.wordRecycler.setItemAnimator(null);
         mBinding.wordRecycler.setHasFixedSize(false);
+        mBinding.wordRecycler.addItemDecoration(new SpaceItemDecoration(1, 16));
         mBinding.wordRecycler.setAdapter(mWordAdapter = new WordAdapter(this));
         mBinding.recordRecycler.setHasFixedSize(false);
+        mBinding.recordRecycler.addItemDecoration(new SpaceItemDecoration(1, 16));
         mBinding.recordRecycler.setAdapter(mRecordAdapter = new RecordAdapter(this));
     }
 
