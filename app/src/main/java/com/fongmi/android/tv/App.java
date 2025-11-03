@@ -130,16 +130,6 @@ public class App extends Application {
         CaocConfig.Builder.create().trackActivities(true).backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT).errorActivity(CrashActivity.class).apply();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
-            public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
-                if (activity != activity()) setActivity(activity);
-            }
-
-            @Override
-            public void onActivityStarted(@NonNull Activity activity) {
-                if (activity != activity()) setActivity(activity);
-            }
-
-            @Override
             public void onActivityResumed(@NonNull Activity activity) {
                 if (activity != activity()) setActivity(activity);
             }
@@ -150,13 +140,19 @@ public class App extends Application {
             }
 
             @Override
+            public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+            }
+
+            @Override
+            public void onActivityStarted(@NonNull Activity activity) {
+            }
+
+            @Override
             public void onActivityStopped(@NonNull Activity activity) {
-                if (activity == activity()) setActivity(null);
             }
 
             @Override
             public void onActivityDestroyed(@NonNull Activity activity) {
-                if (activity == activity()) setActivity(null);
             }
 
             @Override

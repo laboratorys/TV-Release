@@ -179,7 +179,6 @@ public class LiveConfig {
     }
 
     private void initLive(JsonObject object) {
-        Log.e("DDD", "initLive");
         List<Live> lives = new ArrayList<>();
         String spider = Json.safeString(object, "spider");
         BaseLoader.get().parseJar(spider, false);
