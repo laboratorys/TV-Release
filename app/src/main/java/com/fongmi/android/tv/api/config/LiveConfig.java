@@ -309,8 +309,9 @@ public class LiveConfig {
     private void setHome(Live live, boolean check) {
         home = live;
         home.setActivated(true);
-        config.home(home.getName()).update();
-        for (Live item : getLives()) item.setActivated(home);
+        config.home(home.getName());
+        if (!check) config.update();
+        getLives().forEach(item -> item.setActivated(home));
         if (App.activity() != null && App.activity() instanceof LiveActivity) return;
         if (check) if (home.isBoot() || Setting.isBootLive()) App.post(this::bootLive);
     }

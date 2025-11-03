@@ -177,7 +177,7 @@ public class VodConfig {
         setSites(Json.safeListElement(object, "sites").stream().map(element -> Site.objectFrom(element, spider)).distinct().toList());
         Map<String, Site> items = Site.findAll().stream().collect(Collectors.toMap(Site::getKey, Function.identity()));
         for (Site site : getSites()) {
-            if (site.getKey().equals(config.getHome())) setHome(site);
+            if (site.getKey().equals(config.getHome())) setHome(site, false);
             Site item = items.get(site.getKey());
             if (item != null) site.sync(item);
         }
@@ -187,7 +187,7 @@ public class VodConfig {
         setParses(Json.safeListElement(object, "parses").stream().map(Parse::objectFrom).distinct().toList());
         for (Parse parse : getParses()) {
             if (parse.getName().equals(config.getParse()) && parse.getType() > 1) {
-                setParse(parse);
+                setParse(parse, false);
                 break;
             }
         }
@@ -195,8 +195,8 @@ public class VodConfig {
 
     private void initOther(JsonObject object) {
         if (!parses.isEmpty()) parses.add(0, Parse.god());
-        if (home == null) setHome(sites.isEmpty() ? new Site() : sites.get(0));
-        if (parse == null) setParse(parses.isEmpty() ? new Parse() : parses.get(0));
+        if (home == null) setHome(sites.isEmpty() ? new Site() : sites.get(0), false);
+        if (parse == null) setParse(parses.isEmpty() ? new Parse() : parses.get(0), false);
         setHeaders(Header.arrayFrom(object.getAsJsonArray("headers")));
         setProxy(Proxy.arrayFrom(object.getAsJsonArray("proxy")));
         setRules(Rule.arrayFrom(object.getAsJsonArray("rules")));
@@ -318,17 +318,27 @@ public class VodConfig {
     }
 
     public void setParse(Parse parse) {
+        setParse(parse, true);
+    }
+
+    public void setParse(Parse parse, boolean save) {
         this.parse = parse;
         this.parse.setActivated(true);
-        config.parse(parse.getName()).save();
-        for (Parse item : getParses()) item.setActivated(parse);
+        config.parse(parse.getName());
+        getParses().forEach(item -> item.setActivated(parse));
+        if (save) config.save();
     }
 
     public void setHome(Site site) {
+        setHome(site, true);
+    }
+
+    public void setHome(Site site, boolean save) {
         home = site;
         home.setActivated(true);
-        config.home(home.getKey()).save();
-        for (Site item : getSites()) item.setActivated(home);
+        config.home(home.getKey());
+        getSites().forEach(item -> item.setActivated(home));
+        if (save) config.save();
     }
 
     private void setWall(String wall) {
