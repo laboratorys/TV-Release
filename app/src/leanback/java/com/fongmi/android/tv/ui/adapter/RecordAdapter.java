@@ -41,7 +41,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
     private void checkToAdd(String item) {
         mItems.remove(item);
         mItems.add(0, item);
-        if (mItems.size() > 10) mItems.remove(10);
+        if (mItems.size() > 9) mItems.remove(9);
     }
 
     public void add(String item) {
