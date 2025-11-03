@@ -84,7 +84,7 @@ public class LiveConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().config(config).load(callback);
+        get().clear().config(config).load(callback);
     }
 
     public LiveConfig init() {

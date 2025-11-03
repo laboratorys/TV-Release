@@ -73,7 +73,7 @@ public class VodConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().config(config).live(true).load(callback);
+        get().clear().config(config).live(true).load(callback);
     }
 
     public VodConfig init() {
