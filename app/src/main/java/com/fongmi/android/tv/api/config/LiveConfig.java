@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -214,16 +215,11 @@ public class LiveConfig {
     }
 
     public void setKeep(List<Group> items) {
-        List<String> key = new ArrayList<>();
-        for (Keep keep : Keep.getLive()) key.add(keep.getKey());
-        for (Group group : items) {
-            if (group.isKeep()) continue;
-            for (Channel channel : group.getChannel()) {
-                if (key.contains(channel.getName())) {
-                    items.get(0).add(channel);
-                }
-            }
-        }
+        Set<String> key = Keep.getLive().stream().map(Keep::getKey).collect(Collectors.toSet());
+        items.stream().filter(group -> !group.isKeep())
+                .flatMap(group -> group.getChannel().stream())
+                .filter(channel -> key.contains(channel.getName()))
+                .forEach(channel -> items.get(0).add(channel));
     }
 
     public int[] find(List<Group> items) {
