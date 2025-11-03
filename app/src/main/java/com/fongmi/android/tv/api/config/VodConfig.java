@@ -126,6 +126,7 @@ public class VodConfig {
             String json = Decoder.getJson(UrlUtil.convert(config.getUrl()));
             JsonObject object = Json.parse(json).getAsJsonObject();
             checkJson(object, callback);
+            config.update();
         } catch (Throwable e) {
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
             else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
@@ -158,11 +159,9 @@ public class VodConfig {
             initSite(object);
             initParse(object);
             initOther(object);
-            if (loadLive && !Json.isEmpty(object, "lives")) initLive(object);
-            String notice = Json.safeString(object, "notice");
             config.logo(Json.safeString(object, "logo"));
-            config.json(object.toString()).update();
-            if (future.isCancelled()) return;
+            String notice = Json.safeString(object, "notice");
+            if (loadLive && !Json.isEmpty(object, "lives")) initLive(object);
             App.post(() -> callback.success(notice));
             App.post(callback::success);
         } catch (Throwable e) {
@@ -210,7 +209,7 @@ public class VodConfig {
     private void initLive(JsonObject object) {
         Config temp = Config.find(config, 1).save();
         boolean sync = LiveConfig.get().needSync(config.getUrl());
-        if (sync) LiveConfig.get().config(temp).parse(object);
+        if (sync) LiveConfig.get().config(temp.update()).parse(object);
     }
 
     public List<Site> getSites() {
@@ -337,8 +336,8 @@ public class VodConfig {
         home = site;
         home.setActivated(true);
         config.home(home.getKey());
-        getSites().forEach(item -> item.setActivated(home));
         if (save) config.save();
+        getSites().forEach(item -> item.setActivated(home));
     }
 
     private void setWall(String wall) {

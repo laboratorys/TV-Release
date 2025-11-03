@@ -125,6 +125,7 @@ public class LiveConfig {
             String text = Decoder.getJson(UrlUtil.convert(config.getUrl()));
             if (!Json.isObj(text)) clear().parseText(text, callback);
             else checkJson(Json.parse(text).getAsJsonObject(), callback);
+            config.update();
         } catch (Throwable e) {
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
             else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
@@ -136,7 +137,7 @@ public class LiveConfig {
         Live live = new Live(parseName(config.getUrl()), config.getUrl()).sync();
         lives = new ArrayList<>(List.of(live));
         LiveParser.text(live, text);
-        setHome(live, true);
+        setHome(live, false);
         App.post(callback::success);
     }
 
@@ -186,14 +187,14 @@ public class LiveConfig {
         setLives(Json.safeListElement(object, "lives").stream().map(element -> Live.objectFrom(element, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
         Map<String, Live> items = Live.findAll().stream().collect(Collectors.toMap(Live::getName, Function.identity()));
         for (Live live : getLives()) {
-            if (live.getName().equals(config.getHome())) setHome(live, true);
+            if (live.getName().equals(config.getHome())) setHome(live, false);
             Live item = items.get(live.getName());
             if (item != null) live.sync(item);
         }
     }
 
     private void initOther(JsonObject object) {
-        if (home == null) setHome(lives.isEmpty() ? new Live() : lives.get(0), true);
+        if (home == null) setHome(lives.isEmpty() ? new Live() : lives.get(0), false);
         setHeaders(Header.arrayFrom(object.getAsJsonArray("headers")));
         setProxy(Proxy.arrayFrom(object.getAsJsonArray("proxy")));
         setRules(Rule.arrayFrom(object.getAsJsonArray("rules")));
@@ -301,16 +302,16 @@ public class LiveConfig {
     }
 
     public void setHome(Live home) {
-        setHome(home, false);
+        setHome(home, true);
     }
 
-    private void setHome(Live live, boolean check) {
+    private void setHome(Live live, boolean save) {
         home = live;
         home.setActivated(true);
         config.home(home.getName());
-        if (!check) config.update();
+        if (save) config.save();
         getLives().forEach(item -> item.setActivated(home));
         if (App.activity() != null && App.activity() instanceof LiveActivity) return;
-        if (check) if (home.isBoot() || Setting.isBootLive()) App.post(this::bootLive);
+        if (!save && (home.isBoot() || Setting.isBootLive())) App.post(this::bootLive);
     }
 }
