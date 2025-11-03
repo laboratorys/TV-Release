@@ -256,6 +256,7 @@ public class SiteViewModel extends ViewModel {
 
     private void execute(MutableLiveData<Result> result, Callable<Result> callable) {
         if (future != null && !future.isDone()) future.cancel(true);
+        if (executor.isShutdown()) return;
         future = App.submit(callable);
         executor.execute(() -> {
             try {

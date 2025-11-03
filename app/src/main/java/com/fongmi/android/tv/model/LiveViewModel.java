@@ -139,6 +139,7 @@ public class LiveViewModel extends ViewModel {
         Future<?> oldFuture = futures.get(type);
         if (oldFuture != null && !oldFuture.isDone()) oldFuture.cancel(true);
         Future<T> newFuture = App.submit(callable);
+        if (executor.isShutdown()) return;
         futures.put(type, newFuture);
         executor.execute(() -> {
             try {
