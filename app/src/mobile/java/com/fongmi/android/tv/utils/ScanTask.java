@@ -6,10 +6,10 @@ import com.fongmi.android.tv.server.Server;
 import com.github.catvod.net.OkHttp;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -46,15 +46,13 @@ public class ScanTask {
     }
 
     private List<String> getUrl() {
-        Set<String> urls = new HashSet<>();
         String local = Server.get().getAddress();
         String base = local.substring(0, local.lastIndexOf(".") + 1);
-        for (int i = 1; i < 256; i++) urls.add(base + i + ":9978");
-        return new ArrayList<>(urls);
+        return IntStream.range(1, 256).mapToObj(i -> base + i + ":9978").collect(Collectors.toList());
     }
 
     private void findDevice(String url) {
-        if (url.contains(Server.get().getAddress())) return;
+        if (url.equals(Server.get().getAddress())) return;
         try (Response res = OkHttp.newCall(client, url.concat("/device"), "scan").execute()) {
             Device device = Device.objectFrom(res.body().string());
             if (device != null) App.post(() -> {

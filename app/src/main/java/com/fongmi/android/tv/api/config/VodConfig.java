@@ -174,7 +174,7 @@ public class VodConfig {
     private void initSite(JsonObject object) {
         String spider = Json.safeString(object, "spider");
         BaseLoader.get().parseJar(spider, true);
-        setSites(Json.safeListElement(object, "sites").stream().map(element -> Site.objectFrom(element, spider)).distinct().toList());
+        setSites(Json.safeListElement(object, "sites").stream().map(element -> Site.objectFrom(element, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
         Map<String, Site> items = Site.findAll().stream().collect(Collectors.toMap(Site::getKey, Function.identity()));
         for (Site site : getSites()) {
             if (site.getKey().equals(config.getHome())) setHome(site, false);
@@ -184,7 +184,7 @@ public class VodConfig {
     }
 
     private void initParse(JsonObject object) {
-        setParses(Json.safeListElement(object, "parses").stream().map(Parse::objectFrom).distinct().toList());
+        setParses(Json.safeListElement(object, "parses").stream().map(Parse::objectFrom).distinct().collect(Collectors.toCollection(ArrayList::new)));
         for (Parse parse : getParses()) {
             if (parse.getName().equals(config.getParse()) && parse.getType() > 1) {
                 setParse(parse, false);
