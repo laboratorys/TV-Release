@@ -50,10 +50,6 @@ public class Spider extends com.github.catvod.crawler.Spider {
         initializeJS();
     }
 
-    private void submit(Runnable runnable) {
-        executor.submit(runnable);
-    }
-
     private <T> Future<T> submit(Callable<T> callable) {
         return executor.submit(callable);
     }
@@ -138,11 +134,21 @@ public class Spider extends com.github.catvod.crawler.Spider {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        submit(() -> {
+        try {
+            releaseJS();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        } finally {
             executor.shutdownNow();
+        }
+    }
+
+    private void releaseJS() throws Exception {
+        submit(() -> {
             jsObject.release();
             ctx.destroy();
-        });
+            return null;
+        }).get();
     }
 
     private void initializeJS() throws Exception {
