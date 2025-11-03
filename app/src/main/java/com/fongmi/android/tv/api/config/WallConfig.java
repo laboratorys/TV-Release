@@ -27,9 +27,9 @@ import java.util.concurrent.Future;
 
 public class WallConfig {
 
-    private volatile Config config;
-    private volatile Future<?> future;
-    private volatile boolean sync;
+    private Config config;
+    private Future<?> future;
+    private boolean sync;
 
     private static class Loader {
         static volatile WallConfig INSTANCE = new WallConfig();

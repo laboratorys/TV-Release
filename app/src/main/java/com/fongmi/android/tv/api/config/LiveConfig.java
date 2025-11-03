@@ -2,7 +2,6 @@ package com.fongmi.android.tv.api.config;
 
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
@@ -26,24 +25,26 @@ import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class LiveConfig {
 
-    private volatile Live home;
-    private volatile Config config;
-    private volatile List<Live> lives;
-    private volatile List<Rule> rules;
-    private volatile List<String> ads;
-    private volatile Future<?> future;
-    private volatile boolean sync;
+    private Live home;
+    private Config config;
+    private List<Live> lives;
+    private List<Rule> rules;
+    private List<String> ads;
+    private Future<?> future;
+    private boolean sync;
 
     private static class Loader {
         static volatile LiveConfig INSTANCE = new LiveConfig();
@@ -179,18 +180,14 @@ public class LiveConfig {
     }
 
     private void initLive(JsonObject object) {
-        List<Live> lives = new ArrayList<>();
         String spider = Json.safeString(object, "spider");
         BaseLoader.get().parseJar(spider, false);
-        for (JsonElement element : Json.safeListElement(object, "lives")) {
-            Live live = Live.objectFrom(element, spider);
-            if (!lives.contains(live)) lives.add(live);
-        }
-        setLives(lives);
-        for (Live live : lives) {
-            if (live.getName().equals(config.getHome())) {
-                setHome(live, true);
-            }
+        setLives(Json.safeListElement(object, "lives").stream().map(element -> Live.objectFrom(element, spider)).distinct().toList());
+        Map<String, Live> items = Live.findAll().stream().collect(Collectors.toMap(Live::getName, Function.identity()));
+        for (Live live : getLives()) {
+            if (live.getName().equals(config.getHome())) setHome(live, true);
+            Live item = items.get(live.getName());
+            if (item != null) live.sync(item);
         }
     }
 

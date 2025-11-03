@@ -19,28 +19,30 @@ import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class VodConfig {
 
-    private volatile Site home;
-    private volatile String wall;
-    private volatile Parse parse;
-    private volatile Config config;
-    private volatile List<Doh> doh;
-    private volatile List<Rule> rules;
-    private volatile List<Site> sites;
-    private volatile List<String> ads;
-    private volatile List<String> flags;
-    private volatile List<Parse> parses;
-    private volatile Future<?> future;
-    private volatile boolean loadLive;
+    private Site home;
+    private String wall;
+    private Parse parse;
+    private Config config;
+    private List<Doh> doh;
+    private List<Rule> rules;
+    private List<Site> sites;
+    private List<String> ads;
+    private List<String> flags;
+    private List<Parse> parses;
+    private Future<?> future;
+    private boolean loadLive;
 
     private static class Loader {
         static volatile VodConfig INSTANCE = new VodConfig();
@@ -170,33 +172,25 @@ public class VodConfig {
     }
 
     private void initSite(JsonObject object) {
-        if (object.has("video")) {
-            initSite(object.getAsJsonObject("video"));
-            return;
-        }
-        List<Site> sites = new ArrayList<>();
         String spider = Json.safeString(object, "spider");
         BaseLoader.get().parseJar(spider, true);
-        for (JsonElement element : Json.safeListElement(object, "sites")) {
-            Site site = Site.objectFrom(element, spider);
-            if (!sites.contains(site)) sites.add(site);
-        }
-        setSites(sites);
-        for (Site site : sites) {
-            if (site.getKey().equals(config.getHome())) {
-                setHome(site);
-            }
+        setSites(Json.safeListElement(object, "sites").stream().map(element -> Site.objectFrom(element, spider)).distinct().toList());
+        Map<String, Site> items = Site.findAll().stream().collect(Collectors.toMap(Site::getKey, Function.identity()));
+        for (Site site : getSites()) {
+            if (site.getKey().equals(config.getHome())) setHome(site);
+            Site item = items.get(site.getKey());
+            if (item != null) site.sync(item);
         }
     }
 
     private void initParse(JsonObject object) {
-        List<Parse> parses = new ArrayList<>();
-        for (JsonElement element : Json.safeListElement(object, "parses")) {
-            Parse parse = Parse.objectFrom(element);
-            if (parse.getName().equals(config.getParse()) && parse.getType() > 1) setParse(parse);
-            if (!parses.contains(parse)) parses.add(parse);
+        setParses(Json.safeListElement(object, "parses").stream().map(Parse::objectFrom).distinct().toList());
+        for (Parse parse : getParses()) {
+            if (parse.getName().equals(config.getParse()) && parse.getType() > 1) {
+                setParse(parse);
+                break;
+            }
         }
-        setParses(parses);
     }
 
     private void initOther(JsonObject object) {

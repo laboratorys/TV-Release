@@ -17,6 +17,7 @@ import com.fongmi.android.tv.gson.ExtAdapter;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Json;
+import com.github.catvod.utils.Trans;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.JsonAdapter;
@@ -121,7 +122,7 @@ public class Live {
             if (live.getJar().isEmpty()) live.setJar(spider);
             live.setApi(UrlUtil.convert(live.getApi()));
             live.setExt(UrlUtil.convert(live.getExt()));
-            return live.sync();
+            return live.trans();
         } catch (Exception e) {
             return new Live();
         }
@@ -322,9 +323,19 @@ public class Live {
         return this;
     }
 
+    public Live trans() {
+        if (Trans.pass()) return this;
+        setName(Trans.s2t(getName()));
+        return this;
+    }
+
     public Live sync() {
         Live item = find(getName());
-        if (item == null) return this;
+        if (item != null) sync(item);
+        return this;
+    }
+
+    public Live sync(Live item) {
         setBoot(item.isBoot());
         setPass(item.isPass());
         setKeep(item.getKeep());
@@ -346,6 +357,10 @@ public class Live {
         if (!getOrigin().isEmpty()) headers.put(HttpHeaders.ORIGIN, getOrigin());
         if (!getReferer().isEmpty()) headers.put(HttpHeaders.REFERER, getReferer());
         return headers;
+    }
+
+    public static List<Live> findAll() {
+        return AppDatabase.get().getLiveDao().findAll();
     }
 
     public static Live find(String name) {
