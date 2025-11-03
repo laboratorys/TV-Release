@@ -119,7 +119,7 @@ public class CollectActivity extends BaseActivity {
         List<String> items = Setting.getKeyword().isEmpty() ? new ArrayList<>() : App.gson().fromJson(Setting.getKeyword(), new TypeToken<List<String>>() {}.getType());
         items.remove(getKeyword());
         items.add(0, getKeyword());
-        if (items.size() > 8) items.remove(8);
+        if (items.size() > 9) items.remove(9);
         Setting.putKeyword(App.gson().toJson(items));
     }
 
