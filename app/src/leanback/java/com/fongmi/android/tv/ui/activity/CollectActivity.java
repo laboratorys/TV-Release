@@ -42,6 +42,7 @@ public class CollectActivity extends BaseActivity {
     private ActivityCollectBinding mBinding;
     private ArrayObjectAdapter mAdapter;
     private SiteViewModel mViewModel;
+    private List<Site> mSites;
     private View mOldView;
 
     public static void start(Activity activity, String keyword) {
@@ -77,6 +78,7 @@ public class CollectActivity extends BaseActivity {
         setRecyclerView();
         setViewModel();
         saveKeyword();
+        setSites();
         setPager();
         search();
     }
@@ -121,22 +123,21 @@ public class CollectActivity extends BaseActivity {
         Setting.putKeyword(App.gson().toJson(items));
     }
 
+    private void setSites() {
+        mSites = VodConfig.get().getSites().stream().filter(Site::isSearchable).collect(Collectors.toList());
+    }
+
     private void setPager() {
         mBinding.pager.setAdapter(new PageAdapter(getSupportFragmentManager()));
     }
 
-    private List<Site> getSites() {
-        return VodConfig.get().getSites().stream().filter(Site::isSearchable).collect(Collectors.toList());
-    }
-
     private void search() {
         mViewModel.stopSearch();
-        List<Site> sites = getSites();
-        if (sites.isEmpty()) return;
+        if (mSites.isEmpty()) return;
         mAdapter.add(Collect.all());
         mBinding.pager.getAdapter().notifyDataSetChanged();
         mBinding.result.setText(getString(R.string.collect_result, getKeyword()));
-        mViewModel.searchContent(sites, getKeyword(), false);
+        mViewModel.searchContent(mSites, getKeyword(), false);
     }
 
     private void onChildSelected(@Nullable RecyclerView.ViewHolder child) {

@@ -41,7 +41,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     private SearchAdapter mSearchAdapter;
     private CustomScroller mScroller;
     private SiteViewModel mViewModel;
-    private List<Site> sites;
+    private List<Site> mSites;
 
     public static CollectFragment newInstance(String keyword) {
         Bundle args = new Bundle();
@@ -97,14 +97,14 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     private void setSites() {
-        sites = VodConfig.get().getSites().stream().filter(Site::isSearchable).collect(Collectors.toList());
+        mSites = VodConfig.get().getSites().stream().filter(Site::isSearchable).collect(Collectors.toList());
     }
 
     private void setWidth() {
         int width = 0;
         int space = ResUtil.dp2px(48);
         int maxWidth = ResUtil.getScreenWidth() / (getCount() + 1) - ResUtil.dp2px(40);
-        for (Site site : sites) width = Math.max(width, ResUtil.getTextWidth(site.getName(), 14));
+        for (Site site : mSites) width = Math.max(width, ResUtil.getTextWidth(site.getName(), 14));
         int contentWidth = width + space;
         int minWidth = ResUtil.dp2px(120);
         int finalWidth = Math.max(minWidth, Math.min(contentWidth, maxWidth));
@@ -115,7 +115,8 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
 
     private void search() {
         mViewModel.stopSearch();
-        if (!sites.isEmpty()) mCollectAdapter.setItems(List.of(Collect.all()), () -> mViewModel.searchContent(sites, getKeyword(), false));
+        if (mSites.isEmpty()) return;
+        mCollectAdapter.setItems(List.of(Collect.all()), () -> mViewModel.searchContent(mSites, getKeyword(), false));
     }
 
     private int getCount() {
