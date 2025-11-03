@@ -9,21 +9,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
 public class ScanTask {
 
+    private final List<Future<?>> future;
     private final OkHttpClient client;
-
-    private ExecutorService executor;
     private Listener listener;
 
     public ScanTask(Listener listener) {
         this.client = OkHttp.client(1000);
+        this.future = new ArrayList<>();
         this.listener = listener;
     }
 
@@ -36,29 +35,14 @@ public class ScanTask {
     }
 
     public void stop() {
-        if (executor != null) executor.shutdownNow();
+        future.forEach(f -> f.cancel(true));
         OkHttp.cancel(client, "scan");
-        executor = null;
+        future.clear();
         listener = null;
     }
 
-    private void init() {
-        if (executor != null) executor.shutdownNow();
-        executor = Executors.newFixedThreadPool(20);
-        OkHttp.cancel(client, "scan");
-    }
-
-    private void run(List<String> items) {
-        try {
-            init();
-            getDevice(items);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getDevice(List<String> urls) {
-        for (String url : urls) executor.execute(() -> findDevice(url));
+    private void run(List<String> urls) {
+        for (String url : urls) future.add(App.submitSearch(() -> findDevice(url)));
     }
 
     private List<String> getUrl() {

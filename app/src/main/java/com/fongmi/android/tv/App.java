@@ -36,6 +36,7 @@ import cat.ereza.customactivityoncrash.config.CaocConfig;
 
 public class App extends Application {
 
+    private final ExecutorService searchExecutor;
     private final ExecutorService executor;
     private final Handler handler;
     private static App instance;
@@ -46,10 +47,11 @@ public class App extends Application {
 
     public App() {
         instance = this;
-        executor = Executors.newFixedThreadPool(5);
-        handler = HandlerCompat.createAsync(Looper.getMainLooper());
-        time = System.currentTimeMillis();
         gson = new Gson();
+        time = System.currentTimeMillis();
+        executor = Executors.newFixedThreadPool(5);
+        searchExecutor = Executors.newFixedThreadPool(20);
+        handler = HandlerCompat.createAsync(Looper.getMainLooper());
     }
 
     public static App get() {
@@ -74,6 +76,10 @@ public class App extends Application {
 
     public static Future<?> submit(Runnable task) {
         return get().executor.submit(task);
+    }
+
+    public static Future<?> submitSearch(Runnable task) {
+        return get().searchExecutor.submit(task);
     }
 
     public static void execute(Runnable runnable) {

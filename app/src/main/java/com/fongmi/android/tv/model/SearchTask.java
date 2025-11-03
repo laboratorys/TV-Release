@@ -18,7 +18,15 @@ public class SearchTask implements Callable<Result> {
     private final String page;
     private final Site site;
 
-    public SearchTask(SiteViewModel model, Site site, String keyword, boolean quick, String page) {
+    public static SearchTask create(SiteViewModel model, Site site, String keyword, boolean quick) {
+        return new SearchTask(model, site, keyword, quick, "1");
+    }
+
+    public static SearchTask create(SiteViewModel model, Site site, String keyword, boolean quick, String page) {
+        return new SearchTask(model, site, keyword, quick, page);
+    }
+
+    private SearchTask(SiteViewModel model, Site site, String keyword, boolean quick, String page) {
         this.keyword = Trans.t2s(keyword);
         this.model = model;
         this.quick = quick;

@@ -213,11 +213,11 @@ public class SiteViewModel extends ViewModel {
     }
 
     public void searchContent(List<Site> sites, String keyword, boolean quick) {
-        //sites.forEach(site -> searchFuture.add(new SearchTask(this, site, keyword, quick, "1")));
+        sites.forEach(site -> searchFuture.add(App.submitSearch(SearchTask.create(this, site, keyword, quick).run())));
     }
 
     public void searchContent(Site site, String keyword, boolean quick, String page) {
-        execute(result, new SearchTask(this, site, keyword, quick, page));
+        execute(result, SearchTask.create(this, site, keyword, quick, page));
     }
 
     public void action(String key, String action) {
