@@ -35,10 +35,10 @@ public class ScanTask {
     }
 
     public void stop() {
-        future.forEach(f -> f.cancel(true));
-        OkHttp.cancel(client, "scan");
-        future.clear();
         listener = null;
+        OkHttp.cancel(client, "scan");
+        future.forEach(f -> f.cancel(true));
+        future.clear();
     }
 
     private void run(List<String> urls) {
