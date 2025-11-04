@@ -44,6 +44,7 @@ public class App extends Application {
     private Activity activity;
     private final Gson gson;
     private final long time;
+    private boolean sniff;
     private Hook hook;
 
     public App() {
@@ -102,6 +103,10 @@ public class App extends Application {
 
     public static void removeCallbacks(Runnable... runnable) {
         for (Runnable r : runnable) get().handler.removeCallbacks(r);
+    }
+
+    public void setSniff(boolean sniff) {
+        this.sniff = sniff;
     }
 
     public void setHook(Hook hook) {
@@ -175,6 +180,6 @@ public class App extends Application {
 
     @Override
     public String getPackageName() {
-        return hook != null ? hook.getPackageName() : Chromium.find() ? Chromium.PKG : getBaseContext().getPackageName();
+        return hook != null ? hook.getPackageName() : sniff && Chromium.find() ? Chromium.PKG : getBaseContext().getPackageName();
     }
 }
