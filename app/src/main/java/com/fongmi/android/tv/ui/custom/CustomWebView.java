@@ -40,7 +40,7 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
 
     private static final String TAG = CustomWebView.class.getSimpleName();
 
-    private static final Pattern PLAYER = Pattern.compile("player/.*[?&][^=&]+=https?://");
+    private static final Pattern PLAYER = Pattern.compile("player.*https?://");
     private static final String BLANK = "about:blank";
     private static final int MAX_URLS = 5;
 
