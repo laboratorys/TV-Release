@@ -93,7 +93,7 @@ public class Source {
 
     public void stop() {
         if (extractors == null) return;
-        App.execute(() -> extractors.forEach(Extractor::stop));
+        extractors.forEach(Extractor::stop);
     }
 
     public void exit() {

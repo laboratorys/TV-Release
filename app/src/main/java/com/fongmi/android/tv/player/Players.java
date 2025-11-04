@@ -401,9 +401,9 @@ public class Players implements Player.Listener, ParseCallback {
         stopParse();
         releasePlayer();
         session.release();
-        Source.get().stop();
         removeTimeoutCheck();
         Server.get().setPlayer(null);
+        App.execute(() -> Source.get().stop());
     }
 
     private void releasePlayer() {

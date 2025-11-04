@@ -23,8 +23,8 @@ import java.util.concurrent.CountDownLatch;
 public class TVBus implements Source.Extractor, Listener {
 
     private CountDownLatch latch;
-    private volatile String hls;
     private TVCore tvcore;
+    private String hls;
     private Core core;
 
     @Override
