@@ -5,7 +5,7 @@ import android.os.Looper;
 import java.util.Arrays;
 import java.util.Set;
 
-public class Chrome {
+public class Chromium {
 
     public static final String PKG = "com.android.chrome";
 
@@ -20,7 +20,7 @@ public class Chrome {
             "<init>"
     );
 
-    public static boolean hook() {
+    public static boolean find() {
         try {
             return Arrays.stream(Looper.getMainLooper().getThread().getStackTrace()).anyMatch(trace -> CHROMIUM_CLASS_NAMES.contains(trace.getClassName().toLowerCase()) && CHROMIUM_METHOD_NAMES.contains(trace.getMethodName().toLowerCase()));
         } catch (Exception e) {

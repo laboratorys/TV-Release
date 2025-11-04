@@ -15,6 +15,7 @@ import androidx.core.os.HandlerCompat;
 import com.fongmi.android.tv.event.EventIndex;
 import com.fongmi.android.tv.ui.activity.CrashActivity;
 import com.fongmi.android.tv.utils.Notify;
+import com.fongmi.hook.Chromium;
 import com.fongmi.hook.Hook;
 import com.github.catvod.Init;
 import com.github.catvod.bean.Doh;
@@ -174,6 +175,7 @@ public class App extends Application {
 
     @Override
     public String getPackageName() {
+        if (Chromium.find()) return Chromium.PKG;
         return hook != null ? hook.getPackageName() : getBaseContext().getPackageName();
     }
 }
