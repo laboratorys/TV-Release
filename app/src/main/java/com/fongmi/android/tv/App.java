@@ -175,7 +175,6 @@ public class App extends Application {
 
     @Override
     public String getPackageName() {
-        if (Chromium.find()) return Chromium.PKG;
-        return hook != null ? hook.getPackageName() : getBaseContext().getPackageName();
+        return hook != null ? hook.getPackageName() : Chromium.find() ? Chromium.PKG : getBaseContext().getPackageName();
     }
 }
