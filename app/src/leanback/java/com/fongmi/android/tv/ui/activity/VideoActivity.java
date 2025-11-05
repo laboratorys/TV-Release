@@ -1283,11 +1283,11 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private View getFocus1() {
-        return mFocus1 == null ? mBinding.video : mFocus1;
+        return mFocus1 == null || mFocus1.getVisibility() != View.VISIBLE ? mBinding.video : mFocus1;
     }
 
     private View getFocus2() {
-        return mFocus2 == null || mFocus2 == mBinding.control.opening || mFocus2 == mBinding.control.ending ? mBinding.control.next : mFocus2;
+        return mFocus2 == null || mFocus2.getVisibility() != View.VISIBLE || mFocus2 == mBinding.control.opening || mFocus2 == mBinding.control.ending ? mBinding.control.next : mFocus2;
     }
 
     @Override

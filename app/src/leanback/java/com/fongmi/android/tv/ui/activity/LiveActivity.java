@@ -199,7 +199,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         setScale(Setting.getLiveScale());
         ExoUtil.setSubtitleView(mBinding.exo);
         mPlayers.setTag(tag = UUID.randomUUID().toString());
-        findViewById(R.id.timeBar).setNextFocusUpId(R.id.home);
+        findViewById(R.id.timeBar).setNextFocusUpId(R.id.config);
         mBinding.control.invert.setActivated(Setting.isInvert());
         mBinding.control.across.setActivated(Setting.isAcross());
         mBinding.control.change.setActivated(Setting.isChange());
@@ -921,7 +921,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private View getFocus2() {
-        return mFocus2 == null ? mBinding.control.config : mFocus2;
+        return mFocus2 == null || mFocus2.getVisibility() != View.VISIBLE ? mBinding.control.config : mFocus2;
     }
 
     @Override
