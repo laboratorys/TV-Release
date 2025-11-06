@@ -11,7 +11,7 @@ public class Loader {
     private final PyObject app;
 
     public Loader() {
-        this.app = Python.getInstance().getModule("app");
+        app = Python.getInstance().getModule("app");
     }
 
     @Keep
