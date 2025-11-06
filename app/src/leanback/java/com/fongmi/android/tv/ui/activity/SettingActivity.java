@@ -284,7 +284,6 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
         OkHttp.dns().setDoh(doh);
         Setting.putDoh(doh.toString());
         mBinding.dohText.setText(doh.getName());
-        VodConfig.load(Config.vod(), getCallback(0));
     }
 
     private void onCache(View view) {
