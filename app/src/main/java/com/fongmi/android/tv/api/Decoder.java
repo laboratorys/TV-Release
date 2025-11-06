@@ -23,7 +23,7 @@ public class Decoder {
     private static final Pattern JS_URI = Pattern.compile("\"(\\.|\\.\\.)/(.?|.+?)\\.js\\?(.?|.+?)\"");
 
     public static String getJson(String url) throws Exception {
-        try (Response res = OkHttp.newCall(url).execute()) {
+        try (Response res = OkHttp.newCall(url, "config").execute()) {
             HttpUrl httpUrl = res.request().url();
             int size = HttpUrl.parse(url).querySize();
             if (httpUrl.querySize() == size) url = httpUrl.toString();

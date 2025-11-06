@@ -29,6 +29,7 @@ import com.github.catvod.utils.Json;
 import com.google.gson.JsonObject;
 
 import java.io.File;
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -111,6 +112,10 @@ public class LiveConfig {
         return this;
     }
 
+    private boolean isCanceled(Throwable e) {
+        return "Canceled".equals(e.getMessage()) || e instanceof InterruptedException || e instanceof InterruptedIOException;
+    }
+
     public void load() {
         load(new Callback());
     }
@@ -124,11 +129,13 @@ public class LiveConfig {
     private void loadConfig(Callback callback) {
         try {
             Server.get().start();
+            OkHttp.cancel("config");
             String text = Decoder.getJson(UrlUtil.convert(config.getUrl()));
             if (!Json.isObj(text)) clear().parseText(text, callback);
             else checkJson(Json.parse(text).getAsJsonObject(), callback);
             config.update();
         } catch (Throwable e) {
+            if (isCanceled(e)) return;
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
             else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
             e.printStackTrace();

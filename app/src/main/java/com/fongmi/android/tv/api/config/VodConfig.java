@@ -22,6 +22,7 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
 import com.google.gson.JsonObject;
 
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -116,6 +117,10 @@ public class VodConfig {
         return this;
     }
 
+    private boolean isCanceled(Throwable e) {
+        return "Canceled".equals(e.getMessage()) || e instanceof InterruptedException || e instanceof InterruptedIOException;
+    }
+
     public void load(Callback callback) {
         if (future != null && !future.isDone()) future.cancel(true);
         future = App.submit(() -> loadConfig(callback));
@@ -125,11 +130,12 @@ public class VodConfig {
     private void loadConfig(Callback callback) {
         try {
             Server.get().start();
+            OkHttp.cancel("config");
             String json = Decoder.getJson(UrlUtil.convert(config.getUrl()));
-            JsonObject object = Json.parse(json).getAsJsonObject();
-            checkJson(object, callback);
+            checkJson(Json.parse(json).getAsJsonObject(), callback);
             config.update();
         } catch (Throwable e) {
+            if (isCanceled(e)) return;
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
             else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
             e.printStackTrace();
