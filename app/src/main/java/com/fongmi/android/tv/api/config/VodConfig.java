@@ -178,9 +178,9 @@ public class VodConfig {
         setSites(Json.safeListElement(object, "sites").stream().map(element -> Site.objectFrom(element, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
         Map<String, Site> items = Site.findAll().stream().collect(Collectors.toMap(Site::getKey, Function.identity()));
         for (Site site : getSites()) {
-            if (site.getKey().equals(config.getHome())) setHome(site, false);
             Site item = items.get(site.getKey());
             if (item != null) site.sync(item);
+            if (site.getKey().equals(config.getHome())) setHome(site, false);
         }
     }
 
