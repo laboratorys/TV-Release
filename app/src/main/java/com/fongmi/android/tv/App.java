@@ -42,6 +42,14 @@ public class App extends Application implements Application.ActivityLifecycleCal
         handler = HandlerCompat.createAsync(Looper.getMainLooper());
     }
 
+    public void setSniff(boolean sniff) {
+        this.sniff = sniff;
+    }
+
+    public void setHook(Hook hook) {
+        this.hook = hook;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -61,12 +69,12 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
-        if (activity != activity()) setActivity(activity);
+        if (activity != activity()) this.activity = activity;
     }
 
     @Override
     public void onActivityPaused(@NonNull Activity activity) {
-        if (activity == activity()) setActivity(null);
+        if (activity == activity()) this.activity = null;
     }
 
     @Override
@@ -136,17 +144,5 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     public static void removeCallbacks(Runnable... runnable) {
         for (Runnable r : runnable) get().handler.removeCallbacks(r);
-    }
-
-    public void setSniff(boolean sniff) {
-        this.sniff = sniff;
-    }
-
-    public void setHook(Hook hook) {
-        this.hook = hook;
-    }
-
-    private void setActivity(Activity activity) {
-        this.activity = activity;
     }
 }
