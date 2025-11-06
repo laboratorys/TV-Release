@@ -57,7 +57,7 @@ public class WallConfig {
 
     public WallConfig config(Config config) {
         this.config = config;
-        if (config.getUrl() == null) return this;
+        if (config.isEmpty()) return this;
         this.sync = config.getUrl().equals(VodConfig.get().getWall());
         return this;
     }

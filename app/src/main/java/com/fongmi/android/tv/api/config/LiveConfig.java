@@ -98,7 +98,7 @@ public class LiveConfig {
 
     public LiveConfig config(Config config) {
         this.config = config;
-        if (config.getUrl() == null) return this;
+        if (config.isEmpty()) return this;
         this.sync = config.getUrl().equals(VodConfig.getUrl());
         return this;
     }
