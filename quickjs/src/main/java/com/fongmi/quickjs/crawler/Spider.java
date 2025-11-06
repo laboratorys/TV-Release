@@ -42,12 +42,11 @@ public class Spider extends com.github.catvod.crawler.Spider {
     private final String api;
     private boolean cat;
 
-    public Spider(String key, String api, DexClassLoader dex) throws Exception {
+    public Spider(String key, String api, DexClassLoader dex) {
         this.executor = Executors.newSingleThreadExecutor();
         this.key = key;
         this.api = api;
         this.dex = dex;
-        initializeJS();
     }
 
     private <T> Future<T> submit(Callable<T> callable) {
@@ -60,6 +59,7 @@ public class Spider extends com.github.catvod.crawler.Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
+        initializeJS();
         if (cat) call("init", submit(() -> cfg(extend)).get());
         else call("init", Json.isObj(extend) ? ctx.parse(extend) : extend);
     }
