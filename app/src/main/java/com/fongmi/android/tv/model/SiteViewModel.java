@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -261,12 +262,9 @@ public class SiteViewModel extends ViewModel {
         executor.execute(() -> {
             try {
                 Result taskResult = future.get(Constant.TIMEOUT_VOD, TimeUnit.MILLISECONDS);
-                if (future.isCancelled()) return;
                 result.postValue(taskResult);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
             } catch (Throwable e) {
-                if (future.isCancelled()) return;
+                if (e instanceof CancellationException) return;
                 if (e.getCause() instanceof ExtractException) result.postValue(Result.error(e.getCause().getMessage()));
                 else result.postValue(Result.empty());
                 e.printStackTrace();

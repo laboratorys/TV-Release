@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -144,15 +145,12 @@ public class LiveViewModel extends ViewModel {
         executor.execute(() -> {
             try {
                 T result = newFuture.get(type.timeout, TimeUnit.MILLISECONDS);
-                if (newFuture.isCancelled()) return;
                 if (type == TaskType.EPG) epg.postValue((Epg) result);
                 else if (type == TaskType.LIVE) live.postValue((Live) result);
                 else if (type == TaskType.XML) xml.postValue((Boolean) result);
                 else if (type == TaskType.URL) url.postValue((Channel) result);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
             } catch (Throwable e) {
-                if (newFuture.isCancelled()) return;
+                if (e instanceof CancellationException) return;
                 if (e.getCause() instanceof ExtractException) url.postValue(Channel.error(e.getCause().getMessage()));
                 else if (type == TaskType.URL) url.postValue(new Channel());
                 else if (type == TaskType.LIVE) live.postValue(new Live());
