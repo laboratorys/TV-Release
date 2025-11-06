@@ -15,7 +15,6 @@ import com.orhanobut.logger.PrettyFormatStrategy;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.Collections;
 import java.util.List;
 
 import cat.ereza.customactivityoncrash.config.CaocConfig;
@@ -35,6 +34,6 @@ public class Startup implements Initializer<Void> {
     @NonNull
     @Override
     public List<Class<? extends Initializer<?>>> dependencies() {
-        return Collections.emptyList();
+        return List.of(com.github.catvod.Startup.class);
     }
 }
