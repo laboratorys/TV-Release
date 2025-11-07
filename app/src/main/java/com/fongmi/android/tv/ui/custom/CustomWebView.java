@@ -26,6 +26,7 @@ import com.fongmi.android.tv.impl.ParseCallback;
 import com.fongmi.android.tv.ui.dialog.WebDialog;
 import com.fongmi.android.tv.utils.Sniffer;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.utils.Util;
 import com.google.common.net.HttpHeaders;
 
@@ -87,6 +88,7 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
     }
 
     public CustomWebView start(String key, String from, Map<String, String> headers, String url, String click, ParseCallback callback, boolean detect) {
+        SpiderDebug.log(TAG, "key=%s, from=%s, click=%s, url=%s, headers=%s", key, from, click, url, headers);
         App.post(timer, Constant.TIMEOUT_PARSE_WEB);
         this.callback = callback;
         this.detect = detect;
@@ -207,6 +209,7 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
 
     private void onParseSuccess(Map<String, String> headers, String url) {
         if (callback != null) callback.onParseSuccess(headers, url, from);
+        SpiderDebug.log(TAG, "url=%s, headers=%s", url, headers);
         App.post(() -> stop(false));
         callback = null;
     }
