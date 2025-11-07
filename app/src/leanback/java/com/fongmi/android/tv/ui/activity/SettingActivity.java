@@ -269,9 +269,9 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
     }
 
     private void setSize(View view) {
-        int index = Setting.getSize();
-        Setting.putSize(index = index == size.length - 1 ? 0 : ++index);
+        int index = (Setting.getSize() + 1) % size.length;
         mBinding.sizeText.setText(size[index]);
+        Setting.putSize(index);
         RefreshEvent.size();
     }
 

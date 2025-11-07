@@ -884,14 +884,14 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     private void prevLine() {
         if (mChannel == null || mChannel.isOnly()) return;
-        mChannel.prevLine();
+        mChannel.switchLine(false);
         showInfo();
         fetch();
     }
 
     private void nextLine(boolean show) {
         if (mChannel == null || mChannel.isOnly()) return;
-        mChannel.nextLine();
+        mChannel.switchLine(true);
         if (show) showInfo();
         else setInfo();
         fetch();

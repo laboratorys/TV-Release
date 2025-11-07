@@ -922,7 +922,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
 
     private void nextLine(boolean show) {
         if (mChannel == null || mChannel.isOnly()) return;
-        mChannel.nextLine();
+        mChannel.switchLine(true);
         if (show) showInfo();
         else setInfo();
         fetch();

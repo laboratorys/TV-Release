@@ -283,12 +283,12 @@ public class Channel {
         ImgUtil.load(getName(), getLogo(), view, false);
     }
 
-    public void nextLine() {
-        setLine(getLine() < getUrls().size() - 1 ? getLine() + 1 : 0);
-    }
-
-    public void prevLine() {
-        setLine(getLine() > 0 ? getLine() - 1 : getUrls().size() - 1);
+    public void switchLine(boolean next) {
+        List<?> urls = getUrls();
+        if (urls.isEmpty()) return;
+        int size = urls.size();
+        int step = next ? 1 : -1;
+        setLine((getLine() + step + size) % size);
     }
 
     public String getCurrent() {

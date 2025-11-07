@@ -2,6 +2,7 @@ package com.fongmi.android.tv;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import androidx.core.os.HandlerCompat;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.hook.Chromium;
 import com.fongmi.hook.Hook;
+import com.github.catvod.Init;
 import com.google.gson.Gson;
 
 import java.util.concurrent.Callable;
@@ -48,6 +50,12 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     public void setHook(Hook hook) {
         this.hook = hook;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        Init.set(base);
     }
 
     @Override
