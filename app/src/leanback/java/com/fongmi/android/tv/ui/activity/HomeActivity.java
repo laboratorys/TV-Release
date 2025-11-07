@@ -82,7 +82,6 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     private ArrayObjectAdapter mAdapter;
     private HistoryPresenter mPresenter;
     private SiteViewModel mViewModel;
-    private boolean loading;
     private Result mResult;
     private Clock mClock;
 
@@ -188,11 +187,9 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void initConfig() {
-        if (isLoading()) return;
         WallConfig.get().init();
         LiveConfig.get().init().load();
         VodConfig.get().init().load(getCallback());
-        setLoading(true);
     }
 
     private Callback getCallback() {
@@ -204,24 +201,25 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
             @Override
             public void success() {
-                mBinding.progressLayout.showContent();
-                checkAction(getIntent());
+                showContent();
                 getHistory();
                 getVideo();
-                setFocus();
-                setFunc();
                 setLogo();
             }
 
             @Override
             public void error(String msg) {
-                mBinding.progressLayout.showContent();
-                checkAction(getIntent());
                 Notify.show(msg);
-                setFocus();
-                setFunc();
+                showContent();
             }
         };
+    }
+
+    private void showContent() {
+        mBinding.progressLayout.showContent();
+        checkAction(getIntent());
+        setFocus();
+        setFunc();
     }
 
     private void loadLive(String url) {
@@ -234,7 +232,6 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void setFocus() {
-        setLoading(false);
         mBinding.title.setSelected(true);
         App.post(() -> mBinding.title.setFocusable(true), 500);
         if (!mBinding.title.hasFocus()) mBinding.recycler.requestFocus();
@@ -310,14 +307,6 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     private int getRecommendIndex() {
         return mAdapter.indexOf(R.string.home_recommend) + 1;
-    }
-
-    private boolean isLoading() {
-        return loading;
-    }
-
-    private void setLoading(boolean loading) {
-        this.loading = loading;
     }
 
     private void setLogo() {
@@ -481,7 +470,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     @Override
     protected void onBackInvoked() {
         if (mBinding.progressLayout.isProgress()) {
-            mBinding.progressLayout.showContent();
+            showContent();
         } else if (mPresenter.isDelete()) {
             setHistoryDelete(false);
         } else if (mBinding.recycler.getSelectedPosition() != 0) {
