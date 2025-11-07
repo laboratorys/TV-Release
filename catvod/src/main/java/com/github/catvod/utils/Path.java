@@ -223,7 +223,10 @@ public class Path {
             if (parent != null) mkdir(parent);
             if (file.exists()) clear(file);
             if (file.createNewFile()) Logger.t(TAG).d("Create:" + file);
-            if (file.setWritable(true)) Shell.exec("chmod 777 " + file);
+            file.setReadable(true);
+            file.setWritable(true);
+            file.setExecutable(true);
+            Shell.exec("chmod 777 " + file);
             return file;
         } catch (IOException e) {
             e.printStackTrace();
