@@ -97,7 +97,6 @@ public class WallConfig {
     }
 
     private void download() throws Throwable {
-        Path.clear(FileUtil.getWall(0));
         File file = FileUtil.getWall(0);
         Path.clear(FileUtil.getWallCache());
         if (getUrl().startsWith("file")) Path.copy(Path.local(getUrl()), file);
