@@ -158,6 +158,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         CustomSelector selector = new CustomSelector();
         selector.addPresenter(Integer.class, new HeaderPresenter());
         selector.addPresenter(String.class, new ProgressPresenter());
+        selector.addPresenter(Vod.class, new VodPresenter(this, Style.list()));
         selector.addPresenter(ListRow.class, new CustomRowPresenter(16), VodPresenter.class);
         selector.addPresenter(ListRow.class, new CustomRowPresenter(16), FuncPresenter.class);
         selector.addPresenter(ListRow.class, new CustomRowPresenter(16, FocusHighlight.ZOOM_FACTOR_SMALL, HorizontalGridView.FOCUS_SCROLL_ALIGNED), HistoryPresenter.class);
@@ -252,9 +253,14 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     private void addVideo(Result result) {
         Style style = result.getStyle(getSite().getStyle());
-        for (List<Vod> items : Lists.partition(result.getList(), Product.getColumn(style))) {
+        if (style.isList()) mAdapter.addAll(mAdapter.size(), result.getList());
+        else addGrid(result.getList(), style);
+    }
+
+    private void addGrid(List<Vod> items, Style style) {
+        for (List<Vod> part : Lists.partition(items, Product.getColumn(style))) {
             ArrayObjectAdapter adapter = new ArrayObjectAdapter(new VodPresenter(this, style));
-            adapter.setItems(items, new BaseDiffCallback<Vod>());
+            adapter.setItems(part, new BaseDiffCallback<Vod>());
             mAdapter.add(new ListRow(adapter));
         }
     }
