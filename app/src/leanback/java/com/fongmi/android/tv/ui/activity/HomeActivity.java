@@ -85,7 +85,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     private Result mResult;
     private Clock mClock;
 
-    private Site getSite() {
+    private Site getHome() {
         return VodConfig.get().getHome();
     }
 
@@ -181,7 +181,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void setTitle() {
-        List<String> items = Arrays.asList(getSite().getName(), getConfig().getName(), getString(R.string.app_name));
+        List<String> items = Arrays.asList(getHome().getName(), getConfig().getName(), getString(R.string.app_name));
         Optional<String> optional = items.stream().filter(s -> !TextUtils.isEmpty(s)).findFirst();
         optional.ifPresent(s -> mBinding.title.setText(s));
     }
@@ -249,7 +249,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void addVideo(Result result) {
-        Style style = result.getStyle(getSite().getStyle());
+        Style style = result.getStyle(getHome().getStyle());
         if (style.isList()) mAdapter.addAll(mAdapter.size(), result.getList());
         else addGrid(result.getList(), style);
     }
@@ -400,9 +400,9 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     public void onItemClick(Vod item) {
-        if (item.isAction()) mViewModel.action(getSite().getKey(), item.getAction());
-        else if (getSite().isIndex()) CollectActivity.start(this, item.getVodName());
-        else VideoActivity.start(this, getSite().getKey(), item.getVodId(), item.getVodName(), item.getVodPic());
+        if (item.isAction()) mViewModel.action(getHome().getKey(), item.getAction());
+        else if (getHome().isIndex()) CollectActivity.start(this, item.getVodName());
+        else VideoActivity.start(this, getHome().getKey(), item.getVodId(), item.getVodName(), item.getVodPic());
     }
 
     @Override
