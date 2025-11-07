@@ -69,6 +69,7 @@
 
         <activity
             android:name=".ui.activity.CrashActivity"
+            android:theme="@style/Theme.Crash"
             android:process=":error_activity" />
 
         <receiver
