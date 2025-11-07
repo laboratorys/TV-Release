@@ -156,17 +156,16 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
         mBinding.swipeLayout.setRefreshing(false);
         if (size > 0) addVideo(result);
         mScroller.endLoading(result);
-        checkMore(size);
     }
 
     private void addVideo(Result result) {
         Style style = result.getList().get(0).getStyle(getStyle());
         if (!style.equals(mAdapter.getStyle())) setStyle(style);
-        mAdapter.addAll(result.getList());
+        mAdapter.addAll(result.getList(), this::checkMore);
     }
 
-    private void checkMore(int count) {
-        if (!isVisible() || mScroller.isDisable() || count == 0 || mBinding.recycler.canScrollVertically(1) || mBinding.recycler.getScrollState() > 0 || isHome()) return;
+    private void checkMore() {
+        if (isHidden() || mScroller.isDisable() || mBinding.recycler.canScrollVertically(1) || mBinding.recycler.getScrollState() != 0 || isHome()) return;
         getVideo(getTypeId(), String.valueOf(mScroller.addPage()));
     }
 
