@@ -30,7 +30,6 @@ import com.github.catvod.utils.Shell;
 import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
@@ -109,27 +108,6 @@ public class Util {
         } catch (Exception e) {
             return -1;
         }
-    }
-
-    public static List<String> getPart(String text) {
-        List<String> items = new ArrayList<>();
-        String[] splits = new String[0];
-        items.add(text);
-        if (text.contains("：")) {
-            splits = text.split("：");
-        } else if (text.contains("第") && text.contains("季")) {
-            splits = Arrays.stream(text.split("第")).filter(s -> !s.isEmpty() && !s.contains("季")).toArray(String[]::new);
-        } else if (text.contains("(")) {
-            splits = new String[]{text.split("\\(")[0]};
-        } else if (text.contains(" ")) {
-            splits = text.split(" ");
-        }
-        for (String s : splits) {
-            s = s.trim();
-            if (s.contains(" ")) s = s.split(" ")[0].trim();
-            if (!s.isEmpty()) items.add(s);
-        }
-        return items;
     }
 
     public static String clean(String text) {
