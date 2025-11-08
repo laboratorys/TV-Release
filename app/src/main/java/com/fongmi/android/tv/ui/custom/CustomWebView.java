@@ -61,7 +61,7 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
         return new CustomWebView(context);
     }
 
-    public CustomWebView(@NonNull Context context) {
+    private CustomWebView(@NonNull Context context) {
         super(context);
         initSettings();
     }
@@ -121,7 +121,7 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
                 String host = request.getUrl().getHost();
                 if (TextUtils.isEmpty(host) || isAd(host)) return empty;
                 Map<String, String> headers = request.getRequestHeaders();
-                if (url.contains("/cdn-cgi/challenge-platform/")) App.post(() -> showDialog());
+                if (url.contains("/cdn-cgi/challenge-platform/")) post(() -> showDialog());
                 if (detect && PLAYER.matcher(url).find() && addUrl(url)) onParseAdd(headers, url);
                 else if (isVideoFormat(url)) onParseSuccess(headers, url);
                 return super.shouldInterceptRequest(view, request);
@@ -204,13 +204,13 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
     }
 
     private void onParseAdd(Map<String, String> headers, String url) {
-        App.post(() -> CustomWebView.create(App.get()).start(key, from, headers, url, click, callback, false));
+        post(() -> CustomWebView.create(App.get()).start(key, from, headers, url, click, callback, false));
     }
 
     private void onParseSuccess(Map<String, String> headers, String url) {
         if (callback != null) callback.onParseSuccess(headers, url, from);
         SpiderDebug.log(TAG, "url=%s, headers=%s", url, headers);
-        App.post(() -> stop(false));
+        post(() -> stop(false));
         callback = null;
     }
 

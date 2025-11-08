@@ -31,6 +31,7 @@ import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 
@@ -179,9 +180,16 @@ public class Util {
         return text;
     }
 
-    public static long format(String src, List<SimpleDateFormat> formats) {
-        for (SimpleDateFormat format : formats) try { return format.parse(src).getTime(); } catch (Exception ignored) {}
-        return 0;
+    public static Date parse(SimpleDateFormat format, String source) {
+        try {
+            return format.parse(source);
+        } catch (Exception e) {
+            return new Date(0);
+        }
+    }
+
+    public static long parse(List<SimpleDateFormat> formats, String source) {
+        return formats.stream().map(format -> parse(format, source)).map(Date::getTime).filter(time -> time > 0).findFirst().orElse(0L);
     }
 
     public static boolean isLeanback() {
