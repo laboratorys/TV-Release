@@ -36,9 +36,9 @@ public class WebViewUtil {
     public static boolean support() {
         try {
             CookieManager.getInstance();
+            return App.get().getPackageManager().hasSystemFeature(PackageManager.FEATURE_WEBVIEW);
         } catch (Throwable e) {
             return false;
         }
-        return App.get().getPackageManager().hasSystemFeature(PackageManager.FEATURE_WEBVIEW);
     }
 }
