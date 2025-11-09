@@ -13,8 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.core.os.HandlerCompat;
 
 import com.fongmi.android.tv.utils.Notify;
-import com.fongmi.android.tv.utils.WebViewUtil;
-import com.fongmi.hook.Chromium;
 import com.fongmi.hook.Hook;
 import com.github.catvod.Init;
 import com.google.gson.Gson;
@@ -33,7 +31,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
     private Activity activity;
     private final Gson gson;
     private final long time;
-    private boolean sniff;
     private Hook hook;
 
     public App() {
@@ -43,10 +40,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
         executor = Executors.newFixedThreadPool(5);
         searchExecutor = Executors.newFixedThreadPool(20);
         handler = HandlerCompat.createAsync(Looper.getMainLooper());
-    }
-
-    public void setSniff(boolean sniff) {
-        this.sniff = sniff;
     }
 
     public void setHook(Hook hook) {
@@ -73,7 +66,7 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     @Override
     public String getPackageName() {
-        return hook != null ? hook.getPackageName() : sniff && Chromium.find() ? WebViewUtil.spoof() : getBaseContext().getPackageName();
+        return hook != null ? hook.getPackageName() : getBaseContext().getPackageName();
     }
 
     @Override

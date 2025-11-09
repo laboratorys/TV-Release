@@ -187,7 +187,6 @@ public class ParseJob implements ParseCallback {
 
     private void startWeb(String key, String from, Map<String, String> headers, String url, String click) {
         if (WebViewUtil.support()) {
-            App.get().setSniff(true);
             App.post(() -> webViews.add(CustomWebView.create(App.get()).start(key, from, headers, url, click, this, !url.contains("player/?url="))));
         } else {
             onParseError();
@@ -221,7 +220,6 @@ public class ParseJob implements ParseCallback {
         for (CustomWebView webView : webViews) webView.stop(false);
         for (CustomWebView webView : webViews) webView.destroy();
         if (!webViews.isEmpty()) webViews.clear();
-        App.get().setSniff(false);
     }
 
     public void stop() {
