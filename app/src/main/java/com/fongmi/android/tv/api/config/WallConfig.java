@@ -23,6 +23,7 @@ import com.github.catvod.utils.Path;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InterruptedIOException;
 import java.util.concurrent.Future;
 
 public class WallConfig {
@@ -67,8 +68,8 @@ public class WallConfig {
         return this;
     }
 
-    public Config getConfig() {
-        return config == null ? Config.wall() : config;
+    private boolean isCanceled(Throwable e) {
+        return e.getCause() instanceof InterruptedException || e.getCause() instanceof InterruptedIOException;
     }
 
     public void load() {
@@ -88,6 +89,7 @@ public class WallConfig {
             RefreshEvent.wall();
             App.post(callback::success);
         } catch (Throwable e) {
+            if (isCanceled(e)) return;
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
             else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
             Setting.putWall(1);
@@ -137,5 +139,9 @@ public class WallConfig {
 
     public boolean needSync(String url) {
         return sync || TextUtils.isEmpty(config.getUrl()) || url.equals(config.getUrl());
+    }
+
+    public Config getConfig() {
+        return config == null ? Config.wall() : config;
     }
 }
