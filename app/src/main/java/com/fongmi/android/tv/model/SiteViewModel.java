@@ -14,7 +14,6 @@ import com.fongmi.android.tv.bean.Episode;
 import com.fongmi.android.tv.bean.Flag;
 import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.bean.Site;
-import com.fongmi.android.tv.bean.Url;
 import com.fongmi.android.tv.bean.Vod;
 import com.fongmi.android.tv.exception.ExtractException;
 import com.fongmi.android.tv.player.Source;
@@ -192,20 +191,19 @@ public class SiteViewModel extends ViewModel {
                 return result;
             } else if (site.isEmpty() && "push_agent".equals(key)) {
                 Result result = new Result();
+                result.setUrl(id);
                 result.setParse(0);
                 result.setFlag(flag);
-                result.setUrl(Url.create().add(id));
                 result.setUrl(Source.get().fetch(result));
                 SpiderDebug.log("player", result.toString());
                 return result;
             } else {
-                Url url = Url.create().add(id);
                 Result result = new Result();
-                result.setUrl(url);
+                result.setUrl(id);
                 result.setFlag(flag);
                 result.setHeader(site.getHeader());
                 result.setPlayUrl(site.getPlayUrl());
-                result.setParse(Sniffer.isVideoFormat(url.v()) && result.getPlayUrl().isEmpty() ? 0 : 1);
+                result.setParse(Sniffer.isVideoFormat(id) && result.getPlayUrl().isEmpty() ? 0 : 1);
                 result.setUrl(Source.get().fetch(result));
                 SpiderDebug.log("player", result.toString());
                 return result;

@@ -351,11 +351,11 @@ public class Channel {
     public Result result() {
         Result result = new Result();
         result.setDrm(getDrm());
+        result.setUrl(getCurrent());
         result.setClick(getClick());
         result.setParse(getParse());
         result.setFormat(getFormat());
         result.setHeader(Json.toObject(getHeaders()));
-        result.setUrl(Url.create().add(getCurrent()));
         return result;
     }
 

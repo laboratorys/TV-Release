@@ -183,10 +183,6 @@ public class Result implements Parcelable {
         return url == null ? Url.create() : url;
     }
 
-    public void setUrl(Url url) {
-        this.url = url;
-    }
-
     public void setUrl(String url) {
         this.url = getUrl().replace(url);
     }

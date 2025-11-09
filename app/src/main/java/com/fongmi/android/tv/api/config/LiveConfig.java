@@ -41,6 +41,8 @@ import java.util.stream.Collectors;
 
 public class LiveConfig {
 
+    private static final String TAG = LiveConfig.class.getSimpleName();
+
     private Live home;
     private Config config;
     private List<Live> lives;
@@ -128,9 +130,9 @@ public class LiveConfig {
 
     private void loadConfig(Callback callback) {
         try {
+            OkHttp.cancel(TAG);
             Server.get().start();
-            OkHttp.cancel("config");
-            String text = Decoder.getJson(UrlUtil.convert(config.getUrl()));
+            String text = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
             if (!Json.isObj(text)) clear().parseText(text, callback);
             else checkJson(Json.parse(text).getAsJsonObject(), callback);
             config.update();

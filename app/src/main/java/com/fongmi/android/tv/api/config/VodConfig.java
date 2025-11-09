@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
 
 public class VodConfig {
 
+    private static final String TAG = VodConfig.class.getSimpleName();
+
     private Site home;
     private String wall;
     private Parse parse;
@@ -129,9 +131,9 @@ public class VodConfig {
 
     private void loadConfig(Callback callback) {
         try {
+            OkHttp.cancel(TAG);
             Server.get().start();
-            OkHttp.cancel("config");
-            String json = Decoder.getJson(UrlUtil.convert(config.getUrl()));
+            String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
             checkJson(Json.parse(json).getAsJsonObject(), callback);
             config.update();
         } catch (Throwable e) {
