@@ -4,11 +4,13 @@ import android.net.Uri;
 
 import com.fongmi.android.tv.player.Source;
 import com.fongmi.android.tv.utils.FileUtil;
+import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.utils.Path;
 import com.p2p.P2PClass;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 public class JianPian implements Source.Extractor {
 
@@ -16,8 +18,8 @@ public class JianPian implements Source.Extractor {
     private String path;
 
     @Override
-    public boolean match(String scheme, String host) {
-        return "tvbox-xg".equals(scheme) || "jianpian".equals(scheme) || "ftp".equals(scheme);
+    public boolean match(Uri uri) {
+        return Arrays.asList("tvbox-xg", "jianpian", "ftp").contains(UrlUtil.scheme(uri));
     }
 
     private void init() {

@@ -1,5 +1,6 @@
 package com.fongmi.android.tv.bean;
 
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.fongmi.android.tv.App;
@@ -34,6 +35,10 @@ public class Url {
 
     public int getPosition() {
         return position;
+    }
+
+    public Uri uri() {
+        return Uri.parse(v());
     }
 
     public String v() {

@@ -11,6 +11,7 @@ import com.fongmi.android.tv.bean.Core;
 import com.fongmi.android.tv.exception.ExtractException;
 import com.fongmi.android.tv.player.Source;
 import com.fongmi.android.tv.utils.ResUtil;
+import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
 import com.google.gson.JsonObject;
@@ -30,8 +31,8 @@ public class TVBus implements Source.Extractor, Listener {
     private Core core;
 
     @Override
-    public boolean match(String scheme, String host) {
-        return "tvbus".equals(scheme);
+    public boolean match(Uri uri) {
+        return "tvbus".equals(UrlUtil.scheme(uri));
     }
 
     private void init(Core core) {
