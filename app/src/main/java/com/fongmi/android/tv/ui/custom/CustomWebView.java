@@ -209,7 +209,6 @@ public class CustomWebView extends WebView implements DialogInterface.OnDismissL
 
     private void onParseSuccess(Map<String, String> headers, String url) {
         if (callback != null) callback.onParseSuccess(headers, url, from);
-        SpiderDebug.log(TAG, "url=%s, headers=%s", url, headers);
         post(() -> stop(false));
         callback = null;
     }
