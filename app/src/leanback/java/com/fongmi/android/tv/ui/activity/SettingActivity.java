@@ -326,9 +326,9 @@ public class SettingActivity extends BaseActivity implements ConfigCallback, Sit
     }
 
     private void initConfig() {
-        WallConfig.get().init().load();
-        LiveConfig.get().init().load();
         VodConfig.get().init().load(getCallback(0));
+        LiveConfig.get().init().load();
+        WallConfig.get().init().load();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

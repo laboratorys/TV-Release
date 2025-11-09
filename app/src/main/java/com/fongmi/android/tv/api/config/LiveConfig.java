@@ -119,6 +119,7 @@ public class LiveConfig {
     }
 
     public void load() {
+        if (sync) return;
         load(new Callback());
     }
 

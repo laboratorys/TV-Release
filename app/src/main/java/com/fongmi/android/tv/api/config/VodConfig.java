@@ -46,7 +46,6 @@ public class VodConfig {
     private List<String> flags;
     private List<Parse> parses;
     private Future<?> future;
-    private boolean loadLive;
 
     private static class Loader {
         static volatile VodConfig INSTANCE = new VodConfig();
@@ -77,14 +76,13 @@ public class VodConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().clear().config(config).live(true).load(callback);
+        get().clear().config(config).load(callback);
     }
 
     public VodConfig init() {
         this.wall = null;
         this.home = null;
         this.parse = null;
-        this.loadLive = false;
         this.config = Config.vod();
         this.ads = new ArrayList<>();
         this.doh = new ArrayList<>();
@@ -97,11 +95,6 @@ public class VodConfig {
 
     public VodConfig config(Config config) {
         this.config = config;
-        return this;
-    }
-
-    public VodConfig live(boolean loadLive) {
-        this.loadLive = loadLive;
         return this;
     }
 
@@ -171,7 +164,7 @@ public class VodConfig {
             initOther(object);
             config.logo(Json.safeString(object, "logo"));
             String notice = Json.safeString(object, "notice");
-            if (loadLive && !Json.isEmpty(object, "lives")) initLive(object);
+            if (!Json.isEmpty(object, "lives")) initLive(object);
             App.post(() -> callback.success(notice));
             App.post(callback::success);
         } catch (Throwable e) {

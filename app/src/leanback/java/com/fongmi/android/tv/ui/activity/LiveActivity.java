@@ -706,7 +706,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
             @Override
             public void error(String msg) {
-                LiveConfig.get().config(config).load();
+                LiveConfig.load(config, new Callback());
                 Notify.show(msg);
                 hideProgress();
             }
