@@ -243,6 +243,10 @@ public class Result implements Parcelable {
         return format;
     }
 
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
     public String getClick() {
         return TextUtils.isEmpty(click) ? "" : click;
     }
@@ -281,6 +285,10 @@ public class Result implements Parcelable {
 
     public Drm getDrm() {
         return drm;
+    }
+
+    public void setDrm(Drm drm) {
+        this.drm = drm;
     }
 
     public boolean hasMsg() {

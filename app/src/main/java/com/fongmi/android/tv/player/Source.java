@@ -1,7 +1,6 @@
 package com.fongmi.android.tv.player;
 
 import com.fongmi.android.tv.App;
-import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.Episode;
 import com.fongmi.android.tv.bean.Flag;
 import com.fongmi.android.tv.bean.Result;
@@ -80,14 +79,6 @@ public class Source {
         Extractor extractor = getExtractor(url);
         if (extractor != null) result.setParse(0);
         if (extractor instanceof Video) result.setParse(1);
-        return extractor == null ? url : extractor.fetch(url);
-    }
-
-    public String fetch(Channel channel) throws Exception {
-        String url = channel.getCurrent();
-        Extractor extractor = getExtractor(url);
-        if (extractor != null) channel.setParse(0);
-        if (extractor instanceof Video) channel.setParse(1);
         return extractor == null ? url : extractor.fetch(url);
     }
 

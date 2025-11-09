@@ -34,6 +34,7 @@ import com.fongmi.android.tv.bean.EpgData;
 import com.fongmi.android.tv.bean.Group;
 import com.fongmi.android.tv.bean.Keep;
 import com.fongmi.android.tv.bean.Live;
+import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.bean.Track;
 import com.fongmi.android.tv.databinding.ActivityLiveBinding;
 import com.fongmi.android.tv.event.ActionEvent;
@@ -83,7 +84,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     private ActivityLiveBinding mBinding;
     private ChannelAdapter mChannelAdapter;
     private EpgDataAdapter mEpgDataAdapter;
-    private Observer<Channel> mObserveUrl;
+    private Observer<Result> mObserveUrl;
     private GroupAdapter mGroupAdapter;
     private Observer<Epg> mObserveEpg;
     private LiveViewModel mViewModel;
@@ -683,8 +684,8 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
         showProgress();
     }
 
-    private void start(Channel result) {
-        mPlayers.start(result, getTimeout());
+    private void start(Result result) {
+        mPlayers.start(result, false, getTimeout());
     }
 
     private void checkControl() {

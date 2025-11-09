@@ -14,6 +14,7 @@ import com.fongmi.android.tv.bean.Epg;
 import com.fongmi.android.tv.bean.EpgData;
 import com.fongmi.android.tv.bean.Group;
 import com.fongmi.android.tv.bean.Live;
+import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.exception.ExtractException;
 import com.fongmi.android.tv.player.Source;
 import com.github.catvod.net.OkHttp;
@@ -53,9 +54,8 @@ public class LiveViewModel extends ViewModel {
     private final Map<TaskType, Future<?>> futures;
     private final SimpleDateFormat formatDate;
     private final ExecutorService executor;
-
-    public final MutableLiveData<Channel> url;
     public final MutableLiveData<Boolean> xml;
+    public final MutableLiveData<Result> url;
     public final MutableLiveData<Live> live;
     public final MutableLiveData<Epg> epg;
 
@@ -104,19 +104,19 @@ public class LiveViewModel extends ViewModel {
 
     public void getUrl(Channel item) {
         execute(TaskType.URL, () -> {
-            item.setMsg(null);
             Source.get().stop();
-            item.setUrl(Source.get().fetch(item));
-            return item;
+            Result result = item.result();
+            result.setUrl(Source.get().fetch(result));
+            return result;
         });
     }
 
     public void getUrl(Channel item, EpgData data) {
         execute(TaskType.URL, () -> {
-            item.setMsg(null);
             Source.get().stop();
-            item.setUrl(item.getCatchup().format(Source.get().fetch(item), data));
-            return item;
+            Result result = item.result();
+            result.setUrl(item.getCatchup().format(Source.get().fetch(result), data));
+            return result;
         });
     }
 
@@ -147,13 +147,13 @@ public class LiveViewModel extends ViewModel {
                 T result = newFuture.get(type.timeout, TimeUnit.MILLISECONDS);
                 if (type == TaskType.EPG) epg.postValue((Epg) result);
                 else if (type == TaskType.LIVE) live.postValue((Live) result);
+                else if (type == TaskType.URL) url.postValue((Result) result);
                 else if (type == TaskType.XML) xml.postValue((Boolean) result);
-                else if (type == TaskType.URL) url.postValue((Channel) result);
             } catch (Throwable e) {
                 if (e instanceof CancellationException) return;
-                if (e.getCause() instanceof ExtractException) url.postValue(Channel.error(e.getCause().getMessage()));
-                else if (type == TaskType.URL) url.postValue(new Channel());
+                if (e.getCause() instanceof ExtractException) url.postValue(Result.error(e.getCause().getMessage()));
                 else if (type == TaskType.LIVE) live.postValue(new Live());
+                else if (type == TaskType.URL) url.postValue(new Result());
                 else if (type == TaskType.EPG) epg.postValue(new Epg());
                 else if (type == TaskType.XML) xml.postValue(false);
                 e.printStackTrace();
