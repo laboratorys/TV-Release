@@ -48,7 +48,6 @@ public class TVBus implements Source.Extractor, Listener {
 
     private String getPath(String url) {
         String name = UrlUtil.path(url);
-        if (name.isEmpty()) name = "tvcore.so";
         File file = new File(Path.so(), name);
         if (file.length() < 10240) Path.write(file, OkHttp.bytes(url));
         return file.getAbsolutePath();
