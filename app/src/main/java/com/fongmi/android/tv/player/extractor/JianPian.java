@@ -32,7 +32,7 @@ public class JianPian implements Source.Extractor {
         stop();
         check();
         start(url);
-        return "http://127.0.0.1:" + p2p.port + "/" + URLEncoder.encode(Uri.parse(path).getLastPathSegment(), "GBK");
+        return "http://127.0.0.1:" + p2p.port + "/" + URLEncoder.encode(UrlUtil.path(path), "GBK");
     }
 
     private void check() {

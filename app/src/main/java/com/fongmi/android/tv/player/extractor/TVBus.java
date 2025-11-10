@@ -1,7 +1,6 @@
 package com.fongmi.android.tv.player.extractor;
 
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
@@ -48,8 +47,8 @@ public class TVBus implements Source.Extractor, Listener {
     }
 
     private String getPath(String url) {
-        String name = Uri.parse(url).getLastPathSegment();
-        if (TextUtils.isEmpty(name)) name = "tvcore.so";
+        String name = UrlUtil.path(url);
+        if (name.isEmpty()) name = "tvcore.so";
         File file = new File(Path.so(), name);
         if (file.length() < 10240) Path.write(file, OkHttp.bytes(url));
         return file.getAbsolutePath();

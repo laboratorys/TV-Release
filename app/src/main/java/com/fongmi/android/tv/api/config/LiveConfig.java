@@ -28,7 +28,6 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
 import com.google.gson.JsonObject;
 
-import java.io.File;
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -155,11 +154,9 @@ public class LiveConfig {
 
     private String parseName(String url) {
         Uri uri = Uri.parse(url);
-        if ("file".equals(uri.getScheme())) return new File(url).getName();
-        if (uri.getLastPathSegment() != null) return uri.getLastPathSegment();
-        if (uri.getQuery() != null) return uri.getQuery();
-        if (uri.getHost() != null) return uri.getHost();
-        return url;
+        String path = UrlUtil.path(uri);
+        String host = UrlUtil.host(uri);
+        return !path.isEmpty() ? path : !host.isEmpty() ? host : url;
     }
 
     private void checkJson(JsonObject object, Callback callback) {
