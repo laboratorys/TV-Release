@@ -51,6 +51,8 @@ jobs:
           # 解码签名文件
           echo "🔑 Decoding keystore..."
           echo "$KEYSTORE" | base64 -d > keystore.jks
+          # 赋予 gradlew 执行权限
+          chmod +x gradlew
           # 执行 Gradle 签名构建
           echo "🚀 Building signed APK..."
           ./gradlew assembleRelease \
