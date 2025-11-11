@@ -17,7 +17,15 @@ jobs:
           repository: laboratorys/TV # 目标仓库
           ref: release # 指定分支
           path: tv-app # 代码存放目录
-
+          fetch-depth: 0
+      - name: 📌 Extract versionName
+        id: version
+        working-directory: tv-app
+        run: |
+          # 使用 grep 提取 versionName
+          VERSION=$(grep -oP 'versionName\s+\K[\'\"]?[0-9.]+[\'\"]?' app/build.gradle | tr -d "\"'")
+          echo "Extracted versionName: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
       # 2. 设置 JDK 环境
       - name: ☕ Set up JDK 17
         uses: actions/setup-java@v5
@@ -66,21 +74,21 @@ jobs:
       - name: 📦 List APK files
         working-directory: tv-app
         run: |
-          echo "🔍 搜索 APK 文件..."
-          find . -name "*.apk" -exec ls -lh {} \;
+          echo "📌 发现以下 APK 文件："
+          find app/build/outputs/apk -name "*.apk" -exec ls -lh {} \;
           echo ""
-          # 显式检查常见路径
-          echo "📂 检查 release 目录..."
-          ls -lhd app/build/outputs/apk*/release* || true
+          echo "📊 文件详情："
+          echo "--------------------------------"
+          find app/build/outputs/apk -name "*.apk" -exec du -h {} \;
+          echo "--------------------------------"
 
       # 7. 创建 Release 并上传 APK
       - name: 🚀 Upload to Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }} # 使用触发标签
-          name: "📱 TV App ${{ github.ref_name }}"
-          body: "✨ Automated APK build\n\n🔥 Built with GitHub Actions"
+          tag_name: "v${{ steps.version.outputs.version }}" # 使用 versionName 作为标签
+          name: "📱 Release v${{ steps.version.outputs.version }}"
+          body: "✨ Automated APK build\n\nVersion: ${{ steps.version.outputs.version }}\nBuilt with GitHub Actions"
           files: |
-            tv-app/app/build/outputs/apk/release/*.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 自动生成的令牌
+            tv-app/app/build/outputs/apk/*/release/*.apk
+          token: ${{ secrets.GITHUB_TOKEN }}、
