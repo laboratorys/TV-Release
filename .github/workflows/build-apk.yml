@@ -91,4 +91,4 @@ jobs:
           body: "✨ Automated APK build\n\nVersion: ${{ steps.version.outputs.version }}\nBuilt with GitHub Actions"
           files: |
             tv-app/app/build/outputs/apk/*/release/*.apk
-          token: ${{ secrets.GITHUB_TOKEN }}、
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}、
