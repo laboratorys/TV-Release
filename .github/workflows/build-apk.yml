@@ -55,7 +55,7 @@ jobs:
           chmod +x gradlew
           # 执行 Gradle 签名构建
           echo "🚀 Building signed APK..."
-          ./gradlew assembleRelease \
+          ./gradlew assembleRelease --console=plain \
             -Pandroid.injected.signing.storeFile=$(pwd)/keystore.jks \
             -Pandroid.injected.signing.storePassword=$KEYSTORE_PASS \
             -Pandroid.injected.signing.keyAlias=$KEY_ALIAS \
@@ -66,14 +66,12 @@ jobs:
       - name: 📦 List APK files
         working-directory: tv-app
         run: |
-          echo "👇👇👇 Generated APK files 👇👇👇"
-          ls -lh app/build/outputs/apk/release/
+          echo "🔍 搜索 APK 文件..."
+          find . -name "*.apk" -exec ls -lh {} \;
           echo ""
-          echo "📊 APK Details:"
-          echo "--------------------------------"
-          find app/build/outputs/apk/release/ -name "*.apk" -exec du -h {} \;
-          echo "--------------------------------"
-          echo "🎉 Ready for release!"
+          # 显式检查常见路径
+          echo "📂 检查 release 目录..."
+          ls -lhd app/build/outputs/apk*/release* || true
 
       # 7. 创建 Release 并上传 APK
       - name: 🚀 Upload to Release
