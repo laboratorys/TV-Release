@@ -9,6 +9,7 @@ jobs:
     env:
       ANDROID_BUILD_TOOLS: "34.0.0" # 指定构建工具版本
       GRADLE_OPTS: "-Dorg.gradle.daemon=false" # 禁用Gradle守护进程
+      ANDROID_HOME: /usr/local/lib/android/sdk
     steps:
       # 1. 拉取目标仓库代码
       - name: 🛒 Checkout TV project
@@ -64,6 +65,11 @@ jobs:
           echo "Extracted versionName: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       # 3. 环境设置
+      - name: 🤖 Setup Android SDK
+        if: steps.build-control.outputs.should_build == 'true'
+        uses: android-actions/setup-android@v3
+        with:
+          build-tools-version: ${{ env.ANDROID_BUILD_TOOLS }}
       - name: 🛠️ Setup Environment
         if: steps.build-control.outputs.should_build == 'true'
         run: |
