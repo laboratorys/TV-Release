@@ -6,6 +6,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ANDROID_BUILD_TOOLS: "34.0.0" # 指定构建工具版本
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false" # 禁用Gradle守护进程
     steps:
       # 1. 拉取目标仓库代码
       - name: 🛒 Checkout TV project
@@ -60,32 +63,31 @@ jobs:
           VERSION=$(grep -oP 'versionName\s+"\K[0-9.]+(?=")' app/build.gradle)
           echo "Extracted versionName: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-      # 2. 设置 JDK 环境
+      # 3. 环境设置
+      - name: 🛠️ Setup Environment
+        if: steps.build-control.outputs.should_build == 'true'
+        run: |
+          # 安装必要的构建工具
+          yes | sdkmanager "build-tools;${{ env.ANDROID_BUILD_TOOLS }}"
+          echo "$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS }}" >> $GITHUB_PATH
       - name: ☕ Set up JDK 17
         if: steps.build-control.outputs.should_build == 'true'
         uses: actions/setup-java@v5
         with:
           java-version: "17"
           distribution: "temurin"
-
-      # 3. 配置 Android SDK
-      - name: 🤖 Setup Android SDK
-        uses: android-actions/setup-android@v2
-
       # 4. 缓存 Gradle 依赖（加速构建）
       - name: 🏗️ Cache Gradle
         uses: actions/cache@v4
         with:
           path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
             tv-app/last_build_commit.txt
-            tv-app/.gradle  # 添加项目级缓存目录
+            tv-app/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('tv-app/gradle/wrapper/gradle-wrapper.properties', 'tv-app/build.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
       # 5. 构建 APK（需提前配置签名信息）
-      - name: 🔨 Build signed APK
+      - name: 🔨 Build & Sign APK
         if: steps.build-control.outputs.should_build == 'true'
         working-directory: tv-app # 进入目标仓库目录
         env:
@@ -101,26 +103,43 @@ jobs:
           chmod +x gradlew
           # 执行 Gradle 签名构建
           echo "🚀 Building signed APK..."
-          ./gradlew assembleRelease --console=plain \
-            -Pandroid.injected.signing.storeFile=$(pwd)/keystore.jks \
-            -Pandroid.injected.signing.storePassword=$KEYSTORE_PASS \
-            -Pandroid.injected.signing.keyAlias=$KEY_ALIAS \
-            -Pandroid.injected.signing.keyPassword=$KEY_PASS
-          echo "✅ Build completed!"
-
-      # 6. 打印生成的 APK 文件列表
-      - name: 📦 List APK files
-        if: steps.build-control.outputs.should_build == 'true'
-        working-directory: tv-app
-        run: |
-          echo "📌 发现以下 APK 文件："
-          find app/build/outputs/apk -name "*.apk" -exec ls -lh {} \;
-          echo ""
-          echo "📊 文件详情："
-          echo "--------------------------------"
-          find app/build/outputs/apk -name "*.apk" -exec du -h {} \;
-          echo "--------------------------------"
-
+          ./gradlew assembleRelease --console=plain --no-daemon
+           mkdir -p release_apks
+          # 处理所有APK文件（包括leanback和mobile变体）
+          find app/build/outputs/apk -name "*.apk" ! -name "*unsigned*" | while read -r apk; do
+          # 提取变体名称（如leanbackArmeabi_v7a）
+          VARIANT=$(echo "$apk" | grep -oE 'leanback|mobile')
+          ABI=$(echo "$apk" | grep -oE 'armeabi_v7a|arm64_v8a')
+          
+          # 生成输出文件名（如leanback-armeabi_v7a-aligned.apk）
+          ALIGNED_APK="${VARIANT}-${ABI}-aligned.apk"
+          SIGNED_APK="release_apks/${VARIANT}-${ABI}.apk"
+          
+          # 对齐APK
+          zipalign -p -f -v 4 "$apk" "$ALIGNED_APK"
+          
+          # 签名APK
+          apksigner sign \
+          --ks keystore.jks \
+          --ks-key-alias "$KEY_ALIAS" \
+          --ks-pass "pass:$KEYSTORE_PASS" \
+          --key-pass "pass:$KEY_PASS" \
+          --out "$SIGNED_APK" \
+          "$ALIGNED_APK"
+      
+          # 验证签名
+          apksigner verify -v "$SIGNED_APK"
+          
+          # 清理临时文件
+          rm -f "$ALIGNED_APK"
+          done
+      
+          # 清理密钥库
+          rm -f keystore.jks
+      
+          # 打印最终APK列表
+          echo "📦 生成的APK文件："
+          ls -lh release_apks/
       # 7. 创建 Release 并上传 APK
       - name: 🚀 Upload to Release
         if: steps.build-control.outputs.should_build == 'true'
@@ -130,5 +149,5 @@ jobs:
           name: "📱 Release v${{ steps.version.outputs.version }}"
           body: "✨ Automated APK build\n\nVersion: ${{ steps.version.outputs.version }}\nBuilt with GitHub Actions"
           files: |
-            tv-app/app/build/outputs/apk/*/release/*.apk
+            tv-app/release_apks/*.apk
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
