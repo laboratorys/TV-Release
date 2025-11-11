@@ -1,0 +1,23 @@
+name: Sync Fork with Upstream
+
+on:
+  schedule:
+    # 每天凌晨3点运行（UTC时间）
+    - cron: '0 12,0 * * *'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  sync-fork:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sync manager repo
+        uses: actions/checkout@v4
+
+      - name: Sync Fork
+        uses: repo-sync/github-sync@v2
+        with:
+          source_repo: "FongMi/TV"
+          source_branch: "release"
+          destination_repo: "laboratorys/TV"
+          destination_branch: "lab"
+          github_token: "${{ secrets.CUSTOM_GITHUB_TOKEN }}"

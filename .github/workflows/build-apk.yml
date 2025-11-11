@@ -1,11 +1,8 @@
 name: Build and Release APK
-
 on:
   workflow_dispatch: # 手动触发
-  push:
-    tags:
-      - "v*" # 标签触发（例如 v1.0.0）
-
+  schedule:
+    - cron: '0 13,1 * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,19 +12,57 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: laboratorys/TV # 目标仓库
-          ref: release # 指定分支
+          ref: lab # 指定分支
           path: tv-app # 代码存放目录
           fetch-depth: 0
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+            # 2. 动态判断是否跳过构建检查
+      - name: ⚙️ Build Control
+        id: build-control
+        run: |
+          # 手动触发时强制构建
+          if [[ ${{ github.event_name == 'workflow_dispatch' }} ]]; then
+            echo "🎯 手动触发 - 强制构建"
+            echo "should_build=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # 定时任务时检查新提交
+          if [[ ${{ github.event_name == 'schedule' }} ]]; then
+            echo "⏰ 定时任务 - 检查新提交..."
+            cd tv-app
+            LAST_COMMIT_DATE=$(git log -1 --format=%ct)
+          
+            if [[ -f last_build_commit.txt ]]; then
+              PREV_COMMIT_DATE=$(cat last_build_commit.txt)
+              if [[ $LAST_COMMIT_DATE -le $PREV_COMMIT_DATE ]]; then
+                echo "🕒 无新提交 - 跳过构建"
+                echo "should_build=false" >> $GITHUB_OUTPUT
+                exit 0
+              fi
+            fi
+          
+            echo $LAST_COMMIT_DATE > last_build_commit.txt
+            echo "🚀 发现新提交 - 开始构建"
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          else
+            # 其他情况（如tag触发）默认构建
+            echo "🔖 标签触发 - 执行构建"
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          fi
       - name: 📌 Extract versionName
+        if: steps.build-control.outputs.should_build == 'true'
         id: version
         working-directory: tv-app
         run: |
           # 使用 grep 提取 versionName
-          VERSION=$(grep -oP 'versionName\s+\K[\'\"]?[0-9.]+[\'\"]?' app/build.gradle | tr -d "\"'")
+          VERSION=$(grep -oP 'versionName\s+"\K[0-9.]+(?=")' app/build.gradle)
           echo "Extracted versionName: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       # 2. 设置 JDK 环境
       - name: ☕ Set up JDK 17
+        if: steps.build-control.outputs.should_build == 'true'
         uses: actions/setup-java@v5
         with:
           java-version: "17"
@@ -44,11 +79,14 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+            tv-app/last_build_commit.txt
+            tv-app/.gradle  # 添加项目级缓存目录
+          key: ${{ runner.os }}-gradle-${{ hashFiles('tv-app/gradle/wrapper/gradle-wrapper.properties', 'tv-app/build.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
       # 5. 构建 APK（需提前配置签名信息）
       - name: 🔨 Build signed APK
+        if: steps.build-control.outputs.should_build == 'true'
         working-directory: tv-app # 进入目标仓库目录
         env:
           KEYSTORE: ${{ secrets.KEYSTORE }} # Base64 编码的签名文件
@@ -72,6 +110,7 @@ jobs:
 
       # 6. 打印生成的 APK 文件列表
       - name: 📦 List APK files
+        if: steps.build-control.outputs.should_build == 'true'
         working-directory: tv-app
         run: |
           echo "📌 发现以下 APK 文件："
@@ -84,6 +123,7 @@ jobs:
 
       # 7. 创建 Release 并上传 APK
       - name: 🚀 Upload to Release
+        if: steps.build-control.outputs.should_build == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ steps.version.outputs.version }}" # 使用 versionName 作为标签
@@ -91,4 +131,4 @@ jobs:
           body: "✨ Automated APK build\n\nVersion: ${{ steps.version.outputs.version }}\nBuilt with GitHub Actions"
           files: |
             tv-app/app/build/outputs/apk/*/release/*.apk
-          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}、
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
