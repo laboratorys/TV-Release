@@ -1,0 +1,86 @@
+name: Build and Release APK
+
+on:
+  workflow_dispatch: # 手动触发
+  push:
+    tags:
+      - "v*" # 标签触发（例如 v1.0.0）
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 拉取目标仓库代码
+      - name: 🛒 Checkout TV project
+        uses: actions/checkout@v5
+        with:
+          repository: laboratorys/TV # 目标仓库
+          ref: release # 指定分支
+          path: tv-app # 代码存放目录
+
+      # 2. 设置 JDK 环境
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      # 3. 配置 Android SDK
+      - name: 🤖 Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      # 4. 缓存 Gradle 依赖（加速构建）
+      - name: 🏗️ Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      # 5. 构建 APK（需提前配置签名信息）
+      - name: 🔨 Build signed APK
+        working-directory: tv-app # 进入目标仓库目录
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }} # Base64 编码的签名文件
+          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.KEY_PASS }}
+        run: |
+          # 解码签名文件
+          echo "🔑 Decoding keystore..."
+          echo "$KEYSTORE" | base64 -d > keystore.jks
+          # 执行 Gradle 签名构建
+          echo "🚀 Building signed APK..."
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.storeFile=$(pwd)/keystore.jks \
+            -Pandroid.injected.signing.storePassword=$KEYSTORE_PASS \
+            -Pandroid.injected.signing.keyAlias=$KEY_ALIAS \
+            -Pandroid.injected.signing.keyPassword=$KEY_PASS
+          echo "✅ Build completed!"
+
+      # 6. 打印生成的 APK 文件列表
+      - name: 📦 List APK files
+        working-directory: tv-app
+        run: |
+          echo "👇👇👇 Generated APK files 👇👇👇"
+          ls -lh app/build/outputs/apk/release/
+          echo ""
+          echo "📊 APK Details:"
+          echo "--------------------------------"
+          find app/build/outputs/apk/release/ -name "*.apk" -exec du -h {} \;
+          echo "--------------------------------"
+          echo "🎉 Ready for release!"
+
+      # 7. 创建 Release 并上传 APK
+      - name: 🚀 Upload to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }} # 使用触发标签
+          name: "📱 TV App ${{ github.ref_name }}"
+          body: "✨ Automated APK build\n\n🔥 Built with GitHub Actions"
+          files: |
+            tv-app/app/build/outputs/apk/release/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 自动生成的令牌
