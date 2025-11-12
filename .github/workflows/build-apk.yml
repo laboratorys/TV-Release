@@ -145,6 +145,7 @@ jobs:
       
           # 打印最终APK列表
           echo "📦 生成的APK文件："
+          pwd
           ls -lh release_apks/
       # 7. 创建 Release 并上传 APK
       - name: 🚀 Upload to Release
