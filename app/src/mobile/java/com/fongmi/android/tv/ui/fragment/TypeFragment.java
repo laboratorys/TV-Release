@@ -165,7 +165,7 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     }
 
     private void checkMore() {
-        if (isHidden() || mScroller.isDisable() || mBinding.recycler.canScrollVertically(1) || mBinding.recycler.getScrollState() != 0 || isHome()) return;
+        if (mScroller.isDisable() || mBinding.recycler.canScrollVertically(1) || mBinding.recycler.getScrollState() != 0 || isHome()) return;
         getVideo(getTypeId(), String.valueOf(mScroller.addPage()));
     }
 
