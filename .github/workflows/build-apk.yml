@@ -160,8 +160,5 @@ jobs:
             - Variants: mobile, leanback
             - ABIs: armeabi_v7a, arm64_v8a
           files: |
-            tv-app/release_apks/mobile-armeabi_v7a.apk
-            tv-app/release_apks/mobile-arm64_v8a.apk
-            tv-app/release_apks/leanback-armeabi_v7a.apk
-            tv-app/release_apks/leanback-arm64_v8a.apk
+            release_apks/*.apk
           token: ${{ secrets.GITHUB_TOKEN }}
