@@ -64,7 +64,7 @@ public class Url {
     }
 
     public Url replace(String url) {
-        if (isEmpty()) add(url);
+        if (getValues().isEmpty()) add(url);
         else getValues().get(getPosition()).setV(url);
         return this;
     }
