@@ -36,6 +36,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -44,6 +45,7 @@ public class SiteViewModel extends ViewModel {
 
     private final List<Future<?>> searchFuture;
     private final ExecutorService executor;
+    private final AtomicInteger taskId;
     private Future<Result> future;
 
     public final MutableLiveData<Episode> episode;
@@ -53,6 +55,7 @@ public class SiteViewModel extends ViewModel {
     public final MutableLiveData<Result> action;
 
     public SiteViewModel() {
+        taskId = new AtomicInteger(0);
         episode = new MutableLiveData<>();
         result = new MutableLiveData<>();
         player = new MutableLiveData<>();
@@ -254,15 +257,18 @@ public class SiteViewModel extends ViewModel {
     }
 
     private void execute(MutableLiveData<Result> result, Callable<Result> callable) {
+        int currentId = taskId.incrementAndGet();
         if (future != null && !future.isDone()) future.cancel(true);
         if (executor.isShutdown()) return;
         future = App.submit(callable);
         executor.execute(() -> {
             try {
                 Result taskResult = future.get(Constant.TIMEOUT_VOD, TimeUnit.MILLISECONDS);
+                if (taskId.get() != currentId) return;
                 result.postValue(taskResult);
+            } catch (CancellationException ignored) {
             } catch (Throwable e) {
-                if (e instanceof CancellationException) return;
+                if (taskId.get() != currentId) return;
                 if (e.getCause() instanceof ExtractException) result.postValue(Result.error(e.getCause().getMessage()));
                 else result.postValue(Result.empty());
                 e.printStackTrace();

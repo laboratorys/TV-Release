@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LiveViewModel extends ViewModel {
 
@@ -50,10 +51,12 @@ public class LiveViewModel extends ViewModel {
         }
     }
 
+    private final Map<TaskType, AtomicInteger> taskIds;
     private final List<SimpleDateFormat> formatTime;
     private final Map<TaskType, Future<?>> futures;
     private final SimpleDateFormat formatDate;
     private final ExecutorService executor;
+
     public final MutableLiveData<Boolean> xml;
     public final MutableLiveData<Result> url;
     public final MutableLiveData<Live> live;
@@ -66,10 +69,12 @@ public class LiveViewModel extends ViewModel {
         this.url = new MutableLiveData<>();
         this.formatTime = new ArrayList<>();
         this.futures = new EnumMap<>(TaskType.class);
+        this.taskIds = new EnumMap<>(TaskType.class);
         this.executor = Executors.newFixedThreadPool(2);
         this.formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         this.formatTime.add(new SimpleDateFormat("yyyy-MM-ddHH:mm", Locale.getDefault()));
         this.formatTime.add(new SimpleDateFormat("yyyy-MM-ddHH:mm:ss", Locale.getDefault()));
+        for (TaskType type : TaskType.values()) taskIds.put(type, new AtomicInteger(0));
     }
 
     public void getLive(Live item) {
@@ -138,6 +143,8 @@ public class LiveViewModel extends ViewModel {
 
     private <T> void execute(TaskType type, Callable<T> callable) {
         Future<?> oldFuture = futures.get(type);
+        AtomicInteger taskId = taskIds.get(type);
+        int currentId = taskId.incrementAndGet();
         if (oldFuture != null && !oldFuture.isDone()) oldFuture.cancel(true);
         Future<T> newFuture = App.submit(callable);
         if (executor.isShutdown()) return;
@@ -145,12 +152,14 @@ public class LiveViewModel extends ViewModel {
         executor.execute(() -> {
             try {
                 T result = newFuture.get(type.timeout, TimeUnit.MILLISECONDS);
+                if (taskId.get() != currentId) return;
                 if (type == TaskType.EPG) epg.postValue((Epg) result);
                 else if (type == TaskType.LIVE) live.postValue((Live) result);
                 else if (type == TaskType.URL) url.postValue((Result) result);
                 else if (type == TaskType.XML) xml.postValue((Boolean) result);
+            } catch (CancellationException ignored) {
             } catch (Throwable e) {
-                if (e instanceof CancellationException) return;
+                if (taskId.get() != currentId) return;
                 if (e.getCause() instanceof ExtractException) url.postValue(Result.error(e.getCause().getMessage()));
                 else if (type == TaskType.LIVE) live.postValue(new Live());
                 else if (type == TaskType.URL) url.postValue(new Result());
