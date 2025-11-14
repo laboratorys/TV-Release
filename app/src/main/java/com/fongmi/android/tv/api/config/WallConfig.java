@@ -49,7 +49,7 @@ public class WallConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().clear().config(config).load(callback);
+        get().config(config).load(callback);
     }
 
     public WallConfig init() {
@@ -60,11 +60,6 @@ public class WallConfig {
         this.config = config;
         if (config.isEmpty()) return this;
         this.sync = config.getUrl().equals(VodConfig.get().getWall());
-        return this;
-    }
-
-    public WallConfig clear() {
-        this.config = null;
         return this;
     }
 

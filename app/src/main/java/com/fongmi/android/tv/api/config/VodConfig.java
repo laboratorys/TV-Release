@@ -80,17 +80,7 @@ public class VodConfig {
     }
 
     public VodConfig init() {
-        this.wall = null;
-        this.home = null;
-        this.parse = null;
-        this.config = Config.vod();
-        this.ads = new ArrayList<>();
-        this.doh = new ArrayList<>();
-        this.rules = new ArrayList<>();
-        this.sites = new ArrayList<>();
-        this.flags = new ArrayList<>();
-        this.parses = new ArrayList<>();
-        return this;
+        return config(Config.vod());
     }
 
     public VodConfig config(Config config) {
@@ -99,15 +89,9 @@ public class VodConfig {
     }
 
     public VodConfig clear() {
-        this.wall = null;
-        this.home = null;
-        this.parse = null;
-        this.ads.clear();
-        this.doh.clear();
-        this.rules.clear();
-        this.sites.clear();
-        this.flags.clear();
-        this.parses.clear();
+        home = null;
+        parse = null;
+        sites = null;
         BaseLoader.get().clear();
         return this;
     }
@@ -158,7 +142,6 @@ public class VodConfig {
 
     private void parseConfig(JsonObject object, Callback callback) {
         try {
-            clear();
             initSite(object);
             initParse(object);
             initOther(object);

@@ -91,10 +91,6 @@ public class LiveConfig {
     }
 
     public LiveConfig init() {
-        this.home = null;
-        this.ads = new ArrayList<>();
-        this.rules = new ArrayList<>();
-        this.lives = new ArrayList<>();
         return config(Config.live());
     }
 
@@ -106,10 +102,8 @@ public class LiveConfig {
     }
 
     public LiveConfig clear() {
-        this.home = null;
-        this.ads.clear();
-        this.rules.clear();
-        this.lives.clear();
+        home = null;
+        lives = null;
         return this;
     }
 
@@ -133,7 +127,7 @@ public class LiveConfig {
             OkHttp.cancel(TAG);
             Server.get().start();
             String text = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
-            if (!Json.isObj(text)) clear().parseText(text, callback);
+            if (!Json.isObj(text)) parseText(text, callback);
             else checkJson(Json.parse(text).getAsJsonObject(), callback);
             config.update();
         } catch (Throwable e) {
@@ -180,7 +174,6 @@ public class LiveConfig {
 
     private void parseConfig(JsonObject object, Callback callback) {
         try {
-            clear();
             initLive(object);
             initOther(object);
         } catch (Throwable e) {
