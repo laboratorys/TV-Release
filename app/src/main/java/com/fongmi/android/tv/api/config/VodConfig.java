@@ -28,12 +28,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class VodConfig {
 
     private static final String TAG = VodConfig.class.getSimpleName();
+    private final AtomicInteger taskId = new AtomicInteger(0);
 
     private Site home;
     private String wall;
@@ -101,101 +103,112 @@ public class VodConfig {
     }
 
     public void load(Callback callback) {
+        int id = taskId.incrementAndGet();
         if (future != null && !future.isDone()) future.cancel(true);
-        future = App.submit(() -> loadConfig(callback));
+        future = App.submit(() -> loadConfig(id, config, callback));
         callback.start();
     }
 
-    private void loadConfig(Callback callback) {
+    private void loadConfig(int id, Config config, Callback callback) {
         try {
             OkHttp.cancel(TAG);
             Server.get().start();
             String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
-            checkJson(Json.parse(json).getAsJsonObject(), callback);
-            config.update();
+            checkJson(id, config, callback, Json.parse(json).getAsJsonObject());
         } catch (Throwable e) {
+            e.printStackTrace();
             if (isCanceled(e)) return;
+            if (taskId.get() != id) return;
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
             else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
-            e.printStackTrace();
         }
     }
 
-    private void checkJson(JsonObject object, Callback callback) {
+    private void checkJson(int id, Config config, Callback callback, JsonObject object) {
         if (object.has("msg")) {
             App.post(() -> callback.error(object.get("msg").getAsString()));
         } else if (object.has("urls")) {
-            parseDepot(object, callback);
+            parseDepot(id, config, callback, object);
         } else {
-            parseConfig(object, callback);
+            parseConfig(id, config, callback, object);
         }
     }
 
-    private void parseDepot(JsonObject object, Callback callback) {
+    private void parseDepot(int id, Config config, Callback callback, JsonObject object) {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
         List<Config> configs = new ArrayList<>();
         for (Depot item : items) configs.add(Config.find(item, 0));
+        loadConfig(id, this.config = configs.get(0), callback);
         Config.delete(config.getUrl());
-        config = configs.get(0);
-        loadConfig(callback);
     }
 
-    private void parseConfig(JsonObject object, Callback callback) {
+    private void parseConfig(int id, Config config, Callback callback, JsonObject object) {
         try {
-            initSite(object);
-            initParse(object);
-            initOther(object);
+            initList(object);
+            initLive(config, object);
+            initWall(config, object);
+            initSite(config, object);
+            initParse(config, object);
             config.logo(Json.safeString(object, "logo"));
             String notice = Json.safeString(object, "notice");
-            if (!Json.isEmpty(object, "lives")) initLive(object);
+            if (taskId.get() != id) return;
             App.post(() -> callback.success(notice));
             App.post(callback::success);
+            config.update();
         } catch (Throwable e) {
             e.printStackTrace();
+            if (taskId.get() != id) return;
             App.post(() -> callback.error(Notify.getError(R.string.error_config_parse, e)));
         }
     }
 
-    private void initSite(JsonObject object) {
-        String spider = Json.safeString(object, "spider");
-        BaseLoader.get().parseJar(spider, true);
-        setSites(Json.safeListElement(object, "sites").stream().map(element -> Site.objectFrom(element, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
-        Map<String, Site> items = Site.findAll().stream().collect(Collectors.toMap(Site::getKey, Function.identity()));
-        for (Site site : getSites()) {
-            Site item = items.get(site.getKey());
-            if (item != null) site.sync(item);
-            if (site.getKey().equals(config.getHome())) setHome(site, false);
-        }
-    }
-
-    private void initParse(JsonObject object) {
-        setParses(Json.safeListElement(object, "parses").stream().map(Parse::objectFrom).distinct().collect(Collectors.toCollection(ArrayList::new)));
-        for (Parse parse : getParses()) {
-            if (parse.getName().equals(config.getParse()) && parse.getType() > 1) {
-                setParse(parse, false);
-                break;
-            }
-        }
-    }
-
-    private void initOther(JsonObject object) {
-        if (!parses.isEmpty()) parses.add(0, Parse.god());
-        if (home == null) setHome(sites.isEmpty() ? new Site() : sites.get(0), false);
-        if (parse == null) setParse(parses.isEmpty() ? new Parse() : parses.get(0), false);
+    private void initList(JsonObject object) {
         setHeaders(Header.arrayFrom(object.getAsJsonArray("headers")));
         setProxy(Proxy.arrayFrom(object.getAsJsonArray("proxy")));
         setRules(Rule.arrayFrom(object.getAsJsonArray("rules")));
         setDoh(Doh.arrayFrom(object.getAsJsonArray("doh")));
         setFlags(Json.safeListString(object, "flags"));
         setHosts(Json.safeListString(object, "hosts"));
-        setWall(Json.safeString(object, "wallpaper"));
         setAds(Json.safeListString(object, "ads"));
     }
 
-    private void initLive(JsonObject object) {
+    private void initLive(Config config, JsonObject object) {
+        if (Json.isEmpty(object, "lives")) return;
         Config temp = Config.find(config, 1).save();
         boolean sync = LiveConfig.get().needSync(config.getUrl());
         if (sync) LiveConfig.get().config(temp.update()).parse(object);
+    }
+
+    private void initWall(Config config, JsonObject object) {
+        if (Json.isEmpty(object, "wallpaper")) return;
+        this.wall = Json.safeString(object, "wallpaper");
+        Config temp = Config.find(wall, config.getName(), 2).save();
+        boolean sync = WallConfig.get().needSync(wall);
+        if (sync) WallConfig.get().config(temp.update());
+    }
+
+    private void initSite(Config config, JsonObject object) {
+        String spider = Json.safeString(object, "spider");
+        BaseLoader.get().parseJar(spider, true);
+        setSites(Json.safeListElement(object, "sites").stream().map(element -> Site.objectFrom(element, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
+        Map<String, Site> items = Site.findAll().stream().collect(Collectors.toMap(Site::getKey, Function.identity()));
+        if (!getSites().isEmpty()) setHome(config, getSites().get(0), false);
+        for (Site site : getSites()) {
+            Site item = items.get(site.getKey());
+            if (item != null) site.sync(item);
+            if (site.getKey().equals(config.getHome())) setHome(config, site, false);
+        }
+    }
+
+    private void initParse(Config config, JsonObject object) {
+        setParses(Json.safeListElement(object, "parses").stream().map(Parse::objectFrom).distinct().collect(Collectors.toCollection(ArrayList::new)));
+        if (!getParses().isEmpty()) setParse(config, getParses().get(0), false);
+        for (Parse parse : getParses()) {
+            if (parse.getName().equals(config.getParse()) && parse.getType() > 1) {
+                setParse(config, parse, false);
+                break;
+            }
+        }
     }
 
     public List<Site> getSites() {
@@ -211,6 +224,7 @@ public class VodConfig {
     }
 
     private void setParses(List<Parse> parses) {
+        if (!parses.isEmpty()) parses.add(0, Parse.god());
         this.parses = parses;
     }
 
@@ -303,10 +317,10 @@ public class VodConfig {
     }
 
     public void setParse(Parse parse) {
-        setParse(parse, true);
+        setParse(getConfig(), parse, true);
     }
 
-    public void setParse(Parse parse, boolean save) {
+    public void setParse(Config config, Parse parse, boolean save) {
         this.parse = parse;
         this.parse.setActivated(true);
         config.parse(parse.getName());
@@ -315,21 +329,14 @@ public class VodConfig {
     }
 
     public void setHome(Site site) {
-        setHome(site, true);
+        setHome(getConfig(), site, true);
     }
 
-    public void setHome(Site site, boolean save) {
+    public void setHome(Config config, Site site, boolean save) {
         home = site;
         home.setActivated(true);
         config.home(home.getKey());
         if (save) config.save();
         getSites().forEach(item -> item.setActivated(home));
-    }
-
-    private void setWall(String wall) {
-        this.wall = wall;
-        boolean sync = !TextUtils.isEmpty(wall) && WallConfig.get().needSync(wall);
-        Config temp = Config.find(wall, config.getName(), 2).save();
-        if (sync) WallConfig.get().config(temp.update());
     }
 }
