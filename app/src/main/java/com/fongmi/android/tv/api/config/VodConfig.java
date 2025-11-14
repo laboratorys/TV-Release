@@ -92,6 +92,7 @@ public class VodConfig {
 
     public VodConfig clear() {
         home = null;
+        wall = null;
         parse = null;
         sites = null;
         BaseLoader.get().clear();
