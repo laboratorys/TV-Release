@@ -116,6 +116,7 @@ public class VodConfig {
             Server.get().start();
             String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
             checkJson(id, config, callback, Json.parse(json).getAsJsonObject());
+            if (taskId.get() == id) config.update();
         } catch (Throwable e) {
             e.printStackTrace();
             if (isCanceled(e)) return;
@@ -155,7 +156,6 @@ public class VodConfig {
             if (taskId.get() != id) return;
             App.post(() -> callback.success(notice));
             App.post(callback::success);
-            config.update();
         } catch (Throwable e) {
             e.printStackTrace();
             if (taskId.get() != id) return;
@@ -321,7 +321,7 @@ public class VodConfig {
         setParse(getConfig(), parse, true);
     }
 
-    public void setParse(Config config, Parse parse, boolean save) {
+    private void setParse(Config config, Parse parse, boolean save) {
         this.parse = parse;
         this.parse.setActivated(true);
         config.parse(parse.getName());
@@ -333,7 +333,7 @@ public class VodConfig {
         setHome(getConfig(), site, true);
     }
 
-    public void setHome(Config config, Site site, boolean save) {
+    private void setHome(Config config, Site site, boolean save) {
         home = site;
         home.setActivated(true);
         config.home(home.getKey());
