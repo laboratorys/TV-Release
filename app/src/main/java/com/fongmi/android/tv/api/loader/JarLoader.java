@@ -48,6 +48,7 @@ public class JarLoader {
 
     private void load(String key, File file) {
         if (!Path.exists(file) || !file.setReadOnly()) return;
+        if (Thread.interrupted()) return;
         loaders.put(key, dex(file));
         invokeInit(key);
         putProxy(key);
