@@ -201,7 +201,7 @@ public class LiveConfig {
         BaseLoader.get().parseJar(spider, false);
         setLives(Json.safeListElement(object, "lives").stream().map(element -> Live.objectFrom(element, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
         Map<String, Live> items = Live.findAll().stream().collect(Collectors.toMap(Live::getName, Function.identity()));
-        if (!getLives().isEmpty()) setHome(config, getLives().get(0), false);
+        if (!getLives().contains(Live.get(config.getHome()))) setHome(config, getLives().get(0), false);
         for (Live live : getLives()) {
             Live item = items.get(live.getName());
             if (item != null) live.sync(item);
