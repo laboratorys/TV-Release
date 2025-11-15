@@ -192,24 +192,19 @@ public class VodConfig {
         String spider = Json.safeString(object, "spider");
         BaseLoader.get().parseJar(spider, true);
         setSites(Json.safeListElement(object, "sites").stream().map(element -> Site.objectFrom(element, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
-        if (!getSites().isEmpty() && !getSites().contains(Site.get(config.getHome()))) setHome(config, getSites().get(0), false);
         Map<String, Site> items = Site.findAll().stream().collect(Collectors.toMap(Site::getKey, Function.identity()));
         for (Site site : getSites()) {
             Site item = items.get(site.getKey());
             if (item != null) site.sync(item);
             if (site.getKey().equals(config.getHome())) setHome(config, site, false);
         }
+        if (home == null && !getSites().isEmpty()) setHome(config, getSites().get(0), false);
     }
 
     private void initParse(Config config, JsonObject object) {
         setParses(Json.safeListElement(object, "parses").stream().map(Parse::objectFrom).distinct().collect(Collectors.toCollection(ArrayList::new)));
-        if (!getParses().isEmpty() && !getParses().contains(Parse.get(config.getParse()))) setParse(config, getParses().get(0), false);
-        for (Parse parse : getParses()) {
-            if (parse.getName().equals(config.getParse())) {
-                setParse(config, parse, false);
-                break;
-            }
-        }
+        for (Parse parse : getParses()) if (parse.getName().equals(config.getParse())) setParse(config, parse, false);
+        if (parse == null && !getParses().isEmpty()) setParse(config, getParses().get(0), false);
     }
 
     public List<Site> getSites() {
