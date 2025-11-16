@@ -232,7 +232,7 @@ public class Result implements Parcelable {
     }
 
     public List<Danmaku> getDanmaku() {
-        return !Setting.isDanmakuLoad() || danmaku == null ? new ArrayList<>() : new ArrayList<>(danmaku);
+        return !Setting.isDanmakuLoad() || danmaku == null ? new ArrayList<>() : danmaku;
     }
 
     public String getFormat() {
