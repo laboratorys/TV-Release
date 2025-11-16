@@ -97,22 +97,18 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     @Override
     protected void initView() {
         mBinding.swipeLayout.setColorSchemeResources(R.color.accent);
+        mBinding.progressLayout.showProgress();
         mScroller = new CustomScroller(this);
         mExtends = getExtend();
         setRecyclerView();
         setViewModel();
+        getVideo();
     }
 
     @Override
     protected void initEvent() {
         mBinding.swipeLayout.setOnRefreshListener(this);
         mBinding.recycler.addOnScrollListener(mScroller);
-    }
-
-    @Override
-    protected void initData() {
-        mBinding.progressLayout.showProgress();
-        getVideo();
     }
 
     private void setRecyclerView() {
