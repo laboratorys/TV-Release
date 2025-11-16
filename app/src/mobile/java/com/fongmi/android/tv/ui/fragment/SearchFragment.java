@@ -115,6 +115,9 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
                 else getSuggest(s.toString());
             }
         });
+        getParentFragmentManager().setFragmentResultListener("result", getViewLifecycleOwner(), (requestKey, bundle) -> {
+            if (bundle.getBoolean("edit", false)) Util.showKeyboard(mBinding.keyword);
+        });
     }
 
     private void checkKeyword() {

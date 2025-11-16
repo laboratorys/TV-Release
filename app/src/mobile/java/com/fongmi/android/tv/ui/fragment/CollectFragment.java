@@ -80,6 +80,16 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
         search();
     }
 
+    @Override
+    protected void initEvent() {
+        mBinding.toolbar.setOnClickListener(v -> {
+            Bundle result = new Bundle();
+            result.putBoolean("edit", true);
+            getParentFragmentManager().setFragmentResult("result", result);
+            getParentFragmentManager().popBackStack();
+        });
+    }
+
     private void setRecyclerView() {
         mBinding.collect.setItemAnimator(null);
         mBinding.collect.setHasFixedSize(true);
