@@ -488,7 +488,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public void setDanmaku(Danmaku item) {
-        danPlayer.setDanmaku(item);
+        danPlayer.cancel().setDanmaku(item);
         if (danmakus == null) danmakus = new ArrayList<>();
         if (!item.isEmpty() && !danmakus.contains(item)) danmakus.add(0, item);
         for (int i = 0; i < danmakus.size(); i++) danmakus.get(i).setSelected(danmakus.get(i).getUrl().equals(item.getUrl()) && !danmakus.get(i).isSelected());

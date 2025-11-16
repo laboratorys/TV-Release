@@ -29,6 +29,7 @@ public class Parser extends BaseDanmakuParser {
         AndroidFileSource source = (AndroidFileSource) mDataSource;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(source.data()))) {
             while ((line = br.readLine()) != null) {
+                if (Thread.interrupted()) return result;
                 if (pattern == null) pattern = line.startsWith("<") ? XML : TXT;
                 Matcher matcher = pattern.matcher(line);
                 while (matcher.find() && matcher.groupCount() == 2) {

@@ -9,6 +9,7 @@ import com.fongmi.android.tv.utils.ResUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import master.flame.danmaku.controller.DrawHandler;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
@@ -23,6 +24,7 @@ public class DanPlayer implements DrawHandler.Callback {
     private final Parser parser;
     private final Loader loader;
     private DanmakuView view;
+    private Future<?> future;
     private Players player;
 
     public DanPlayer() {
@@ -59,6 +61,13 @@ public class DanPlayer implements DrawHandler.Callback {
         return view != null && view.isPrepared();
     }
 
+    public DanPlayer cancel() {
+        if (future == null) return this;
+        future.cancel(true);
+        future = null;
+        return this;
+    }
+
     public void seekTo(long time) {
         App.execute(() -> {
             if (!isPrepared()) return;
@@ -69,34 +78,32 @@ public class DanPlayer implements DrawHandler.Callback {
 
     public void play() {
         App.execute(() -> {
-            if (!isPrepared()) return;
-            view.resume();
+            if (isPrepared()) view.resume();
         });
     }
 
     public void pause() {
         App.execute(() -> {
-            if (!isPrepared()) return;
-            view.pause();
+            if (isPrepared()) view.pause();
         });
     }
 
     public void stop() {
+        cancel();
         App.execute(() -> {
-            if (!isPrepared()) return;
-            view.stop();
+            if (view != null) view.stop();
         });
     }
 
     public void release() {
+        cancel();
         App.execute(() -> {
-            if (!isPrepared()) return;
-            view.release();
+            if (view != null) view.release();
         });
     }
 
     public void setDanmaku(Danmaku item) {
-        App.execute(() -> {
+        future = App.submit(() -> {
             if (view != null) view.release();
             if (item.isEmpty() || view == null) return;
             view.prepare(parser.load(loader.load(item).getDataSource()), context);
