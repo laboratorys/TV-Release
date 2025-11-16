@@ -32,8 +32,7 @@ public class Parser extends BaseDanmakuParser {
                 if (pattern == null) pattern = line.startsWith("<") ? XML : TXT;
                 Matcher matcher = pattern.matcher(line);
                 while (matcher.find() && matcher.groupCount() == 2) {
-                    DanmakuData data = new DanmakuData(matcher, mDispDensity);
-                    BaseDanmaku item = createDanmakuItem(data, index++);
+                    BaseDanmaku item = createDanmakuItem(matcher, index++);
                     if (item != null) synchronized (result.obtainSynchronizer()) {
                         result.addItem(item);
                     }
@@ -46,19 +45,24 @@ public class Parser extends BaseDanmakuParser {
         }
     }
 
-    private BaseDanmaku createDanmakuItem(DanmakuData data, int index) {
-        int type = data.getType();
-        if (type == 2 || type == 3) type = BaseDanmaku.TYPE_SCROLL_RL;
-        BaseDanmaku item = mContext.mDanmakuFactory.createDanmaku(type, mContext);
-        if (item == null || item.getType() == BaseDanmaku.TYPE_SPECIAL) return null;
-        DanmakuUtils.fillText(item, data.getText());
-        item.textShadowColor = data.getShadow();
-        item.textColor = data.getColor();
-        item.flags = mContext.mGlobalFlagValues;
-        item.textSize = data.getSize();
-        item.setTime(data.getTime());
-        item.setTimer(mTimer);
-        item.index = index;
-        return item;
+    private BaseDanmaku createDanmakuItem(Matcher matcher, int index) {
+        try {
+            DanmakuData data = new DanmakuData(matcher, mDispDensity);
+            int type = data.getType();
+            if (type == 2 || type == 3) type = BaseDanmaku.TYPE_SCROLL_RL;
+            BaseDanmaku item = mContext.mDanmakuFactory.createDanmaku(type, mContext);
+            if (item == null || item.getType() == BaseDanmaku.TYPE_SPECIAL) return null;
+            DanmakuUtils.fillText(item, data.getText());
+            item.textShadowColor = data.getShadow();
+            item.textColor = data.getColor();
+            item.flags = mContext.mGlobalFlagValues;
+            item.textSize = data.getSize();
+            item.setTime(data.getTime());
+            item.setTimer(mTimer);
+            item.index = index;
+            return item;
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 }
