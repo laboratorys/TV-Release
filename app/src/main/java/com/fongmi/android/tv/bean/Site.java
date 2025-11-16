@@ -116,12 +116,6 @@ public class Site implements Parcelable {
         }
     }
 
-    public static Site get(String key) {
-        Site site = new Site();
-        site.setKey(key);
-        return site;
-    }
-
     public static Site get(String key, String name) {
         Site site = new Site();
         site.setKey(key);

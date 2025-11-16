@@ -128,12 +128,6 @@ public class Live {
         }
     }
 
-    public static Live get(String name) {
-        Live live = new Live();
-        live.setName(name);
-        return live;
-    }
-
     public Live() {
     }
 

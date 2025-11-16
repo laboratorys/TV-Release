@@ -199,12 +199,10 @@ public class LiveConfig {
     private void initLive(Config config, JsonObject object) {
         String spider = Json.safeString(object, "spider");
         BaseLoader.get().parseJar(spider, false);
-        setLives(Json.safeListElement(object, "lives").stream().map(element -> Live.objectFrom(element, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
-        if (getLives().isEmpty()) return;
+        setLives(Json.safeListElement(object, "lives").stream().map(e -> Live.objectFrom(e, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
         Map<String, Live> items = Live.findAll().stream().collect(Collectors.toMap(Live::getName, Function.identity()));
-        for (Live live : getLives()) live.sync(items.get(live.getName()));
-        int index = getLives().indexOf(Live.get(config.getHome()));
-        setHome(config, index != -1 ? getLives().get(index) : getLives().get(0), false);
+        getLives().forEach(live -> live.sync(items.get(live.getName())));
+        setHome(config, getLives().isEmpty() ? new Live() : getLives().stream().filter(item -> item.getName().equals(config.getHome())).findFirst().orElse(getLives().get(0)), false);
     }
 
     private void bootLive() {
@@ -303,8 +301,7 @@ public class LiveConfig {
     }
 
     public Live getLive(String key) {
-        int index = getLives().indexOf(Live.get(key));
-        return index == -1 ? new Live() : getLives().get(index);
+        return getLives().stream().filter(item -> item.getName().equals(key)).findFirst().orElse(new Live());
     }
 
     public void setHome(Live home) {

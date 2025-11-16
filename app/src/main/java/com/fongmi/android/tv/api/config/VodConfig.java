@@ -191,19 +191,15 @@ public class VodConfig {
     private void initSite(Config config, JsonObject object) {
         String spider = Json.safeString(object, "spider");
         BaseLoader.get().parseJar(spider, true);
-        setSites(Json.safeListElement(object, "sites").stream().map(element -> Site.objectFrom(element, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
-        if (getSites().isEmpty()) return;
+        setSites(Json.safeListElement(object, "sites").stream().map(e -> Site.objectFrom(e, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
         Map<String, Site> items = Site.findAll().stream().collect(Collectors.toMap(Site::getKey, Function.identity()));
-        for (Site site : getSites()) site.sync(items.get(site.getKey()));
-        int index = getSites().indexOf(Site.get(config.getHome()));
-        setHome(config, index != -1 ? getSites().get(index) : getSites().get(0), false);
+        getSites().forEach(site -> site.sync(items.get(site.getKey())));
+        setHome(config, getSites().isEmpty() ? new Site() : getSites().stream().filter(item -> item.getKey().equals(config.getHome())).findFirst().orElse(getSites().get(0)), false);
     }
 
     private void initParse(Config config, JsonObject object) {
         setParses(Json.safeListElement(object, "parses").stream().map(Parse::objectFrom).distinct().collect(Collectors.toCollection(ArrayList::new)));
-        if (getParses().isEmpty()) return;
-        int index = getParses().indexOf(Parse.get(config.getParse()));
-        setParse(config, index != -1 ? getParses().get(index) : getParses().get(0), false);
+        setParse(config, getParses().isEmpty() ? new Parse() : getParses().stream().filter(item -> item.getName().equals(config.getParse())).findFirst().orElse(getParses().get(0)), false);
     }
 
     public List<Site> getSites() {
@@ -244,16 +240,13 @@ public class VodConfig {
     }
 
     public List<Parse> getParses(int type) {
-        List<Parse> items = new ArrayList<>();
-        for (Parse item : getParses()) if (item.getType() == type) items.add(item);
-        return items;
+        return getParses().stream().filter(item -> item.getType() == type).collect(Collectors.toList());
     }
 
     public List<Parse> getParses(int type, String flag) {
-        List<Parse> items = new ArrayList<>();
-        for (Parse item : getParses(type)) if (item.getExt().getFlag().contains(flag)) items.add(item);
-        if (items.isEmpty()) items.addAll(getParses(type));
-        return items;
+        List<Parse> items = getParses(type);
+        List<Parse> filter = items.stream().filter(item -> item.getExt().getFlag().contains(flag)).collect(Collectors.toList());
+        return filter.isEmpty() ? items : filter;
     }
 
     private void setHeaders(List<Header> headers) {
@@ -302,13 +295,11 @@ public class VodConfig {
     }
 
     public Parse getParse(String name) {
-        int index = getParses().indexOf(Parse.get(name));
-        return index == -1 ? null : getParses().get(index);
+        return getParses().stream().filter(item -> item.getName().equals(name)).findFirst().orElse(new Parse());
     }
 
     public Site getSite(String key) {
-        int index = getSites().indexOf(Site.get(key));
-        return index == -1 ? new Site() : getSites().get(index);
+        return getSites().stream().filter(item -> item.getKey().equals(key)).findFirst().orElse(new Site());
     }
 
     public void setParse(Parse parse) {
