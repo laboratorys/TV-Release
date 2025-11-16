@@ -103,6 +103,7 @@ public class DanPlayer implements DrawHandler.Callback {
     }
 
     public void setDanmaku(Danmaku item) {
+        cancel();
         future = App.submit(() -> {
             if (view != null) view.release();
             if (item.isEmpty() || view == null) return;
