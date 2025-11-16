@@ -91,7 +91,6 @@ public class DanPlayer implements DrawHandler.Callback {
     public void release() {
         App.execute(() -> {
             if (!isPrepared()) return;
-            loader.clear();
             view.release();
         });
     }

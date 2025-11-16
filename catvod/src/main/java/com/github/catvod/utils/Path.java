@@ -81,6 +81,10 @@ public class Path {
         return mkdir(new File(cache() + File.separator + "jpa"));
     }
 
+    public static File danmaku() {
+        return mkdir(new File(cache() + File.separator + "danmaku"));
+    }
+
     public static File thunder() {
         return mkdir(new File(cache() + File.separator + "thunder"));
     }
@@ -117,6 +121,10 @@ public class Path {
         return new File(jar(), Util.md5(name).concat(".jar"));
     }
 
+    public static File danmaku(String name) {
+        return new File(danmaku(), Util.md5(name));
+    }
+
     public static File thunder(String name) {
         return mkdir(new File(thunder(), name));
     }
@@ -128,11 +136,7 @@ public class Path {
     }
 
     public static String read(File file) {
-        try {
-            return new String(readToByte(file), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            return "";
-        }
+        return new String(readToByte(file), StandardCharsets.UTF_8);
     }
 
     public static String read(InputStream is) {
@@ -144,9 +148,11 @@ public class Path {
         }
     }
 
-    private static byte[] readToByte(File file) throws IOException {
+    public static byte[] readToByte(File file) {
         try (FileInputStream is = new FileInputStream(file)) {
             return readToByte(is);
+        } catch (IOException e) {
+            return new byte[0];
         }
     }
 
