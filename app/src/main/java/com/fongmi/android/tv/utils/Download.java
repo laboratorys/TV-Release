@@ -1,7 +1,5 @@
 package com.fongmi.android.tv.utils;
 
-import android.util.Log;
-
 import com.fongmi.android.tv.App;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
