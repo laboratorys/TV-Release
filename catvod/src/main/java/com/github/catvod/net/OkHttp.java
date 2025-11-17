@@ -135,16 +135,6 @@ public class OkHttp {
         }
     }
 
-    public static byte[] bytes(String url) {
-        if (!url.startsWith("http")) return new byte[0];
-        try (Response res = newCall(url).execute()) {
-            return res.body().bytes();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new byte[0];
-        }
-    }
-
     public static Call newCall(String url) {
         return client().newCall(new Request.Builder().url(url).build());
     }

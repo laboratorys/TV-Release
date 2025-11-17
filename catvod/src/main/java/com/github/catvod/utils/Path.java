@@ -128,14 +128,17 @@ public class Path {
     }
 
     public static String read(File file) {
-        return new String(readToByte(file), StandardCharsets.UTF_8);
+        try {
+            return new String(readToByte(file), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public static String read(InputStream is) {
         try {
             return new String(readToByte(is), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace();
             return "";
         }
     }
@@ -149,23 +152,31 @@ public class Path {
     }
 
     private static byte[] readToByte(InputStream is) throws IOException {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+        try (InputStream input = is; ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             int read;
             byte[] buffer = new byte[16384];
-            while ((read = is.read(buffer)) != -1) bos.write(buffer, 0, read);
+            while ((read = input.read(buffer)) != -1) bos.write(buffer, 0, read);
             return bos.toByteArray();
         }
     }
 
-    public static File write(File file, byte[] data) {
-        try {
-            FileOutputStream fos = new FileOutputStream(create(file));
-            fos.write(data);
-            fos.flush();
-            fos.close();
+    public static File write(File file, InputStream is) {
+        try (InputStream input = is; FileOutputStream output = new FileOutputStream(create(file))) {
+            int read;
+            byte[] buffer = new byte[16384];
+            while ((read = input.read(buffer)) != -1) output.write(buffer, 0, read);
             return file;
         } catch (IOException e) {
-            e.printStackTrace();
+            return file;
+        }
+    }
+
+    public static File write(File file, byte[] data) {
+        try (FileOutputStream fos = new FileOutputStream(create(file))) {
+            fos.write(data);
+            fos.flush();
+            return file;
+        } catch (IOException e) {
             return file;
         }
     }
@@ -184,13 +195,10 @@ public class Path {
     }
 
     public static void copy(InputStream in, File out) {
-        try {
+        try (InputStream input = in; FileOutputStream output = new FileOutputStream(create(out))) {
             int read;
             byte[] buffer = new byte[16384];
-            FileOutputStream fos = new FileOutputStream(create(out));
-            while ((read = in.read(buffer)) != -1) fos.write(buffer, 0, read);
-            fos.close();
-            in.close();
+            while ((read = input.read(buffer)) != -1) output.write(buffer, 0, read);
         } catch (IOException ignored) {
         }
     }
@@ -227,7 +235,6 @@ public class Path {
             Shell.exec("chmod 777 " + file);
             return file;
         } catch (IOException e) {
-            e.printStackTrace();
             return file;
         }
     }

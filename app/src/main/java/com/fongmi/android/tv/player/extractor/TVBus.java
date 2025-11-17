@@ -9,9 +9,9 @@ import com.fongmi.android.tv.api.config.LiveConfig;
 import com.fongmi.android.tv.bean.Core;
 import com.fongmi.android.tv.exception.ExtractException;
 import com.fongmi.android.tv.player.Source;
+import com.fongmi.android.tv.utils.Download;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.UrlUtil;
-import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
@@ -47,9 +47,8 @@ public class TVBus implements Source.Extractor, Listener {
     }
 
     private String getPath(String url) {
-        String name = UrlUtil.path(url);
-        File file = new File(Path.so(), name);
-        if (file.length() < 10240) Path.write(file, OkHttp.bytes(url));
+        File file = new File(Path.so(), UrlUtil.path(url));
+        Download.create(url, file).get(!Path.exists(file));
         return file.getAbsolutePath();
     }
 

@@ -32,6 +32,15 @@ public class Download {
         this.callback = callback;
     }
 
+    public File get() {
+        return get(true);
+    }
+
+    public File get(boolean force) {
+        if (force) performSync();
+        return file;
+    }
+
     public void start() {
         if (url.startsWith("file")) return;
         if (callback == null) performSync();
