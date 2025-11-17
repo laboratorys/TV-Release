@@ -35,7 +35,6 @@ public class Youtube implements Source.Extractor {
 
     private static final String MPD = "<MPD xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='urn:mpeg:dash:schema:mpd:2011' xsi:schemaLocation='urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd' type='static' mediaPresentationDuration='PT%sS' minBufferTime='PT1.500S' profiles='urn:mpeg:dash:profile:isoff-on-demand:2011'>\n" + "<Period duration='PT%sS' start='PT0S'>\n" + "%s\n" + "%s\n" + "</Period>\n" + "</MPD>";
     private static final String ADAPT = "<AdaptationSet lang='chi'>\n" + "<ContentComponent contentType='%s'/>\n" + "<Representation id='%d' bandwidth='%d' codecs='%s' mimeType='%s' %s>\n" + "<BaseURL>%s</BaseURL>\n" + "<SegmentBase indexRange='%s'>\n" + "<Initialization range='%s'/>\n" + "</SegmentBase>\n" + "</Representation>\n" + "</AdaptationSet>";
-    private static final Pattern PATTERN_LIST = Pattern.compile("(youtube\\.com|youtu\\.be).*list=");
 
     public Youtube() {
         NewPipe.init(NewPipeImpl.get(), Localization.fromLocale(Locale.getDefault()));
@@ -133,46 +132,41 @@ public class Youtube implements Source.Extractor {
     public void exit() {
     }
 
-    public static class Parser implements Callable<List<Episode>> {
+    public record Parser(String url) implements Callable<List<Episode>> {
 
-        private YoutubePlaylistExtractor extractor;
-        private final String url;
+        private static final Pattern PATTERN = Pattern.compile("(youtube\\.com|youtu\\.be).*list=");
 
         public static boolean match(String url) {
-            return PATTERN_LIST.matcher(url).find();
+            return PATTERN.matcher(url).find();
         }
 
         public static Parser get(String url) {
             return new Parser(url);
         }
 
-        public Parser(String url) {
-            this.url = url;
-        }
-
         @Override
         public List<Episode> call() {
             try {
                 ListLinkHandler handler = YoutubePlaylistLinkHandlerFactory.getInstance().fromUrl(url);
-                extractor = new YoutubePlaylistExtractor(ServiceList.YouTube, handler);
+                YoutubePlaylistExtractor extractor = new YoutubePlaylistExtractor(ServiceList.YouTube, handler);
                 extractor.forceLocalization(NewPipe.getPreferredLocalization());
                 extractor.fetchPage();
                 List<Episode> episodes = new ArrayList<>();
-                add(episodes, extractor.getInitialPage());
+                add(extractor, episodes, extractor.getInitialPage());
                 return episodes;
             } catch (Exception e) {
                 return Collections.emptyList();
             }
         }
 
-        private void add(List<Episode> episodes, ListExtractor.InfoItemsPage<StreamInfoItem> page) {
+        private void add(YoutubePlaylistExtractor extractor, List<Episode> episodes, ListExtractor.InfoItemsPage<StreamInfoItem> page) {
             for (StreamInfoItem item : page.getItems()) {
                 if (item.getDuration() == -1) continue;
                 episodes.add(Episode.create(item.getName(), item.getUrl()));
             }
             if (page.hasNextPage()) {
                 try {
-                    add(episodes, extractor.getPage(page.getNextPage()));
+                    add(extractor, episodes, extractor.getPage(page.getNextPage()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
