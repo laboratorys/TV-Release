@@ -7,22 +7,21 @@ import java.io.InputStream;
 
 import master.flame.danmaku.danmaku.loader.ILoader;
 import master.flame.danmaku.danmaku.parser.android.AndroidFileSource;
-import okhttp3.Response;
 
 public class Loader implements ILoader {
 
     private AndroidFileSource source;
 
     public Loader load(Danmaku item) {
-        OkHttp.cancel("danmaku");
         load(item.getRealUrl());
         return this;
     }
 
     @Override
     public void load(String url) {
-        try (Response res = OkHttp.newCall(url, "danmaku").execute()) {
-            load(res.body().byteStream());
+        try {
+            OkHttp.cancel("danmaku");
+            load(OkHttp.newCall(url, "danmaku").execute().body().byteStream());
         } catch (Throwable ignored) {
         }
     }
