@@ -6,6 +6,7 @@ import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.player.Players;
 import com.fongmi.android.tv.utils.ResUtil;
+import com.github.catvod.net.OkHttp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +60,7 @@ public class DanPlayer implements DrawHandler.Callback {
 
     public DanPlayer cancel() {
         if (future == null) return this;
+        OkHttp.cancel("danmaku");
         future.cancel(true);
         future = null;
         return this;

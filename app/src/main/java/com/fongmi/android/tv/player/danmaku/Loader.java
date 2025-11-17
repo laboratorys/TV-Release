@@ -20,7 +20,6 @@ public class Loader implements ILoader {
     @Override
     public void load(String url) {
         try {
-            OkHttp.cancel("danmaku");
             load(OkHttp.newCall(url, "danmaku").execute().body().byteStream());
         } catch (Throwable ignored) {
         }
