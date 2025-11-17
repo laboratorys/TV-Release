@@ -21,15 +21,11 @@ import master.flame.danmaku.ui.widget.DanmakuView;
 public class DanPlayer implements DrawHandler.Callback {
 
     private final DanmakuContext context;
-    private final Parser parser;
-    private final Loader loader;
     private DanmakuView view;
     private Future<?> future;
     private Players player;
 
     public DanPlayer() {
-        parser = new Parser();
-        loader = new Loader();
         context = DanmakuContext.create();
         initContext();
     }
@@ -107,7 +103,7 @@ public class DanPlayer implements DrawHandler.Callback {
         future = App.submit(() -> {
             if (view != null) view.release();
             if (item.isEmpty() || view == null) return;
-            view.prepare(parser.load(loader.load(item).getDataSource()), context);
+            view.prepare(new Parser().load(new Loader().load(item).getDataSource()), context);
         });
     }
 

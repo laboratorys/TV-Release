@@ -81,10 +81,6 @@ public class Path {
         return mkdir(new File(cache() + File.separator + "jpa"));
     }
 
-    public static File danmaku() {
-        return mkdir(new File(cache() + File.separator + "danmaku"));
-    }
-
     public static File thunder() {
         return mkdir(new File(cache() + File.separator + "thunder"));
     }
@@ -119,10 +115,6 @@ public class Path {
 
     public static File jar(String name) {
         return new File(jar(), Util.md5(name).concat(".jar"));
-    }
-
-    public static File danmaku(String name) {
-        return new File(danmaku(), Util.md5(name));
     }
 
     public static File thunder(String name) {

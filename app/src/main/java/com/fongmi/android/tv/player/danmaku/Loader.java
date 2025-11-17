@@ -1,29 +1,30 @@
 package com.fongmi.android.tv.player.danmaku;
 
 import com.fongmi.android.tv.bean.Danmaku;
-import com.fongmi.android.tv.utils.Download;
-import com.github.catvod.utils.Path;
+import com.github.catvod.net.OkHttp;
 
-import java.io.File;
 import java.io.InputStream;
 
 import master.flame.danmaku.danmaku.loader.ILoader;
 import master.flame.danmaku.danmaku.parser.android.AndroidFileSource;
+import okhttp3.Response;
 
 public class Loader implements ILoader {
 
     private AndroidFileSource source;
 
     public Loader load(Danmaku item) {
-        try { load(item.getRealUrl()); } catch (Throwable ignored) {}
+        OkHttp.cancel("danmaku");
+        load(item.getRealUrl());
         return this;
     }
 
     @Override
     public void load(String url) {
-        File file = Path.danmaku(url);
-        Download.create(url, file).start();
-        source = new AndroidFileSource(file);
+        try (Response res = OkHttp.newCall(url, "danmaku").execute()) {
+            load(res.body().byteStream());
+        } catch (Throwable ignored) {
+        }
     }
 
     @Override
