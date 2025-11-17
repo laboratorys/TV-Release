@@ -47,9 +47,9 @@ public class TVBus implements Source.Extractor, Listener {
     }
 
     private String getPath(String url) {
-        File file = new File(Path.so(), UrlUtil.path(url));
-        Download.create(url, file).get(!Path.exists(file));
-        return file.getAbsolutePath();
+        File so = new File(Path.so(), UrlUtil.path(url));
+        if (!Path.exists(so)) Download.create(url, so).get();
+        return so.getAbsolutePath();
     }
 
     @Override

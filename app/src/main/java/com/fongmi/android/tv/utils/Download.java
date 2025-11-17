@@ -1,5 +1,7 @@
 package com.fongmi.android.tv.utils;
 
+import android.util.Log;
+
 import com.fongmi.android.tv.App;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
@@ -8,7 +10,9 @@ import com.google.common.net.HttpHeaders;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Future;
 
 import okhttp3.Response;
 
@@ -17,71 +21,64 @@ public class Download {
     private final File file;
     private final String url;
     private Callback callback;
+    private Future<?> future;
+    private String tag;
 
     public static Download create(String url, File file) {
-        return create(url, file, null);
+        return new Download(url, file);
     }
 
-    public static Download create(String url, File file, Callback callback) {
-        return new Download(url, file, callback);
-    }
-
-    public Download(String url, File file, Callback callback) {
+    public Download(String url, File file) {
+        this.tag = url;
         this.url = url;
         this.file = file;
-        this.callback = callback;
+    }
+
+    public Download tag(String tag) {
+        this.tag = tag;
+        return this;
     }
 
     public File get() {
-        return get(true);
-    }
-
-    public File get(boolean force) {
-        if (force) performSync();
+        doInBackground();
         return file;
     }
 
-    public void start() {
-        if (url.startsWith("file")) return;
-        if (callback == null) performSync();
-        else App.execute(this::performAsync);
+    public void start(Callback callback) {
+        this.callback = callback;
+        future = App.submit(this::doInBackground);
     }
 
-    public void cancel() {
-        OkHttp.cancel(url);
-        Path.clear(file);
-        callback = null;
+    public Download cancel() {
+        if (future != null) future.cancel(true);
+        OkHttp.cancel(tag);
+        future = null;
+        return this;
     }
 
-    private void performSync() {
-        try (Response res = OkHttp.newCall(url, url).execute()) {
+    private void doInBackground() {
+        try (Response res = OkHttp.newCall(url, tag).execute()) {
             download(res.body().byteStream(), getLength(res));
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage(), e);
+            if (callback != null) App.post(() -> callback.success(file));
+        } catch (IOException e) {
+            Path.clear(file);
+            if (callback != null) App.post(() -> callback.error(e.getMessage()));
+            else throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    private void performAsync() {
-        try (Response res = OkHttp.newCall(url, url).execute()) {
-            download(res.body().byteStream(), getLength(res));
-            App.post(() -> {if (callback != null) callback.success(file);});
-        } catch (Exception e) {
-            App.post(() -> {if (callback != null) callback.error(e.getMessage());});
-        }
-    }
-
-    private void download(InputStream is, double length) throws Exception {
+    private void download(InputStream is, double length) throws IOException {
         try (BufferedInputStream input = new BufferedInputStream(is); FileOutputStream os = new FileOutputStream(Path.create(file))) {
             byte[] buffer = new byte[16384];
             int readBytes;
             long totalBytes = 0;
             while ((readBytes = input.read(buffer)) != -1) {
+                if (Thread.interrupted()) return;
                 totalBytes += readBytes;
                 os.write(buffer, 0, readBytes);
                 if (length <= 0) continue;
                 int progress = (int) (totalBytes / length * 100.0);
-                App.post(() -> {if (callback != null) callback.progress(progress);});
+                if (callback != null) App.post(() -> callback.progress(progress));
             }
         }
     }

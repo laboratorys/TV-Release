@@ -36,7 +36,7 @@ public class EpgParser {
 
     public static boolean start(Live live, String url) throws Exception {
         File file = Path.epg(Uri.parse(url).getLastPathSegment());
-        Download.create(url, file).get(shouldDownload(file));
+        if (shouldDownload(file)) Download.create(url, file).get();
         if (file.getName().endsWith(".gz")) readGzip(live, file);
         else readXml(live, file);
         return true;
