@@ -22,11 +22,7 @@ public class Loader implements ILoader {
     @Override
     public void load(String url) {
         File file = Path.danmaku(url);
-        if (!Path.exists(file)) Download.create(url, file).start();
-        load(file);
-    }
-
-    public void load(File file) {
+        Download.create(url, file).start();
         source = new AndroidFileSource(file);
     }
 
