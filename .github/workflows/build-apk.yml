@@ -15,7 +15,7 @@ jobs:
       - name: 🛒 Checkout TV project
         uses: actions/checkout@v5
         with:
-          repository: laboratorys/TV # 目标仓库
+          repository: laboratorys/TV-Release # 目标仓库
           ref: lab # 指定分支
           path: tv-app # 代码存放目录
           fetch-depth: 0
