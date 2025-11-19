@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ANDROID_BUILD_TOOLS: "34.0.0" # 指定构建工具版本
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false" # 禁用Gradle守护进程
+      GRADLE_OPTS: "-Dorg.gradle.caching=true -Dorg.gradle.parallel=true"
       ANDROID_HOME: /usr/local/lib/android/sdk
     steps:
       # 1. 拉取目标仓库代码
@@ -177,8 +177,5 @@ jobs:
             - Variants: mobile, leanback
             - ABIs: armeabi_v7a, arm64_v8a
           files: |
-            release_apks/leanback-arm64_v8a.apk
-            release_apks/leanback-armeabi_v7a.apk
-            release_apks/mobile-arm64_v8a.apk
-            release_apks/mobile-armeabi_v7a.apk
+            tv-app/release_apks/*.apk
           token: ${{ secrets.GITHUB_TOKEN }}
