@@ -124,7 +124,7 @@ dependencies {
     leanbackImplementation 'com.github.JessYanCoding:AndroidAutoSize:1.2.1'
     mobileImplementation 'androidx.biometric:biometric:1.1.0'
     mobileImplementation 'com.google.android.flexbox:flexbox:3.0.0'
-    mobileImplementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
+    mobileImplementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     annotationProcessor 'androidx.room:room-compiler:2.8.3'
     annotationProcessor 'com.github.bumptech.glide:compiler:' + glideVersion
     annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.3.1'
