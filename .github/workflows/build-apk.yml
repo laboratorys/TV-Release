@@ -159,6 +159,9 @@ jobs:
           # 打印最终APK列表
           echo "📦 生成的APK文件："
           ls -lh release_apks/
+      - name: Generate current time
+        id: datetime
+        run: echo "CURRENT_TIME=$(date -u +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
       # 7. 创建 Release 并上传 APK
       - name: 🚀 Upload to Release
         if: steps.build-control.outputs.should_build == 'true'
@@ -169,9 +172,12 @@ jobs:
           body: |
             ✨ Multi-ABI APK Build
             - Version: ${{ steps.version.outputs.version }}
-            - Build Date: $(date +'%Y-%m-%d %H:%M:%S')
+            - Build Date: ${{ steps.datetime.outputs.CURRENT_TIME }}
             - Variants: mobile, leanback
             - ABIs: armeabi_v7a, arm64_v8a
           files: |
-            release_apks/*.apk
+            release_apks/leanback-arm64_v8a.apk
+            release_apks/leanback-armeabi_v7a.apk
+            release_apks/mobile-arm64_v8a.apk
+            release_apks/mobile-armeabi_v7a.apk
           token: ${{ secrets.GITHUB_TOKEN }}
