@@ -18,6 +18,5 @@ jobs:
         with:
           source_repo: "FongMi/TV"
           source_branch: "fongmi"
-          destination_repo: "laboratorys/TV"
           destination_branch: "lab"
           github_token: "${{ secrets.CUSTOM_GITHUB_TOKEN }}"
