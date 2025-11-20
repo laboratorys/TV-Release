@@ -137,19 +137,14 @@ public class Group {
         return getChannel().lastIndexOf(Channel.create(name));
     }
 
-    public Channel find(Channel target) {
-        for (Channel item : getChannel()) if (item.equals(target)) return item;
-        return null;
-    }
-
-    public void keep(Channel channel) {
-        Channel exist = find(channel);
+    public void add(Channel channel) {
+        Channel exist = getChannel().stream().filter(item -> item.equals(channel)).findFirst().orElse(null);
         if (exist != null) exist.getUrls().addAll(channel.getUrls());
         else getChannel().add(Channel.create(channel));
     }
 
-    public Channel add(Channel channel) {
-        Channel exist = find(channel);
+    public Channel find(Channel channel) {
+        Channel exist = getChannel().stream().filter(item -> item.equals(channel)).findFirst().orElse(null);
         if (exist != null) return exist;
         getChannel().add(channel);
         return channel;

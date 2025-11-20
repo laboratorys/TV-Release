@@ -224,7 +224,7 @@ public class LiveConfig {
         items.stream().filter(group -> !group.isKeep())
                 .flatMap(group -> group.getChannel().stream())
                 .filter(channel -> key.contains(channel.getName()))
-                .forEach(channel -> items.get(0).keep(channel));
+                .forEach(channel -> items.get(0).add(channel));
     }
 
     public int[] find(List<Group> items) {

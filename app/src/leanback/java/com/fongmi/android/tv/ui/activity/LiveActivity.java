@@ -586,7 +586,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void addKeep(Channel item) {
-        getKeep().keep(item);
+        getKeep().add(item);
         Keep keep = new Keep();
         keep.setKey(item.getName());
         keep.setType(1);

@@ -99,7 +99,7 @@ public class LiveParser {
                 if (live.getEpg().isEmpty()) live.setEpg(extract(line, "tvg-url=", "url-tvg="));
             } else if (line.startsWith("#EXTINF:")) {
                 Group group = live.find(Group.create(extract(line, GROUP), live.isPass()));
-                channel = group.add(Channel.create(extract(line, NAME)));
+                channel = group.find(Channel.create(extract(line, NAME)));
                 channel.setUa(extract(line, HTTP_USER_AGENT));
                 channel.setTvgName(extract(line, TVG_NAME));
                 channel.setNumber(extract(line, TVG_CHNO));
@@ -131,7 +131,7 @@ public class LiveParser {
             if (split.length > 1 && live.getGroups().isEmpty()) live.getGroups().add(Group.create());
             if (split.length > 1 && split[1].contains("://")) {
                 Group group = live.getGroups().get(live.getGroups().size() - 1);
-                Channel channel = group.add(Channel.create(split[0]));
+                Channel channel = group.find(Channel.create(split[0]));
                 for (String url : split[1].split("#")) {
                     String[] parts = url.split("\\|", 2);
                     if (parts.length > 1) setting.headers(parts[1]);
