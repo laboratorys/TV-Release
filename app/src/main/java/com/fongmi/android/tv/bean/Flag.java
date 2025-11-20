@@ -97,7 +97,7 @@ public class Flag implements Parcelable, Diffable<Flag> {
 
     public void toggle(boolean activated, Episode episode) {
         if (activated) setActivated(episode);
-        else for (Episode item : getEpisodes()) item.deactivated();
+        else getEpisodes().forEach(Episode::deactivated);
     }
 
     private void setActivated(Episode episode) {
