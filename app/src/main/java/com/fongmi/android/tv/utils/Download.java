@@ -58,7 +58,7 @@ public class Download {
         try (Response res = OkHttp.newCall(url, tag).execute()) {
             download(res.body().byteStream(), getLength(res));
             if (callback != null) App.post(() -> callback.success(file));
-        } catch (IOException e) {
+        } catch (Exception e) {
             Path.clear(file);
             if (callback != null) App.post(() -> callback.error(e.getMessage()));
             else throw new RuntimeException(e.getMessage(), e);

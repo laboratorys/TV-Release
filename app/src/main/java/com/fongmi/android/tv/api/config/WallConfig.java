@@ -24,6 +24,7 @@ import com.github.catvod.utils.Path;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InterruptedIOException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -68,7 +69,7 @@ public class WallConfig {
     }
 
     private boolean isCanceled(Throwable e) {
-        return e instanceof InterruptedException || e instanceof RuntimeException;
+        return "Canceled".equals(e.getMessage()) || e instanceof InterruptedException || e.getCause() instanceof InterruptedIOException;
     }
 
     public void load() {
@@ -85,7 +86,7 @@ public class WallConfig {
     private void loadConfig(int id, Config config, Callback callback) {
         try {
             OkHttp.cancel(TAG);
-            download(id, callback);
+            download(id, config.getUrl(), callback);
             if (taskId.get() == id) config.update();
         } catch (Throwable e) {
             e.printStackTrace();
@@ -98,10 +99,10 @@ public class WallConfig {
         }
     }
 
-    private void download(int id, Callback callback) throws Throwable {
+    private void download(int id, String url, Callback callback) throws Throwable {
         File file = FileUtil.getWall(0);
-        if (getUrl().startsWith("file")) Path.copy(Path.local(getUrl()), file);
-        else Download.create(UrlUtil.convert(getUrl()), file).tag(TAG).get();
+        if (url.startsWith("file")) Path.copy(Path.local(url), file);
+        else Download.create(UrlUtil.convert(url), file).tag(TAG).get();
         if (!Path.exists(file)) throw new FileNotFoundException();
         if (taskId.get() != id) return;
         setWallType(file);
