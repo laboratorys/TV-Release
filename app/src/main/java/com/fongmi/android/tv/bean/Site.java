@@ -289,7 +289,7 @@ public class Site implements Parcelable {
 
     public Site trans() {
         if (Trans.pass()) return this;
-        setName(Trans.s2t(getName()));
+        this.name = Trans.s2t(name);
         setCategories(getCategories().stream().map(Trans::s2t).toList());
         return this;
     }

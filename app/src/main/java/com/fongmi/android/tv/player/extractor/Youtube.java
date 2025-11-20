@@ -9,7 +9,6 @@ import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.impl.NewPipeImpl;
 import com.fongmi.android.tv.player.Source;
 import com.fongmi.android.tv.utils.UrlUtil;
-import com.github.catvod.utils.Trans;
 
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -49,22 +48,22 @@ public class Youtube implements Source.Extractor {
     @Override
     public String fetch(String url) throws Exception {
         StreamInfo info = StreamInfo.getInfo(url);
-        RefreshEvent.vod(convert(info));
+        RefreshEvent.vod(convert(info).trans());
         return isLive(info) ? getLive(info) : getMpd(info);
     }
 
     private Vod convert(StreamInfo info) {
         try {
             Vod vod = new Vod();
-            vod.setVodName(Trans.s2t(info.getName()));
-            vod.setVodDirector(Trans.s2t(info.getUploaderName()));
-            vod.setVodContent(Trans.s2t(info.getDescription().getContent()));
+            vod.setVodName(info.getName());
+            vod.setVodDirector(info.getUploaderName());
+            vod.setVodContent(info.getDescription().getContent());
             vod.setVodPic(info.getThumbnails().get(info.getThumbnails().size() - 1).getUrl());
             return vod;
         } catch (Exception e) {
             Vod vod = new Vod();
-            vod.setVodName(Trans.s2t(info.getName()));
-            vod.setVodContent(Trans.s2t(info.getDescription().getContent()));
+            vod.setVodName(info.getName());
+            vod.setVodContent(info.getDescription().getContent());
             return vod;
         }
     }

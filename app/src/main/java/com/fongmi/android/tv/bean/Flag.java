@@ -41,11 +41,6 @@ public class Flag implements Parcelable, Diffable<Flag> {
         return new Flag(flag);
     }
 
-    public Flag() {
-        this.episodes = new ArrayList<>();
-        this.position = -1;
-    }
-
     public Flag(String flag) {
         this.episodes = new ArrayList<>();
         this.show = Trans.s2t(flag);

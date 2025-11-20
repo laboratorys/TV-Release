@@ -319,7 +319,7 @@ public class Live {
 
     public Live trans() {
         if (Trans.pass()) return this;
-        setName(Trans.s2t(getName()));
+        this.name = Trans.s2t(name);
         return this;
     }
 
