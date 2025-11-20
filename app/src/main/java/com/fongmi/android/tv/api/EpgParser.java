@@ -11,7 +11,6 @@ import com.fongmi.android.tv.utils.Download;
 import com.fongmi.android.tv.utils.FileUtil;
 import com.fongmi.android.tv.utils.Util;
 import com.github.catvod.utils.Path;
-import com.github.catvod.utils.Trans;
 
 import org.simpleframework.xml.core.Persister;
 
@@ -21,6 +20,7 @@ import java.util.AbstractMap;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -81,7 +81,7 @@ public class EpgParser {
 
     private static XmlData parseXmlData(File file) throws Exception {
         Tv tv = new Persister().read(Tv.class, file, false);
-        Map<String, Tv.Channel> map = tv.getChannel().stream().collect(Collectors.toMap(Tv.Channel::getId, channel -> channel));
+        Map<String, List<Tv.Channel>> map = tv.getChannel().stream().collect(Collectors.groupingBy(Tv.Channel::getId));
         return new XmlData(tv, map);
     }
 
@@ -97,17 +97,15 @@ public class EpgParser {
             String liveTvgId = targetChannel.getTvgId();
             Date endDate = Util.parse(formatFull, programme.getStop());
             epgMap.computeIfAbsent(liveTvgId, key -> Epg.create(key, today)).getList().add(getEpgData(startDate, endDate, programme));
-            Optional.ofNullable(data.map.get(xmlChannelId)).filter(Tv.Channel::hasSrc).ifPresent(ch -> srcMap.putIfAbsent(liveTvgId, ch.getSrc()));
+            Optional.ofNullable(data.map.get(xmlChannelId)).flatMap(list -> list.stream().filter(Tv.Channel::hasSrc).findFirst()).ifPresent(ch -> srcMap.putIfAbsent(liveTvgId, ch.getSrc()));
         }
         return new ProgrammeResult(epgMap, srcMap);
     }
 
-    private static Channel findTargetChannel(String xmlChannelId, Map<String, Channel> liveChannelMap, Map<String, Tv.Channel> xmlChannelIdMap) {
+    private static Channel findTargetChannel(String xmlChannelId, Map<String, Channel> liveChannelMap, Map<String, List<Tv.Channel>> xmlChannelIdMap) {
         Channel targetChannel = liveChannelMap.get(xmlChannelId);
         if (targetChannel != null) return targetChannel;
-        return Optional.ofNullable(xmlChannelIdMap.get(xmlChannelId)).flatMap(xmlChannel -> xmlChannel.getDisplayName().stream()
-                .map(Tv.DisplayName::getText).filter(name -> !name.isEmpty()).filter(liveChannelMap::containsKey)
-                .findFirst().map(liveChannelMap::get)).orElse(null);
+        return Optional.ofNullable(xmlChannelIdMap.get(xmlChannelId)).flatMap(list -> list.stream().findFirst()).flatMap(xmlChannel -> xmlChannel.getDisplayName().stream().map(Tv.DisplayName::getText).filter(name -> !name.isEmpty()).filter(liveChannelMap::containsKey).findFirst().map(liveChannelMap::get)).orElse(null);
     }
 
     private static void bindResultsToLive(Live live, ProgrammeResult result) {
@@ -129,11 +127,12 @@ public class EpgParser {
     private static EpgData getEpgData(Date startDate, Date endDate, Tv.Programme programme) {
         try {
             EpgData epgData = new EpgData();
-            epgData.setTitle(Trans.s2t(programme.getTitle()));
+            epgData.setTitle(programme.getTitle());
             epgData.setStart(formatTime.format(startDate));
             epgData.setEnd(formatTime.format(endDate));
             epgData.setStartTime(startDate.getTime());
             epgData.setEndTime(endDate.getTime());
+            epgData.trans();
             return epgData;
         } catch (Exception e) {
             return new EpgData();
@@ -143,9 +142,9 @@ public class EpgParser {
     private static class XmlData {
 
         Tv tv;
-        Map<String, Tv.Channel> map;
+        Map<String, List<Tv.Channel>> map;
 
-        public XmlData(Tv tv, Map<String, Tv.Channel> map) {
+        public XmlData(Tv tv, Map<String, List<Tv.Channel>> map) {
             this.tv = tv;
             this.map = map;
         }
