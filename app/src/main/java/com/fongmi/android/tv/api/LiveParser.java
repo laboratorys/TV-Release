@@ -58,25 +58,23 @@ public class LiveParser {
     }
 
     public static void text(Live live, String text) {
-        int number = 0;
         if (!live.getGroups().isEmpty()) return;
         if (M3U.matcher(text).find()) m3u(live, text);
         else txt(live, text);
-        for (Group group : live.getGroups()) {
-            for (Channel channel : group.getChannel()) {
-                if (channel.getNumber().isEmpty()) channel.setNumber(++number);
-                channel.live(live);
-            }
-        }
+        apply(live);
     }
 
     private static void json(Live live, String text) {
-        int number = 0;
         live.getGroups().addAll(Group.arrayFrom(text));
+        apply(live);
+    }
+
+    private static void apply(Live live) {
+        int number = 0;
         for (Group group : live.getGroups()) {
-            for (Channel channel : group.getChannel()) {
+            for (Channel channel : group.trans().getChannel()) {
                 if (channel.getNumber().isEmpty()) channel.setNumber(++number);
-                channel.live(live);
+                channel.trans().live(live);
             }
         }
     }

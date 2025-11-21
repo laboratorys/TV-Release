@@ -610,7 +610,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
         if (item.isSelected()) {
             fetch(item);
         } else if (mChannel.hasCatchup()) {
-            mBinding.control.title.setText(getString(R.string.detail_title, mChannel.getName(), item.getTitle()));
+            mBinding.control.title.setText(getString(R.string.detail_title, mChannel.getShow(), item.getTitle()));
             Notify.show(getString(R.string.play_ready, item.getTitle()));
             mEpgDataAdapter.setSelected(item);
             fetch(item);
@@ -637,9 +637,9 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
         mBinding.widget.name.setMaxEms(48);
         mChannel.loadLogo(mBinding.widget.logo);
         mBinding.control.title.setSelected(true);
-        mBinding.widget.name.setText(mChannel.getName());
-        mBinding.control.title.setText(mChannel.getName());
-        mBinding.widget.namePip.setText(mChannel.getName());
+        mBinding.widget.name.setText(mChannel.getShow());
+        mBinding.control.title.setText(mChannel.getShow());
+        mBinding.widget.namePip.setText(mChannel.getShow());
         mBinding.widget.line.setText(mChannel.getLineText());
         mBinding.widget.number.setText(mChannel.getNumber());
         mBinding.widget.numberPip.setText(mChannel.getNumber());
@@ -652,7 +652,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
         EpgData data = mChannel.getData().getEpgData();
         boolean hasTitle = !data.getTitle().isEmpty();
         mEpgDataAdapter.addAll(mChannel.getData().getList());
-        if (hasTitle) mBinding.control.title.setText(getString(R.string.detail_title, mChannel.getName(), data.getTitle()));
+        if (hasTitle) mBinding.control.title.setText(getString(R.string.detail_title, mChannel.getShow(), data.getTitle()));
         mBinding.widget.name.setMaxEms(hasTitle ? 12 : 48);
         mBinding.widget.play.setText(data.format());
         setWidth(mChannel.getData());

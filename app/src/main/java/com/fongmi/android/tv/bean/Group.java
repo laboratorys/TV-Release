@@ -8,6 +8,7 @@ import androidx.annotation.StringRes;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.utils.ResUtil;
+import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
@@ -152,6 +153,12 @@ public class Group {
 
     public Channel current() {
         return getChannel().get(getPosition()).group(this);
+    }
+
+    public Group trans() {
+        if (Trans.pass()) return this;
+        this.name = Trans.s2t(name);
+        return this;
     }
 
     @Override

@@ -38,12 +38,11 @@ public class Flag implements Parcelable, Diffable<Flag> {
     private int position;
 
     public static Flag create(String flag) {
-        return new Flag(flag);
+        return new Flag(flag).trans();
     }
 
     public Flag(String flag) {
         this.episodes = new ArrayList<>();
-        this.show = Trans.s2t(flag);
         this.flag = flag;
         this.position = -1;
     }
@@ -121,6 +120,12 @@ public class Flag implements Parcelable, Diffable<Flag> {
         Flag item = Flag.create(flag);
         item.getEpisodes().add(Episode.create("01", url));
         return Arrays.asList(item);
+    }
+
+    public Flag trans() {
+        if (Trans.pass()) return this;
+        this.show = Trans.s2t(flag);
+        return this;
     }
 
     @Override

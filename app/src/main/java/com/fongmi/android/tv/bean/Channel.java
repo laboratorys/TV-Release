@@ -11,6 +11,7 @@ import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.utils.ImgUtil;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.github.catvod.utils.Json;
+import com.github.catvod.utils.Trans;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
@@ -57,6 +58,7 @@ public class Channel {
 
     private boolean selected;
     private Group group;
+    private String show;
     private Epg data;
     private int line;
 
@@ -121,6 +123,14 @@ public class Channel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getShow() {
+        return TextUtils.isEmpty(show) ? getName() : show;
+    }
+
+    public void setShow(String show) {
+        this.show = show;
     }
 
     public String getUa() {
@@ -340,6 +350,7 @@ public class Channel {
         setTvgId(item.getTvgId());
         setLogo(item.getLogo());
         setName(item.getName());
+        setShow(item.getShow());
         setUrls(item.getUrls());
         setData(item.getData());
         setDrm(item.getDrm());
@@ -357,6 +368,12 @@ public class Channel {
         result.setFormat(getFormat());
         result.setHeader(Json.toObject(getHeaders()));
         return result;
+    }
+
+    public Channel trans() {
+        if (Trans.pass()) return this;
+        this.show = Trans.s2t(name);
+        return this;
     }
 
     @Override
