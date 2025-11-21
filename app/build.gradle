@@ -96,7 +96,7 @@ dependencies {
     implementation 'androidx.media:media:1.7.1'
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
-    implementation 'androidx.room:room-runtime:2.8.3'
+    implementation 'androidx.room:room-runtime:2.8.4'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
     implementation 'com.airbnb.android:lottie:6.7.1'
@@ -125,7 +125,7 @@ dependencies {
     mobileImplementation 'androidx.biometric:biometric:1.1.0'
     mobileImplementation 'com.google.android.flexbox:flexbox:3.0.0'
     mobileImplementation 'com.journeyapps:zxing-android-embedded:4.3.0'
-    annotationProcessor 'androidx.room:room-compiler:2.8.3'
+    annotationProcessor 'androidx.room:room-compiler:2.8.4'
     annotationProcessor 'com.github.bumptech.glide:compiler:' + glideVersion
     annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.3.1'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
