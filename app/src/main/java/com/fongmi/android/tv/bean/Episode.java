@@ -2,6 +2,7 @@ package com.fongmi.android.tv.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
@@ -43,7 +44,7 @@ public class Episode implements Parcelable, Diffable<Episode> {
     }
 
     public String getName() {
-        return name;
+        return TextUtils.isEmpty(name) ? "" : name;
     }
 
     public void setName(String name) {
@@ -51,11 +52,11 @@ public class Episode implements Parcelable, Diffable<Episode> {
     }
 
     public String getDesc() {
-        return desc;
+        return TextUtils.isEmpty(desc) ? "" : desc;
     }
 
     public String getUrl() {
-        return url;
+        return TextUtils.isEmpty(url) ? "" : url;
     }
 
     public int getIndex() {
