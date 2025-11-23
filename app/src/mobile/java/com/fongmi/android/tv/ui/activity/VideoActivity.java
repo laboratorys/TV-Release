@@ -14,6 +14,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1618,7 +1619,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     @Override
     protected void onStart() {
         super.onStart();
-        mBinding.exo.setPlayer(mPlayers.get());
         mClock.stop().start();
         setAudioOnly(false);
         setStop(false);
@@ -1642,7 +1642,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         if (Setting.isBackgroundOff()) mClock.stop();
         if (Setting.isBackgroundOff()) onPaused();
         if (!isAudioOnly()) setStop(true);
-        mBinding.exo.setPlayer(null);
     }
 
     @Override

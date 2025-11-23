@@ -1119,7 +1119,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     @Override
     protected void onStart() {
         super.onStart();
-        mBinding.exo.setPlayer(mPlayers.get());
         setAudioOnly(false);
         setStop(false);
     }
@@ -1141,7 +1140,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
         super.onStop();
         if (Setting.isBackgroundOff()) onPaused();
         if (!isAudioOnly()) setStop(true);
-        mBinding.exo.setPlayer(null);
     }
 
     @Override
