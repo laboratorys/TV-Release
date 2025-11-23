@@ -258,6 +258,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         String id = Objects.toString(intent.getStringExtra("id"), "");
         if (TextUtils.isEmpty(id) || id.equals(getId())) return;
         getIntent().putExtras(intent);
+        saveHistory();
         checkId();
     }
 

@@ -266,6 +266,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         if (TextUtils.isEmpty(id) || id.equals(getId())) return;
         mBinding.swipeLayout.setRefreshing(true);
         getIntent().putExtras(intent);
+        saveHistory();
         setOrient();
         checkId();
     }
