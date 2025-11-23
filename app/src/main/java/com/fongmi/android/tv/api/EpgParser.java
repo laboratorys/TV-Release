@@ -75,8 +75,15 @@ public class EpgParser {
     private static Map<String, Channel> prepareLiveChannels(Live live) {
         return live.getGroups().stream()
                 .flatMap(group -> group.getChannel().stream())
-                .flatMap(channel -> Stream.of(channel.getTvgId(), channel.getTvgName(), channel.getName()).filter(key -> !key.isEmpty()).map(key -> new AbstractMap.SimpleEntry<>(key, channel)))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, HashMap::new));
+                .flatMap(channel -> Stream.of(channel.getTvgId(), channel.getTvgName(), channel.getName())
+                        .filter(key -> !key.isEmpty())
+                        .map(key -> new AbstractMap.SimpleEntry<>(key, channel)))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue,
+                        HashMap::new
+                ));
     }
 
     private static XmlData parseXmlData(File file) throws Exception {
@@ -105,7 +112,16 @@ public class EpgParser {
     private static Channel findTargetChannel(String xmlChannelId, Map<String, Channel> liveChannelMap, Map<String, List<Tv.Channel>> xmlChannelIdMap) {
         Channel targetChannel = liveChannelMap.get(xmlChannelId);
         if (targetChannel != null) return targetChannel;
-        return Optional.ofNullable(xmlChannelIdMap.get(xmlChannelId)).flatMap(list -> list.stream().findFirst()).flatMap(xmlChannel -> xmlChannel.getDisplayName().stream().map(Tv.DisplayName::getText).filter(name -> !name.isEmpty()).filter(liveChannelMap::containsKey).findFirst().map(liveChannelMap::get)).orElse(null);
+        List<Tv.Channel> channels = xmlChannelIdMap.get(xmlChannelId);
+        if (channels == null) return null;
+        return channels.stream()
+                .flatMap(xmlChannel -> xmlChannel.getDisplayName().stream())
+                .map(Tv.DisplayName::getText)
+                .filter(name -> !name.isEmpty())
+                .filter(liveChannelMap::containsKey)
+                .findFirst()
+                .map(liveChannelMap::get)
+                .orElse(null);
     }
 
     private static void bindResultsToLive(Live live, ProgrammeResult result) {
