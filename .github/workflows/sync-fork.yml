@@ -17,6 +17,6 @@ jobs:
         uses: repo-sync/github-sync@v2
         with:
           source_repo: "FongMi/TV"
-          source_branch: "release"
+          source_branch: "fongmi"
           destination_branch: "lab"
           github_token: "${{ secrets.CUSTOM_GITHUB_TOKEN }}"
