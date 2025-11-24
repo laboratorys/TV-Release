@@ -84,15 +84,15 @@ jobs:
           echo "$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS }}" >> $GITHUB_PATH
           echo "Build tools path configured"
       # 4. 缓存 Gradle 依赖（加速构建）
-      - name: 🏗️ Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            tv-app/last_build_commit.txt
-            tv-app/.gradle
-          key: ${{ runner.os }}-gradle-${{ hashFiles('tv-app/gradle/wrapper/gradle-wrapper.properties', 'tv-app/build.gradle') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      #- name: 🏗️ Cache Gradle
+      #  uses: actions/cache@v4
+      #  with:
+      #    path: |
+      #      tv-app/last_build_commit.txt
+      #      tv-app/.gradle
+      #    key: ${{ runner.os }}-gradle-${{ hashFiles('tv-app/gradle/wrapper/gradle-wrapper.properties', 'tv-app/build.gradle') }}
+      #    restore-keys: |
+      #      ${{ runner.os }}-gradle-
       # 5. 构建 APK（需提前配置签名信息）
       - name: 🔨 Build & Sign APK
         if: steps.build-control.outputs.should_build == 'true'
@@ -112,7 +112,7 @@ jobs:
           
           # 执行 Gradle 签名构建
           echo "🚀 Building signed APK..."
-          ./gradlew assembleRelease --console=plain --no-daemon
+          ./gradlew clean assembleRelease --console=plain --no-daemon
           
           mkdir -p release_apks
           
