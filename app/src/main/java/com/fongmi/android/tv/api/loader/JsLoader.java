@@ -42,7 +42,7 @@ public class JsLoader {
         }
     }
 
-    public Object[] proxyInvoke(Map<String, String> params) throws Exception {
-        return spiders.get(recent).proxyLocal(params);
+    public Object[] proxy(Map<String, String> params) throws Exception {
+        return spiders.get(recent).proxy(params);
     }
 }

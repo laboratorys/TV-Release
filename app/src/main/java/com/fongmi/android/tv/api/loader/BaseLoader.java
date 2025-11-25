@@ -74,11 +74,11 @@ public class BaseLoader {
         else if (csp) jarLoader.setRecent(Util.md5(jar));
     }
 
-    public Object[] proxyLocal(Map<String, String> params) throws Exception {
-        if (params.containsKey("siteKey")) return getSpider(params.get("siteKey")).proxyLocal(params);
-        if ("js".equals(params.get("do"))) return jsLoader.proxyInvoke(params);
-        if ("py".equals(params.get("do"))) return pyLoader.proxyInvoke(params);
-        return jarLoader.proxyInvoke(params);
+    public Object[] proxy(Map<String, String> params) throws Exception {
+        if (params.containsKey("siteKey")) return getSpider(params.get("siteKey")).proxy(params);
+        if ("js".equals(params.get("do"))) return jsLoader.proxy(params);
+        if ("py".equals(params.get("do"))) return pyLoader.proxy(params);
+        return jarLoader.proxy(params);
     }
 
     public void parseJar(String jar, boolean recent) {
