@@ -142,8 +142,6 @@ public class LiveParser {
 
     private static class Setting {
 
-        private final Map<String, String> header;
-        private final Map<String, String> drmHeader;
         private String ua;
         private String key;
         private String type;
@@ -152,6 +150,8 @@ public class LiveParser {
         private String origin;
         private String referer;
         private Integer parse;
+        private Map<String, String> header;
+        private Map<String, String> drmHeader;
 
         private static Setting create() {
             return new Setting();
@@ -187,13 +187,13 @@ public class LiveParser {
         }
 
         private Setting copy(Channel channel) {
-            channel.setHeader(header);
             if (ua != null) channel.setUa(ua);
             if (parse != null) channel.setParse(parse);
             if (click != null) channel.setClick(click);
             if (format != null) channel.setFormat(format);
             if (origin != null) channel.setOrigin(origin);
             if (referer != null) channel.setReferer(referer);
+            if (!header.isEmpty()) channel.setHeader(header);
             if (key != null && type != null) channel.setDrm(Drm.create(key, type, drmHeader));
             return this;
         }
@@ -302,10 +302,8 @@ public class LiveParser {
 
         private void header(String line) {
             try {
-                Map<String, String> map = null;
-                if (line.contains("#EXTHTTP:")) map = Json.toMap(Json.parse(line.split("#EXTHTTP:")[1].trim()));
-                else if (line.contains("header=")) map = Json.toMap(Json.parse(line.split("header=")[1].trim()));
-                if (map != null) header.putAll(map);
+                if (line.contains("#EXTHTTP:")) header.putAll(Json.toMap(Json.parse(line.split("#EXTHTTP:")[1].trim())));
+                if (line.contains("header=")) header.putAll(Json.toMap(Json.parse(line.split("header=")[1].trim())));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -359,8 +357,8 @@ public class LiveParser {
             format = null;
             origin = null;
             referer = null;
-            header.clear();
-            drmHeader.clear();
+            header = new HashMap<>();
+            drmHeader = new HashMap<>();
         }
     }
 }
