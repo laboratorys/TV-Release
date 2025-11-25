@@ -15,20 +15,20 @@ import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.api.loader.BaseLoader;
 import com.fongmi.android.tv.db.AppDatabase;
 import com.fongmi.android.tv.gson.ExtAdapter;
-import com.github.catvod.gson.MapAdapter;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Trans;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Headers;
 
 @Entity
 public class Site implements Parcelable {
@@ -47,8 +47,8 @@ public class Site implements Parcelable {
     private String api;
 
     @Ignore
-    @SerializedName("ext")
     @JsonAdapter(ExtAdapter.class)
+    @SerializedName("ext")
     private String ext;
 
     @Ignore
@@ -95,8 +95,7 @@ public class Site implements Parcelable {
 
     @Ignore
     @SerializedName("header")
-    @JsonAdapter(MapAdapter.class)
-    private Map<String, String> header;
+    private JsonElement header;
 
     @Ignore
     @SerializedName("style")
@@ -219,8 +218,8 @@ public class Site implements Parcelable {
         this.categories = categories;
     }
 
-    public Map<String, String> getHeader() {
-        return header == null ? new HashMap<>() : header;
+    public JsonElement getHeader() {
+        return header;
     }
 
     public Style getStyle() {
@@ -275,6 +274,10 @@ public class Site implements Parcelable {
 
     public boolean isEmpty() {
         return getKey().isEmpty() && getName().isEmpty();
+    }
+
+    public Headers getHeaders() {
+        return Headers.of(Json.toMap(getHeader()));
     }
 
     public Site fetchExt() {
