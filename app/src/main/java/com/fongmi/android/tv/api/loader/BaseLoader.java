@@ -58,7 +58,6 @@ public class BaseLoader {
     }
 
     public Spider getSpider(Map<String, String> params) {
-        if (!params.containsKey("siteKey")) return new SpiderNull();
         Live live = LiveConfig.get().getLive(params.get("siteKey"));
         Site site = VodConfig.get().getSite(params.get("siteKey"));
         if (!site.isEmpty()) return site.spider();
@@ -75,14 +74,11 @@ public class BaseLoader {
         else if (csp) jarLoader.setRecent(Util.md5(jar));
     }
 
-    public Object[] proxyLocal(Map<String, String> params) {
-        if ("js".equals(params.get("do"))) {
-            return jsLoader.proxyInvoke(params);
-        } else if ("py".equals(params.get("do"))) {
-            return pyLoader.proxyInvoke(params);
-        } else {
-            return jarLoader.proxyInvoke(params);
-        }
+    public Object[] proxyLocal(Map<String, String> params) throws Exception {
+        if (params.containsKey("siteKey")) return BaseLoader.get().getSpider(params).proxyLocal(params);
+        if ("js".equals(params.get("do"))) return jsLoader.proxyInvoke(params);
+        if ("py".equals(params.get("do"))) return pyLoader.proxyInvoke(params);
+        return jarLoader.proxyInvoke(params);
     }
 
     public void parseJar(String jar, boolean recent) {

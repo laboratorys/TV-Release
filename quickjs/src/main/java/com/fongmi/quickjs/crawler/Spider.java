@@ -38,13 +38,11 @@ public class Spider extends com.github.catvod.crawler.Spider {
     private final DexClassLoader dex;
     private QuickJSContext ctx;
     private JSObject jsObject;
-    private final String key;
     private final String api;
     private boolean cat;
 
-    public Spider(String key, String api, DexClassLoader dex) {
+    public Spider(String api, DexClassLoader dex) {
         this.executor = Executors.newSingleThreadExecutor();
-        this.key = key;
         this.api = api;
         this.dex = dex;
     }
@@ -201,7 +199,7 @@ public class Spider extends com.github.catvod.crawler.Spider {
     private JSObject cfg(String ext) {
         JSObject cfg = ctx.createNewJSObject();
         cfg.setProperty("stype", 3);
-        cfg.setProperty("skey", key);
+        cfg.setProperty("skey", siteKey);
         if (!Json.isObj(ext)) cfg.setProperty("ext", ext);
         else cfg.setProperty("ext", (JSObject) ctx.parse(ext));
         return cfg;

@@ -13,6 +13,8 @@ import okhttp3.OkHttpClient;
 
 public abstract class Spider {
 
+    public String siteKey;
+
     public void init(Context context) throws Exception {
     }
 

@@ -114,6 +114,7 @@ public class JarLoader {
             if (spiders.containsKey(spKey)) return spiders.get(spKey);
             if (!loaders.containsKey(jaKey)) parseJar(jaKey, jar);
             Spider spider = (Spider) loaders.get(jaKey).loadClass("com.github.catvod.spider." + api.split("csp_")[1]).newInstance();
+            spider.siteKey = key;
             spider.init(App.get(), ext);
             spiders.put(spKey, spider);
             return spider;
