@@ -150,6 +150,7 @@ public class LiveParser {
         private String origin;
         private String referer;
         private Integer parse;
+        private boolean forceKey;
         private Map<String, String> header;
         private Map<String, String> drmHeader;
 
@@ -163,7 +164,7 @@ public class LiveParser {
         }
 
         private boolean find(String line) {
-            return line.startsWith("ua") || line.startsWith("parse") || line.startsWith("click") || line.startsWith("header") || line.startsWith("format") || line.startsWith("origin") || line.startsWith("referer") || line.startsWith("#EXTHTTP:") || line.startsWith("#EXTVLCOPT:") || line.startsWith("#KODIPROP:");
+            return line.startsWith("ua") || line.startsWith("parse") || line.startsWith("click") || line.startsWith("header") || line.startsWith("format") || line.startsWith("origin") || line.startsWith("referer") || line.startsWith("forceKey") || line.startsWith("#EXTHTTP:") || line.startsWith("#EXTVLCOPT:") || line.startsWith("#KODIPROP:");
         }
 
         private void check(String line) {
@@ -175,6 +176,7 @@ public class LiveParser {
             else if (line.startsWith("origin")) origin(line);
             else if (line.startsWith("referer")) referer(line);
             else if (line.startsWith("#EXTHTTP:")) header(line);
+            else if (line.startsWith("forceKey")) forceKey(line);
             else if (line.startsWith("#EXTVLCOPT:http-origin")) origin(line);
             else if (line.startsWith("#EXTVLCOPT:http-user-agent")) ua(line);
             else if (line.startsWith("#EXTVLCOPT:http-referrer")) referrer(line);
@@ -194,7 +196,7 @@ public class LiveParser {
             if (origin != null) channel.setOrigin(origin);
             if (referer != null) channel.setReferer(referer);
             if (!header.isEmpty()) channel.setHeader(header);
-            if (key != null && type != null) channel.setDrm(Drm.create(key, type, drmHeader));
+            if (key != null && type != null) channel.setDrm(Drm.create(key, type, drmHeader, forceKey));
             return this;
         }
 
@@ -340,6 +342,14 @@ public class LiveParser {
             }
         }
 
+        private void forceKey(String line) {
+            try {
+                forceKey = Boolean.parseBoolean(line.split("forceKey=")[1].trim());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         private void convert() {
             try {
                 ClearKey.objectFrom(key);
@@ -357,6 +367,7 @@ public class LiveParser {
             format = null;
             origin = null;
             referer = null;
+            forceKey = false;
             header = new HashMap<>();
             drmHeader = new HashMap<>();
         }
