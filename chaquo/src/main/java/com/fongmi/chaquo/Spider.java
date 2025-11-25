@@ -28,14 +28,10 @@ public class Spider extends com.github.catvod.crawler.Spider {
     }
 
     @Override
-    public void init(Context context) {
-        app.callAttr("init", obj);
-    }
-
-    @Override
     public void init(Context context, String extend) {
         PyObject dependence = app.callAttr("getDependence", obj);
         if (dependence != null) for (PyObject item : dependence.asList()) download(item + ".py");
+        obj.put("siteKey", siteKey);
         app.callAttr("init", obj, extend);
     }
 
