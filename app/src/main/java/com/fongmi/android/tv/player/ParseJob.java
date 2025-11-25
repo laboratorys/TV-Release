@@ -30,7 +30,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Headers;
 import okhttp3.Response;
 
 public class ParseJob implements ParseCallback {
@@ -114,7 +113,7 @@ public class ParseJob implements ParseCallback {
     }
 
     private void jsonParse(Parse item, String webUrl, boolean error) throws Exception {
-        try (Response res = OkHttp.newCall(item.getUrl() + webUrl, Headers.of(item.getHeaders())).execute()) {
+        try (Response res = OkHttp.newCall(item.getUrl() + webUrl, item.getHeader()).execute()) {
             JsonObject object = Json.parse(res.body().string()).getAsJsonObject();
             String url = Json.safeString(object, "url");
             JsonObject data = object.getAsJsonObject("data");
@@ -167,8 +166,8 @@ public class ParseJob implements ParseCallback {
     private void checkResult(Result result) {
         result.setHeader(parse.getExt().getHeader());
         if (result.getUrl().isEmpty()) onParseError();
-        else if (result.getParse() == 1) startWeb(result.getHeaders(), UrlUtil.convert(result.getUrl().v()));
-        else onParseSuccess(result.getHeaders(), result.getUrl().v(), result.getJxFrom());
+        else if (result.getParse() == 1) startWeb(result.getHeader(), UrlUtil.convert(result.getUrl().v()));
+        else onParseSuccess(result.getHeader(), result.getUrl().v(), result.getJxFrom());
     }
 
     private void startWeb(List<Parse> items, String webUrl) {
@@ -178,7 +177,7 @@ public class ParseJob implements ParseCallback {
     }
 
     private void startWeb(String key, Parse item, String webUrl) {
-        startWeb(key, item.getName(), item.getHeaders(), item.getUrl() + webUrl, item.getClick());
+        startWeb(key, item.getName(), item.getHeader(), item.getUrl() + webUrl, item.getClick());
     }
 
     private void startWeb(Map<String, String> headers, String url) {
@@ -196,8 +195,7 @@ public class ParseJob implements ParseCallback {
     private Map<String, String> getHeader(JsonObject object) {
         Map<String, String> headers = new HashMap<>();
         for (Map.Entry<String, JsonElement> entry : object.entrySet()) if (!entry.getValue().isJsonNull() && (entry.getKey().equalsIgnoreCase(HttpHeaders.USER_AGENT) || entry.getKey().equalsIgnoreCase(HttpHeaders.REFERER) || entry.getKey().equalsIgnoreCase(HttpHeaders.COOKIE) || entry.getKey().equalsIgnoreCase("ua"))) headers.put(UrlUtil.fixHeader(entry.getKey()), entry.getValue().getAsString());
-        if (headers.isEmpty()) return parse.getHeaders();
-        return headers;
+        return !headers.isEmpty() ? headers : parse.getHeader();
     }
 
     @Override
