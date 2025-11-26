@@ -2,7 +2,7 @@ name: Build and Release APK
 on:
   workflow_dispatch: # 手动触发
   schedule:
-    - cron: '0 13,1 * * *'
+    - cron: '0 17,5 * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,14 +26,14 @@ jobs:
         id: build-control
         run: |
           # 手动触发时强制构建
-          if [[ ${{ github.event_name == 'workflow_dispatch' }} ]]; then
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
             echo "🎯 手动触发 - 强制构建"
             echo "should_build=true" >> $GITHUB_OUTPUT
             exit 0
           fi
           
           # 定时任务时检查新提交
-          if [[ ${{ github.event_name == 'schedule' }} ]]; then
+          if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
             echo "⏰ 定时任务 - 检查新提交..."
             cd tv-app
             LAST_COMMIT_DATE=$(git log -1 --format=%ct)
@@ -84,15 +84,21 @@ jobs:
           echo "$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS }}" >> $GITHUB_PATH
           echo "Build tools path configured"
       # 4. 缓存 Gradle 依赖（加速构建）
-      #- name: 🏗️ Cache Gradle
-      #  uses: actions/cache@v4
-      #  with:
-      #    path: |
-      #      tv-app/last_build_commit.txt
-      #      tv-app/.gradle
-      #    key: ${{ runner.os }}-gradle-${{ hashFiles('tv-app/gradle/wrapper/gradle-wrapper.properties', 'tv-app/build.gradle') }}
-      #    restore-keys: |
-      #      ${{ runner.os }}-gradle-
+      - name: 🏗️ Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            tv-app/last_build_commit.txt
+            tv-app/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('tv-app/gradle/wrapper/gradle-wrapper.properties', 'tv-app/build.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Download AAR Files
+        working-directory: tv-app # 进入目标仓库目录
+        run: |
+          curl -sSLo download_aars.sh https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/download_aars.sh
+          chmod +x ./download_aars.sh
+          ./download_aars.sh
       # 5. 构建 APK（需提前配置签名信息）
       - name: 🔨 Build & Sign APK
         if: steps.build-control.outputs.should_build == 'true'
