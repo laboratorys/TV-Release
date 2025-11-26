@@ -270,10 +270,8 @@ public class LiveParser {
         private void key(String line) {
             try {
                 key = line.contains("license_key=") ? line.split("license_key=")[1].trim() : line;
-                String[] parts = key.split("\\|", 2);
-                if (!key.startsWith("http")) convert();
-                if (parts.length > 1) drmHeaders(parts[1]);
-                key = parts[0];
+                if (key.startsWith("http")) httpKey();
+                else localKey();
             } catch (Exception e) {
                 e.printStackTrace();
                 key = null;
@@ -350,7 +348,13 @@ public class LiveParser {
             }
         }
 
-        private void convert() {
+        private void httpKey() {
+            String[] parts = key.split("\\|", 2);
+            if (parts.length > 1) drmHeaders(parts[1]);
+            key = parts[0].trim();
+        }
+
+        private void localKey() {
             try {
                 ClearKey.objectFrom(key);
             } catch (Exception e) {
