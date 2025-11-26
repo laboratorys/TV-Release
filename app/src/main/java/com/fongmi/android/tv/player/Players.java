@@ -683,7 +683,7 @@ public class Players implements Player.Listener, ParseCallback {
                 setFormat(ExoUtil.getMimeType(error.errorCode));
                 break;
             default:
-                ErrorEvent.extract(tag, error.getErrorCodeName());
+                ErrorEvent.extract(tag, provider.get(error));
                 break;
         }
     }
