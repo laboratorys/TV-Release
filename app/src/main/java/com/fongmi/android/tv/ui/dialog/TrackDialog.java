@@ -15,6 +15,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.media3.common.C;
 import androidx.media3.common.MimeTypes;
 import androidx.media3.common.Tracks;
+import androidx.media3.ui.DefaultTrackNameProvider;
+import androidx.media3.ui.TrackNameProvider;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.App;
@@ -23,7 +25,6 @@ import com.fongmi.android.tv.bean.Sub;
 import com.fongmi.android.tv.bean.Track;
 import com.fongmi.android.tv.databinding.DialogTrackBinding;
 import com.fongmi.android.tv.player.Players;
-import com.fongmi.android.tv.player.exo.TrackNameProvider;
 import com.fongmi.android.tv.ui.adapter.TrackAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 import com.fongmi.android.tv.utils.FileChooser;
@@ -49,7 +50,7 @@ public final class TrackDialog extends BaseDialog implements TrackAdapter.OnClic
 
     public TrackDialog() {
         this.adapter = new TrackAdapter(this);
-        this.provider = new TrackNameProvider();
+        this.provider = new DefaultTrackNameProvider(getResources());
     }
 
     public TrackDialog player(Players player) {
