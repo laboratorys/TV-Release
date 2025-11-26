@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e  # 遇到错误立即退出
 
 REPO="laboratorys/Media3-Release"
@@ -31,4 +30,10 @@ echo "$AAR_URLS" | while read -r url; do
 done
 
 # 移动文件到目标目录
-mv "$TEMP_DIR"/*.aar
+echo "🚚 移动 AAR 文件到 $TARGET_DIR..."
+mv "$TEMP_DIR"/*.aar "$TARGET_DIR/" || { echo "❌ 移动文件失败"; exit 1; }
+
+# 清理临时目录
+rm -rf "$TEMP_DIR"
+
+echo "✅ 所有 AAR 文件已成功下载并移动到 $TARGET_DIR"
