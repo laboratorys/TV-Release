@@ -3,7 +3,7 @@ on:
   schedule:
     - cron: '0 16 * * *'  # UTC 16:00 (CST 00:00)
     - cron: '0 4 * * *'   # UTC 04:00 (CST 12:00)
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 jobs:
   sync-fork:
     runs-on: ubuntu-latest
@@ -13,11 +13,12 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          ref: lab  # 明确指定要操作的分支
 
       - name: Set up Git
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Add upstream remote
         run: git remote add upstream https://github.com/FongMi/TV.git
@@ -28,23 +29,24 @@ jobs:
       - name: Try to merge upstream changes
         id: merge
         run: |
-          # Try to merge without committing to check for conflicts
-          if git merge --no-commit --no-ff upstream/release; then
+          git checkout lab
+          if git merge --no-commit --no-ff --allow-unrelated-histories upstream/release; then
             echo "status=success" >> $GITHUB_OUTPUT
-            git merge --abort  # Clean up the test merge
+            git merge --abort
           else
             echo "status=conflict" >> $GITHUB_OUTPUT
-            git merge --abort  # Clean up the failed merge
+            git merge --abort
           fi
 
       - name: Merge if no conflicts
         if: steps.merge.outputs.status == 'success'
         run: |
-          git merge --no-ff upstream/release
+          git checkout lab
+          git merge --no-ff --allow-unrelated-histories upstream/release
           git push origin lab
 
       - name: Report conflicts
         if: steps.merge.outputs.status == 'conflict'
         run: |
-          echo "Merge conflict detected between upstream/release and local lab branch"
+          echo "::error::合并冲突: 上游 release 分支与本地 lab 分支存在冲突"
           exit 1
