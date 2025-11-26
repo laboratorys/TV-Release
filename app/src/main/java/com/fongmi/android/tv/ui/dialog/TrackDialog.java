@@ -50,7 +50,7 @@ public final class TrackDialog extends BaseDialog implements TrackAdapter.OnClic
 
     public TrackDialog() {
         this.adapter = new TrackAdapter(this);
-        this.provider = new DefaultTrackNameProvider(getResources());
+        this.provider = new DefaultTrackNameProvider(App.get().getResources());
     }
 
     public TrackDialog player(Players player) {
