@@ -2,8 +2,8 @@ name: Sync Fork with Upstream
 
 on:
   schedule:
-    # 每天凌晨3点运行（UTC时间）
-    - cron: '0 12,0 * * *'
+    - cron: '0 16 * * *'  # UTC 16:00 (CST 00:00)
+    - cron: '0 4 * * *'   # UTC 04:00 (CST 12:00)
   workflow_dispatch: # 允许手动触发
 
 jobs:
