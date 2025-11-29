@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.media3.common.C;
+import androidx.media3.common.Format;
 import androidx.media3.common.MimeTypes;
 import androidx.media3.common.Tracks;
 import androidx.media3.ui.DefaultTrackNameProvider;
@@ -115,10 +116,10 @@ public final class TrackDialog extends BaseDialog implements TrackAdapter.OnClic
             Tracks.Group trackGroup = groups.get(i);
             if (trackGroup.getType() != type) continue;
             for (int j = 0; j < trackGroup.length; j++) {
-                Track item = new Track(type, provider.getTrackName(trackGroup.getTrackFormat(j)));
+                Format format = trackGroup.getTrackFormat(j);
+                String name = provider.getTrackName(format);
+                Track item = new Track(type, name, format.id);
                 item.setSelected(trackGroup.isTrackSelected(j));
-                item.setGroup(i);
-                item.setTrack(j);
                 items.add(item);
             }
         }
