@@ -118,7 +118,7 @@ public final class TrackDialog extends BaseDialog implements TrackAdapter.OnClic
             for (int j = 0; j < trackGroup.length; j++) {
                 Format format = trackGroup.getTrackFormat(j);
                 String name = provider.getTrackName(format);
-                Track item = new Track(type, name, format.id);
+                Track item = new Track(type, name, format.id + format.sampleMimeType);
                 item.setSelected(trackGroup.isTrackSelected(j));
                 items.add(item);
             }

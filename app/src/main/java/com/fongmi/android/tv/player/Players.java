@@ -205,7 +205,6 @@ public class Players implements Player.Listener, ParseCallback {
 
     public void reset() {
         removeTimeoutCheck();
-        initTrack = false;
         retry = 0;
     }
 
@@ -486,6 +485,7 @@ public class Players implements Player.Listener, ParseCallback {
         App.post(runnable, timeout);
         PlayerEvent.prepare(tag);
         session.setActive(true);
+        initTrack = false;
         prepare();
     }
 
@@ -509,9 +509,7 @@ public class Players implements Player.Listener, ParseCallback {
     }
 
     public void setTrack(List<Track> tracks) {
-        if (initTrack) return;
         if (exoPlayer != null && !tracks.isEmpty()) TrackUtil.setTrackSelection(exoPlayer, tracks);
-        initTrack = true;
     }
 
     private void setPlaybackState(int state) {
@@ -658,9 +656,10 @@ public class Players implements Player.Listener, ParseCallback {
 
     @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
-        if (tracks.isEmpty()) return;
+        if (tracks.isEmpty() || initTrack) return;
         setTrack(Track.find(getKey()));
         PlayerEvent.track(tag);
+        initTrack = true;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.fongmi.android.tv.player.exo;
 
+import androidx.media3.common.Format;
 import androidx.media3.common.TrackGroup;
 import androidx.media3.common.TrackSelectionOverride;
 import androidx.media3.common.TrackSelectionParameters;
@@ -30,7 +31,8 @@ public class TrackUtil {
         for (Tracks.Group trackGroup : currentTracks.getGroups()) {
             if (trackGroup.getType() != track.getType()) continue;
             for (int i = 0; i < trackGroup.length; i++) {
-                if (track.getFormat().equals(trackGroup.getTrackFormat(i).id)) {
+                Format format = trackGroup.getTrackFormat(i);
+                if (track.getFormat().equals(format.id + format.sampleMimeType)) {
                     return new TrackInfo(trackGroup, i);
                 }
             }
