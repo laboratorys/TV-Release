@@ -41,17 +41,17 @@
                 android:layout_height="match_parent" />
 
             <include
-                android:id="@+id/widget"
-                layout="@layout/view_widget_vod"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <include
                 android:id="@+id/control"
                 layout="@layout/view_control_vod"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone" />
+
+            <include
+                android:id="@+id/widget"
+                layout="@layout/view_widget_vod"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </FrameLayout>
 
