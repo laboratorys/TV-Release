@@ -33,29 +33,28 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical"
+        android:indeterminate="true"
         android:visibility="gone"
-        tools:visibility="visible">
+        app:indicatorColor="@color/white"
+        app:indicatorSize="56dp"
+        tools:visibility="visible" />
 
-        <include layout="@layout/view_progress" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/traffic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:visibility="gone"
-            tools:text="120KB/s"
-            tools:visibility="visible" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/traffic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="48dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:visibility="gone"
+        tools:text="120KB/s"
+        tools:visibility="visible" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/seek"
