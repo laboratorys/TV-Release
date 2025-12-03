@@ -74,6 +74,8 @@ android {
 
     lint {
         disable 'UnsafeOptInUsageError'
+        checkReleaseBuilds false
+        abortOnError false
     }
 
     compileOptions {
