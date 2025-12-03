@@ -12,7 +12,7 @@ android {
         minSdk 24
         targetSdk 36
         python {
-            version "3.8"
+            version "3.11"
             pip {
                 install("-r", "requirements.txt")
             }
