@@ -64,7 +64,8 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             android:visibility="gone"
-            tools:text="120KB/s" />
+            tools:text="120KB/s"
+            tools:visibility="visible" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -88,6 +89,7 @@
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="16sp"
