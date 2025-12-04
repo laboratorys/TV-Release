@@ -5,33 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/shape_widget_error"
+        android:drawableTop="@drawable/ic_widget_error"
+        android:drawablePadding="8dp"
         android:gravity="center"
-        android:orientation="vertical"
+        android:textColor="@color/white"
+        android:textSize="12sp"
         android:visibility="gone"
-        tools:visibility="visible">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_widget_error" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            tools:text="@string/error_play_url" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        tools:text="@string/error_play_url"
+        tools:visibility="visible" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress"

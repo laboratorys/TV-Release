@@ -941,13 +941,13 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void showError(String text) {
         mBinding.widget.error.setVisibility(View.VISIBLE);
-        mBinding.widget.text.setText(text);
+        mBinding.widget.error.setText(text);
         hideProgress();
     }
 
     private void hideError() {
         mBinding.widget.error.setVisibility(View.GONE);
-        mBinding.widget.text.setText("");
+        mBinding.widget.error.setText("");
     }
 
     private void showDanmaku() {
