@@ -41,7 +41,6 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
 
     private ActivityVodBinding mBinding;
     private ArrayObjectAdapter mAdapter;
-    private PageAdapter mPageAdapter;
     private View mOldView;
 
     public static void start(Activity activity, Result result) {
@@ -78,7 +77,7 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
     }
 
     private FolderFragment getFragment() {
-        return (FolderFragment) mPageAdapter.instantiateItem(mBinding.pager, mBinding.pager.getCurrentItem());
+        return (FolderFragment) mBinding.pager.getAdapter().instantiateItem(mBinding.pager, mBinding.pager.getCurrentItem());
     }
 
     @Override
@@ -130,7 +129,7 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
     }
 
     private void setPager() {
-        mBinding.pager.setAdapter(mPageAdapter = new PageAdapter(getSupportFragmentManager()));
+        mBinding.pager.setAdapter(new PageAdapter(getSupportFragmentManager()));
     }
 
     private void onChildSelected(@Nullable RecyclerView.ViewHolder child) {
