@@ -844,13 +844,13 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void showProgress() {
-        mBinding.widget.progress.setVisibility(View.VISIBLE);
+        mBinding.progress.getRoot().setVisibility(View.VISIBLE);
         App.post(mR3, 0);
         hideError();
     }
 
     private void hideProgress() {
-        mBinding.widget.progress.setVisibility(View.GONE);
+        mBinding.progress.getRoot().setVisibility(View.GONE);
         App.removeCallbacks(mR3);
         Traffic.reset();
     }
@@ -896,7 +896,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void setTraffic() {
-        Traffic.setSpeed(mBinding.widget.traffic);
+        Traffic.setSpeed(mBinding.progress.traffic);
         App.post(mR3, 1000);
     }
 

@@ -49,28 +49,6 @@
     </RelativeLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
-
-        <include layout="@layout/view_progress" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/traffic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:visibility="gone"
-            tools:text="120KB/s"
-            tools:visibility="visible" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
