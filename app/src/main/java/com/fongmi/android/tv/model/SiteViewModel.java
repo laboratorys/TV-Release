@@ -10,6 +10,7 @@ import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.config.VodConfig;
+import com.fongmi.android.tv.bean.Class;
 import com.fongmi.android.tv.bean.Episode;
 import com.fongmi.android.tv.bean.Flag;
 import com.fongmi.android.tv.bean.Result;
@@ -37,6 +38,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -92,18 +94,18 @@ public class SiteViewModel extends ViewModel {
                 String homeVideoContent = spider.homeVideoContent();
                 SpiderDebug.log("homeVideo", homeVideoContent);
                 result.setList(Result.fromJson(homeVideoContent).getList());
-                return result;
+                return setTypes(site, result);
             } else if (site.getType() == 4) {
                 ArrayMap<String, String> params = new ArrayMap<>();
                 params.put("filter", "true");
                 String homeContent = call(site.fetchExt(), params);
                 SpiderDebug.log("home", homeContent);
-                return Result.fromJson(homeContent);
+                return setTypes(site, Result.fromJson(homeContent));
             } else {
                 try (Response response = OkHttp.newCall(site.getApi(), site.getHeader()).execute()) {
                     String homeContent = response.body().string();
                     SpiderDebug.log("home", homeContent);
-                    return fetchPic(site, Result.fromType(site.getType(), homeContent));
+                    return setTypes(site, fetchPic(site, Result.fromType(site.getType(), homeContent)));
                 }
             }
         });
@@ -255,6 +257,13 @@ public class SiteViewModel extends ViewModel {
             result.setList(Result.fromType(site.getType(), response.body().string()).getList());
             return result;
         }
+    }
+
+    private Result setTypes(Site site, Result result) {
+        List<Class> types = site.getCategories().stream().flatMap(cate -> result.getTypes().stream().filter(type -> cate.equals(type.getTypeName()))).collect(Collectors.toCollection(ArrayList::new));
+        result.getTypes().stream().filter(type -> result.getFilters().containsKey(type.getTypeId())).forEach(type -> type.setFilters(result.getFilters().get(type.getTypeId())));
+        if (!types.isEmpty()) result.setTypes(types);
+        return result;
     }
 
     private void execute(MutableLiveData<Result> result, Callable<Result> callable) {

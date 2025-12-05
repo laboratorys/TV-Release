@@ -376,7 +376,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     public void onItemClick(Func item) {
         switch (item.getResId()) {
             case R.string.home_vod:
-                VodActivity.start(this, mResult.clear());
+                VodActivity.start(this, mResult);
                 break;
             case R.string.home_live:
                 LiveActivity.start(this);

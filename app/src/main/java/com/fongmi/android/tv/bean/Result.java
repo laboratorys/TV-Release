@@ -166,7 +166,7 @@ public class Result implements Parcelable {
     }
 
     public void setTypes(List<Class> types) {
-        if (!types.isEmpty()) this.types = types;
+        this.types = types;
     }
 
     public List<Vod> getList() {
@@ -328,13 +328,11 @@ public class Result implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeList(this.types);
-        dest.writeTypedList(this.list);
     }
 
     protected Result(Parcel in) {
         this.types = new ArrayList<>();
         in.readList(this.types, Class.class.getClassLoader());
-        this.list = in.createTypedArrayList(Vod.CREATOR);
     }
 
     public static final Creator<Result> CREATOR = new Creator<>() {

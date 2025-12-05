@@ -21,20 +21,14 @@ import androidx.viewpager.widget.ViewPager;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.bean.Class;
-import com.fongmi.android.tv.bean.Filter;
 import com.fongmi.android.tv.bean.Result;
-import com.fongmi.android.tv.bean.Site;
 import com.fongmi.android.tv.databinding.ActivityVodBinding;
 import com.fongmi.android.tv.ui.base.BaseActivity;
 import com.fongmi.android.tv.ui.fragment.FolderFragment;
 import com.fongmi.android.tv.ui.presenter.TypePresenter;
 import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.ResUtil;
-import com.github.catvod.utils.Prefers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class VodActivity extends BaseActivity implements TypePresenter.OnClickListener {
@@ -52,7 +46,6 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
         Intent intent = new Intent(activity, VodActivity.class);
         intent.putExtra("key", key);
         intent.putExtra("result", result);
-        for (Map.Entry<String, List<Filter>> entry : result.getFilters().entrySet()) Prefers.put("filter_" + key + "_" + entry.getKey(), App.gson().toJson(entry.getValue()));
         activity.startActivity(intent);
     }
 
@@ -62,14 +55,6 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
 
     private Result getResult() {
         return getIntent().getParcelableExtra("result");
-    }
-
-    private List<Filter> getFilter(String typeId) {
-        return Filter.arrayFrom(Prefers.getString("filter_" + getKey() + "_" + typeId));
-    }
-
-    private Site getSite() {
-        return VodConfig.get().getSite(getKey());
     }
 
     private Class getType() {
@@ -115,17 +100,8 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
         mBinding.recycler.setAdapter(new ItemBridgeAdapter(mAdapter = new ArrayObjectAdapter(new TypePresenter(this))));
     }
 
-    private List<Class> getTypes(Result result) {
-        List<Class> items = new ArrayList<>();
-        for (String cate : getSite().getCategories()) for (Class item : result.getTypes()) if (cate.equals(item.getTypeName())) items.add(item);
-        return items;
-    }
-
     private void setTypes() {
-        Result result = getResult();
-        result.setTypes(getTypes(result));
-        for (Class item : result.getTypes()) item.setFilters(getFilter(item.getTypeId()));
-        mAdapter.setItems(result.getTypes(), null);
+        mAdapter.setItems(getResult().getTypes(), null);
     }
 
     private void setPager() {
@@ -198,7 +174,7 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
         @Override
         public Fragment getItem(int position) {
             Class type = (Class) mAdapter.get(position);
-            return FolderFragment.newInstance(getKey(), type.getTypeId(), type.getStyle(), type.getExtend(false), "1".equals(type.getTypeFlag()));
+            return FolderFragment.newInstance(getKey(), type);
         }
 
         @Override
