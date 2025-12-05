@@ -9,38 +9,14 @@
         android:id="@+id/error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/shape_widget_error"
-        android:drawableTop="@drawable/ic_widget_error"
-        android:drawablePadding="8dp"
+        android:layout_gravity="top|center"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/shape_widget"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:visibility="gone"
         tools:text="@string/error_play_url"
-        tools:visibility="visible" />
-
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:indicatorColor="@color/white"
-        app:indicatorSize="48dp"
-        tools:visibility="visible" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/traffic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="40dp"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:visibility="gone"
-        tools:text="120KB/s"
         tools:visibility="visible" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
