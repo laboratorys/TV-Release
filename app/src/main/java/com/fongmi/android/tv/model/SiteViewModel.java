@@ -90,7 +90,7 @@ public class SiteViewModel extends ViewModel {
                 Prefers.put("crash", false);
                 SpiderDebug.log("home", homeContent);
                 Result result = Result.fromJson(homeContent);
-                if (!result.getList().isEmpty()) return result;
+                if (!result.getList().isEmpty()) return setTypes(site, result);
                 String homeVideoContent = spider.homeVideoContent();
                 SpiderDebug.log("homeVideo", homeVideoContent);
                 result.setList(Result.fromJson(homeVideoContent).getList());
@@ -105,7 +105,8 @@ public class SiteViewModel extends ViewModel {
                 try (Response response = OkHttp.newCall(site.getApi(), site.getHeader()).execute()) {
                     String homeContent = response.body().string();
                     SpiderDebug.log("home", homeContent);
-                    return setTypes(site, fetchPic(site, Result.fromType(site.getType(), homeContent)));
+                    Result result = Result.fromType(site.getType(), homeContent);
+                    return setTypes(site, fetchPic(site, result));
                 }
             }
         });
@@ -260,8 +261,8 @@ public class SiteViewModel extends ViewModel {
     }
 
     private Result setTypes(Site site, Result result) {
-        List<Class> types = site.getCategories().stream().flatMap(cate -> result.getTypes().stream().filter(type -> cate.equals(type.getTypeName()))).collect(Collectors.toCollection(ArrayList::new));
         result.getTypes().stream().filter(type -> result.getFilters().containsKey(type.getTypeId())).forEach(type -> type.setFilters(result.getFilters().get(type.getTypeId())));
+        List<Class> types = site.getCategories().stream().flatMap(cate -> result.getTypes().stream().filter(type -> cate.equals(type.getTypeName()))).toList();
         if (!types.isEmpty()) result.setTypes(types);
         return result;
     }
