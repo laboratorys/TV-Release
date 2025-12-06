@@ -107,7 +107,7 @@ public class CollectFragment extends BaseFragment implements MenuProvider, Colle
     }
 
     private void setSites() {
-        mSites = VodConfig.get().getSites().stream().filter(Site::isSearchable).collect(Collectors.toList());
+        mSites = VodConfig.get().getSites().stream().filter(Site::isSearchable).toList();
     }
 
     private void setWidth() {
