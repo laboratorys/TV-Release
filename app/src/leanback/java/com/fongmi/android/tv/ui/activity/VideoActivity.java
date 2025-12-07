@@ -420,7 +420,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void setDetail(Result result) {
         if (result.getList().isEmpty()) setEmpty(result.hasMsg());
-        else setDetail(result.getList().get(0));
+        else setDetail(result.getVod());
         Notify.show(result.getMsg());
     }
 

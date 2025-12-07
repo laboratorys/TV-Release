@@ -150,8 +150,8 @@ public class SiteViewModel extends ViewModel {
                 SpiderDebug.log("detail", detailContent);
                 Result result = Result.fromJson(detailContent);
                 if (result.getList().isEmpty()) return result;
-                result.getList().get(0).setVodFlags();
-                Source.get().parse(result.getList().get(0).getVodFlags());
+                result.getVod().setVodFlags();
+                Source.get().parse(result.getVod());
                 return result;
             } else if (site.isEmpty() && "push_agent".equals(key)) {
                 Vod vod = new Vod();
@@ -159,7 +159,7 @@ public class SiteViewModel extends ViewModel {
                 vod.setVodName(id);
                 vod.setVodPic(ResUtil.getString(R.string.push_image));
                 vod.setVodFlags(Flag.create(ResUtil.getString(R.string.push), id));
-                Source.get().parse(vod.getVodFlags());
+                Source.get().parse(vod);
                 return Result.vod(vod);
             } else {
                 ArrayMap<String, String> params = new ArrayMap<>();
@@ -169,8 +169,8 @@ public class SiteViewModel extends ViewModel {
                 SpiderDebug.log("detail", detailContent);
                 Result result = Result.fromType(site.getType(), detailContent);
                 if (result.getList().isEmpty()) return result;
-                result.getList().get(0).setVodFlags();
-                Source.get().parse(result.getList().get(0).getVodFlags());
+                result.getVod().setVodFlags();
+                Source.get().parse(result.getVod());
                 return result;
             }
         });
@@ -253,7 +253,7 @@ public class SiteViewModel extends ViewModel {
     }
 
     public Result fetchPic(Site site, Result result) throws Exception {
-        if (site.getType() > 2 || result.getList().isEmpty() || !result.getList().get(0).getVodPic().isEmpty()) return result;
+        if (site.getType() > 2 || result.getList().isEmpty() || !result.getVod().getVodPic().isEmpty()) return result;
         ArrayList<String> ids = new ArrayList<>();
         boolean empty = site.getCategories().isEmpty();
         for (Vod item : result.getList()) if (empty || site.getCategories().contains(item.getTypeName())) ids.add(item.getVodId());

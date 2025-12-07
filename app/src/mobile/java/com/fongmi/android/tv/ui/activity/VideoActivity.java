@@ -454,7 +454,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void setDetail(Result result) {
         mBinding.swipeLayout.setRefreshing(false);
         if (result.getList().isEmpty()) setEmpty(result.hasMsg());
-        else setDetail(result.getList().get(0));
+        else setDetail(result.getVod());
         Notify.show(result.getMsg());
     }
 

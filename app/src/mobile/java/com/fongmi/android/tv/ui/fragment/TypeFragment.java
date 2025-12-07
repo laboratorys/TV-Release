@@ -155,7 +155,7 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     }
 
     private void addVideo(Result result) {
-        Style style = result.getList().get(0).getStyle(getStyle());
+        Style style = result.getVod().getStyle(getStyle());
         if (!style.equals(mAdapter.getStyle())) setStyle(style);
         mAdapter.addAll(result.getList(), this::checkMore);
     }

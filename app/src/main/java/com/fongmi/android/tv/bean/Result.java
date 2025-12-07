@@ -301,6 +301,10 @@ public class Result implements Parcelable {
         return getList().isEmpty() ? Style.rect() : getList().get(0).getStyle(style);
     }
 
+    public Vod getVod() {
+        return getList().isEmpty() ? new Vod() : getList().get(0);
+    }
+
     public Result clear() {
         getList().clear();
         return this;
