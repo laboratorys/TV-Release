@@ -144,23 +144,22 @@ public class SiteViewModel extends ViewModel {
         execute(result, () -> {
             Site site = VodConfig.get().getSite(key);
             SpiderDebug.log("detail", "key=%s,id=%s", key, id);
-            if (site.getType() == 3) {
+            if (site.isEmpty() && "push_agent".equals(key)) {
+                Vod vod = new Vod();
+                vod.setId(id);
+                vod.setName(id);
+                vod.setPlayUrl(id);
+                vod.setPlayFrom(ResUtil.getString(R.string.push));
+                vod.setPic(ResUtil.getString(R.string.push_image));
+                Source.get().parse(vod.setFlags());
+                return Result.vod(vod);
+            } else if (site.getType() == 3) {
                 Spider spider = site.recent().spider();
                 String detailContent = spider.detailContent(Arrays.asList(id));
                 SpiderDebug.log("detail", detailContent);
                 Result result = Result.fromJson(detailContent);
-                if (result.getList().isEmpty()) return result;
-                result.getVod().setVodFlags();
-                Source.get().parse(result.getVod());
+                Source.get().parse(result.getVod().setFlags());
                 return result;
-            } else if (site.isEmpty() && "push_agent".equals(key)) {
-                Vod vod = new Vod();
-                vod.setVodId(id);
-                vod.setVodName(id);
-                vod.setVodPic(ResUtil.getString(R.string.push_image));
-                vod.setVodFlags(Flag.create(ResUtil.getString(R.string.push), id));
-                Source.get().parse(vod);
-                return Result.vod(vod);
             } else {
                 ArrayMap<String, String> params = new ArrayMap<>();
                 params.put("ac", site.getType() == 0 ? "videolist" : "detail");
@@ -168,9 +167,7 @@ public class SiteViewModel extends ViewModel {
                 String detailContent = call(site, params);
                 SpiderDebug.log("detail", detailContent);
                 Result result = Result.fromType(site.getType(), detailContent);
-                if (result.getList().isEmpty()) return result;
-                result.getVod().setVodFlags();
-                Source.get().parse(result.getVod());
+                Source.get().parse(result.getVod().setFlags());
                 return result;
             }
         });
@@ -253,10 +250,10 @@ public class SiteViewModel extends ViewModel {
     }
 
     public Result fetchPic(Site site, Result result) throws Exception {
-        if (site.getType() > 2 || result.getList().isEmpty() || !result.getVod().getVodPic().isEmpty()) return result;
+        if (site.getType() > 2 || result.getList().isEmpty() || !result.getVod().getPic().isEmpty()) return result;
         ArrayList<String> ids = new ArrayList<>();
         boolean empty = site.getCategories().isEmpty();
-        for (Vod item : result.getList()) if (empty || site.getCategories().contains(item.getTypeName())) ids.add(item.getVodId());
+        for (Vod item : result.getList()) if (empty || site.getCategories().contains(item.getTypeName())) ids.add(item.getId());
         if (ids.isEmpty()) return result.clear();
         ArrayMap<String, String> params = new ArrayMap<>();
         params.put("ac", site.getType() == 0 ? "videolist" : "detail");

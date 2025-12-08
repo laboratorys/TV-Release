@@ -253,18 +253,18 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
         if (item.isAction()) {
             mViewModel.action(getKey(), item.getAction());
         } else if (item.isFolder()) {
-            getParent().openFolder(item.getVodId(), mExtends);
+            getParent().openFolder(item.getId(), mExtends);
             headerVisible = mBinding.recycler.isHeaderVisible();
         } else {
-            if (getSite().isIndex()) CollectActivity.start(requireActivity(), item.getVodName());
-            else VideoActivity.start(requireActivity(), getKey(), item.getVodId(), item.getVodName(), item.getVodPic(), isFolder() ? item.getVodName() : null);
+            if (getSite().isIndex()) CollectActivity.start(requireActivity(), item.getName());
+            else VideoActivity.start(requireActivity(), getKey(), item.getId(), item.getName(), item.getPic(), isFolder() ? item.getName() : null);
         }
     }
 
     @Override
     public boolean onLongClick(Vod item) {
         if (item.isAction() || item.isFolder()) return false;
-        CollectActivity.start(requireActivity(), item.getVodName());
+        CollectActivity.start(requireActivity(), item.getName());
         return true;
     }
 

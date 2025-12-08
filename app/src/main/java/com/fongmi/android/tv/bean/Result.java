@@ -136,8 +136,8 @@ public class Result implements Parcelable {
         Result result = new Result();
         Class type = new Class();
         type.setTypeFlag("1");
-        type.setTypeId(item.getVodId());
-        type.setTypeName(item.getVodName());
+        type.setTypeId(item.getId());
+        type.setTypeName(item.getName());
         result.setTypes(Arrays.asList(type));
         return result;
     }
