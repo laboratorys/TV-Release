@@ -103,6 +103,7 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
 
     @Override
     public boolean onDown(@NonNull MotionEvent e) {
+        if (isMultiple(e) || isEdge(e) || changeScale || lock) return true;
         reset();
         return true;
     }
@@ -116,7 +117,7 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
 
     @Override
     public boolean onScroll(MotionEvent e1, @NonNull MotionEvent e2, float distanceX, float distanceY) {
-        if (isMultiple(e1) || isEdge(e1) || changeSpeed || changeScale || lock) return true;
+        if (isMultiple(e1) || isEdge(e1) || changeScale || lock || changeSpeed) return true;
         float deltaX = e2.getX() - e1.getX();
         float deltaY = e1.getY() - e2.getY();
         if (touch) checkFunc(distanceX, distanceY, e2);
@@ -142,7 +143,7 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
 
     @Override
     public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
-        if (isMultiple(e1) || isEdge(e1) || isSide(e1) || changeScale || animating || lock) return true;
+        if (isMultiple(e1) || isEdge(e1) || isSide(e1) || changeScale || lock || animating) return true;
         checkFunc(e1, e2);
         return true;
     }
