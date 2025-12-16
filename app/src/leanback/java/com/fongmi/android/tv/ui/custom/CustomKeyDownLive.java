@@ -45,6 +45,7 @@ public class CustomKeyDownLive extends GestureDetector.SimpleOnGestureListener {
     }
 
     public void onKeyDown(KeyEvent event) {
+        holdTime = 0;
         if (listener.dispatch(true)) check(event);
     }
 
@@ -99,10 +100,6 @@ public class CustomKeyDownLive extends GestureDetector.SimpleOnGestureListener {
 
     private long subTime() {
         return holdTime = holdTime - Constant.INTERVAL_SEEK;
-    }
-
-    public void resetTime() {
-        holdTime = 0;
     }
 
     public interface Listener {
