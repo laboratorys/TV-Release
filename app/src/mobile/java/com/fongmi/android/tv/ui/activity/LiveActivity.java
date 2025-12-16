@@ -1046,7 +1046,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     }
 
     @Override
-    public void onSeek(long time) {
+    public void onSeeking(long time) {
         if (mPlayers.isLive()) return;
         mBinding.widget.action.setImageResource(time > 0 ? R.drawable.ic_widget_forward : R.drawable.ic_widget_rewind);
         mBinding.widget.time.setText(mPlayers.getPositionTime(time));
@@ -1058,6 +1058,8 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     public void onSeekEnd(long time) {
         if (mPlayers.isLive()) return;
         mPlayers.seek(time);
+        showProgress();
+        onPlay();
     }
 
     @Override
