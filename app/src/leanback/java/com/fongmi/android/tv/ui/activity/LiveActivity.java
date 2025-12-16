@@ -906,6 +906,13 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         fetch();
     }
 
+    private void seek(long time) {
+        mPlayers.seek(time);
+        mKeyDown.reset();
+        showProgress();
+        hideCenter();
+    }
+
     private void onPaused() {
         mPlayers.pause();
     }
@@ -981,13 +988,13 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     @Override
     public void onKeyLeft(long time) {
         if (mPlayers.isLive()) prevLine();
-        else App.post(() -> mPlayers.seek(time), 250);
+        else App.post(() -> seek(time), 250);
     }
 
     @Override
     public void onKeyRight(long time) {
         if (mPlayers.isLive()) nextLine(true);
-        else App.post(() -> mPlayers.seek(time), 250);
+        else App.post(() -> seek(time), 250);
     }
 
     @Override

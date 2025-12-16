@@ -1311,6 +1311,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     @Override
     public void onSeekEnd(long time) {
         mPlayers.seek(time);
+        mKeyDown.reset();
+        showProgress();
+        onPlay();
     }
 
     @Override

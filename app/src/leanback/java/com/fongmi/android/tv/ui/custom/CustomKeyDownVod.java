@@ -43,7 +43,6 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
 
     public boolean onKeyDown(KeyEvent event) {
         changeSpeed = false;
-        holdTime = 0;
         check(event);
         return true;
     }
@@ -87,6 +86,10 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
 
     private long subTime() {
         return holdTime = holdTime - Constant.INTERVAL_SEEK;
+    }
+
+    public void reset() {
+        holdTime = 0;
     }
 
     public interface Listener {

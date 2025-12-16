@@ -460,6 +460,9 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
     public void onSeekEnd(long time) {
         if (mPlayers.isEmpty()) return;
         mPlayers.seek(time);
+        mKeyDown.reset();
+        showProgress();
+        onPlay();
     }
 
     @Override
