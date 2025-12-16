@@ -1482,16 +1482,15 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     @Override
     public void onSpeedUp() {
         if (!mPlayers.isPlaying()) return;
-        mBinding.control.action.speed.setText(mPlayers.setSpeed(Setting.getSpeed()));
-        mBinding.widget.speed.startAnimation(ResUtil.getAnim(R.anim.forward));
         mBinding.widget.speed.setVisibility(View.VISIBLE);
+        mBinding.widget.speed.startAnimation(ResUtil.getAnim(R.anim.forward));
+        mBinding.control.action.speed.setText(mPlayers.setSpeed(Setting.getSpeed()));
     }
 
     @Override
     public void onSpeedEnd() {
-        mBinding.control.action.speed.setText(mPlayers.setSpeed(mHistory.getSpeed()));
-        mBinding.widget.speed.setVisibility(View.GONE);
         mBinding.widget.speed.clearAnimation();
+        mBinding.control.action.speed.setText(mPlayers.setSpeed(mHistory.getSpeed()));
     }
 
     @Override
@@ -1504,22 +1503,12 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     @Override
-    public void onBrightEnd() {
-        mBinding.widget.bright.setVisibility(View.GONE);
-    }
-
-    @Override
     public void onVolume(int progress) {
         mBinding.widget.volume.setVisibility(View.VISIBLE);
         mBinding.widget.volumeProgress.setProgress(progress);
         if (progress < 35) mBinding.widget.volumeIcon.setImageResource(R.drawable.ic_widget_volume_low);
         else if (progress < 70) mBinding.widget.volumeIcon.setImageResource(R.drawable.ic_widget_volume_medium);
         else mBinding.widget.volumeIcon.setImageResource(R.drawable.ic_widget_volume_high);
-    }
-
-    @Override
-    public void onVolumeEnd() {
-        mBinding.widget.volume.setVisibility(View.GONE);
     }
 
     @Override
@@ -1542,10 +1531,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     @Override
     public void onSeekEnd(long time) {
-        mBinding.widget.seek.setVisibility(View.GONE);
         mPlayers.seek(time);
-        showProgress();
-        onPlay();
     }
 
     @Override
@@ -1566,6 +1552,14 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
             hideControl();
             onPlay();
         }
+    }
+
+    @Override
+    public void onTouchEnd() {
+        mBinding.widget.seek.setVisibility(View.GONE);
+        mBinding.widget.speed.setVisibility(View.GONE);
+        mBinding.widget.bright.setVisibility(View.GONE);
+        mBinding.widget.volume.setVisibility(View.GONE);
     }
 
     @Override
