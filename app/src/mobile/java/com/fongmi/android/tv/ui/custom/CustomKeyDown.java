@@ -90,17 +90,20 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
         return !(e.getX() > four) || !(e.getX() < four * 3);
     }
 
-    @Override
-    public boolean onDown(@NonNull MotionEvent e) {
-        if (isMultiple(e) || isEdge(e) || changeScale || lock) return true;
-        volume = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        bright = Util.getBrightness(activity);
+    private void reset() {
+        time = 0;
+        touch = true;
+        changeTime = false;
+        changeSpeed = false;
         changeBright = false;
         changeVolume = false;
-        changeSpeed = false;
-        changeTime = false;
-        touch = true;
-        time = 0;
+        bright = Util.getBrightness(activity);
+        volume = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
+    }
+
+    @Override
+    public boolean onDown(@NonNull MotionEvent e) {
+        reset();
         return true;
     }
 
@@ -117,7 +120,7 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
         float deltaX = e2.getX() - e1.getX();
         float deltaY = e1.getY() - e2.getY();
         if (touch) checkFunc(distanceX, distanceY, e2);
-        if (changeTime) listener.onSeek(time = (long) (deltaX * 50));
+        if (changeTime) listener.onSeeking(time = (long) (deltaX * 50));
         if (changeBright) setBright(deltaY);
         if (changeVolume) setVolume(deltaY);
         return true;
@@ -213,6 +216,10 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
 
     public interface Listener {
 
+        void onSeeking(long time);
+
+        void onSeekEnd(long time);
+
         void onSpeedUp();
 
         void onSpeedEnd();
@@ -224,10 +231,6 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
         void onFlingUp();
 
         void onFlingDown();
-
-        void onSeek(long time);
-
-        void onSeekEnd(long time);
 
         void onSingleTap();
 
