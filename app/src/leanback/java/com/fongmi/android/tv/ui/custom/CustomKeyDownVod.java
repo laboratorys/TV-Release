@@ -42,7 +42,6 @@ public class CustomKeyDownVod extends GestureDetector.SimpleOnGestureListener {
     }
 
     public boolean onKeyDown(KeyEvent event) {
-        changeSpeed = false;
         check(event);
         return true;
     }
