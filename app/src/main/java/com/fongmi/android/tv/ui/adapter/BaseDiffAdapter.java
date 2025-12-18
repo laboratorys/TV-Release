@@ -83,7 +83,7 @@ public abstract class BaseDiffAdapter<T extends Diffable<T> & Comparable<? super
     }
 
     public void sort(T item, Runnable runnable) {
-        List<T> current = Stream.concat(getItems().stream(), Stream.of(item)).distinct().sorted().collect(Collectors.toList());
+        List<T> current = Stream.concat(getItems().stream(), Stream.of(item)).distinct().sorted().toList();
         setItems(current, runnable);
     }
 
