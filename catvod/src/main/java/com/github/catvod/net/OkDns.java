@@ -7,10 +7,12 @@ import com.github.catvod.utils.Util;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import kotlin._Assertions;
 import okhttp3.Dns;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -34,14 +36,8 @@ public class OkDns implements Dns {
         map.clear();
     }
 
-    public synchronized void addAll(List<String> hosts) {
-        for (String host : hosts) {
-            if (!host.contains("=")) continue;
-            String[] splits = host.split("=", 2);
-            String oldHost = splits[0];
-            String newHost = splits[1];
-            map.put(oldHost, newHost);
-        }
+    public void addAll(List<String> hosts) {
+        hosts.stream().map(host -> host.split("=", 2)).filter(splits -> splits.length == 2).forEach(splits -> map.put(splits[0], splits[1]));
     }
 
     @NonNull
