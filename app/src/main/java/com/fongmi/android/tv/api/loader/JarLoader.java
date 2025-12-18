@@ -51,16 +51,13 @@ public class JarLoader {
     }
 
     private void load(String key, File file) {
-        if (!Path.exists(file) || !file.setReadOnly()) return;
         if (Thread.interrupted()) return;
-        DexClassLoader loader = dex(file);
+        if (!Path.exists(file) || !file.setReadOnly()) return;
+        String cachePath = Path.jar().getAbsolutePath();
+        DexClassLoader loader = new DexClassLoader(file.getAbsolutePath(), cachePath, cachePath, App.get().getClassLoader());
         invokeInit(loader);
         invokeProxy(key, loader);
         loaders.put(key, loader);
-    }
-
-    private DexClassLoader dex(File file) {
-        return new DexClassLoader(file.getAbsolutePath(), Path.jar().getAbsolutePath(), Path.jar().getAbsolutePath(), App.get().getClassLoader());
     }
 
     private void invokeInit(DexClassLoader loader) {
