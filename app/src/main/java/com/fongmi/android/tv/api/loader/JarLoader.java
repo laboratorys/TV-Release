@@ -108,20 +108,20 @@ public class JarLoader {
     }
 
     public Spider getSpider(String key, String api, String ext, String jar) {
-        try {
-            String jaKey = Util.md5(jar);
-            String spKey = jaKey + key;
-            if (spiders.containsKey(spKey)) return spiders.get(spKey);
-            if (!loaders.containsKey(jaKey)) parseJar(jaKey, jar);
-            Spider spider = (Spider) loaders.get(jaKey).loadClass("com.github.catvod.spider." + api.split("csp_")[1]).newInstance();
-            spider.siteKey = key;
-            spider.init(App.get(), ext);
-            spiders.put(spKey, spider);
-            return spider;
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return new SpiderNull();
-        }
+        String jaKey = Util.md5(jar);
+        String spKey = jaKey + key;
+        return spiders.computeIfAbsent(spKey, k -> {
+            try {
+                if (!loaders.containsKey(jaKey)) parseJar(jaKey, jar);
+                Spider spider = (Spider) loaders.get(jaKey).loadClass("com.github.catvod.spider." + api.split("csp_")[1]).newInstance();
+                spider.siteKey = key;
+                spider.init(App.get(), ext);
+                return spider;
+            } catch (Throwable e) {
+                e.printStackTrace();
+                return new SpiderNull();
+            }
+        });
     }
 
     public JSONObject jsonExt(String key, LinkedHashMap<String, String> jxs, String url) throws Throwable {
@@ -137,9 +137,10 @@ public class JarLoader {
     }
 
     public Object[] proxy(Map<String, String> params) throws Exception {
-        if (recent == null) return tryOthers(params);
-        Object[] result = proxyInvoke(methods.get(recent), params);
-        return result != null ? result : tryOthers(params);
+        Method method = recent != null ? methods.get(recent) : null;
+        Object[] result = proxyInvoke(method, params);
+        if (result != null) return result;
+        return tryOthers(params);
     }
 
     private Object[] tryOthers(Map<String, String> p) {
@@ -148,7 +149,7 @@ public class JarLoader {
 
     private Object[] proxyInvoke(Method method, Map<String, String> params) {
         try {
-            return (Object[]) method.invoke(null, params);
+            return method == null ? null : (Object[]) method.invoke(null, params);
         } catch (Throwable e) {
             e.printStackTrace();
             return null;
