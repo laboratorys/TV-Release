@@ -24,6 +24,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
     api 'androidx.annotation:annotation:1.9.1'
     api 'androidx.preference:preference:1.2.1'
     api 'androidx.startup:startup-runtime:1.2.0'
@@ -44,5 +45,4 @@ dependencies {
         exclude group: 'com.google.j2objc', module: 'j2objc-annotations'
         exclude group: 'org.codehaus.mojo', module: 'animal-sniffer-annotations'
     }
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
 }
