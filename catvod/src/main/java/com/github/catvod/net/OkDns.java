@@ -10,7 +10,9 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import kotlin._Assertions;
 import okhttp3.Dns;
@@ -37,13 +39,19 @@ public class OkDns implements Dns {
     }
 
     public void addAll(List<String> hosts) {
-        hosts.stream().map(host -> host.split("=", 2)).filter(splits -> splits.length == 2).forEach(splits -> map.put(splits[0], splits[1]));
+        map.putAll(hosts.stream().filter(Objects::nonNull).map(host -> host.split("=", 2)).filter(splits -> splits.length == 2).collect(Collectors.toMap(s -> s[0].trim(), s -> s[1].trim(), (oldHost, newHost) -> newHost)));
+    }
+
+    private String get(String hostname) {
+        String target = map.get(hostname);
+        if (target != null) return target;
+        for (Map.Entry<String, String> entry : map.entrySet()) if (Util.containOrMatch(hostname, entry.getKey())) return entry.getValue();
+        return hostname;
     }
 
     @NonNull
     @Override
     public List<InetAddress> lookup(@NonNull String hostname) throws UnknownHostException {
-        for (Map.Entry<String, String> entry : map.entrySet()) if (Util.containOrMatch(hostname, entry.getKey())) hostname = entry.getValue();
-        return (doh != null ? doh : Dns.SYSTEM).lookup(hostname);
+        return (doh != null ? doh : Dns.SYSTEM).lookup(get(hostname));
     }
 }
