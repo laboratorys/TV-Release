@@ -3,7 +3,6 @@ package com.fongmi.android.tv.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -106,21 +105,13 @@ public class Flag implements Parcelable, Diffable<Flag> {
         for (int i = 0; i < getEpisodes().size(); i++) getEpisodes().get(i).setActivated(i == getPosition());
     }
 
-    private int getScore(Episode episode, String remarks, int number) {
-        if (episode.rule1(remarks)) return 100;
-        if (number != -1 && episode.rule2(number)) return 80;
-        if (number == -1 && episode.rule3(remarks)) return 70;
-        if (number == -1 && episode.rule4(remarks)) return 60;
-        return 0;
-    }
-
     public Episode find(String remarks, boolean strict) {
         if (getEpisodes().isEmpty()) return null;
         if (getEpisodes().size() == 1) return getEpisodes().get(0);
         int number = Util.getDigit(remarks);
         return getEpisodes().stream()
-                .map(episode -> new Pair<>(episode, getScore(episode, remarks, number)))
-                .filter(pair -> pair.second > 0).max(Comparator.comparingInt(pair -> pair.second)).map(pair -> pair.first)
+                .map(episode -> new Episode.Rule(episode, episode.getScore(remarks, number)))
+                .filter(Episode.Rule::find).max(Comparator.comparingInt(Episode.Rule::score)).map(Episode.Rule::episode)
                 .orElseGet(() -> getPosition() != -1 ? getEpisodes().get(getPosition()) : strict ? null : getEpisodes().get(0));
     }
 

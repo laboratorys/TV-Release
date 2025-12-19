@@ -108,6 +108,14 @@ public class Episode implements Parcelable, Diffable<Episode> {
         return name.toLowerCase().contains(getName().toLowerCase());
     }
 
+    public int getScore(String remarks, int number) {
+        if (rule1(remarks)) return 100;
+        if (number != -1 && rule2(number)) return 80;
+        if (number == -1 && rule3(remarks)) return 70;
+        if (number == -1 && rule4(remarks)) return 60;
+        return 0;
+    }
+
     public Episode trans() {
         if (Trans.pass()) return this;
         this.name = Trans.s2t(name);
@@ -149,6 +157,13 @@ public class Episode implements Parcelable, Diffable<Episode> {
         this.number = in.readInt();
         this.activated = in.readByte() != 0;
         this.selected = in.readByte() != 0;
+    }
+
+    public record Rule(Episode episode, int score) {
+
+        public boolean find() {
+            return score > 0;
+        }
     }
 
     public static final Creator<Episode> CREATOR = new Creator<>() {
