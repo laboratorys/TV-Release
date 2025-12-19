@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       upstream_branch:
-        description: '上游分支名称'
+        description: '上游分支名称（如 fongmi）'
         required: false
         default: 'fongmi'
 
@@ -18,31 +18,44 @@ jobs:
   sync-fork:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      # 1. 先 checkout 当前仓库的默认分支（如 main）
+      - name: Checkout current repo (main branch)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          ref: main
-      - name: Create and checkout lab branch (if not exists)
-        run: |
-          if ! git ls-remote --exit-code --heads origin ${{ env.LOCAL_BRANCH }}; then
-            echo "Branch ${{ env.LOCAL_BRANCH }} does not exist, creating it..."
-            git checkout -b ${{ env.LOCAL_BRANCH }}
-            git push origin ${{ env.LOCAL_BRANCH }}
-          else
-            echo "Branch ${{ env.LOCAL_BRANCH }} already exists, checking out..."
-            git fetch origin ${{ env.LOCAL_BRANCH }}:${{ env.LOCAL_BRANCH }}
-            git checkout ${{ env.LOCAL_BRANCH }}
-          fi
+          ref: main  # 假设你的仓库有 main 或 master 分支
+
+      # 2. 设置 Git 身份
       - name: Set up Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # 3. 添加上游仓库（FongMi/TV）
       - name: Add upstream remote
         run: git remote add upstream https://github.com/FongMi/TV.git
+
+      # 4. 如果 lab 分支不存在，基于 upstream/fongmi 创建并强制推送
+      - name: Create or checkout lab branch
+        run: |
+          # 检查远程是否存在 lab 分支
+          if ! git ls-remote --exit-code --heads origin ${{ env.LOCAL_BRANCH }}; then
+            echo "Branch ${{ env.LOCAL_BRANCH }} does not exist, creating from upstream/${{ env.UPSTREAM_BRANCH }}..."
+            git fetch upstream ${{ env.UPSTREAM_BRANCH }}
+            git checkout -b ${{ env.LOCAL_BRANCH }} upstream/${{ env.UPSTREAM_BRANCH }}
+            git push --force origin ${{ env.LOCAL_BRANCH }}
+          else
+            echo "Branch ${{ env.LOCAL_BRANCH }} already exists, checking out..."
+            git fetch origin ${{ env.LOCAL_BRANCH }}
+            git checkout ${{ env.LOCAL_BRANCH }}
+          fi
+
+      # 5. 拉取上游最新代码
       - name: Fetch upstream changes
         run: git fetch upstream ${{ env.UPSTREAM_BRANCH }}
+
+      # 6. 检查是否需要合并
       - name: Check if merge needed
         id: check-merge
         run: |
@@ -51,6 +64,8 @@ jobs:
           else
             echo "status=needs_merge" >> $GITHUB_OUTPUT
           fi
+
+      # 7. 尝试合并（模拟，检查冲突）
       - name: Try to merge upstream changes
         id: merge
         if: steps.check-merge.outputs.status == 'needs_merge'
@@ -63,17 +78,23 @@ jobs:
             echo "status=conflict" >> $GITHUB_OUTPUT
             git merge --abort
           fi
+
+      # 8. 如果没有冲突，正式合并
       - name: Merge if no conflicts
         if: steps.check-merge.outputs.status == 'needs_merge' && steps.merge.outputs.status == 'success'
         run: |
           git checkout ${{ env.LOCAL_BRANCH }}
           git merge --no-ff --allow-unrelated-histories upstream/${{ env.UPSTREAM_BRANCH }}
           git push origin ${{ env.LOCAL_BRANCH }}
+
+      # 9. 报告冲突
       - name: Report conflicts
         if: steps.merge.outputs.status == 'conflict'
         run: |
           echo "::error::合并冲突: 上游 ${{ env.UPSTREAM_BRANCH }} 分支与本地 ${{ env.LOCAL_BRANCH }} 分支存在冲突"
           exit 1
+
+      # 10. 如果已经是最新的，输出提示
       - name: Report already up to date
         if: steps.check-merge.outputs.status == 'no_changes'
         run: |
