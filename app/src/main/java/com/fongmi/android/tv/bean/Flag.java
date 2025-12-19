@@ -120,9 +120,7 @@ public class Flag implements Parcelable, Diffable<Flag> {
         int number = Util.getDigit(remarks);
         return getEpisodes().stream()
                 .map(episode -> new Pair<>(episode, getScore(episode, remarks, number)))
-                .filter(pair -> pair.second > 0)
-                .max(Comparator.comparingInt(pair -> pair.second))
-                .map(pair -> pair.first)
+                .filter(pair -> pair.second > 0).max(Comparator.comparingInt(pair -> pair.second)).map(pair -> pair.first)
                 .orElseGet(() -> getPosition() != -1 ? getEpisodes().get(getPosition()) : strict ? null : getEpisodes().get(0));
     }
 
