@@ -109,7 +109,7 @@ jobs:
         run: |
           curl -sSLo download_aars.sh https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/download_aars.sh
           chmod +x ./download_aars.sh
-          ./download_aars.sh
+        #./download_aars.sh
       # 5. 构建 APK
       - name: 🔨 Build & Sign APK
         if: steps.build-control.outputs.should_build == 'true'

@@ -11,7 +11,7 @@ on:
         default: 'fongmi'
 
 env:
-  UPSTREAM_BRANCH: ${{ inputs.upstream_branch || 'fongmi' }}
+  UPSTREAM_BRANCH: ${{ inputs.upstream_branch || 'release' }}
   LOCAL_BRANCH: 'lab'
 
 jobs:
