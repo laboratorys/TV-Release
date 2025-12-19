@@ -23,7 +23,18 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          ref: ${{ env.LOCAL_BRANCH }}
+          ref: main
+      - name: Create and checkout lab branch (if not exists)
+        run: |
+          if ! git ls-remote --exit-code --heads origin ${{ env.LOCAL_BRANCH }}; then
+            echo "Branch ${{ env.LOCAL_BRANCH }} does not exist, creating it..."
+            git checkout -b ${{ env.LOCAL_BRANCH }}
+            git push origin ${{ env.LOCAL_BRANCH }}
+          else
+            echo "Branch ${{ env.LOCAL_BRANCH }} already exists, checking out..."
+            git fetch origin ${{ env.LOCAL_BRANCH }}:${{ env.LOCAL_BRANCH }}
+            git checkout ${{ env.LOCAL_BRANCH }}
+          fi
       - name: Set up Git
         run: |
           git config --global user.name "github-actions[bot]"
