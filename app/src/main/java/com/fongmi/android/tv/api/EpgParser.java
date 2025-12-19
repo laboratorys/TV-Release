@@ -1,7 +1,5 @@
 package com.fongmi.android.tv.api;
 
-import android.net.Uri;
-
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.Epg;
 import com.fongmi.android.tv.bean.EpgData;
@@ -9,6 +7,7 @@ import com.fongmi.android.tv.bean.Live;
 import com.fongmi.android.tv.bean.Tv;
 import com.fongmi.android.tv.utils.Download;
 import com.fongmi.android.tv.utils.FileUtil;
+import com.fongmi.android.tv.utils.UrlUtil;
 import com.fongmi.android.tv.utils.Util;
 import com.github.catvod.utils.Path;
 
@@ -37,9 +36,10 @@ public class EpgParser {
     private static final SimpleDateFormat formatFull = new SimpleDateFormat("yyyyMMddHHmmss Z", Locale.getDefault());
 
     public static boolean start(Live live, String url) throws Exception {
-        File file = Path.epg(Uri.parse(url).getLastPathSegment());
-        if (shouldRefresh(file)) Download.create(url, file).get();
-        if (isGzip(file)) readGzip(live, file);
+        File file = Path.epg(UrlUtil.path(url));
+        boolean refresh = shouldRefresh(file);
+        if (refresh) Download.create(url, file).get();
+        if (isGzip(file)) readGzip(live, file, refresh);
         else readXml(live, file);
         return true;
     }
@@ -69,9 +69,9 @@ public class EpgParser {
         return calendar.get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
     }
 
-    private static void readGzip(Live live, File file) throws Exception {
+    private static void readGzip(Live live, File file, boolean refresh) throws Exception {
         File xml = Path.epg(file.getName() + ".xml");
-        if (shouldRefresh(xml)) FileUtil.gzipDecompress(file, xml);
+        if (!Path.exists(xml) || refresh) FileUtil.gzipDecompress(file, xml);
         readXml(live, xml);
     }
 
