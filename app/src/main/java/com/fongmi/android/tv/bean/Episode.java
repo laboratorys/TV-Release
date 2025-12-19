@@ -92,27 +92,11 @@ public class Episode implements Parcelable, Diffable<Episode> {
         this.selected = selected;
     }
 
-    public boolean rule1(String name) {
-        return getName().equalsIgnoreCase(name);
-    }
-
-    public boolean rule2(int number) {
-        return getNumber() == number;
-    }
-
-    public boolean rule3(String name) {
-        return getName().toLowerCase().contains(name.toLowerCase());
-    }
-
-    public boolean rule4(String name) {
-        return name.toLowerCase().contains(getName().toLowerCase());
-    }
-
-    public int getScore(String remarks, int number) {
-        if (rule1(remarks)) return 100;
-        if (number != -1 && rule2(number)) return 80;
-        if (number == -1 && rule3(remarks)) return 70;
-        if (number == -1 && rule4(remarks)) return 60;
+    public int getScore(String name, int number) {
+        if (getName().equalsIgnoreCase(name)) return 100;
+        if (number != -1 && getNumber() == number) return 80;
+        if (number == -1 && getName().toLowerCase().contains(name.toLowerCase())) return 70;
+        if (number == -1 && name.toLowerCase().contains(getName().toLowerCase())) return 60;
         return 0;
     }
 
