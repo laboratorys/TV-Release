@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Util {
 
@@ -102,12 +104,15 @@ public class Util {
     }
 
     public static int getDigit(String text) {
-        try {
-            if (text.startsWith("上") || text.startsWith("下")) return -1;
-            return Integer.parseInt(text.replaceAll("(?i)(mp4|H264|H265|720p|1080p|2160p|4K)", "").replaceAll("\\D+", ""));
-        } catch (Exception e) {
-            return -1;
-        }
+        if (text == null || text.isBlank()) return -1;
+        text = text.replaceAll("\\[.*?\\]|\\(.*?\\)", "");
+        text = text.replaceAll("\\b(19|20)\\d{2}\\b", "");
+        text = text.toLowerCase().replaceAll("2160p|1080p|720p|480p|4k|h26[45]|x26[45]|mp4", "");
+        Matcher m = Pattern.compile("(?i)(?:ep|第|e|[\\-\\.\\s]|^)\\s?(\\d+)").matcher(text.trim());
+        if (m.find()) return Integer.parseInt(m.group(1));
+        String number = text.replaceAll("\\D+", "");
+        if (!number.isEmpty()) return Integer.parseInt(number);
+        return -1;
     }
 
     public static String clean(String text) {

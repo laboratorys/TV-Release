@@ -3,6 +3,7 @@ package com.fongmi.android.tv.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +18,7 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -105,16 +106,24 @@ public class Flag implements Parcelable, Diffable<Flag> {
         for (int i = 0; i < getEpisodes().size(); i++) getEpisodes().get(i).setActivated(i == getPosition());
     }
 
+    private int getScore(Episode episode, String remarks, int number) {
+        if (episode.rule1(remarks)) return 100;
+        if (number != -1 && episode.rule2(number)) return 80;
+        if (number == -1 && episode.rule3(remarks)) return 70;
+        if (number == -1 && episode.rule4(remarks)) return 60;
+        return 0;
+    }
+
     public Episode find(String remarks, boolean strict) {
-        int number = Util.getDigit(remarks);
         if (getEpisodes().isEmpty()) return null;
         if (getEpisodes().size() == 1) return getEpisodes().get(0);
-        for (Episode item : getEpisodes()) if (item.rule1(remarks)) return item;
-        for (Episode item : getEpisodes()) if (item.rule2(number)) return item;
-        if (number == -1) for (Episode item : getEpisodes()) if (item.rule3(remarks)) return item;
-        if (number == -1) for (Episode item : getEpisodes()) if (item.rule4(remarks)) return item;
-        if (getPosition() != -1) return getEpisodes().get(getPosition());
-        return strict ? null : getEpisodes().get(0);
+        int number = Util.getDigit(remarks);
+        return getEpisodes().stream()
+                .map(episode -> new Pair<>(episode, getScore(episode, remarks, number)))
+                .filter(pair -> pair.second > 0)
+                .max(Comparator.comparingInt(pair -> pair.second))
+                .map(pair -> pair.first)
+                .orElseGet(() -> getPosition() != -1 ? getEpisodes().get(getPosition()) : strict ? null : getEpisodes().get(0));
     }
 
     public void setEpisodes(String url) {

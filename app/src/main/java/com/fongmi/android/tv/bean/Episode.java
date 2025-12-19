@@ -97,7 +97,7 @@ public class Episode implements Parcelable, Diffable<Episode> {
     }
 
     public boolean rule2(int number) {
-        return getNumber() == number && number != -1;
+        return getNumber() == number;
     }
 
     public boolean rule3(String name) {
