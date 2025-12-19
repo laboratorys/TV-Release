@@ -34,7 +34,7 @@ public class Episode implements Parcelable, Diffable<Episode> {
     }
 
     private Episode(String name, String desc, String url) {
-        this.number = Util.getDigit(name);
+        this.number = Util.getNumber(name);
         this.name = name;
         this.desc = desc;
         this.url = url;
