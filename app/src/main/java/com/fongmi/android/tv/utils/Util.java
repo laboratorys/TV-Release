@@ -38,6 +38,8 @@ import java.util.regex.Pattern;
 
 public class Util {
 
+    private static final Pattern EPISODE = Pattern.compile("(?i)(?:ep|第|e|[\\-\\.\\s])\\s?(\\d{1,4})");
+
     public static void toggleFullscreen(Activity activity, boolean fullscreen) {
         if (fullscreen) hideSystemUI(activity);
         else showSystemUI(activity);
@@ -104,15 +106,17 @@ public class Util {
     }
 
     public static int getDigit(String text) {
-        if (text == null || text.isBlank()) return -1;
-        text = text.replaceAll("\\[.*?\\]|\\(.*?\\)", "");
-        text = text.replaceAll("\\b(19|20)\\d{2}\\b", "");
-        text = text.toLowerCase().replaceAll("2160p|1080p|720p|480p|4k|h26[45]|x26[45]|mp4", "");
-        Matcher m = Pattern.compile("(?i)(?:ep|第|e|[\\-\\.\\s]|^)\\s?(\\d+)").matcher(text.trim());
-        if (m.find()) return Integer.parseInt(m.group(1));
-        String number = text.replaceAll("\\D+", "");
-        if (!number.isEmpty()) return Integer.parseInt(number);
-        return -1;
+        try {
+            text = text.replaceAll("\\[.*?\\]|\\(.*?\\)", "");
+            text = text.replaceAll("\\b(19|20)\\d{2}\\b", "");
+            text = text.toLowerCase().replaceAll("2160p|1080p|720p|480p|4k|h26[45]|x26[45]|mp4", "");
+            Matcher matcher = EPISODE.matcher(text);
+            if (matcher.find()) return Integer.parseInt(matcher.group(1));
+            String digit = text.replaceAll("\\D+", "");
+            return digit.isEmpty() ? -1 : Integer.parseInt(digit);
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     public static String clean(String text) {
