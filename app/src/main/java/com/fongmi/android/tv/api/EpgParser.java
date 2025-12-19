@@ -39,7 +39,7 @@ public class EpgParser {
     public static boolean start(Live live, String url) throws Exception {
         File file = Path.epg(Uri.parse(url).getLastPathSegment());
         if (shouldDownload(file)) Download.create(url, file).get();
-        if (isGzipFile(file)) readGzip(live, file);
+        if (isGzip(file)) readGzip(live, file);
         else readXml(live, file);
         return true;
     }
@@ -55,7 +55,7 @@ public class EpgParser {
         return !Path.exists(file) || !isToday(file.lastModified()) || System.currentTimeMillis() - file.lastModified() > TimeUnit.HOURS.toMillis(6);
     }
 
-    private static boolean isGzipFile(File file) {
+    private static boolean isGzip(File file) {
         try (FileInputStream fis = new FileInputStream(file)) {
             return (fis.read() | (fis.read() << 8)) == 0x8B1F;
         } catch (IOException e) {
