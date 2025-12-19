@@ -15,6 +15,8 @@ import com.github.catvod.utils.Path;
 import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.Calendar;
@@ -37,7 +39,7 @@ public class EpgParser {
     public static boolean start(Live live, String url) throws Exception {
         File file = Path.epg(Uri.parse(url).getLastPathSegment());
         if (shouldDownload(file)) Download.create(url, file).get();
-        if (file.getName().endsWith(".gz")) readGzip(live, file);
+        if (isGzipFile(file)) readGzip(live, file);
         else readXml(live, file);
         return true;
     }
@@ -53,6 +55,14 @@ public class EpgParser {
         return !Path.exists(file) || !isToday(file.lastModified()) || System.currentTimeMillis() - file.lastModified() > TimeUnit.HOURS.toMillis(6);
     }
 
+    private static boolean isGzipFile(File file) {
+        try (FileInputStream fis = new FileInputStream(file)) {
+            return (fis.read() | (fis.read() << 8)) == 0x8B1F;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     private static boolean isToday(long millis) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);
@@ -60,8 +70,8 @@ public class EpgParser {
     }
 
     private static void readGzip(Live live, File file) throws Exception {
-        File xml = Path.epg(file.getName().replace(".gz", ""));
-        if (!xml.exists()) FileUtil.gzipDecompress(file, xml);
+        File xml = Path.epg(file.getName() + ".xml");
+        if (!Path.exists(xml)) FileUtil.gzipDecompress(file, xml);
         readXml(live, xml);
     }
 
