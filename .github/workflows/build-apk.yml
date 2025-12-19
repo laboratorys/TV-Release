@@ -21,7 +21,16 @@ jobs:
           fetch-depth: 0
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-            # 2. 动态判断是否跳过构建检查
+      - name: 📥 Download last_build_commit.txt from latest release
+        run: |
+          cd tv-app
+          if curl -fsSL -o last_build_commit.txt "https://github.com/laboratorys/TV-Release/releases/latest/download/last_build_commit.txt"; then
+            echo "📥 Retrieved previous build timestamp"
+          else
+            echo "⚠️ No previous build record found, initializing..."
+            echo "0" > last_build_commit.txt
+          fi
+      # 2. 动态判断是否跳过构建检查
       - name: ⚙️ Build Control
         id: build-control
         run: |
@@ -91,18 +100,17 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            tv-app/last_build_commit.txt
             tv-app/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('tv-app/gradle/wrapper/gradle-wrapper.properties', 'tv-app/build.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      #- name: Download AAR Files
-      #  working-directory: tv-app # 进入目标仓库目录
-      #  run: |
-      #    curl -sSLo download_aars.sh https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/download_aars.sh
-      #    chmod +x ./download_aars.sh
-      #    ./download_aars.sh
-      # 5. 构建 APK（需提前配置签名信息）
+      - name: Download AAR Files
+        working-directory: tv-app # 进入目标仓库目录
+        run: |
+          curl -sSLo download_aars.sh https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/download_aars.sh
+          chmod +x ./download_aars.sh
+          ./download_aars.sh
+      # 5. 构建 APK
       - name: 🔨 Build & Sign APK
         if: steps.build-control.outputs.should_build == 'true'
         working-directory: tv-app # 进入目标仓库目录
@@ -187,4 +195,5 @@ jobs:
             - ABIs: armeabi_v7a, arm64_v8a
           files: |
             tv-app/release_apks/*.apk
+            tv-app/last_build_commit.txt
           token: ${{ secrets.GITHUB_TOKEN }}
