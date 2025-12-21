@@ -421,10 +421,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mViewModel.result.observeForever(mObserveDetail);
         mViewModel.player.observeForever(mObservePlayer);
         mViewModel.search.observeForever(mObserveSearch);
-        mViewModel.episode.observe(this, episode -> {
-            onItemClick(episode);
-            hideSheet();
-        });
     }
 
     private void checkId() {
