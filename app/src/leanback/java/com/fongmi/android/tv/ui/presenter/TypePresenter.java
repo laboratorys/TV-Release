@@ -48,7 +48,7 @@ public class TypePresenter extends Presenter {
     }
 
     private int getIcon(Class item) {
-        return item.getFilter() == null ? 0 : item.getFilter() ? R.drawable.ic_vod_filter_off : R.drawable.ic_vod_filter_on;
+        return !item.hasFilter() ? 0 : item.getFilter() ? R.drawable.ic_vod_filter_off : R.drawable.ic_vod_filter_on;
     }
 
     public static class ViewHolder extends Presenter.ViewHolder {

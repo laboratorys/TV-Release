@@ -46,7 +46,7 @@ public class Class implements Parcelable, Diffable<Class> {
     @SerializedName("ratio")
     private float ratio;
 
-    private Boolean filter;
+    private boolean filter;
     private boolean activated;
 
     public Class() {
@@ -85,9 +85,7 @@ public class Class implements Parcelable, Diffable<Class> {
     }
 
     public void setFilters(List<Filter> filters) {
-        if (filters == null || filters.isEmpty()) return;
         this.filters = filters;
-        this.setFilter(false);
     }
 
     public int getLand() {
@@ -102,11 +100,11 @@ public class Class implements Parcelable, Diffable<Class> {
         return ratio;
     }
 
-    public void setFilter(Boolean filter) {
+    public void setFilter(boolean filter) {
         this.filter = filter;
     }
 
-    public Boolean getFilter() {
+    public boolean getFilter() {
         return filter;
     }
 
@@ -118,17 +116,16 @@ public class Class implements Parcelable, Diffable<Class> {
         this.activated = activated;
     }
 
-    public boolean toggleFilter() {
-        setFilter(!getFilter());
-        return getFilter();
-    }
-
     public boolean isHome() {
         return "home".equals(getTypeId());
     }
 
     public boolean isFolder() {
         return "1".equals(getTypeFlag());
+    }
+
+    public boolean hasFilter() {
+        return !getFilters().isEmpty();
     }
 
     public void trans() {
@@ -169,7 +166,7 @@ public class Class implements Parcelable, Diffable<Class> {
         dest.writeString(this.typeName);
         dest.writeString(this.typeFlag);
         dest.writeList(this.filters);
-        dest.writeValue(this.filter);
+        dest.writeByte(this.filter ? (byte) 1 : (byte) 0);
         dest.writeInt(this.land);
         dest.writeInt(this.circle);
         dest.writeFloat(this.ratio);
@@ -182,7 +179,7 @@ public class Class implements Parcelable, Diffable<Class> {
         this.typeFlag = in.readString();
         this.filters = new ArrayList<>();
         in.readList(this.filters, Filter.class.getClassLoader());
-        this.filter = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.filter = in.readByte() != 0;
         this.land = in.readInt();
         this.circle = in.readInt();
         this.ratio = in.readFloat();
