@@ -15,9 +15,7 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Text;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 @Root(strict = false)
@@ -124,10 +122,6 @@ public class Class implements Parcelable, Diffable<Class> {
         return "1".equals(getTypeFlag());
     }
 
-    public boolean hasFilter() {
-        return !getFilters().isEmpty();
-    }
-
     public void trans() {
         if (Trans.pass()) return;
         this.typeName = Trans.s2t(typeName);
@@ -135,12 +129,6 @@ public class Class implements Parcelable, Diffable<Class> {
 
     public Style getStyle() {
         return Style.get(getLand(), getCircle(), getRatio());
-    }
-
-    public HashMap<String, String> getExtend(boolean change) {
-        HashMap<String, String> extend = new HashMap<>();
-        for (Filter filter : getFilters()) if (filter.getInit() != null) extend.put(filter.getKey(), change ? filter.setActivated(filter.getInit()) : filter.getInit());
-        return extend;
     }
 
     @Override
@@ -165,7 +153,6 @@ public class Class implements Parcelable, Diffable<Class> {
         dest.writeString(this.typeId);
         dest.writeString(this.typeName);
         dest.writeString(this.typeFlag);
-        dest.writeList(this.filters);
         dest.writeByte(this.filter ? (byte) 1 : (byte) 0);
         dest.writeInt(this.land);
         dest.writeInt(this.circle);
@@ -177,8 +164,6 @@ public class Class implements Parcelable, Diffable<Class> {
         this.typeId = in.readString();
         this.typeName = in.readString();
         this.typeFlag = in.readString();
-        this.filters = new ArrayList<>();
-        in.readList(this.filters, Filter.class.getClassLoader());
         this.filter = in.readByte() != 0;
         this.land = in.readInt();
         this.circle = in.readInt();

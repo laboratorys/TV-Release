@@ -132,10 +132,9 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
     }
 
     private void updateFilter(Class item) {
-        if (!item.hasFilter()) return;
         item.setFilter(!item.getFilter());
         getFragment().toggleFilter(item.getFilter());
-        mAdapter.notifyArrayItemRangeChanged(0, mAdapter.size());
+        mAdapter.notifyArrayItemRangeChanged(mAdapter.indexOf(item), 1);
     }
 
     public void closeFilter() {
