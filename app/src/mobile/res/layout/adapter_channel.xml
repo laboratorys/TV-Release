@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="6dp"
     android:layout_marginBottom="6dp"
-    android:background="@drawable/shape_channel"
+    android:background="@drawable/shape_live"
     android:gravity="center"
     android:orientation="horizontal">
 
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
         android:duplicateParentState="true"
-        android:textColor="@color/channel"
+        android:textColor="@color/live"
         android:textSize="14sp"
         tools:text="01" />
 
@@ -33,7 +33,7 @@
         android:duplicateParentState="true"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:textColor="@color/channel"
+        android:textColor="@color/live"
         android:textSize="14sp"
         tools:text="CNN" />
 

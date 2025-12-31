@@ -12,11 +12,11 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_group"
+        android:background="@drawable/shape_live"
         android:duplicateParentState="true"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:textColor="@color/group"
+        android:textColor="@color/live"
         android:textSize="14sp"
         tools:text="收藏" />
 
