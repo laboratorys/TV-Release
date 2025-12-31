@@ -181,8 +181,7 @@ public class Spider extends com.github.catvod.crawler.Spider {
             Global.create(ctx, executor);
             Class<?> clz = dex.loadClass("com.github.catvod.js.Function");
             clz.getDeclaredConstructor(QuickJSContext.class).newInstance(ctx);
-        } catch (Throwable e) {
-            e.printStackTrace();
+        } catch (Throwable ignored) {
         }
     }
 
