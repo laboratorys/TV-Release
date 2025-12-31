@@ -56,6 +56,10 @@
             android:id="@+id/group"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             tools:itemCount="5"
             tools:listitem="@layout/adapter_group" />
 
@@ -63,6 +67,10 @@
             android:id="@+id/channel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             tools:itemCount="5"
             tools:listitem="@layout/adapter_channel" />
 
