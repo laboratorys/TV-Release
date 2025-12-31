@@ -197,17 +197,17 @@ public class Spider extends com.github.catvod.crawler.Spider {
 
     private Object getExt(String ext) {
         if (!cat) return Json.isObj(ext) ? ctx.parse(ext) : ext;
-        JSObject cfg = ctx.createNewJSObject();
-        cfg.setProperty("stype", 3);
-        cfg.setProperty("skey", siteKey);
-        if (!Json.isObj(ext)) cfg.setProperty("ext", ext);
-        else cfg.setProperty("ext", (JSObject) ctx.parse(ext));
-        return cfg;
+        JSObject obj = ctx.createNewJSObject();
+        obj.setProperty("stype", 3);
+        obj.setProperty("skey", siteKey);
+        if (!Json.isObj(ext)) obj.setProperty("ext", ext);
+        else obj.setProperty("ext", (JSObject) ctx.parse(ext));
+        return obj;
     }
 
     private Object[] proxy1(Map<String, String> params) throws Exception {
-        JSObject object = JSUtil.toObject(ctx, params);
-        JSONArray array = new JSONArray(((JSArray) jsObject.getJSFunction("proxy").call(object)).stringify());
+        JSObject obj = JSUtil.toObject(ctx, params);
+        JSONArray array = new JSONArray(((JSArray) jsObject.getJSFunction("proxy").call(obj)).stringify());
         Map<String, String> headers = array.length() > 3 ? Json.toMap(array.optString(3)) : null;
         boolean base64 = array.length() > 4 && array.optInt(4) == 1;
         Object[] result = new Object[4];
