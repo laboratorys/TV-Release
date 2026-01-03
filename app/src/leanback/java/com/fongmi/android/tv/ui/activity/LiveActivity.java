@@ -426,7 +426,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void showUI() {
-        if (isVisible(mBinding.recycler)) return;
+        if (isVisible(mBinding.recycler) || mGroupAdapter.size() == 0) return;
         mBinding.recycler.setVisibility(View.VISIBLE);
         setPosition();
         setUITimer();
@@ -668,9 +668,11 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     }
 
     private void resetAdapter() {
+        mBinding.control.line.setVisibility(View.GONE);
         mBinding.channel.getLayoutParams().width = 0;
         mBinding.epgData.getLayoutParams().width = 0;
         mBinding.group.getLayoutParams().width = 0;
+        mBinding.widget.title.setText("");
         mEpgDataAdapter.clear();
         mChannelAdapter.clear();
         mGroupAdapter.clear();
@@ -718,6 +720,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         if (item.isActivated()) item.getGroups().clear();
         LiveConfig.get().setHome(item);
         mPlayers.reset();
+        mPlayers.clear();
         mPlayers.stop();
         resetAdapter();
         hideControl();
