@@ -347,11 +347,6 @@ public class CastActivity extends BaseActivity implements CustomKeyDownVod.Liste
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEvent(ErrorEvent event) {
         if (!event.getTag().equals(tag)) return;
-        if (mPlayers.retried()) onError(event);
-        else onReset();
-    }
-
-    private void onError(ErrorEvent event) {
         showError(event.getMsg());
         mPlayers.resetTrack();
         onStopped();
