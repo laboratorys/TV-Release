@@ -18,7 +18,7 @@ public class ActionEvent {
 
     private final String action;
 
-    private static void send(String action) {
+    public static void send(String action) {
         EventBus.getDefault().post(new ActionEvent(action));
     }
 
