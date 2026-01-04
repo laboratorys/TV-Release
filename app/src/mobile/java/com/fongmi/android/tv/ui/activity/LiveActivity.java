@@ -703,9 +703,6 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
 
     private void resetAdapter() {
         mBinding.control.action.line.setVisibility(View.GONE);
-        mBinding.channel.getLayoutParams().width = 0;
-        mBinding.epgData.getLayoutParams().width = 0;
-        mBinding.group.getLayoutParams().width = 0;
         mBinding.control.title.setText("");
         mEpgDataAdapter.clear();
         mChannelAdapter.clear();
