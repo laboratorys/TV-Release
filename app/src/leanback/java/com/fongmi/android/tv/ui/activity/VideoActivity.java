@@ -1048,6 +1048,10 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
             mBinding.control.next.performClick();
         } else if (ActionEvent.PREV.equals(event.getAction())) {
             mBinding.control.prev.performClick();
+        } else if (ActionEvent.LOOP.equals(event.getAction())) {
+            mBinding.control.loop.performClick();
+        } else if (ActionEvent.REPLAY.equals(event.getAction())) {
+            onReset(true);
         } else if (ActionEvent.STOP.equals(event.getAction())) {
             finish();
         }

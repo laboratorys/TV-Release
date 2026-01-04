@@ -1149,6 +1149,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
             mBinding.control.next.performClick();
         } else if (ActionEvent.PREV.equals(event.getAction())) {
             mBinding.control.prev.performClick();
+        } else if (ActionEvent.LOOP.equals(event.getAction())) {
+            mBinding.control.action.loop.performClick();
+        } else if (ActionEvent.REPLAY.equals(event.getAction())) {
+            onReset(true);
         } else if (ActionEvent.AUDIO.equals(event.getAction())) {
             moveTaskToBack(true);
             setAudioOnly(true);
