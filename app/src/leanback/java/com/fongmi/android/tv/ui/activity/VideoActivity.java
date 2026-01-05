@@ -239,10 +239,6 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         return mHistory != null && mHistory.getScale() != -1 ? mHistory.getScale() : Setting.getScale();
     }
 
-    private boolean isReplay() {
-        return Setting.getReset() == 1;
-    }
-
     private boolean isFromCollect() {
         return getIntent().getBooleanExtra("collect", false);
     }
@@ -505,12 +501,12 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         };
     }
 
-    private void getPlayer(Flag flag, Episode episode, boolean replay) {
+    private void getPlayer(Flag flag, Episode episode) {
         mBinding.widget.title.setText(getString(R.string.detail_title, mBinding.name.getText(), episode.getName()));
         mViewModel.playerContent(getKey(), flag.getFlag(), episode.getUrl());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mBinding.widget.title.setSelected(true);
-        updateHistory(episode, replay);
+        updateHistory(episode);
         showProgress();
         setMetadata();
         hideCenter();
@@ -747,22 +743,25 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         return true;
     }
 
-    private void onRefresh() {
-        onReset(false);
-    }
-
     private void onReset() {
-        onReset(isReplay());
+        boolean refresh = Setting.getReset() == 0;
+        if (refresh) onRefresh();
+        else onReplay();
     }
 
-    private void onReset(boolean replay) {
+    private void onReplay() {
+        if (mPlayers.isEmpty()) onRefresh();
+        else mPlayers.replay();
+    }
+
+    private void onRefresh() {
         saveHistory();
         mPlayers.stop();
         mPlayers.clear();
         mClock.setCallback(null);
         if (mFlagAdapter.size() == 0) return;
         if (mEpisodeAdapter.size() == 0) return;
-        getPlayer(getFlag(), getEpisode(), replay);
+        getPlayer(getFlag(), getEpisode());
     }
 
     private boolean onResetToggle() {
@@ -976,12 +975,11 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         }
     }
 
-    private void updateHistory(Episode item, boolean replay) {
-        replay = replay || !item.equals(mHistory.getEpisode());
-        mHistory.setEpisodeUrl(item.getUrl());
-        mHistory.setVodRemarks(item.getName());
+    private void updateHistory(Episode item) {
+        mHistory.setPosition(item.equals(mHistory.getEpisode()) ? mHistory.getPosition() : C.TIME_UNSET);
         mHistory.setVodFlag(getFlag().getFlag());
-        mHistory.setPosition(replay ? C.TIME_UNSET : mHistory.getPosition());
+        mHistory.setVodRemarks(item.getName());
+        mHistory.setEpisodeUrl(item.getUrl());
     }
 
     private void checkKeepImg() {
@@ -1053,7 +1051,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         } else if (ActionEvent.LOOP.equals(event.getAction())) {
             onLoop();
         } else if (ActionEvent.REPLAY.equals(event.getAction())) {
-            onReset(true);
+            onReplay();
         } else if (ActionEvent.STOP.equals(event.getAction())) {
             finish();
         }
@@ -1104,7 +1102,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void checkEnded(boolean notify) {
         if (mBinding.control.loop.isActivated()) {
-            onReset(true);
+            onReplay();
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             checkNext(notify);
