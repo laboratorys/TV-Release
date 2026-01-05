@@ -234,6 +234,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         return mHistory != null && mHistory.getScale() != -1 ? mHistory.getScale() : Setting.getScale();
     }
 
+    private boolean isReplay() {
+        return Setting.getReset() == 1;
+    }
+
     private boolean isFromCollect() {
         return getIntent().getBooleanExtra("collect", false);
     }
@@ -545,6 +549,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void setPlayer(Result result) {
         result.getUrl().set(mQualityAdapter.getPosition());
         if (!result.getArtwork().isEmpty()) setArtwork(result.getArtwork());
+        if (result.hasPosition()) mHistory.setPosition(result.getPosition());
         if (!result.getDesc().isEmpty()) setText(mBinding.content, R.string.detail_content, result.getDesc());
         setUseParse(VodConfig.hasParse() && ((result.getPlayUrl().isEmpty() && VodConfig.get().getFlags().contains(result.getFlag())) || result.getJx() == 1));
         if (mControlDialog != null && mControlDialog.isVisible()) mControlDialog.setParseVisible(isUseParse());
@@ -776,14 +781,14 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void onReset() {
-        boolean refresh = Setting.getReset() == 0;
-        if (refresh) onRefresh();
-        else onReplay();
+        if (isReplay()) onReplay();
+        else onRefresh();
     }
 
     private void onReplay() {
+        mHistory.setPosition(C.TIME_UNSET);
         if (mPlayers.isEmpty()) onRefresh();
-        else mPlayers.replay(mHistory.getOpening());
+        else mPlayers.setMediaItem();
     }
 
     private void onRefresh() {
