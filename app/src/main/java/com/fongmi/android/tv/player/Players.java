@@ -402,8 +402,8 @@ public class Players implements Player.Listener, ParseCallback {
         stopParse();
     }
 
-    public void replay() {
-        seekTo(C.TIME_UNSET);
+    public void replay(long time) {
+        seekTo(time);
         prepare();
         play();
     }
@@ -672,7 +672,7 @@ public class Players implements Player.Listener, ParseCallback {
     @Override
     public void onPlayerError(@NonNull PlaybackException e) {
         if (++retry > 2) ErrorEvent.extract(tag, provider.get(e));
-        else if (provider.isInvalidLength(e)) replay();
+        else if (provider.isInvalidLength(e)) replay(C.TIME_UNSET);
         else switch (e.errorCode) {
                 case PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW:
                     seekToDefaultPosition();

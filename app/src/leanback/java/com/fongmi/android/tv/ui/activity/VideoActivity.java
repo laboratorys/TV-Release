@@ -751,7 +751,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void onReplay() {
         if (mPlayers.isEmpty()) onRefresh();
-        else mPlayers.replay();
+        else mPlayers.replay(mHistory.getOpening());
     }
 
     private void onRefresh() {
@@ -1355,9 +1355,10 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     @Override
     public void onKeyCenter() {
-        if (mPlayers.isPlaying()) onPaused();
-        else onPlay();
         hideControl();
+        if (mPlayers.isPlaying()) onPaused();
+        else if (mPlayers.isEmpty()) onRefresh();
+        else onPlay();
     }
 
     @Override

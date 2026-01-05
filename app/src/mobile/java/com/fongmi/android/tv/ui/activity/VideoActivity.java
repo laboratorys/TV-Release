@@ -783,7 +783,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void onReplay() {
         if (mPlayers.isEmpty()) onRefresh();
-        else mPlayers.replay();
+        else mPlayers.replay(mHistory.getOpening());
     }
 
     private void onRefresh() {
