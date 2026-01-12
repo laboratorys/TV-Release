@@ -882,11 +882,12 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void enterFullscreen() {
         if (isFullscreen()) return;
-        setRotate(mPlayers.isPortrait(), true);
+        setFullscreen(true);
         if (isLand() && !mPlayers.isPortrait()) setTransition();
         mBinding.video.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         setRequestedOrientation(mPlayers.isPortrait() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         mBinding.control.title.setVisibility(View.VISIBLE);
+        setRotate(mPlayers.isPortrait());
         mPlayers.setDanmakuSize(1.0f);
         mKeyDown.resetScale();
         App.post(mR3, 2000);
@@ -895,15 +896,16 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void exitFullscreen() {
         if (!isFullscreen()) return;
+        setFullscreen(false);
         if (isLand() && !mPlayers.isPortrait()) setTransition();
         setRequestedOrientation(isPort() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_FULL_USER);
         mBinding.episode.postDelayed(() -> mBinding.episode.scrollToPosition(mEpisodeAdapter.getPosition()), 100);
         mBinding.control.title.setVisibility(View.INVISIBLE);
         mBinding.video.setLayoutParams(mFrameParams);
         mPlayers.setDanmakuSize(0.8f);
-        setRotate(false, false);
         mKeyDown.resetScale();
         App.post(mR3, 2000);
+        setRotate(false);
         hideControl();
     }
 
@@ -1431,17 +1433,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         return rotate;
     }
 
-    public void setRotate(boolean rotate, boolean fullscreen) {
-        this.rotate = rotate;
-        setFullscreen(fullscreen);
-        if (!fullscreen || rotate) noPadding(mBinding.control.getRoot());
-        if (fullscreen && !rotate) setPadding(mBinding.control.getRoot());
-    }
-
     public void setRotate(boolean rotate) {
-        this.rotate = rotate;
-        if (fullscreen && rotate) noPadding(mBinding.control.getRoot());
+        this.rotate = rotate;;
         if (fullscreen && !rotate) setPadding(mBinding.control.getRoot());
+        else noPadding(mBinding.control.getRoot());
     }
 
     public boolean isStop() {
