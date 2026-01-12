@@ -115,8 +115,7 @@ public class Spider extends com.github.catvod.crawler.Spider {
 
     @Override
     public Object[] proxy(Map<String, String> params) throws Exception {
-        if ("catvod".equals(params.get("from"))) return proxy2(params);
-        else return submit(() -> proxy1(params)).get();
+        return "catvod".equals(params.get("from")) ? proxy2(params) : proxy1(params);
     }
 
     @Override
@@ -205,8 +204,8 @@ public class Spider extends com.github.catvod.crawler.Spider {
     }
 
     private Object[] proxy1(Map<String, String> params) throws Exception {
-        JSObject obj = JSUtil.toObject(ctx, params);
-        JSONArray array = new JSONArray(((JSArray) jsObject.getJSFunction("proxy").call(obj)).stringify());
+        JSObject obj = submit(() -> JSUtil.toObject(ctx, params)).get();
+        JSONArray array = submit(() -> new JSONArray(((JSArray) (jsObject.getJSFunction("proxy").call(obj))).stringify())).get();
         Map<String, String> headers = array.length() > 3 ? Json.toMap(array.optString(3)) : null;
         boolean base64 = array.length() > 4 && array.optInt(4) == 1;
         Object[] result = new Object[4];
