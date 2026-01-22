@@ -1408,7 +1408,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     @Override
     protected void onPause() {
         super.onPause();
-        if (isRedirect()) onPaused();
+        if (isRedirect()) mPlayers.stop();
     }
 
     @Override
