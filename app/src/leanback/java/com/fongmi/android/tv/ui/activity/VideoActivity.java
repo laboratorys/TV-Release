@@ -450,9 +450,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         setText(mBinding.area, R.string.detail_area, item.getArea());
         setText(mBinding.type, R.string.detail_type, item.getTypeName());
         setText(mBinding.site, R.string.detail_site, getSite().getName());
-        setText(mBinding.actor, R.string.detail_actor, item.getActor());
         setText(mBinding.content, R.string.detail_content, item.getContent());
         setText(mBinding.director, R.string.detail_director, item.getDirector());
+        setText(mBinding.actor, R.string.detail_actor, item.getActor());
         mFlagAdapter.setItems(item.getFlags(), null);
         mBinding.content.setMaxLines(getMaxLines());
         mBinding.video.requestFocus();
@@ -472,6 +472,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void setText(TextView view, int resId, String text) {
+        if (TextUtils.isEmpty(text) && !TextUtils.isEmpty(view.getText())) return;
         view.setText(getSpan(resId, text), TextView.BufferType.SPANNABLE);
         view.setVisibility(text.isEmpty() ? View.GONE : View.VISIBLE);
         view.setLinkTextColor(MDColor.YELLOW_500);
@@ -1015,12 +1016,19 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void updateVod(Vod item) {
-        mHistory.setVodPic(item.getPic());
-        mHistory.setVodName(item.getName());
-        mBinding.name.setText(item.getName());
-        mBinding.widget.title.setText(item.getName());
+        boolean pic = !item.getPic().isEmpty();
+        boolean name = !item.getName().isEmpty();
+        if (pic) mHistory.setVodPic(item.getPic());
+        if (name) mHistory.setVodName(item.getName());
+        if (name) mBinding.name.setText(item.getName());
+        if (name) mBinding.widget.title.setText(item.getName());
+        setText(mBinding.year, R.string.detail_year, item.getYear());
+        setText(mBinding.area, R.string.detail_area, item.getArea());
+        setText(mBinding.type, R.string.detail_type, item.getTypeName());
         setText(mBinding.content, R.string.detail_content, item.getContent());
         setText(mBinding.director, R.string.detail_director, item.getDirector());
+        setText(mBinding.actor, R.string.detail_actor, item.getActor());
+        setText(mBinding.remark, 0, item.getRemarks());
         mBinding.content.setMaxLines(getMaxLines());
         setPartAdapter();
         updateKeep();

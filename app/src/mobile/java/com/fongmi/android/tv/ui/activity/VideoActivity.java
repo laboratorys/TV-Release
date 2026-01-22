@@ -480,9 +480,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         setText(mBinding.remark, 0, item.getRemarks());
         setText(mBinding.content, 0, item.getContent());
         setText(mBinding.site, R.string.detail_site, getSite().getName());
-        setText(mBinding.actor, R.string.detail_actor, item.getActor());
         setText(mBinding.director, R.string.detail_director, item.getDirector());
-        mBinding.contentLayout.setVisibility(mBinding.content.getVisibility());
+        setText(mBinding.actor, R.string.detail_actor, item.getActor());
         mFlagAdapter.addAll(item.getFlags());
         setOther(mBinding.other, item);
         App.removeCallbacks(mR4);
@@ -493,10 +492,16 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setText(TextView view, int resId, String text) {
+        if (TextUtils.isEmpty(text) && !TextUtils.isEmpty(view.getText())) return;
         view.setText(getSpan(resId, text), TextView.BufferType.SPANNABLE);
         view.setVisibility(text.isEmpty() ? View.GONE : View.VISIBLE);
+        if (view == mBinding.content) setContentVisible();
         view.setLinkTextColor(MDColor.YELLOW_500);
         CustomMovement.bind(view);
+    }
+
+    private void setContentVisible() {
+        mBinding.contentLayout.setVisibility(mBinding.content.getVisibility());
     }
 
     private SpannableStringBuilder getSpan(int resId, String text) {
@@ -1113,13 +1118,17 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void updateVod(Vod item) {
-        mHistory.setVodPic(item.getPic());
-        mHistory.setVodName(item.getName());
-        mBinding.name.setText(item.getName());
-        mBinding.control.title.setText(item.getName());
-        setText(mBinding.content, 0, item.getContent());
+        boolean pic = !item.getPic().isEmpty();
+        boolean name = !item.getName().isEmpty();
+        if (pic) mHistory.setVodPic(item.getPic());
+        if (name) mHistory.setVodName(item.getName());
+        if (name) mBinding.name.setText(item.getName());
+        if (name) mBinding.control.title.setText(item.getName());
         setText(mBinding.director, R.string.detail_director, item.getDirector());
-        mBinding.contentLayout.setVisibility(mBinding.content.getVisibility());
+        setText(mBinding.actor, R.string.detail_actor, item.getActor());
+        setText(mBinding.content, 0, item.getContent());
+        setText(mBinding.remark, 0, item.getRemarks());
+        setOther(mBinding.other, item);
         updateKeep();
         setArtwork();
         setMetadata();
