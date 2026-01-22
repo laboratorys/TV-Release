@@ -1477,7 +1477,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     @Override
     public void onCasted() {
-        onPaused();
+        mPlayers.stop();
     }
 
     @Override
@@ -1643,7 +1643,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     @Override
     protected void onPause() {
         super.onPause();
-        if (isRedirect()) onPaused();
+        if (isRedirect()) mPlayers.stop();
     }
 
     @Override
