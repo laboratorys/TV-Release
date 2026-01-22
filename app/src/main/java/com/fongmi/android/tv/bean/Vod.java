@@ -6,6 +6,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fongmi.android.tv.App;
@@ -90,19 +91,23 @@ public class Vod implements Parcelable, Diffable<Vod> {
     private Style style;
 
     @SerializedName("land")
-    private int land;
+    private Integer land;
 
     @SerializedName("circle")
-    private int circle;
+    private Integer circle;
 
     @SerializedName("ratio")
-    private float ratio;
+    private Float ratio;
 
     @Path("dl")
     @ElementList(entry = "dd", required = false, inline = true)
     private List<Flag> vodFlags;
 
     private Site site;
+
+    public static Vod objectFrom(String str) {
+        return App.gson().fromJson(str, Vod.class);
+    }
 
     public static List<Vod> arrayFrom(String str) {
         Type listType = new TypeToken<List<Vod>>() {}.getType();
@@ -206,15 +211,15 @@ public class Vod implements Parcelable, Diffable<Vod> {
     }
 
     public int getLand() {
-        return land;
+        return land == null ? 0 : land;
     }
 
     public int getCircle() {
-        return circle;
+        return circle == null ? 0 : circle;
     }
 
     public float getRatio() {
-        return ratio;
+        return ratio == null ? 0 : ratio;
     }
 
     public List<Flag> getFlags() {
@@ -299,6 +304,12 @@ public class Vod implements Parcelable, Diffable<Vod> {
         return this;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return App.gson().toJson(this);
+    }
+
     @Override
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
@@ -332,9 +343,9 @@ public class Vod implements Parcelable, Diffable<Vod> {
         dest.writeString(this.vodPlayUrl);
         dest.writeString(this.vodTag);
         dest.writeString(this.action);
-        dest.writeInt(this.land);
-        dest.writeInt(this.circle);
-        dest.writeFloat(this.ratio);
+        dest.writeValue(this.land);
+        dest.writeValue(this.circle);
+        dest.writeValue(this.ratio);
         dest.writeParcelable(this.cate, flags);
         dest.writeParcelable(this.style, flags);
         dest.writeTypedList(this.vodFlags);
@@ -356,9 +367,9 @@ public class Vod implements Parcelable, Diffable<Vod> {
         this.vodPlayUrl = in.readString();
         this.vodTag = in.readString();
         this.action = in.readString();
-        this.land = in.readInt();
-        this.circle = in.readInt();
-        this.ratio = in.readFloat();
+        this.land = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.circle = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.ratio = (Float) in.readValue(Float.class.getClassLoader());
         this.cate = in.readParcelable(Cate.class.getClassLoader());
         this.style = in.readParcelable(Style.class.getClassLoader());
         this.vodFlags = in.createTypedArrayList(Flag.CREATOR);
