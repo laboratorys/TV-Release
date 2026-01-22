@@ -305,8 +305,16 @@ public class Result implements Parcelable {
         return !getMsg().isEmpty();
     }
 
+    public boolean hasArtwork() {
+        return !getArtwork().isEmpty();
+    }
+
     public boolean hasPosition() {
         return getPosition() != null;
+    }
+
+    public boolean hasDesc() {
+        return !getDesc().isEmpty();
     }
 
     public String getRealUrl() {

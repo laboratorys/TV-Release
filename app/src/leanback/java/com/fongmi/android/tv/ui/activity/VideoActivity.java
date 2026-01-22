@@ -518,9 +518,9 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
 
     private void setPlayer(Result result) {
         result.getUrl().set(mQualityAdapter.getPosition());
-        if (!result.getArtwork().isEmpty()) setArtwork(result.getArtwork());
+        if (result.hasArtwork()) setArtwork(result.getArtwork());
         if (result.hasPosition()) mHistory.setPosition(result.getPosition());
-        if (!result.getDesc().isEmpty()) setText(mBinding.content, R.string.detail_content, result.getDesc());
+        if (result.hasDesc()) setText(mBinding.content, R.string.detail_content, result.getDesc());
         setUseParse(VodConfig.hasParse() && ((result.getPlayUrl().isEmpty() && VodConfig.get().getFlags().contains(result.getFlag())) || result.getJx() == 1));
         mPlayers.start(result, isUseParse(), getSite().isChangeable() ? getSite().getTimeout() : -1);
         mBinding.control.parse.setVisibility(isUseParse() ? View.VISIBLE : View.GONE);
@@ -913,12 +913,14 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         App.post(mR2, 500);
     }
 
-    private void setArtwork() {
-        setArtwork(mHistory.getVodPic());
+    private void setArtwork(String url) {
+        mHistory.setVodPic(url);
+        setMetadata();
+        setArtwork();
     }
 
-    private void setArtwork(String url) {
-        ImgUtil.load(this, url, new CustomTarget<>() {
+    private void setArtwork() {
+        ImgUtil.load(this, mHistory.getVodPic(), new CustomTarget<>() {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 mBinding.exo.setDefaultArtwork(resource);
