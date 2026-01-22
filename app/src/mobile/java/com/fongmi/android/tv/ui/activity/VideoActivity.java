@@ -473,9 +473,10 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setDetail(Vod item) {
+        item.checkPic(getPic());
+        item.checkName(getName());
+        mBinding.name.setText(item.getName());
         mBinding.progressLayout.showContent();
-        mBinding.video.setTag(item.getPic(getPic()));
-        mBinding.name.setText(item.getName(getName()));
         setText(mBinding.remark, 0, item.getRemarks());
         setText(mBinding.content, 0, item.getContent());
         setText(mBinding.site, R.string.detail_site, getSite().getName());
