@@ -270,18 +270,16 @@ public class Vod implements Parcelable, Diffable<Vod> {
         return !getAction().isEmpty();
     }
 
+    public void checkPic(String pic) {
+        if (getPic().isEmpty()) setPic(pic);
+    }
+
+    public void checkName(String name) {
+        if (getName().isEmpty()) setName(name);
+    }
+
     public Style getStyle(Style style) {
         return getStyle() != null ? getStyle() : style != null ? style : Style.rect();
-    }
-
-    public String getPic(String pic) {
-        if (getPic().isEmpty()) setPic(pic);
-        return getPic();
-    }
-
-    public String getName(String name) {
-        if (getName().isEmpty()) setName(name);
-        return getName();
     }
 
     public Vod setFlags() {

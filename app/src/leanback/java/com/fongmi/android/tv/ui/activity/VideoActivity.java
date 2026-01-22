@@ -441,9 +441,10 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void setDetail(Vod item) {
+        item.checkPic(getPic());
+        item.checkName(getName());
+        mBinding.name.setText(item.getName());
         mBinding.progressLayout.showContent();
-        mBinding.video.setTag(item.getPic(getPic()));
-        mBinding.name.setText(item.getName(getName()));
         setText(mBinding.remark, 0, item.getRemarks());
         setText(mBinding.year, R.string.detail_year, item.getYear());
         setText(mBinding.area, R.string.detail_area, item.getArea());
