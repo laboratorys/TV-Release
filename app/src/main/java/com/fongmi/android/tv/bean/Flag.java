@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Flag implements Parcelable, Diffable<Flag> {
 
@@ -135,12 +136,12 @@ public class Flag implements Parcelable, Diffable<Flag> {
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Flag it)) return false;
-        return getFlag().equals(it.getFlag());
+        return Objects.equals(getFlag(), it.getFlag());
     }
 
     @Override
     public int hashCode() {
-        return getFlag().hashCode();
+        return Objects.hash(getFlag());
     }
 
     @NonNull
