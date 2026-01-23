@@ -106,7 +106,8 @@ public class Vod implements Parcelable, Diffable<Vod> {
     private Site site;
 
     public static Vod objectFrom(String str) {
-        return App.gson().fromJson(str, Vod.class);
+        Vod vod = App.gson().fromJson(str, Vod.class);
+        return vod == null ? new Vod() : vod.trans().setFlags();
     }
 
     public static List<Vod> arrayFrom(String str) {
@@ -312,12 +313,12 @@ public class Vod implements Parcelable, Diffable<Vod> {
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Vod it)) return false;
-        return !getId().isEmpty() && !it.getId().isEmpty() ? getId().equals(it.getId()) : getName().equals(it.getName());
+        return !getId().isEmpty() && !it.getId().isEmpty() ? Objects.equals(getId(), it.getId()) : Objects.equals(getName(), it.getName());
     }
 
     @Override
     public int hashCode() {
-        return !getId().isEmpty() ? getId().hashCode() : getName().hashCode();
+        return !getId().isEmpty() ? Objects.hash(getId()) : Objects.hash(getName());
     }
 
     @Override

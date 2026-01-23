@@ -10,6 +10,8 @@ import com.fongmi.android.tv.impl.Diffable;
 import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 public class Value implements Parcelable, Diffable<Value> {
 
     @SerializedName("n")
@@ -71,12 +73,12 @@ public class Value implements Parcelable, Diffable<Value> {
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Value it)) return false;
-        return getV().equals(it.getV());
+        return Objects.equals(getV(), it.getV());
     }
 
     @Override
     public int hashCode() {
-        return getV().hashCode();
+        return Objects.hash(getV());
     }
 
     @Override
