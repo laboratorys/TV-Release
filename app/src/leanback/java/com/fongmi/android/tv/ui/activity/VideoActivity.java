@@ -96,6 +96,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
+import java.util.stream.IntStream;
 
 public class VideoActivity extends BaseActivity implements CustomKeyDownVod.Listener, TrackDialog.Listener, ArrayPresenter.OnClickListener, Clock.Callback {
 
@@ -443,9 +444,19 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     private void setDetail(Vod item) {
         item.checkPic(getPic());
         item.checkName(getName());
-        mBinding.name.setText(item.getName());
         mBinding.progressLayout.showContent();
-        setText(mBinding.remark, 0, item.getRemarks());
+        mBinding.name.setText(item.getName());
+        mFlagAdapter.setItems(item.getFlags(), null);
+        mBinding.video.requestFocus();
+        App.removeCallbacks(mR4);
+        checkHistory(item);
+        checkFlag(item);
+        checkKeepImg();
+        setText(item);
+        updateKeep();
+    }
+
+    private void setText(Vod item) {
         setText(mBinding.year, R.string.detail_year, item.getYear());
         setText(mBinding.area, R.string.detail_area, item.getArea());
         setText(mBinding.type, R.string.detail_type, item.getTypeName());
@@ -453,14 +464,8 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         setText(mBinding.content, R.string.detail_content, item.getContent());
         setText(mBinding.director, R.string.detail_director, item.getDirector());
         setText(mBinding.actor, R.string.detail_actor, item.getActor());
-        mFlagAdapter.setItems(item.getFlags(), null);
+        setText(mBinding.remark, 0, item.getRemarks());
         mBinding.content.setMaxLines(getMaxLines());
-        mBinding.video.requestFocus();
-        App.removeCallbacks(mR4);
-        checkHistory(item);
-        checkFlag(item);
-        checkKeepImg();
-        updateKeep();
     }
 
     private int getMaxLines() {
@@ -1022,18 +1027,20 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
         if (name) mHistory.setVodName(item.getName());
         if (name) mBinding.name.setText(item.getName());
         if (name) mBinding.widget.title.setText(item.getName());
-        setText(mBinding.year, R.string.detail_year, item.getYear());
-        setText(mBinding.area, R.string.detail_area, item.getArea());
-        setText(mBinding.type, R.string.detail_type, item.getTypeName());
-        setText(mBinding.content, R.string.detail_content, item.getContent());
-        setText(mBinding.director, R.string.detail_director, item.getDirector());
-        setText(mBinding.actor, R.string.detail_actor, item.getActor());
-        setText(mBinding.remark, 0, item.getRemarks());
-        mBinding.content.setMaxLines(getMaxLines());
-        setPartAdapter();
-        updateKeep();
-        setArtwork();
-        setMetadata();
+        updateFlag(getFlag(), item.getFlags());
+        if (pic || name) setMetadata();
+        if (pic || name) updateKeep();
+        if (name) setPartAdapter();
+        if (pic) setArtwork();
+        setText(item);
+    }
+
+    private void updateFlag(Flag activated, List<Flag> items) {
+        items.forEach(item -> IntStream.range(0, mFlagAdapter.size()).mapToObj(i -> (Flag) mFlagAdapter.get(i))
+                .filter(item::equals).findFirst().ifPresentOrElse(target -> {
+                    target.mergeEpisodes(item.getEpisodes(), mHistory.isRevSort());
+                    if (target.equals(activated)) setEpisodeAdapter(target.getEpisodes());
+                }, () -> mFlagAdapter.add(item)));
     }
 
     @Override
