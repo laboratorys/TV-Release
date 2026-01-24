@@ -475,20 +475,24 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void setDetail(Vod item) {
         item.checkPic(getPic());
         item.checkName(getName());
-        mBinding.name.setText(item.getName());
         mBinding.progressLayout.showContent();
-        setText(mBinding.remark, 0, item.getRemarks());
-        setText(mBinding.content, 0, item.getContent());
-        setText(mBinding.site, R.string.detail_site, getSite().getName());
-        setText(mBinding.director, R.string.detail_director, item.getDirector());
-        setText(mBinding.actor, R.string.detail_actor, item.getActor());
+        mBinding.name.setText(item.getName());
         mFlagAdapter.addAll(item.getFlags());
-        setOther(mBinding.other, item);
         App.removeCallbacks(mR4);
         checkHistory(item);
         checkFlag(item);
         checkKeepImg();
+        setText(item);
         updateKeep();
+    }
+
+    private void setText(Vod item) {
+        setText(mBinding.site, R.string.detail_site, getSite().getName());
+        setText(mBinding.director, R.string.detail_director, item.getDirector());
+        setText(mBinding.actor, R.string.detail_actor, item.getActor());
+        setText(mBinding.content, 0, item.getContent());
+        setText(mBinding.remark, 0, item.getRemarks());
+        setOther(mBinding.other, item);
     }
 
     private void setText(TextView view, int resId, String text) {
@@ -1124,14 +1128,19 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         if (name) mHistory.setVodName(item.getName());
         if (name) mBinding.name.setText(item.getName());
         if (name) mBinding.control.title.setText(item.getName());
-        setText(mBinding.director, R.string.detail_director, item.getDirector());
-        setText(mBinding.actor, R.string.detail_actor, item.getActor());
-        setText(mBinding.content, 0, item.getContent());
-        setText(mBinding.remark, 0, item.getRemarks());
-        setOther(mBinding.other, item);
-        updateKeep();
-        setArtwork();
-        setMetadata();
+        updateFlag(getFlag(), item.getFlags());
+        if (pic || name) setMetadata();
+        if (pic || name) updateKeep();
+        if (pic) setArtwork();
+        setText(item);
+    }
+
+    private void updateFlag(Flag activated, List<Flag> items) {
+        items.forEach(item -> mFlagAdapter.getItems().stream()
+                .filter(item::equals).findFirst().ifPresentOrElse(target -> {
+                    target.mergeEpisodes(item.getEpisodes(), mHistory.isRevSort());
+                    if (target.equals(activated)) setEpisodeAdapter(target.getEpisodes());
+                }, () -> mFlagAdapter.add(item)));
     }
 
     @Override
