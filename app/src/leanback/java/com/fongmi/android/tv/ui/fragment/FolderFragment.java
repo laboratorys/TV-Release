@@ -18,6 +18,7 @@ import com.fongmi.android.tv.ui.activity.VodActivity;
 import com.fongmi.android.tv.ui.base.BaseFragment;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 public class FolderFragment extends BaseFragment {
@@ -62,8 +63,10 @@ public class FolderFragment extends BaseFragment {
     }
 
     private HashMap<String, String> getExtend() {
+        List<Filter> cache = Cache.get(mType);
         HashMap<String, String> extend = new HashMap<>();
-        for (Filter filter : Cache.get(mType)) if (filter.getInit() != null) extend.put(filter.getKey(), filter.getInit());
+        for (Filter filter : cache) filter.getValue().forEach(value -> value.setActivated(false));
+        for (Filter filter : cache) if (filter.getInit() != null) extend.put(filter.getKey(), filter.getInit());
         return extend;
     }
 
