@@ -64,6 +64,12 @@ public class Value implements Parcelable, Diffable<Value> {
         else activated = equal;
     }
 
+    public Value copy() {
+        Value copy = new Value(n, v);
+        copy.activated = this.activated;
+        return copy;
+    }
+
     public Value trans() {
         this.n = Trans.s2t(n);
         return this;
