@@ -1021,8 +1021,11 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     }
 
     private void updateVod(Vod item) {
+        boolean id = !item.getId().isEmpty();
         boolean pic = !item.getPic().isEmpty();
         boolean name = !item.getName().isEmpty();
+        if (id) getIntent().putExtra("id", item.getId());
+        if (id) mHistory.setKey(getHistoryKey());
         if (pic) mHistory.setVodPic(item.getPic());
         if (name) mHistory.setVodName(item.getName());
         if (name) mBinding.name.setText(item.getName());
