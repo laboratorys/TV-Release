@@ -1,30 +1,30 @@
-name: Sync Fork with Upstream
+name: Sync Fork (Rebase Mode)
 on:
   schedule:
-    - cron: '0 16 * * *'  # UTC 16:00 (CST 00:00)
-    - cron: '0 4 * * *'   # UTC 04:00 (CST 12:00)
+    - cron: '0 16 * * *'  # UTC 16:00 (北京时间 00:00)
+    - cron: '0 4 * * *'   # UTC 04:00 (北京时间 12:00)
   workflow_dispatch:
     inputs:
       upstream_branch:
         description: '上游分支名称（如 fongmi）'
         required: false
-        default: 'fongmi'
+        default: 'fongmi' # 已修改默认值为 fongmi
 
 env:
-  UPSTREAM_BRANCH: ${{ inputs.upstream_branch || 'release' }}
-  LOCAL_BRANCH: 'lab'
+  UPSTREAM_BRANCH: ${{ inputs.upstream_branch || 'fongmi' }} # 兜底逻辑同步修改
+  LOCAL_BRANCH: 'lab' # 你的魔改分支
 
 jobs:
-  sync-fork:
+  rebase-sync:
     runs-on: ubuntu-latest
     steps:
-      # 1. 先 checkout 当前仓库的默认分支（如 main）
-      - name: Checkout current repo (main branch)
+      # 1. Checkout 代码，必须设置 fetch-depth: 0 才能获取完整历史进行 rebase
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          ref: main  # 假设你的仓库有 main 或 master 分支
+          ref: ${{ env.LOCAL_BRANCH }}
 
       # 2. 设置 Git 身份
       - name: Set up Git
@@ -32,70 +32,35 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      # 3. 添加上游仓库（FongMi/TV）
-      - name: Add upstream remote
-        run: git remote add upstream https://github.com/FongMi/TV.git
-
-      # 4. 如果 lab 分支不存在，基于 upstream/fongmi 创建并强制推送
-      - name: Create or checkout lab branch
+      # 3. 添加并拉取上游
+      - name: Add Upstream and Fetch
         run: |
-          # 检查远程是否存在 lab 分支
-          if ! git ls-remote --exit-code --heads origin ${{ env.LOCAL_BRANCH }}; then
-            echo "Branch ${{ env.LOCAL_BRANCH }} does not exist, creating from upstream/${{ env.UPSTREAM_BRANCH }}..."
-            git fetch upstream ${{ env.UPSTREAM_BRANCH }}
-            git checkout -b ${{ env.LOCAL_BRANCH }} upstream/${{ env.UPSTREAM_BRANCH }}
-            git push --force origin ${{ env.LOCAL_BRANCH }}
-          else
-            echo "Branch ${{ env.LOCAL_BRANCH }} already exists, checking out..."
-            git fetch origin ${{ env.LOCAL_BRANCH }}
-            git checkout ${{ env.LOCAL_BRANCH }}
-          fi
+          git remote add upstream https://github.com/FongMi/TV.git
+          git fetch upstream ${{ env.UPSTREAM_BRANCH }}
 
-      # 5. 拉取上游最新代码
-      - name: Fetch upstream changes
-        run: git fetch upstream ${{ env.UPSTREAM_BRANCH }}
-
-      # 6. 检查是否需要合并
-      - name: Check if merge needed
-        id: check-merge
+      # 4. 执行 Rebase
+      - name: Rebase onto Upstream
+        id: rebase
         run: |
-          if [ -z "$(git log ${{ env.LOCAL_BRANCH }}..upstream/${{ env.UPSTREAM_BRANCH }} --oneline)" ]; then
-            echo "status=no_changes" >> $GITHUB_OUTPUT
-          else
-            echo "status=needs_merge" >> $GITHUB_OUTPUT
-          fi
-
-      # 7. 尝试合并（模拟，检查冲突）
-      - name: Try to merge upstream changes
-        id: merge
-        if: steps.check-merge.outputs.status == 'needs_merge'
-        run: |
-          git checkout ${{ env.LOCAL_BRANCH }}
-          if git merge --no-commit --no-ff --allow-unrelated-histories upstream/${{ env.UPSTREAM_BRANCH }}; then
+          # 尝试将本地分支 rebase 到上游分支之上
+          if git rebase upstream/${{ env.UPSTREAM_BRANCH }}; then
             echo "status=success" >> $GITHUB_OUTPUT
-            git merge --abort
           else
             echo "status=conflict" >> $GITHUB_OUTPUT
-            git merge --abort
+            # 如果发生冲突，必须撤销 rebase 状态，否则后续 push 会出错
+            git rebase --abort
           fi
 
-      # 8. 如果没有冲突，正式合并
-      - name: Merge if no conflicts
-        if: steps.check-merge.outputs.status == 'needs_merge' && steps.merge.outputs.status == 'success'
+      # 5. 如果 Rebase 成功，强制推送到自己的仓库
+      - name: Push Changes
+        if: steps.rebase.outputs.status == 'success'
         run: |
-          git checkout ${{ env.LOCAL_BRANCH }}
-          git merge --no-ff --allow-unrelated-histories upstream/${{ env.UPSTREAM_BRANCH }}
-          git push origin ${{ env.LOCAL_BRANCH }}
+          # Rebase 会改变提交历史，必须使用 --force
+          git push --force origin ${{ env.LOCAL_BRANCH }}
 
-      # 9. 报告冲突
-      - name: Report conflicts
-        if: steps.merge.outputs.status == 'conflict'
+      # 6. 报告冲突
+      - name: Report Conflict
+        if: steps.rebase.outputs.status == 'conflict'
         run: |
-          echo "::error::合并冲突: 上游 ${{ env.UPSTREAM_BRANCH }} 分支与本地 ${{ env.LOCAL_BRANCH }} 分支存在冲突"
+          echo "::error::Rebase 冲突！上游 fongmi 分支与你的 lab 分支在同一处代码有变动，请在本地手动解决。"
           exit 1
-
-      # 10. 如果已经是最新的，输出提示
-      - name: Report already up to date
-        if: steps.check-merge.outputs.status == 'no_changes'
-        run: |
-          echo "::notice::分支已是最新状态，无需合并"
