@@ -8,23 +8,22 @@ on:
       upstream_branch:
         description: '上游分支名称（如 fongmi）'
         required: false
-        default: 'fongmi' # 已修改默认值为 fongmi
+        default: 'fongmi'
 
 env:
-  UPSTREAM_BRANCH: ${{ inputs.upstream_branch || 'fongmi' }} # 兜底逻辑同步修改
-  LOCAL_BRANCH: 'lab' # 你的魔改分支
+  UPSTREAM_BRANCH: ${{ inputs.upstream_branch || 'fongmi' }}
+  LOCAL_BRANCH: 'lab' # 你的魔改分支名
 
 jobs:
   rebase-sync:
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout 代码，必须设置 fetch-depth: 0 才能获取完整历史进行 rebase
+      # 1. Checkout 代码 (先尝试拉取整个仓库历史)
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          ref: ${{ env.LOCAL_BRANCH }}
 
       # 2. 设置 Git 身份
       - name: Set up Git
@@ -38,29 +37,44 @@ jobs:
           git remote add upstream https://github.com/FongMi/TV.git
           git fetch upstream ${{ env.UPSTREAM_BRANCH }}
 
-      # 4. 执行 Rebase
+      # 4. 核心逻辑：检查 lab 分支是否存在，不存在则创建
+      - name: Check or Create Local Branch
+        run: |
+          # 检查远程 origin 是否存在 lab 分支
+          if git ls-remote --exit-code --heads origin ${{ env.LOCAL_BRANCH }}; then
+            echo "Branch ${{ env.LOCAL_BRANCH }} exists, checking it out..."
+            git checkout ${{ env.LOCAL_BRANCH }}
+          else
+            echo "Branch ${{ env.LOCAL_BRANCH }} does not exist, creating from upstream/${{ env.UPSTREAM_BRANCH }}..."
+            # 基于上游指定分支创建一个全新的本地 lab 分支
+            git checkout -b ${{ env.LOCAL_BRANCH }} upstream/${{ env.UPSTREAM_BRANCH }}
+            # 立即推送到远程，确保初始化成功
+            git push origin ${{ env.LOCAL_BRANCH }}
+          fi
+
+      # 5. 执行 Rebase (仅在分支已存在且有更新时有意义)
       - name: Rebase onto Upstream
         id: rebase
         run: |
-          # 尝试将本地分支 rebase 到上游分支之上
+          # 确保当前在 lab 分支
+          git checkout ${{ env.LOCAL_BRANCH }}
+          # 执行 rebase
           if git rebase upstream/${{ env.UPSTREAM_BRANCH }}; then
             echo "status=success" >> $GITHUB_OUTPUT
           else
             echo "status=conflict" >> $GITHUB_OUTPUT
-            # 如果发生冲突，必须撤销 rebase 状态，否则后续 push 会出错
             git rebase --abort
           fi
 
-      # 5. 如果 Rebase 成功，强制推送到自己的仓库
+      # 6. 如果 Rebase 成功（或新创建），强制推送
       - name: Push Changes
         if: steps.rebase.outputs.status == 'success'
         run: |
-          # Rebase 会改变提交历史，必须使用 --force
           git push --force origin ${{ env.LOCAL_BRANCH }}
 
-      # 6. 报告冲突
+      # 7. 报告冲突
       - name: Report Conflict
         if: steps.rebase.outputs.status == 'conflict'
         run: |
-          echo "::error::Rebase 冲突！上游 fongmi 分支与你的 lab 分支在同一处代码有变动，请在本地手动解决。"
+          echo "::error::Rebase 冲突！请在本地处理冲突后推送到远程。"
           exit 1
