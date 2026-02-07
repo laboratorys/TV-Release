@@ -39,8 +39,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.NextRenderersFactory;
-
 public class ExoUtil {
 
     public static ExoPlayer buildExoPlayer(int decode, Player.Listener listener) {
