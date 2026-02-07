@@ -2,7 +2,7 @@
 set -e  # 遇到错误立即退出
 
 REPO="laboratorys/Media3-Release"
-TAG="v1.8.0-fongmi"
+TAG="v1.9.1-fongmi"
 TEMP_DIR="temp_aars"
 TARGET_DIR="app/libs"
 
