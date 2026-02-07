@@ -107,8 +107,7 @@ jobs:
       - name: Download AAR Files
         working-directory: tv-app # 进入目标仓库目录
         run: |
-          curl -sSLo download_aars.sh https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/download_aars.sh
-          chmod +x ./scripts/download_aars.sh
+          chmod +x scripts/download_aars.sh
           ./scripts/download_aars.sh
       # 5. 构建 APK
       - name: 🔨 Build & Sign APK
