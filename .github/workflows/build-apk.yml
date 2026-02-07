@@ -108,8 +108,8 @@ jobs:
         working-directory: tv-app # 进入目标仓库目录
         run: |
           curl -sSLo download_aars.sh https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/download_aars.sh
-          chmod +x ./download_aars.sh
-          ./download_aars.sh
+          chmod +x ./scripts/download_aars.sh
+          ./scripts/download_aars.sh
       # 5. 构建 APK
       - name: 🔨 Build & Sign APK
         if: steps.build-control.outputs.should_build == 'true'
@@ -177,6 +177,11 @@ jobs:
           # 打印最终APK列表
           echo "📦 生成的APK文件："
           ls -lh release_apks/
+      - name: 📝 Process Update JSON
+        if: steps.build-control.outputs.should_build == 'true'
+        run: |
+          chmod +x scripts/process_json.sh
+          ./scripts/process_json.sh "${{ steps.version.outputs.version }}" "上游仓库同步更新"
       - name: Generate current time
         id: datetime
         run: echo "CURRENT_TIME=$(date -u +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
@@ -196,4 +201,6 @@ jobs:
           files: |
             tv-app/release_apks/*.apk
             tv-app/last_build_commit.txt
+            processed_json/leanback.json
+            processed_json/mobile.json
           token: ${{ secrets.GITHUB_TOKEN }}
