@@ -25,6 +25,7 @@ import com.fongmi.android.tv.bean.Site;
 import com.fongmi.android.tv.databinding.FragmentSettingBinding;
 import com.fongmi.android.tv.db.AppDatabase;
 import com.fongmi.android.tv.event.RefreshEvent;
+import com.fongmi.android.tv.extra.Constant;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.impl.ConfigCallback;
 import com.fongmi.android.tv.impl.LiveCallback;
@@ -92,7 +93,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
         mBinding.vodUrl.setText(VodConfig.getDesc());
         mBinding.liveUrl.setText(LiveConfig.getDesc());
         mBinding.wallUrl.setText(WallConfig.getDesc());
-        mBinding.versionText.setText(BuildConfig.VERSION_NAME);
+        mBinding.versionText.setText(String.format("%s-%s",BuildConfig.VERSION_NAME, Constant.VERSION_SUFFIX));
         setOtherText();
         setCacheText();
     }
