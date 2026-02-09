@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.fongmi.android.tv.databinding.DialogUpdateBinding;
 import com.fongmi.android.tv.utils.Download;
 import com.fongmi.android.tv.utils.FileUtil;
-import com.fongmi.android.tv.utils.Github;
+import com.fongmi.android.tv.extra.Github;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.github.catvod.net.OkHttp;
