@@ -15,6 +15,7 @@ import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.db.AppDatabase;
+import com.fongmi.android.tv.extra.PlayRecordCloudSync;
 import com.fongmi.android.tv.impl.Diffable;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -106,6 +107,7 @@ public class History implements Diffable<History> {
 
     public static void delete(int cid) {
         AppDatabase.get().getHistoryDao().delete(cid);
+        PlayRecordCloudSync.get().delete("");
     }
 
     public static void sync(List<History> targets) {
@@ -329,14 +331,22 @@ public class History implements Diffable<History> {
     }
 
     public History save() {
+        return save(true);
+    }
+
+    public History save(boolean sync) {
         updateTime = System.currentTimeMillis();
         AppDatabase.get().getHistoryDao().insertOrUpdate(this);
+        if (sync) {
+            PlayRecordCloudSync.get().push(this);
+        }
         return this;
     }
 
     public History delete() {
         AppDatabase.get().getHistoryDao().delete(VodConfig.getCid(), getKey());
         AppDatabase.get().getTrackDao().delete(getKey());
+        PlayRecordCloudSync.get().delete(getKey());
         return this;
     }
 
