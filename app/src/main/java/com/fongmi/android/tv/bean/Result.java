@@ -83,6 +83,8 @@ public class Result implements Parcelable {
     private String click;
     @SerializedName("key")
     private String key;
+    @SerializedName("lrc")
+    private String lrc;
     @SerializedName("position")
     private Long position;
     @SerializedName("pagecount")
@@ -267,6 +269,10 @@ public class Result implements Parcelable {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getLrc() {
+        return TextUtils.isEmpty(lrc) ? "" : lrc;
     }
 
     public Long getPosition() {
