@@ -17,6 +17,7 @@ import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.bean.History;
 import com.fongmi.android.tv.databinding.ActivityHistoryBinding;
 import com.fongmi.android.tv.event.RefreshEvent;
+import com.fongmi.android.tv.extra.PlayRecordCloudSync;
 import com.fongmi.android.tv.ui.adapter.HistoryAdapter;
 import com.fongmi.android.tv.ui.base.BaseActivity;
 import com.fongmi.android.tv.ui.dialog.SyncDialog;
@@ -60,6 +61,7 @@ public class HistoryActivity extends BaseActivity implements HistoryAdapter.OnCl
     }
 
     private void getHistory() {
+        PlayRecordCloudSync.pull();
         mAdapter.setItems(History.get(), (hasChange) -> {
             mBinding.progressLayout.showContent(true, mAdapter.getItemCount());
             if (hasChange) mBinding.recycler.scrollToPosition(0);
