@@ -51,6 +51,7 @@ public class HistoryActivity extends BaseActivity implements HistoryAdapter.OnCl
         setSupportActionBar(mBinding.toolbar);
         setRecyclerView();
         getHistory();
+        PlayRecordCloudSync.get().pull();
     }
 
     private void setRecyclerView() {
@@ -61,7 +62,6 @@ public class HistoryActivity extends BaseActivity implements HistoryAdapter.OnCl
     }
 
     private void getHistory() {
-        PlayRecordCloudSync.pull();
         mAdapter.setItems(History.get(), (hasChange) -> {
             mBinding.progressLayout.showContent(true, mAdapter.getItemCount());
             if (hasChange) mBinding.recycler.scrollToPosition(0);

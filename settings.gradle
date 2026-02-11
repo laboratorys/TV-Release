@@ -16,6 +16,9 @@ dependencyResolutionManagement {
             url "http://4thline.org/m2"
             allowInsecureProtocol = true
         }
+        maven {
+            url = uri("https://raw.githubusercontent.com/laboratorys/Media3-Release/maven/")
+        }
     }
 }
 include ':app'

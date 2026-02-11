@@ -34,6 +34,7 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        com.fongmi.android.tv.extra.KeywordCloudSync.get().pull();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.container, SearchFragment.newInstance(getKeyword()), SearchFragment.class.getSimpleName()).commit();
         }

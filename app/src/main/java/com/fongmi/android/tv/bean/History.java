@@ -270,7 +270,7 @@ public class History implements Diffable<History> {
 
     public static void delete(int cid) {
         AppDatabase.get().getHistoryDao().delete(cid);
-        PlayRecordCloudSync.clear();
+        PlayRecordCloudSync.get().delete("");
     }
 
     private boolean shouldMerge(History item, boolean force) {
@@ -304,15 +304,21 @@ public class History implements Diffable<History> {
     }
 
     public History save() {
+        return save(true);
+    }
+
+    public History save(boolean sync) {
         AppDatabase.get().getHistoryDao().insertOrUpdate(this);
-        PlayRecordCloudSync.push(this);
+        if (sync) {
+            PlayRecordCloudSync.get().push(this);
+        }
         return this;
     }
 
     public History delete() {
         AppDatabase.get().getHistoryDao().delete(VodConfig.getCid(), getKey());
         AppDatabase.get().getTrackDao().delete(getKey());
-        PlayRecordCloudSync.delete(getKey());
+        PlayRecordCloudSync.get().delete(getKey());
         return this;
     }
 

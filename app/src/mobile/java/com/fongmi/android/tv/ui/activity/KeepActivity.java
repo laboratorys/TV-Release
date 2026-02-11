@@ -3,6 +3,7 @@ package com.fongmi.android.tv.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -54,6 +55,7 @@ public class KeepActivity extends BaseActivity implements KeepAdapter.OnClickLis
         setSupportActionBar(mBinding.toolbar);
         setRecyclerView();
         getKeep();
+        com.fongmi.android.tv.extra.KeepCloudSync.get().pull();
     }
 
     private void setRecyclerView() {
