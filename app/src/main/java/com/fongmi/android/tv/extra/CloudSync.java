@@ -7,7 +7,6 @@ import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.util.Map;
@@ -46,7 +45,7 @@ public abstract class CloudSync<T> {
         String url = baseUrl + "/check" + query;
 
         Log.d(TAG, "Checking support: " + url);
-        client.newCall(new Request.Builder().url(url).get().build()).enqueue(new Callback() {
+        client.newCall(new Request.Builder().url(url).head().build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(TAG, "Check Support Failed: " + e.getMessage());
@@ -55,22 +54,10 @@ public abstract class CloudSync<T> {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
-
-
                 boolean supported = response.isSuccessful();
-                boolean checkResult = false;
-                try{
-                    String body = response.body().string();
-                    JsonObject jsonObject = JsonParser.parseString(body).getAsJsonObject();
-                    if (jsonObject.has("OK") && !jsonObject.get("OK").isJsonNull()) {
-                        checkResult= jsonObject.get("OK").getAsBoolean();
-                    }
-                }catch (Exception e){
-                    Log.d(TAG, "Check Error: " + e.getMessage());
-                }
-                supportCache.put(configUrl, (supported && checkResult));
-                Log.d(TAG, "Support Result: " + (supported && checkResult));
-                if(supported && checkResult) pull();
+                supportCache.put(configUrl, supported);
+                Log.d(TAG, "Support Result: " + supported);
+                if (supported) pull();
                 response.close();
             }
         });
