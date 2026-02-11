@@ -100,6 +100,11 @@ public class Keep implements Diffable<Keep> {
         this.cid = cid;
     }
 
+    public String getVodFlag() {
+        History history = AppDatabase.get().getHistoryDao().find(getCid(), getKey());
+        return history != null?history.getVodFlag() : null;
+    }
+
     public String getSiteKey() {
         return getKey().split(AppDatabase.SYMBOL)[0];
     }
@@ -122,6 +127,7 @@ public class Keep implements Diffable<Keep> {
 
     public static void deleteAll() {
         AppDatabase.get().getKeepDao().delete();
+        com.fongmi.android.tv.extra.KeepCloudSync.get().delete("");
     }
 
     public static void delete(int cid) {
@@ -140,17 +146,31 @@ public class Keep implements Diffable<Keep> {
         return AppDatabase.get().getKeepDao().getLive();
     }
 
-    public void save(int cid) {
-        setCid(cid);
-        AppDatabase.get().getKeepDao().insertOrUpdate(this);
+    public void save() {
+        save(getCid() == 0 ? VodConfig.getCid() : getCid(), true);
     }
 
-    public void save() {
+    public void save(int cid) {
+        save(cid, true);
+    }
+
+    public void save(int cid, boolean sync) {
+        setCid(cid);
+        AppDatabase.get().getKeepDao().insertOrUpdate(this);
+        if (sync) com.fongmi.android.tv.extra.KeepCloudSync.get().push(this, getVodFlag());
+    }
+
+    public void saveLocal() {
         AppDatabase.get().getKeepDao().insertOrUpdate(this);
     }
 
     public Keep delete() {
+        return delete(true);
+    }
+
+    public Keep delete(boolean sync) {
         AppDatabase.get().getKeepDao().delete(getCid(), getKey());
+        if (sync) com.fongmi.android.tv.extra.KeepCloudSync.get().delete(getKey());
         return this;
     }
 
