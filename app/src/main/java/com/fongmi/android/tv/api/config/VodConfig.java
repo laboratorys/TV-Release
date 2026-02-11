@@ -145,6 +145,10 @@ public class VodConfig extends BaseConfig {
         initParse(config, object);
         config.setLogo(Json.safeString(object, "logo"));
         config.setNotice(Json.safeString(object, "notice"));
+        String url = config.getUrl();
+        com.fongmi.android.tv.extra.KeepCloudSync.get().checkSupport(url);
+        com.fongmi.android.tv.extra.PlayRecordCloudSync.get().checkSupport(url);
+        com.fongmi.android.tv.extra.KeywordCloudSync.get().checkSupport(url);
     }
 
     private void initList(JsonObject object) {

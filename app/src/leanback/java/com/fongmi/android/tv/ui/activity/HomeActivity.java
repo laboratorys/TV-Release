@@ -269,7 +269,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void getHistory() {
-        com.fongmi.android.tv.extra.CloudSync.pull();
+        com.fongmi.android.tv.extra.PlayRecordCloudSync.get().pull();
         getHistory(false);
     }
 
