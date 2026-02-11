@@ -39,6 +39,7 @@ public class KeepActivity extends BaseActivity implements KeepAdapter.OnClickLis
     protected void initView() {
         setRecyclerView();
         getKeep();
+        com.fongmi.android.tv.extra.KeepCloudSync.get().pull();
     }
 
     private void setRecyclerView() {

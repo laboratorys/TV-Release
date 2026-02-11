@@ -55,6 +55,7 @@ public class SearchActivity extends BaseActivity implements WordAdapter.OnClickL
     @Override
     protected void initView() {
         CustomKeyboard.init(this, mBinding);
+        com.fongmi.android.tv.extra.KeywordCloudSync.get().pull();
         setRecyclerView();
         getHot();
     }

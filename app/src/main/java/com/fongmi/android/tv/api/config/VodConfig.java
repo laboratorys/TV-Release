@@ -154,6 +154,10 @@ public class VodConfig {
             config.logo(Json.safeString(object, "logo"));
             String notice = Json.safeString(object, "notice");
             if (taskId.get() != id) return;
+            String url = config.getUrl();
+            com.fongmi.android.tv.extra.KeepCloudSync.get().checkSupport(url);
+            com.fongmi.android.tv.extra.PlayRecordCloudSync.get().checkSupport(url);
+            com.fongmi.android.tv.extra.KeywordCloudSync.get().checkSupport(url);
             App.post(() -> callback.success(notice));
             App.post(callback::success);
         } catch (Throwable e) {
