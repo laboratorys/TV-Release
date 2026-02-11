@@ -111,7 +111,7 @@ jobs:
           curl -sSLo download_aars.sh https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/scripts/download_aars.sh
           chmod +x download_aars.sh
           ./download_aars.sh
-      # 5. 构建 APK
+          # 5. 构建 APK
       - name: 🔨 Build & Sign APK
         if: steps.build-control.outputs.should_build == 'true'
         working-directory: tv-app # 进入目标仓库目录
@@ -124,57 +124,63 @@ jobs:
           # 解码签名文件
           echo "🔑 Decoding keystore..."
           echo "$KEYSTORE" | base64 -d > keystore.jks
-          
+      
           # 赋予 gradlew 执行权限
           chmod +x gradlew
-          
+      
           # 执行 Gradle 签名构建
           echo "🚀 Building signed APK..."
           ./gradlew clean assembleRelease --console=plain --no-daemon
-          
+      
           mkdir -p release_apks
-          
+      
           # 处理所有APK文件（包括leanback和mobile变体）
-          find app/build/outputs/apk -name "*.apk" ! -name "*unsigned*" | while read -r apk; do
+          # 修改点：专门寻找 unsigned.apk 以进行标准的对齐和签名流程
+          find app/build/outputs/apk -name "*-unsigned.apk" | while read -r apk; do
             # 调试：打印原始APK路径
             echo "Processing APK: $apk"
-            
+      
             # 从路径中提取变体名称（leanback/mobile）和ABI类型
               if [[ "$apk" =~ /(leanback|mobile)(Arm64_v8a|Armeabi_v7a)/ ]]; then
               VARIANT="${BASH_REMATCH[1]}"
               ABI=$(echo "${BASH_REMATCH[2]}" | tr '[:upper:]' '[:lower:]')  # 转换为小写
-              
+      
               # 生成输出文件名（如leanback-arm64_v8a.apk）
               ALIGNED_APK="${VARIANT}-${ABI}-aligned.apk"
               SIGNED_APK="release_apks/${VARIANT}-${ABI}.apk"
-    
+      
             echo "Generating: $SIGNED_APK"
-            
+      
             # 对齐APK
+              # -p 参数对 Chaquopy 的 native 库对齐至关重要
               zipalign -p -f -v 4 "$apk" "$ALIGNED_APK"
-              
+      
               # 签名APK
+              # 显式开启 v2 和 v3 签名，防止高版本 Android 系统校验失败
               apksigner sign \
               --ks keystore.jks \
               --ks-key-alias "$KEY_ALIAS" \
               --ks-pass "pass:$KEYSTORE_PASS" \
               --key-pass "pass:$KEY_PASS" \
+              --v1-signing-enabled true \
+              --v2-signing-enabled true \
+              --v3-signing-enabled true \
               --out "$SIGNED_APK" \
               "$ALIGNED_APK"
-              
+      
               # 验证签名
               apksigner verify -v "$SIGNED_APK"
-              
+      
               # 清理临时文件
               rm -f "$ALIGNED_APK"
               else
             echo "Warning: Unknown APK variant in path: $apk"
           fi
           done
-          
+      
           # 清理密钥库
           rm -f keystore.jks
-          
+      
           # 打印最终APK列表
           echo "📦 生成的APK文件："
           ls -lh release_apks/
