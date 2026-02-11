@@ -105,6 +105,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Download AAR Files
+        if: false
         working-directory: tv-app # 进入目标仓库目录
         run: |
           curl -sSLo download_aars.sh https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/scripts/download_aars.sh
