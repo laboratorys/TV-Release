@@ -297,7 +297,7 @@ public class Channel {
         return !getCatchup().isEmpty();
     }
 
-    public String getLineText() {
+    public String getLine() {
         if (getUrls().size() <= 1) return "";
         String[] sp = getUrls().get(getIndex()).split("\\$");
         if (sp.length > 1 && !sp[1].isEmpty()) return sp[1];
