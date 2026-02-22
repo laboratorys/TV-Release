@@ -235,7 +235,7 @@ public class LiveConfig {
             if (group.getName().equals(splits[0])) {
                 int j = group.find(splits[1]);
                 if (j != -1) {
-                    group.getChannel().get(j).setLine(splits[2]);
+                    group.getChannel().get(j).setIndex(splits[2]);
                     return new int[]{i, j};
                 }
             }
