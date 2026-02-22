@@ -614,11 +614,11 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mBinding.widget.name.setMaxEms(48);
         mChannel.loadLogo(mBinding.widget.logo);
         mBinding.widget.title.setSelected(true);
+        mBinding.widget.line.setText(mChannel.getLine());
         mBinding.widget.name.setText(mChannel.getShow());
         mBinding.widget.title.setText(mChannel.getShow());
-        mBinding.widget.line.setText(mChannel.getLineText());
+        mBinding.control.line.setText(mChannel.getLine());
         mBinding.widget.number.setText(mChannel.getNumber());
-        mBinding.control.line.setText(mChannel.getLineText());
         mBinding.widget.line.setVisibility(mChannel.getLineVisible());
         mBinding.control.line.setVisibility(mChannel.getLineVisible());
     }
