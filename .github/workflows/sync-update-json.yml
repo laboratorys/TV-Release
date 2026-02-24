@@ -1,4 +1,4 @@
-name: Hourly Smart Sync JSON
+name: 🚀 Hourly Sync JSON & Smart Release
 
 on:
   schedule:
@@ -12,15 +12,18 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout Code
+      - name: 📥 Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      - name: Update and Merge JSON
+      - name: 🔄 Update and Merge JSON
+        id: process_json
         run: |
           python <<EOF
           import json
@@ -28,34 +31,32 @@ jobs:
           import os
 
           def merge_descriptions(old_desc, new_desc):
-              # 将描述按行拆分，去掉首尾空格，过滤空行
               old_lines = [line.strip() for line in old_desc.split('\n') if line.strip()]
               new_lines = [line.strip() for line in new_desc.split('\n') if line.strip()]
-          
-              # 保持顺序的同时去重：先放新的行，再放旧的行
               merged_lines = []
               seen = set()
-          
               for line in new_lines + old_lines:
                   if line not in seen:
                       merged_lines.append(line)
                       seen.add(line)
-          
               return "\n".join(merged_lines)
 
           files = ["leanback.json", "mobile.json"]
           base_url = "https://raw.githubusercontent.com/FongMi/Release/fongmi/apk/"
           local_dir = "update"
+          ver_name = ""
 
           for filename in files:
               remote_url = base_url + filename
               local_path = os.path.join(local_dir, filename)
-          
               try:
                   req = urllib.request.Request(remote_url, headers={'User-Agent': 'Mozilla/5.0'})
                   with urllib.request.urlopen(req) as response:
                       remote_data = json.loads(response.read().decode())
           
+                  if filename == "mobile.json":
+                      ver_name = remote_data.get('name')
+
                   if os.path.exists(local_path):
                       with open(local_path, 'r', encoding='utf-8') as f:
                           local_list = json.load(f)
@@ -64,42 +65,60 @@ jobs:
 
                   remote_code = remote_data.get('code')
                   remote_desc = remote_data.get('desc', '')
-          
-                  # 寻找本地是否存在该版本
                   existing_item = next((item for item in local_list if item.get('code') == remote_code), None)
 
                   if existing_item:
                       old_desc = existing_item.get('desc', '')
                       new_merged_desc = merge_descriptions(old_desc, remote_desc)
-          
-                      if old_desc.strip() == new_merged_desc.strip():
-                          print(f"No changes for {filename} version {remote_code}")
-                          continue
-          
                       existing_item['desc'] = new_merged_desc
-                      print(f"Updated desc for {filename} version {remote_code}")
                   else:
-                      # 全新版本，直接插入
                       local_list.insert(0, remote_data)
-                      print(f"Added new version {remote_code} to {filename}")
 
-                  # 保存
                   os.makedirs(local_dir, exist_ok=True)
                   with open(local_path, 'w', encoding='utf-8') as f:
                       json.dump(local_list, f, ensure_ascii=False, indent=2)
-
               except Exception as e:
-                  print(f"Error processing {filename}: {e}")
+                  print(f"Error: {e}")
+
+          if ver_name:
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write(f"tag_name=v{ver_name}\n")
           EOF
 
-      - name: Commit and Push
+      - name: ⬆️ Commit and Push to Main
+        id: git_commit
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add update/*.json
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "changed=false" >> $GITHUB_OUTPUT
           else
-            git commit -m "Hourly Update: Smart merge desc without duplicates"
-            git push
+            git commit -m "Sync JSON: ${{ steps.process_json.outputs.tag_name }}"
+            git push origin HEAD
+            echo "changed=true" >> $GITHUB_OUTPUT
           fi
+
+      - name: 🔍 Check if Tag Exists
+        id: check_tag
+        run: |
+          TAG=${{ steps.process_json.outputs.tag_name }}
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 🎁 Update GitHub Release
+        if: |
+          (steps.git_commit.outputs.changed == 'true' && steps.check_tag.outputs.exists == 'true') ||
+          (github.event_name == 'workflow_dispatch')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.process_json.outputs.tag_name }}
+          files: |
+            update/leanback.json
+            update/mobile.json
+          append_body: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
