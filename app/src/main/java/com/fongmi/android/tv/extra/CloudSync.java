@@ -7,6 +7,7 @@ import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.util.Map;
@@ -55,9 +56,18 @@ public abstract class CloudSync<T> {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
                 boolean supported = response.isSuccessful();
-                supportCache.put(configUrl, supported);
-                Log.d(TAG, "Support Result: " + supported);
-                if (supported) pull();
+                boolean checkResult = false;
+                try{
+                    JsonObject jsonObject = JsonParser.parseString(response.body().string()).getAsJsonObject();
+                    if (jsonObject.has("OK") && !jsonObject.get("OK").isJsonNull()) {
+                        checkResult= jsonObject.get("OK").getAsBoolean();
+                    }
+                }catch (Exception e){
+                    Log.d(TAG, "Check Error: " + e.getMessage());
+                }
+                supportCache.put(configUrl, (supported && checkResult));
+                Log.d(TAG, "Support Result: " + (supported && checkResult));
+                if(supported && checkResult) pull();
                 response.close();
             }
         });
