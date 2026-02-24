@@ -46,7 +46,7 @@ public abstract class CloudSync<T> {
         String url = baseUrl + "/check" + query;
 
         Log.d(TAG, "Checking support: " + url);
-        client.newCall(new Request.Builder().url(url).head().build()).enqueue(new Callback() {
+        client.newCall(new Request.Builder().url(url).get().build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(TAG, "Check Support Failed: " + e.getMessage());
@@ -55,10 +55,13 @@ public abstract class CloudSync<T> {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
+
+
                 boolean supported = response.isSuccessful();
                 boolean checkResult = false;
                 try{
-                    JsonObject jsonObject = JsonParser.parseString(response.body().string()).getAsJsonObject();
+                    String body = response.body().string();
+                    JsonObject jsonObject = JsonParser.parseString(body).getAsJsonObject();
                     if (jsonObject.has("OK") && !jsonObject.get("OK").isJsonNull()) {
                         checkResult= jsonObject.get("OK").getAsBoolean();
                     }
