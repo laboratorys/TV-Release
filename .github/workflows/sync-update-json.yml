@@ -1,4 +1,4 @@
-name: 🚀 Hourly Sync JSON & Smart Release
+name: Hourly Sync JSON & Smart Release
 
 on:
   schedule:
