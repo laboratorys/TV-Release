@@ -147,7 +147,7 @@ jobs:
             echo "✅ Found Signed APK: $FILENAME"
             cp "$apk" "release_apks/$FILENAME"
           done
-          rm -f github_action.jks
+          rm -f keystore.jks
           
           # 6. 验证 (可选)
           if [ -z "$(ls -A release_apks/)" ]; then
