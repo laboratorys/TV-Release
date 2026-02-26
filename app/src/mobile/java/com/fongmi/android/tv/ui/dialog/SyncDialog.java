@@ -168,10 +168,15 @@ public class SyncDialog extends BaseDialog implements DeviceAdapter.OnClickListe
     public boolean onLongClick(Device item) {
         String mode = binding.mode.getTag().toString();
         if (mode.equals("0")) return false;
-        if (mode.equals("2") && type.equals("keep")) Keep.deleteAll();
-        if (mode.equals("2") && type.equals("history")) History.delete(VodConfig.getCid());
-        OkHttp.newCall(client, String.format(Locale.getDefault(), "%s/action?do=sync&mode=%s&type=%s&force=true", item.getIp(), binding.mode.getTag().toString(), type), body.build()).enqueue(getCallback());
+        if (mode.equals("2")) deleteLocal();
+        String force = mode.equals("1") ? "&force=true" : "";
+        OkHttp.newCall(client, String.format(Locale.getDefault(), "%s/action?do=sync&mode=%s&type=%s%s", item.getIp(), mode, type, force), body.build()).enqueue(getCallback());
         return true;
+    }
+
+    private void deleteLocal() {
+        if (type.equals("keep")) Keep.deleteAll();
+        if (type.equals("history")) History.delete(VodConfig.getCid());
     }
 
     private Callback getCallback() {
