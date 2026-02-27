@@ -146,7 +146,7 @@ jobs:
           -H "Content-Type: application/json" \
           --data '{
               "files": [
-                "https://your-domain.com/tv/update.json",
-                "https://your-domain.com/tv/version.json"
+                "https://apk.vxsx.eu.org/tv/update.json",
+                "https://apk.vxsx.eu.org/tv/version.json"
               ]
           }'
