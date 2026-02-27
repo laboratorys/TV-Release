@@ -213,9 +213,4 @@ jobs:
           curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/purge_cache" \
           -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
           -H "Content-Type: application/json" \
-          --data '{
-            "files": [
-              "https://apk.vxsx.eu.org/tv/leanback.json",
-              "https://apk.vxsx.eu.org/tv/mobile.json"
-            ]
-          }'
+          --data '{"purge_everything":true}'
