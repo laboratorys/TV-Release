@@ -2,7 +2,7 @@
   {
     "code": 521,
     "name": "5.2.1",
-    "desc": "* 支持 rmvb\n* 優化 hls drm\n* 優化 srt 解析\n* 【lab】内置多仓彩蛋\n* 【lab】更新优化"
+    "desc": "* 支持 rmvb\n* 優化 hls drm\n* 優化 srt 解析\n* 【lab】适配LunaTV同步播放记录、收藏、搜索历史\n* 【lab】内置多仓彩蛋\n* 【lab】更新优化"
   },
   {
     "code": 520,
