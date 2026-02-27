@@ -111,7 +111,12 @@ jobs:
           else
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
-
+      - name: 📝 Process Update JSON
+        if: steps.build-control.outputs.should_build == 'true'
+        run: |
+          curl -sSLo process_json.sh https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/scripts/process_json.sh
+          chmod +x process_json.sh
+          ./process_json.sh "${{ steps.version.outputs.version }}" "上游仓库同步更新"
       - name: 🎁 Update GitHub Release
         if: |
           (steps.git_commit.outputs.changed == 'true' && steps.check_tag.outputs.exists == 'true') ||
@@ -120,8 +125,8 @@ jobs:
         with:
           tag_name: ${{ steps.process_json.outputs.tag_name }}
           files: |
-            update/leanback.json
-            update/mobile.json
+            processed_json/leanback.json
+            processed_json/mobile.json
           append_body: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -135,7 +140,7 @@ jobs:
           AWS_DEFAULT_REGION: auto
         run: |
           echo "🔄 同步文件到 R2..."
-          aws s3 sync update/ s3://${{ env.R2_BUCKET_NAME }}/tv/ \
+          aws s3 sync processed_json/ s3://${{ env.R2_BUCKET_NAME }}/tv/ \
           --endpoint-url ${{ secrets.R2_BUCKET_URL }} \
           --delete
       - name: 🧹 Purge Cloudflare CDN Cache
