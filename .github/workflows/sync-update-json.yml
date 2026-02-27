@@ -8,6 +8,9 @@ on:
 jobs:
   update-json:
     runs-on: ubuntu-latest
+    env:
+      CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+      R2_BUCKET_NAME: "apk"
     permissions:
       contents: write
 
@@ -122,3 +125,30 @@ jobs:
           append_body: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: ☁️ Sync to Cloudflare R2 (Keep Latest Only)
+        if: steps.build-control.outputs.should_build == 'true'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          echo "🔄 同步文件到 R2..."
+          # 使用 aws s3 sync 实现增量同步
+          # --endpoint-url: R2 的连接地址
+          # --delete: 关键参数！如果 R2 上有文件但在本地 release_apks 中不存在，则删除 R2 上的文件
+          # 这样可以确保 R2 桶里永远只有本次构建生成的最新 APK
+          echo "📂 Preparing JSON files for sync..."
+          cp processed_json/leanback.json tv-app/release_apks/
+          cp processed_json/mobile.json tv-app/release_apks/
+          aws s3 sync tv-app/release_apks/ s3://${{ env.R2_BUCKET_NAME }}/tv/ \
+          --endpoint-url ${{ secrets.R2_BUCKET_URL }} \
+          --delete
+      - name: 🧹 Purge Cloudflare CDN Cache
+        # 只有当你配置了 CF_API_TOKEN 时才运行，防止报错
+        if: steps.build-control.outputs.should_build == 'true' && env.CF_API_TOKEN != ''
+        run: |
+          echo "🧼 正在刷新 Cloudflare 缓存..."
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/purge_cache" \
+          -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          --data '{"purge_everything":true}'
