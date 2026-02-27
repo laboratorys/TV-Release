@@ -112,7 +112,9 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
       - name: 📝 Process Update JSON
-        if: steps.build-control.outputs.should_build == 'true'
+        if: |
+          (steps.git_commit.outputs.changed == 'true' && steps.check_tag.outputs.exists == 'true') ||
+          (github.event_name == 'workflow_dispatch')
         run: |
           curl -sSLo process_json.sh https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/scripts/process_json.sh
           chmod +x process_json.sh
