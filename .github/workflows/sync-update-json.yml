@@ -120,7 +120,7 @@ jobs:
           chmod +x process_json.sh
           RAW_TAG="${{ steps.process_json.outputs.tag_name }}"
           CLEAN_TAG=${RAW_TAG#v}
-          ./process_json.sh "$RAW_TAG" "上游仓库同步更新"
+          ./process_json.sh "CLEAN_TAG" "上游仓库同步更新"
       - name: 🎁 Update GitHub Release
         if: |
           (steps.git_commit.outputs.changed == 'true' && steps.check_tag.outputs.exists == 'true') ||
