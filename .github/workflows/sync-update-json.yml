@@ -126,7 +126,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: ☁️ Sync to Cloudflare R2 (Keep Latest Only)
-        if: steps.build-control.outputs.should_build == 'true'
+        if: |
+          (steps.git_commit.outputs.changed == 'true' && steps.check_tag.outputs.exists == 'true') ||
+          (github.event_name == 'workflow_dispatch')
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -138,7 +140,9 @@ jobs:
           --delete
       - name: 🧹 Purge Cloudflare CDN Cache
         # 只有当你配置了 CF_API_TOKEN 时才运行，防止报错
-        if: steps.build-control.outputs.should_build == 'true' && env.CF_API_TOKEN != ''
+        if: |
+          (steps.git_commit.outputs.changed == 'true' && steps.check_tag.outputs.exists == 'true') ||
+          (github.event_name == 'workflow_dispatch')
         run: |
           echo "🧼 正在刷新 Cloudflare 缓存..."
           curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/purge_cache" \
