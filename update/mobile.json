@@ -1,5 +1,10 @@
 [
   {
+    "code": 523,
+    "name": "5.2.3",
+    "desc": "* 優化 rmvb 解碼\n* 優化 ffmpeg 解碼\n* 支持 asf、wma、wmv 解碼"
+  },
+  {
     "code": 522,
     "name": "5.2.2",
     "desc": "* 優化 ffmpeg 解碼\n* 支持 asf、wma、wmv 解碼"
