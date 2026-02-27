@@ -146,7 +146,7 @@ jobs:
           -H "Content-Type: application/json" \
           --data '{
               "files": [
-                "https://apk.vxsx.eu.org/tv/update.json",
-                "https://apk.vxsx.eu.org/tv/version.json"
+                "https://apk.vxsx.eu.org/tv/leanback.json",
+                "https://apk.vxsx.eu.org/tv/mobile.json"
               ]
           }'
