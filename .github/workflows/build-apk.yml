@@ -203,8 +203,7 @@ jobs:
           cp processed_json/leanback.json tv-app/release_apks/
           cp processed_json/mobile.json tv-app/release_apks/
           aws s3 sync tv-app/release_apks/ s3://${{ env.R2_BUCKET_NAME }}/tv/ \
-          --endpoint-url ${{ secrets.R2_BUCKET_URL }} \
-          --delete
+          --endpoint-url ${{ secrets.R2_BUCKET_URL }}
       - name: 🧹 Purge Cloudflare CDN Cache
         # 只有当你配置了 CF_API_TOKEN 时才运行，防止报错
         if: steps.build-control.outputs.should_build == 'true' && env.CF_API_TOKEN != ''
