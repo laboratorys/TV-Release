@@ -145,8 +145,7 @@ jobs:
         run: |
           echo "🔄 同步文件到 R2..."
           aws s3 sync processed_json/ s3://${{ env.R2_BUCKET_NAME }}/tv/ \
-          --endpoint-url ${{ secrets.R2_BUCKET_URL }} \
-          --delete
+          --endpoint-url ${{ secrets.R2_BUCKET_URL }}
       - name: 🧹 Purge Cloudflare CDN Cache
         # 只有当你配置了 CF_API_TOKEN 时才运行，防止报错
         if: |
