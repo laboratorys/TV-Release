@@ -7,7 +7,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      R2_BUCKET_NAME: "你的存储桶名称"
+      CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+      R2_BUCKET_NAME: "apk"
       ANDROID_BUILD_TOOLS: "34.0.0" # 指定构建工具版本
       GRADLE_OPTS: "-Dorg.gradle.caching=true -Dorg.gradle.parallel=true"
       ANDROID_HOME: /usr/local/lib/android/sdk
@@ -206,7 +207,7 @@ jobs:
           --delete
       - name: 🧹 Purge Cloudflare CDN Cache
         # 只有当你配置了 CF_API_TOKEN 时才运行，防止报错
-        if: steps.build-control.outputs.should_build == 'true' && secrets.CF_API_TOKEN != ''
+        if: steps.build-control.outputs.should_build == 'true' && env.CF_API_TOKEN != ''
         run: |
           echo "🧼 正在刷新 Cloudflare 缓存..."
           curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/purge_cache" \
