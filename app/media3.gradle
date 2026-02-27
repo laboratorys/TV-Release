@@ -1,5 +1,5 @@
 dependencies {
-    def version = "1.9.1"
+    def version = "1.9.2"
     def group = "androidx.media3"
     implementation "$group:lib-common:$version"
     implementation "$group:lib-database:$version"
