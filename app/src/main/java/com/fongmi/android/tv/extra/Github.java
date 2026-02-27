@@ -2,7 +2,7 @@ package com.fongmi.android.tv.extra;
 
 public class Github {
 
-    public static final String URL = "https://gh.noki.icu/github/laboratorys/TV-Release/releases/latest/download";
+    public static final String URL = "https://apk.vxsx.eu.org/tv";
 
     private static String getUrl(String name) {
         return URL + "/" + name;
