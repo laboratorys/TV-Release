@@ -115,7 +115,8 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
 
     @Override
     protected void initEvent() {
-        mBinding.vod.setOnClickListener(this::onVod);
+        //mBinding.vod.setOnClickListener(this::onVod);
+        com.fongmi.android.tv.extra.DoubleClickListener.bind(mBinding.vod, this::onVod, v -> com.fongmi.android.tv.extra.BootConfig.loadDepot(getActivity()));
         mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.live.setOnClickListener(this::onLive);
         mBinding.wall.setOnClickListener(this::onWall);
