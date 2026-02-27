@@ -118,7 +118,9 @@ jobs:
         run: |
           curl -sSLo process_json.sh https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/scripts/process_json.sh
           chmod +x process_json.sh
-          ./process_json.sh "${{ steps.process_json.outputs.tag_name }}" "上游仓库同步更新"
+          RAW_TAG="${{ steps.process_json.outputs.tag_name }}"
+          CLEAN_TAG=${RAW_TAG#v}
+          ./process_json.sh "$RAW_TAG" "上游仓库同步更新"
       - name: 🎁 Update GitHub Release
         if: |
           (steps.git_commit.outputs.changed == 'true' && steps.check_tag.outputs.exists == 'true') ||
