@@ -1,11 +1,13 @@
 # 🍯 魔改影视 (Fongmi Lab Edition)
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/laboratorys/TV-Release?style=flat-square&color=orange&label=最新版本" alt="Release">
-  <img src="https://img.shields.io/github/actions/workflow/status/laboratorys/TV-Release/build-apk.yml?style=flat-square&label=构建状态" alt="Build Status">
-  <img src="https://img.shields.io/github/downloads/laboratorys/TV-Release/total?style=flat-square&color=blueviolet&label=下载量" alt="Downloads">
-  <img src="https://img.shields.io/github/last-commit/laboratorys/TV-Release/lab?style=flat-square&label=最后更新" alt="Last Commit">
-  <img src="https://img.shields.io/github/license/laboratorys/TV-Release?style=flat-square&label=许可证" alt="License">
+  <img src="https://img.shields.io/github/v/release/laboratorys/TV-Release?style=flat-square&color=orange&label=Release" alt="Release">
+  
+  <img src="https://img.shields.io/github/actions/workflow/status/laboratorys/TV-Release/main.yml?style=flat-square&label=Build" alt="Build">
+  
+  <img src="https://img.shields.io/github/downloads/laboratorys/TV-Release/total?style=flat-square&color=blueviolet&label=Downloads" alt="Downloads">
+  
+  <img src="https://img.shields.io/github/last-commit/laboratorys/TV-Release/lab?style=flat-square&label=Updated" alt="Last Commit">
 </p>
 
 > **基于 Fongmi 核心的自动化增强版本，追求极致的同步体验与开箱即用。**
