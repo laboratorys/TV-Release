@@ -1,5 +1,10 @@
 [
   {
+    "code": 524,
+    "name": "5.2.4",
+    "desc": "* 修正字幕顯示\n* 修正 vob 格式 ac-3 聲音"
+  },
+  {
     "code": 523,
     "name": "5.2.3",
     "desc": "* 優化 rmvb 解碼\n* 優化 ffmpeg 解碼\n* 支持 asf、wma、wmv 解碼"
