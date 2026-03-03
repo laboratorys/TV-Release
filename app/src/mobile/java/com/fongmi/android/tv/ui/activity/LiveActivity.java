@@ -268,7 +268,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
         List<Group> items = new ArrayList<>();
         for (Group group : live.getGroups()) (group.isHidden() ? mHides : items).add(group);
         mGroupAdapter.addAll(items);
-        setPosition(LiveConfig.get().find(items));
+        setPosition(LiveConfig.get().findKeepPosition(items));
     }
 
     private void setWidth(Live live) {

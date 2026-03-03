@@ -24,18 +24,10 @@ import com.github.catvod.utils.Path;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InterruptedIOException;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class WallConfig {
+public class WallConfig extends BaseConfig {
 
     private static final String TAG = WallConfig.class.getSimpleName();
-    private final AtomicInteger taskId = new AtomicInteger(0);
-
-    private Config config;
-    private Future<?> future;
-    private boolean sync;
 
     private static class Loader {
         static volatile WallConfig INSTANCE = new WallConfig();
@@ -68,34 +60,40 @@ public class WallConfig {
         return this;
     }
 
-    private boolean isCanceled(Throwable e) {
-        return "Canceled".equals(e.getMessage()) || e instanceof InterruptedException || e.getCause() instanceof InterruptedIOException;
-    }
-
     public void load() {
+        if (sync) return;
         load(new Callback());
     }
 
-    public void load(Callback callback) {
-        int id = taskId.incrementAndGet();
-        if (future != null && !future.isDone()) future.cancel(true);
-        future = App.submit(() -> loadConfig(id, config, callback));
-        callback.start();
+    @Override
+    protected String getTag() {
+        return TAG;
     }
 
-    private void loadConfig(int id, Config config, Callback callback) {
+    @Override
+    protected Config defaultConfig() {
+        return Config.wall();
+    }
+
+    @Override
+    protected void doLoad(int id, Config config, Callback callback) throws Throwable {
+        download(id, config.getUrl(), callback);
+    }
+
+    @Override
+    protected void loadConfig(int id, Config config, Callback callback) {
         try {
             OkHttp.cancel(TAG);
-            download(id, config.getUrl(), callback);
-            if (taskId.get() == id && config.equals(this.config)) config.update();
+            doLoad(id, config, callback);
+            if (getTaskId() == id && config.equals(this.config)) config.update();
         } catch (Throwable e) {
             e.printStackTrace();
             if (isCanceled(e)) return;
-            if (taskId.get() != id) return;
-            if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
-            else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
+            if (getTaskId() != id) return;
             Setting.putWall(1);
             RefreshEvent.wall();
+            if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
+            else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
         }
     }
 
@@ -104,27 +102,31 @@ public class WallConfig {
         if (url.startsWith("file")) Path.copy(Path.local(url), file);
         else Download.create(UrlUtil.convert(url), file).tag(TAG).get();
         if (!Path.exists(file)) throw new FileNotFoundException();
-        if (taskId.get() != id) return;
-        setWallType(file);
-        setSnapshot(file);
+        if (getTaskId() != id) return;
+        process(file);
         RefreshEvent.wall();
         App.post(callback::success);
     }
 
-    private void setWallType(File file) {
+    private static void process(File file) throws Throwable {
+        setWallType(file);
+        setSnapshot(file);
+    }
+
+    private static void setWallType(File file) {
         Setting.putWallType(0);
         if (isGif(file)) Setting.putWallType(1);
         else if (isVideo(file)) Setting.putWallType(2);
     }
 
-    private void setSnapshot(File file) throws Throwable {
+    private static void setSnapshot(File file) throws Throwable {
         Bitmap bitmap = Glide.with(App.get()).asBitmap().frame(0).load(file).override(ResUtil.getScreenWidth(), ResUtil.getScreenHeight()).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).submit().get();
         try (FileOutputStream fos = new FileOutputStream(FileUtil.getWallCache())) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         }
     }
 
-    private boolean isVideo(File file) {
+    private static boolean isVideo(File file) {
         try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
             retriever.setDataSource(file.getAbsolutePath());
             return "yes".equalsIgnoreCase(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO));
@@ -133,7 +135,7 @@ public class WallConfig {
         }
     }
 
-    private boolean isGif(File file) {
+    private static boolean isGif(File file) {
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -142,13 +144,5 @@ public class WallConfig {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    public boolean needSync(String url) {
-        return sync || TextUtils.isEmpty(config.getUrl()) || url.equals(config.getUrl());
-    }
-
-    public Config getConfig() {
-        return config == null ? Config.wall() : config;
     }
 }

@@ -1,5 +1,6 @@
 package com.fongmi.android.tv.event;
 
+import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.bean.Vod;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,6 +37,11 @@ public class RefreshEvent {
 
     public static void live() {
         EventBus.getDefault().post(new RefreshEvent(Type.LIVE));
+    }
+
+    public static void boot() {
+        EventBus.getDefault().post(new RefreshEvent(Type.BOOT));
+        Setting.putBootLive(false);
     }
 
     public static void detail() {
@@ -85,6 +91,6 @@ public class RefreshEvent {
     }
 
     public enum Type {
-        CONFIG, VIDEO, HISTORY, KEEP, SIZE, WALL, LIVE, DETAIL, PLAYER, SUBTITLE, DANMAKU, VOD
+        CONFIG, VIDEO, HISTORY, KEEP, SIZE, WALL, LIVE, BOOT, DETAIL, PLAYER, SUBTITLE, DANMAKU, VOD
     }
 }

@@ -178,6 +178,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
         if (event.getType().equals(RefreshEvent.Type.CONFIG)) setNavigation();
+        if (event.getType().equals(RefreshEvent.Type.BOOT)) LiveActivity.start(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
