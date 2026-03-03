@@ -12,7 +12,6 @@ import com.fongmi.android.tv.bean.Parse;
 import com.fongmi.android.tv.bean.Rule;
 import com.fongmi.android.tv.bean.Site;
 import com.fongmi.android.tv.impl.Callback;
-import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Doh;
@@ -22,32 +21,26 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
 import com.google.gson.JsonObject;
 
-import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class VodConfig {
+public class VodConfig extends BaseConfig {
 
     private static final String TAG = VodConfig.class.getSimpleName();
-    private final AtomicInteger taskId = new AtomicInteger(0);
 
     private Site home;
     private String wall;
     private Parse parse;
-    private Config config;
     private List<Doh> doh;
     private List<Rule> rules;
     private List<Site> sites;
     private List<String> ads;
     private List<String> flags;
     private List<Parse> parses;
-    private Future<?> future;
 
     private static class Loader {
         static volatile VodConfig INSTANCE = new VodConfig();
@@ -95,35 +88,29 @@ public class VodConfig {
         wall = null;
         parse = null;
         sites = null;
+        parses = null;
+        rules = null;
+        ads = null;
+        doh = null;
+        flags = null;
         BaseLoader.get().clear();
         return this;
     }
 
-    private boolean isCanceled(Throwable e) {
-        return "Canceled".equals(e.getMessage()) || e instanceof InterruptedException || e instanceof InterruptedIOException;
+    @Override
+    protected String getTag() {
+        return TAG;
     }
 
-    public void load(Callback callback) {
-        int id = taskId.incrementAndGet();
-        if (future != null && !future.isDone()) future.cancel(true);
-        future = App.submit(() -> loadConfig(id, config, callback));
-        callback.start();
+    @Override
+    protected Config defaultConfig() {
+        return Config.vod();
     }
 
-    private void loadConfig(int id, Config config, Callback callback) {
-        try {
-            OkHttp.cancel(TAG);
-            Server.get().start();
-            String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
-            checkJson(id, config, callback, Json.parse(json).getAsJsonObject());
-            if (taskId.get() == id && config.equals(this.config)) config.update();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            if (isCanceled(e)) return;
-            if (taskId.get() != id) return;
-            if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
-            else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
-        }
+    @Override
+    protected void doLoad(int id, Config config, Callback callback) throws Throwable {
+        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
+        checkJson(id, config, callback, Json.parse(json).getAsJsonObject());
     }
 
     private void checkJson(int id, Config config, Callback callback, JsonObject object) {
@@ -139,7 +126,7 @@ public class VodConfig {
     private void parseDepot(int id, Config config, Callback callback, JsonObject object) {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
         List<Config> configs = new ArrayList<>();
-        for (Depot item : items) configs.add(Config.find(item, 0));
+        for (Depot item : items) configs.add(Config.find(item, VOD));
         loadConfig(id, this.config = configs.get(0), callback);
         Config.delete(config.getUrl());
     }
@@ -152,13 +139,11 @@ public class VodConfig {
             initSite(config, object);
             initParse(config, object);
             config.logo(Json.safeString(object, "logo"));
-            String notice = Json.safeString(object, "notice");
-            if (taskId.get() != id) return;
-            App.post(() -> callback.success(notice));
+            if (getTaskId() != id) return;
             App.post(callback::success);
         } catch (Throwable e) {
             e.printStackTrace();
-            if (taskId.get() != id) return;
+            if (getTaskId() != id) return;
             App.post(() -> callback.error(Notify.getError(R.string.error_config_parse, e)));
         }
     }
@@ -175,7 +160,7 @@ public class VodConfig {
 
     private void initLive(Config config, JsonObject object) {
         if (Json.isEmpty(object, "lives")) return;
-        Config temp = Config.find(config, 1).save();
+        Config temp = Config.find(config, LIVE).save();
         boolean sync = LiveConfig.get().needSync(config.getUrl());
         if (sync) LiveConfig.get().config(temp.update()).parse(object);
     }
@@ -183,7 +168,7 @@ public class VodConfig {
     private void initWall(Config config, JsonObject object) {
         if (Json.isEmpty(object, "wallpaper")) return;
         this.wall = Json.safeString(object, "wallpaper");
-        Config temp = Config.find(wall, config.getName(), 2).save();
+        Config temp = Config.find(wall, config.getName(), WALL).save();
         boolean sync = WallConfig.get().needSync(wall);
         if (sync) WallConfig.get().config(temp.update());
     }
@@ -276,10 +261,6 @@ public class VodConfig {
 
     private void setAds(List<String> ads) {
         this.ads = ads;
-    }
-
-    public Config getConfig() {
-        return config == null ? Config.vod() : config;
     }
 
     public Parse getParse() {

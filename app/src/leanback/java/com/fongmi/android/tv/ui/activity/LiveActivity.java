@@ -261,7 +261,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         List<Group> items = new ArrayList<>();
         for (Group group : live.getGroups()) (group.isHidden() ? mHides : items).add(group);
         mGroupAdapter.setItems(items, null);
-        setPosition(LiveConfig.get().find(items));
+        setPosition(LiveConfig.get().findKeepPosition(items));
     }
 
     private void setWidth(Live live) {
@@ -957,7 +957,7 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
     @Override
     public void onFind(String number) {
         mBinding.widget.digital.setVisibility(View.GONE);
-        setPosition(LiveConfig.get().find(number, mGroupAdapter.unmodifiableList()));
+        setPosition(LiveConfig.get().findByChannelNumber(number, mGroupAdapter.unmodifiableList()));
     }
 
     @Override
