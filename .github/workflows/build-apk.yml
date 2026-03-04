@@ -191,6 +191,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ steps.version.outputs.version }}" # 使用 versionName 作为标签
+          target_commitish: lab
           name: "📱 Release v${{ steps.version.outputs.version }}"
           body: |
             ✨ Multi-ABI APK Build
