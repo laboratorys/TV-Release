@@ -271,13 +271,11 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
                 showProgress();
                 hideContent();
                 setTitle();
-                setLogo();
             }
 
             @Override
             public void success() {
                 showContent();
-                setLogo();
             }
 
             @Override

@@ -699,7 +699,6 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
             @Override
             public void success() {
-                RefreshEvent.config();
                 setLive(getHome());
             }
 
@@ -746,15 +745,15 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onActionEvent(ActionEvent event) {
-        if (ActionEvent.PLAY.equals(event.getAction())) {
+        if (ActionEvent.PLAY.equals(event.action())) {
             onPlay();
-        } else if (ActionEvent.PAUSE.equals(event.getAction())) {
+        } else if (ActionEvent.PAUSE.equals(event.action())) {
             onPaused();
-        } else if (ActionEvent.NEXT.equals(event.getAction())) {
+        } else if (ActionEvent.NEXT.equals(event.action())) {
             nextChannel();
-        } else if (ActionEvent.PREV.equals(event.getAction())) {
+        } else if (ActionEvent.PREV.equals(event.action())) {
             prevChannel();
-        } else if (ActionEvent.STOP.equals(event.getAction())) {
+        } else if (ActionEvent.STOP.equals(event.action())) {
             finish();
         }
     }
@@ -773,8 +772,8 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPlayerEvent(PlayerEvent event) {
-        if (!event.getTag().equals(tag)) return;
-        switch (event.getState()) {
+        if (!event.tag().equals(tag)) return;
+        switch (event.state()) {
             case PlayerEvent.PREPARE:
                 setDecode();
                 break;
