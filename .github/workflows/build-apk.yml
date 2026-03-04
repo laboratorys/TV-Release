@@ -51,37 +51,66 @@ jobs:
           # 2. 定时任务逻辑 (Schedule)
           if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
             echo "⏰ 定时任务 - 检查更新..."
-            cd tv-app
           
-            # 获取当前代码中 JSON 的最新版本号 (例如: 5.2.4)
-            # 优先检查 mobile，如果 mobile 没变再看 leanback
-            CURRENT_VER=$(jq -r '.[0].name' update/mobile.json)
-            echo "🔍 当前 JSON 版本号: $CURRENT_VER"
+            # 定义远程获取函数 (提高复用性)
+            get_remote_ver() {
+              local url=$1
+              local content=$(curl -sSL "$url")
+              if [[ -n "$content" ]]; then
+                echo "$content" | jq -r '.[0].name'
+              else
+                echo "error"
+              fi
+            }
           
-            # 检查这个版本号是否已经存在于 Git Tag 中
-            # 我们加上 'v' 前缀来匹配你 Release 的格式 (v5.2.4)
-            if git rev-parse "v$CURRENT_VER" >/dev/null 2>&1; then
-              echo "✅ 版本 v$CURRENT_VER 已存在于 Release 中，无需重复构建。"
+            # 获取两个版本的最新号
+            MOBILE_URL="https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/update/mobile.json"
+            LEANBACK_URL="https://raw.githubusercontent.com/laboratorys/TV-Release/refs/heads/main/update/leanback.json"
           
-              # 虽然版本没变，但我们还是检查一下代码是否有极其重要的更新（可选）
-              # 如果你坚持“版本号不改就不构建”，这里直接 exit
+            VER_MOBILE=$(get_remote_ver "$MOBILE_URL")
+            VER_LEANBACK=$(get_remote_ver "$LEANBACK_URL")
+          
+            echo "🔍 远程 Mobile 版本: $VER_MOBILE"
+            echo "🔍 远程 Leanback 版本: $VER_LEANBACK"
+          
+            # 校验数据有效性
+            if [[ "$VER_MOBILE" == "error" || "$VER_LEANBACK" == "error" ]]; then
+              echo "❌ 远程数据获取异常，跳过本次构建。"
               echo "should_build=false" >> $GITHUB_OUTPUT
               exit 0
             fi
           
-            # 如果 Tag 不存在，再检查是否有新提交（防止在空仓库跑）
+            # 检查逻辑：优先以 Mobile 为准，如果 Mobile 没新版，再看 Leanback
+            # 只要任意一个 v$VER 不在 Tag 中，就设置目标版本并构建
+            TARGET_VER=$VER_MOBILE
+            if git rev-parse "v$VER_MOBILE" >/dev/null 2>&1; then
+              echo "✅ Mobile 版本 v$VER_MOBILE 已存在。"
+          
+              if git rev-parse "v$VER_LEANBACK" >/dev/null 2>&1; then
+                echo "✅ Leanback 版本 v$VER_LEANBACK 也已存在。无需构建。"
+                echo "should_build=false" >> $GITHUB_OUTPUT
+                exit 0
+              else
+                echo "🚀 Mobile 没变，但 Leanback 有新版: v$VER_LEANBACK"
+                TARGET_VER=$VER_LEANBACK
+              fi
+            else
+              echo "🚀 Mobile 发现新版本: v$VER_MOBILE"
+            fi
+          
+            # 3. 提交记录检查（防止代码没改动时空跑）
             LAST_COMMIT_DATE=$(git log -1 --format=%ct)
             PREV_COMMIT_DATE=$(cat last_build_commit.txt 2>/dev/null || echo 0)
           
             if [[ $LAST_COMMIT_DATE -le $PREV_COMMIT_DATE ]]; then
-               echo "🕒 虽然是新版本名，但自上次检查后无新提交 - 跳过"
+               echo "🕒 虽然有新版本号，但本地代码库自上次构建后无新提交 - 跳过"
                echo "should_build=false" >> $GITHUB_OUTPUT
                exit 0
             fi
           
-            echo "🚀 发现未发布的新版本: v$CURRENT_VER"
+            echo "✅ 准备构建版本: v$TARGET_VER"
             echo "should_build=true" >> $GITHUB_OUTPUT
-            # 更新时间戳供下次对比
+            # 保存当前 Commit 时间戳
             echo $LAST_COMMIT_DATE > last_build_commit.txt
           fi
       - name: 📌 Extract versionName
