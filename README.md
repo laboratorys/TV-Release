@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/laboratorys/TV-Release?style=flat-square&color=orange&label=Release" alt="Release">
   
-  <img src="https://img.shields.io/github/actions/workflow/status/laboratorys/TV-Release/main.yml?style=flat-square&label=Build" alt="Build">
+  <img src="https://img.shields.io/github/actions/workflow/status/laboratorys/TV-Release/build-apk.yml?style=flat-square&label=Build" alt="Build">
   
   <img src="https://img.shields.io/github/downloads/laboratorys/TV-Release/total?style=flat-square&color=blueviolet&label=Downloads" alt="Downloads">
   
