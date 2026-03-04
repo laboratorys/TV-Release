@@ -36,34 +36,67 @@ jobs:
       - name: ⚙️ Build Control
         id: build-control
         run: |
-          # 手动触发时强制构建
+          # 辅助函数：获取 JSON 中的最新版本 name
+          get_latest_version() {
+            if [[ -f "$1" ]]; then
+              # 获取数组第一个元素的 name 字段
+              jq -r '.[0].name' "$1"
+            else
+              echo "none"
+            fi
+          }
+
+          # 1. 手动触发时强制构建
           if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
             echo "🎯 手动触发 - 强制构建"
             echo "should_build=true" >> $GITHUB_OUTPUT
             exit 0
           fi
-          
-          # 定时任务时检查新提交
+
+          # 2. 定时任务时检查新提交及 JSON 版本更新
           if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
-            echo "⏰ 定时任务 - 检查新提交..."
+            echo "⏰ 定时任务 - 检查更新..."
             cd tv-app
+
+            # 检查是否有新提交
             LAST_COMMIT_DATE=$(git log -1 --format=%ct)
-          
-            if [[ -f last_build_commit.txt ]]; then
-              PREV_COMMIT_DATE=$(cat last_build_commit.txt)
-              if [[ $LAST_COMMIT_DATE -le $PREV_COMMIT_DATE ]]; then
-                echo "🕒 无新提交 - 跳过构建"
-                echo "should_build=false" >> $GITHUB_OUTPUT
-                exit 0
-              fi
+            PREV_COMMIT_DATE=0
+            [[ -f last_build_commit.txt ]] && PREV_COMMIT_DATE=$(cat last_build_commit.txt)
+
+            if [[ $LAST_COMMIT_DATE -le $PREV_COMMIT_DATE ]]; then
+              echo "🕒 代码无新提交 - 跳过"
+              echo "should_build=false" >> $GITHUB_OUTPUT
+              exit 0
             fi
-          
+
+            # 检查 JSON 版本内容是否更新
+            # 假设 JSON 文件路径相对于 tv-app 目录
+            MOBILE_VER=$(get_latest_version "update/mobile.json")
+            LEANBACK_VER=$(get_latest_version "update/leanback.json")
+
+            # 读取上次构建成功时的版本号记录
+            PREV_MOBILE_VER=""
+            PREV_LEANBACK_VER=""
+            [[ -f last_mobile_ver.txt ]] && PREV_MOBILE_VER=$(cat last_mobile_ver.txt)
+            [[ -f last_leanback_ver.txt ]] && PREV_LEANBACK_VER=$(cat last_leanback_ver.txt)
+
+            if [[ "$MOBILE_VER" == "$PREV_MOBILE_VER" && "$LEANBACK_VER" == "$PREV_LEANBACK_VER" ]]; then
+              echo "📄 JSON 版本号未发生变化 ($MOBILE_VER / $LEANBACK_VER) - 跳过构建"
+              echo "should_build=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            # 更新记录文件
             echo $LAST_COMMIT_DATE > last_build_commit.txt
-            echo "🚀 发现新提交 - 开始构建"
+            echo $MOBILE_VER > last_mobile_ver.txt
+            echo $LEANBACK_VER > last_leanback_ver.txt
+
+            echo "🚀 发现新版本 ($MOBILE_VER / $LEANBACK_VER) - 开始构建"
             echo "should_build=true" >> $GITHUB_OUTPUT
+
           else
-            # 其他情况（如tag触发）默认构建
-            echo "🔖 标签触发 - 执行构建"
+            # 3. 其他情况（如 push tag）默认构建
+            echo "🔖 触发事件: $GITHUB_EVENT_NAME - 执行构建"
             echo "should_build=true" >> $GITHUB_OUTPUT
           fi
       - name: 📌 Extract versionName
