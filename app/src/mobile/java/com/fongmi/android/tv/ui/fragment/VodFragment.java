@@ -28,6 +28,7 @@ import com.fongmi.android.tv.bean.Site;
 import com.fongmi.android.tv.bean.Value;
 import com.fongmi.android.tv.databinding.FragmentVodBinding;
 import com.fongmi.android.tv.event.CastEvent;
+import com.fongmi.android.tv.event.ConfigEvent;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.event.StateEvent;
 import com.fongmi.android.tv.impl.Callback;
@@ -233,10 +234,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
         switch (event.getType()) {
-            case CONFIG:
-                setLogo();
-                break;
-            case VIDEO:
+            case HOME:
             case SIZE:
                 homeContent();
                 break;
@@ -244,8 +242,13 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConfigEvent(ConfigEvent event) {
+        if (event.type() == ConfigEvent.Type.VOD) setLogo();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStateEvent(StateEvent event) {
-        switch (event.getType()) {
+        switch (event.type()) {
             case EMPTY:
                 hideProgress();
                 break;
@@ -273,9 +276,8 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
 
             @Override
             public void success() {
-                RefreshEvent.config();
-                RefreshEvent.video();
                 showContent();
+                setLogo();
             }
 
             @Override
@@ -289,7 +291,6 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
     @Override
     public void setSite(Site item) {
         VodConfig.get().setHome(item);
-        homeContent();
     }
 
     @Override

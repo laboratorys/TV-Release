@@ -151,7 +151,7 @@ public class SyncDialog extends BaseDialog implements DeviceAdapter.OnClickListe
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScanEvent(ScanEvent event) {
-        scanTask.start(event.getAddress());
+        scanTask.start(event.address());
     }
 
     @Override

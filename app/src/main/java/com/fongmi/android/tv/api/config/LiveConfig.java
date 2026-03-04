@@ -1,7 +1,5 @@
 package com.fongmi.android.tv.api.config;
 
-import com.fongmi.android.tv.App;
-import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.api.Decoder;
 import com.fongmi.android.tv.api.LiveParser;
@@ -14,9 +12,8 @@ import com.fongmi.android.tv.bean.Keep;
 import com.fongmi.android.tv.bean.Live;
 import com.fongmi.android.tv.bean.Rule;
 import com.fongmi.android.tv.db.AppDatabase;
-import com.fongmi.android.tv.event.RefreshEvent;
+import com.fongmi.android.tv.event.ConfigEvent;
 import com.fongmi.android.tv.impl.Callback;
-import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
@@ -94,10 +91,10 @@ public class LiveConfig extends BaseConfig {
     }
 
     public LiveConfig clear() {
+        ads = null;
         home = null;
         lives = null;
         rules = null;
-        ads = null;
         return this;
     }
 
@@ -112,10 +109,16 @@ public class LiveConfig extends BaseConfig {
     }
 
     @Override
-    protected void doLoad(int id, Config config, Callback callback) throws Throwable {
+    protected void postEvent() {
+        super.postEvent();
+        ConfigEvent.live();
+    }
+
+    @Override
+    protected void load(Config config) throws Throwable {
         String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
-        if (Json.isObj(json)) checkJson(id, config, callback, Json.parse(json).getAsJsonObject());
-        else parseText(id, config, callback, json);
+        if (Json.isObj(json)) checkJson(config, Json.parse(json).getAsJsonObject());
+        else parseText(config, json);
     }
 
     public void load() {
@@ -123,43 +126,38 @@ public class LiveConfig extends BaseConfig {
         load(new Callback());
     }
 
-    private void parseText(int id, Config config, Callback callback, String text) {
+    private void parseText(Config config, String text) {
         Live live = new Live(UrlUtil.getName(config.getUrl()), config.getUrl()).sync();
         lives = new ArrayList<>(List.of(live));
         LiveParser.text(live, text);
         setHome(config, live, false);
-        if (getTaskId() == id) App.post(callback::success);
     }
 
-    private void checkJson(int id, Config config, Callback callback, JsonObject object) {
+    private void checkJson(Config config, JsonObject object) throws Throwable {
         if (object.has("msg")) {
-            App.post(() -> callback.error(object.get("msg").getAsString()));
+            throw new Exception(object.get("msg").getAsString());
         } else if (object.has("urls")) {
-            parseDepot(id, config, callback, object);
+            parseDepot(config, object);
         } else {
-            parseConfig(id, config, callback, object);
+            parseConfig(config, object);
         }
     }
 
-    private void parseDepot(int id, Config config, Callback callback, JsonObject object) {
+    private void parseDepot(Config config, JsonObject object) throws Throwable {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
         List<Config> configs = new ArrayList<>();
         for (Depot item : items) configs.add(Config.find(item, LIVE));
-        loadConfig(id, this.config = configs.get(0), callback);
+        load(this.config = configs.get(0));
         Config.delete(config.getUrl());
     }
 
-    private void parseConfig(int id, Config config, Callback callback, JsonObject object) {
-        try {
-            initList(object);
-            initLive(config, object);
-            if (getTaskId() != id) return;
-            if (callback != null) App.post(callback::success);
-        } catch (Throwable e) {
-            e.printStackTrace();
-            if (getTaskId() != id) return;
-            if (callback != null) App.post(() -> callback.error(Notify.getError(R.string.error_config_parse, e)));
-        }
+    private void parseConfig(Config config, JsonObject object) {
+        initList(object);
+        initLive(config, object);
+    }
+
+    public void parse(JsonObject object) {
+        parseConfig(getConfig(), object);
     }
 
     private void initList(JsonObject object) {
@@ -177,11 +175,6 @@ public class LiveConfig extends BaseConfig {
         Map<String, Live> items = Live.findAll().stream().collect(Collectors.toMap(Live::getName, Function.identity()));
         getLives().forEach(live -> live.sync(items.get(live.getName())));
         setHome(config, getLives().isEmpty() ? new Live() : getLives().stream().filter(item -> item.getName().equals(config.getHome())).findFirst().orElse(getLives().get(0)), false);
-    }
-
-    public void parse(JsonObject object) {
-        int id = nextTaskId();
-        parseConfig(id, getConfig(), null, object);
     }
 
     public void setKeep(Channel channel) {
@@ -272,9 +265,9 @@ public class LiveConfig extends BaseConfig {
     private void setHome(Config config, Live live, boolean save) {
         home = live;
         home.setActivated(true);
-        config.home(home.getName());
+        config.setHome(home.getName());
         if (save) config.save();
         getLives().forEach(item -> item.setActivated(home));
-        if (!save && (home.isBoot() || Setting.isBootLive())) RefreshEvent.boot();
+        if (!save && (home.isBoot() || Setting.isBootLive())) ConfigEvent.boot();
     }
 }

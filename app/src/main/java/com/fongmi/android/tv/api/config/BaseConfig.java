@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.bean.Config;
+import com.fongmi.android.tv.event.ConfigEvent;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.Notify;
@@ -30,7 +31,11 @@ abstract class BaseConfig {
 
     protected abstract Config defaultConfig();
 
-    protected abstract void doLoad(int id, Config config, Callback callback) throws Throwable;
+    protected abstract void load(Config config) throws Throwable;
+
+    protected void postEvent() {
+        ConfigEvent.common();
+    }
 
     public boolean needSync(String url) {
         return sync || TextUtils.isEmpty(config.getUrl()) || url.equals(config.getUrl());
@@ -59,26 +64,23 @@ abstract class BaseConfig {
         try {
             Server.get().start();
             OkHttp.cancel(getTag());
-            doLoad(id, config, callback);
-            if (taskId.get() == id && config.equals(this.config)) config.update();
+            load(config);
+            if (taskId.get() != id) return;
+            if (config.equals(this.config)) config.update();
+            App.post(() -> Notify.show(config.getNotice()));
+            App.post(callback::success);
         } catch (Throwable e) {
             e.printStackTrace();
             if (isCanceled(e)) return;
             if (taskId.get() != id) return;
             if (TextUtils.isEmpty(config.getUrl())) App.post(() -> callback.error(""));
             else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
+        } finally {
+            if (taskId.get() == id) postEvent();
         }
     }
 
     protected boolean isCanceled(Throwable e) {
         return "Canceled".equals(e.getMessage()) || e instanceof InterruptedException || e instanceof InterruptedIOException || e.getCause() instanceof InterruptedIOException;
-    }
-
-    protected int getTaskId() {
-        return taskId.get();
-    }
-
-    protected int nextTaskId() {
-        return taskId.incrementAndGet();
     }
 }

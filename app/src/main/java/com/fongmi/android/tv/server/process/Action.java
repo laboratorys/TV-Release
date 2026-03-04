@@ -176,8 +176,6 @@ public class Action implements Process {
                 if (force) History.delete(cid);
                 History.sync(targets);
                 RefreshEvent.history();
-                RefreshEvent.config();
-                RefreshEvent.video();
             }
 
             @Override
@@ -205,9 +203,6 @@ public class Action implements Process {
             public void success() {
                 if (force) Keep.deleteAll();
                 Keep.sync(configs, targets);
-                RefreshEvent.history();
-                RefreshEvent.config();
-                RefreshEvent.video();
                 RefreshEvent.keep();
             }
 

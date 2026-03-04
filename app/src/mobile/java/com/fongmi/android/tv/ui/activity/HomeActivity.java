@@ -24,6 +24,7 @@ import com.fongmi.android.tv.api.config.WallConfig;
 import com.fongmi.android.tv.bean.Config;
 import com.fongmi.android.tv.databinding.ActivityHomeBinding;
 import com.fongmi.android.tv.db.AppDatabase;
+import com.fongmi.android.tv.event.ConfigEvent;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.event.ServerEvent;
 import com.fongmi.android.tv.event.StateEvent;
@@ -123,21 +124,13 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     private Callback getCallback() {
         return new Callback() {
             @Override
-            public void success(String result) {
-                Notify.show(result);
-            }
-
-            @Override
             public void success() {
                 checkAction(getIntent());
-                RefreshEvent.config();
-                RefreshEvent.video();
             }
 
             @Override
             public void error(String msg) {
                 checkAction(getIntent());
-                RefreshEvent.config();
                 StateEvent.empty();
                 Notify.show(msg);
             }
@@ -176,15 +169,20 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRefreshEvent(RefreshEvent event) {
-        if (event.getType().equals(RefreshEvent.Type.CONFIG)) setNavigation();
-        if (event.getType().equals(RefreshEvent.Type.BOOT)) LiveActivity.start(this);
+    public void onConfigEvent(ConfigEvent event) {
+        if (event.type() == ConfigEvent.Type.VOD) {
+            RefreshEvent.home();
+        } else if (event.type() == ConfigEvent.Type.COMMON) {
+            setNavigation();
+        } else if (event.type() == ConfigEvent.Type.BOOT) {
+            LiveActivity.start(this);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onServerEvent(ServerEvent event) {
-        if (event.getType() != ServerEvent.Type.PUSH) return;
-        VideoActivity.push(this, event.getText());
+        if (event.type() != ServerEvent.Type.PUSH) return;
+        VideoActivity.push(this, event.text());
     }
 
     @Override
@@ -205,7 +203,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     private void checkOrientation(Configuration newConfig) {
         if (orientation != newConfig.orientation) {
             orientation = newConfig.orientation;
-            RefreshEvent.video();
+            RefreshEvent.home();
         }
     }
 

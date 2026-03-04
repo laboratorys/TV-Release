@@ -3,7 +3,6 @@ package com.fongmi.android.tv.api.config;
 import android.text.TextUtils;
 
 import com.fongmi.android.tv.App;
-import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.Decoder;
 import com.fongmi.android.tv.api.loader.BaseLoader;
 import com.fongmi.android.tv.bean.Config;
@@ -11,8 +10,9 @@ import com.fongmi.android.tv.bean.Depot;
 import com.fongmi.android.tv.bean.Parse;
 import com.fongmi.android.tv.bean.Rule;
 import com.fongmi.android.tv.bean.Site;
+import com.fongmi.android.tv.event.ConfigEvent;
+import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.impl.Callback;
-import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Doh;
 import com.github.catvod.bean.Header;
@@ -84,15 +84,15 @@ public class VodConfig extends BaseConfig {
     }
 
     public VodConfig clear() {
+        ads = null;
+        doh = null;
         home = null;
         wall = null;
         parse = null;
         sites = null;
-        parses = null;
-        rules = null;
-        ads = null;
-        doh = null;
         flags = null;
+        rules = null;
+        parses = null;
         BaseLoader.get().clear();
         return this;
     }
@@ -108,44 +108,43 @@ public class VodConfig extends BaseConfig {
     }
 
     @Override
-    protected void doLoad(int id, Config config, Callback callback) throws Throwable {
-        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
-        checkJson(id, config, callback, Json.parse(json).getAsJsonObject());
+    protected void postEvent() {
+        super.postEvent();
+        ConfigEvent.vod();
     }
 
-    private void checkJson(int id, Config config, Callback callback, JsonObject object) {
+    @Override
+    protected void load(Config config) throws Throwable {
+        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
+        checkJson(config, Json.parse(json).getAsJsonObject());
+    }
+
+    private void checkJson(Config config, JsonObject object) throws Throwable {
         if (object.has("msg")) {
-            App.post(() -> callback.error(object.get("msg").getAsString()));
+            throw new Exception(object.get("msg").getAsString());
         } else if (object.has("urls")) {
-            parseDepot(id, config, callback, object);
+            parseDepot(config, object);
         } else {
-            parseConfig(id, config, callback, object);
+            parseConfig(config, object);
         }
     }
 
-    private void parseDepot(int id, Config config, Callback callback, JsonObject object) {
+    private void parseDepot(Config config, JsonObject object) throws Throwable {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
         List<Config> configs = new ArrayList<>();
         for (Depot item : items) configs.add(Config.find(item, VOD));
-        loadConfig(id, this.config = configs.get(0), callback);
+        load(this.config = configs.get(0));
         Config.delete(config.getUrl());
     }
 
-    private void parseConfig(int id, Config config, Callback callback, JsonObject object) {
-        try {
-            initList(object);
-            initLive(config, object);
-            initWall(config, object);
-            initSite(config, object);
-            initParse(config, object);
-            config.logo(Json.safeString(object, "logo"));
-            if (getTaskId() != id) return;
-            App.post(callback::success);
-        } catch (Throwable e) {
-            e.printStackTrace();
-            if (getTaskId() != id) return;
-            App.post(() -> callback.error(Notify.getError(R.string.error_config_parse, e)));
-        }
+    private void parseConfig(Config config, JsonObject object) {
+        initList(object);
+        initLive(config, object);
+        initWall(config, object);
+        initSite(config, object);
+        initParse(config, object);
+        config.setLogo(Json.safeString(object, "logo"));
+        config.setNotice(Json.safeString(object, "notice"));
     }
 
     private void initList(JsonObject object) {
@@ -290,19 +289,20 @@ public class VodConfig extends BaseConfig {
     private void setParse(Config config, Parse parse, boolean save) {
         this.parse = parse;
         this.parse.setActivated(true);
-        config.parse(parse.getName());
+        config.setParse(parse.getName());
         getParses().forEach(item -> item.setActivated(parse));
         if (save) config.save();
     }
 
     public void setHome(Site site) {
         setHome(getConfig(), site, true);
+        RefreshEvent.home();
     }
 
     private void setHome(Config config, Site site, boolean save) {
         home = site;
         home.setActivated(true);
-        config.home(home.getKey());
+        config.setHome(home.getKey());
         if (save) config.save();
         getSites().forEach(item -> item.setActivated(home));
     }
