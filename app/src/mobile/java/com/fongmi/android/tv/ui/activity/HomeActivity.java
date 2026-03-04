@@ -170,12 +170,16 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConfigEvent(ConfigEvent event) {
-        if (event.type() == ConfigEvent.Type.VOD) {
-            RefreshEvent.home();
-        } else if (event.type() == ConfigEvent.Type.COMMON) {
-            setNavigation();
-        } else if (event.type() == ConfigEvent.Type.BOOT) {
-            LiveActivity.start(this);
+        switch (event.type()) {
+            case VOD:
+                RefreshEvent.home();
+                break;
+            case COMMON:
+                setNavigation();
+                break;
+            case BOOT:
+                LiveActivity.start(this);
+                break;
         }
     }
 

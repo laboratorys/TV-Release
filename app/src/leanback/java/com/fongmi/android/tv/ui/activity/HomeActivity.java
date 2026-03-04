@@ -326,14 +326,18 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConfigEvent(ConfigEvent event) {
-        if (event.type() == ConfigEvent.Type.VOD) {
-            RefreshEvent.history();
-            RefreshEvent.home();
-            setLogo();
-        } else if (event.type() == ConfigEvent.Type.COMMON) {
-            setFunc();
-        } else if (event.type() == ConfigEvent.Type.BOOT) {
-            LiveActivity.start(this);
+        switch (event.type()) {
+            case VOD:
+                RefreshEvent.history();
+                RefreshEvent.home();
+                setLogo();
+                break;
+            case COMMON:
+                setFunc();
+                break;
+            case BOOT:
+                LiveActivity.start(this);
+                break;
         }
     }
 
