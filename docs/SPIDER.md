@@ -278,10 +278,19 @@ public Object[] proxy(Map<String, String> params) throws Exception
 **回傳：** `Object[]`（注意：非 JSON 字串），格式為：
 
 ```
+// 200 正常回應
 Object[] {
-  Integer statusCode,          // HTTP 狀態碼（如 200）
-  String  mimeType,            // Content-Type（如 "video/mp2t"）
-  InputStream / String         // 回應內容
+  Integer    statusCode,   // HTTP 狀態碼（200）
+  String     mimeType,     // Content-Type（如 "video/mp2t"）
+  InputStream body         // 回應內容
+}
+
+// 302 重定向
+Object[] {
+  Integer              statusCode,   // 302
+  String               mimeType,     // "text/plain"
+  InputStream          body,         // 通常為空或提示文字
+  Map<String, String>  headers       // 含 "Location" key 的重定向標頭
 }
 ```
 
@@ -356,7 +365,10 @@ public void destroy()
 | JSON 欄位     | 類型           | 說明                                         |
 |-------------|--------------|--------------------------------------------|
 | `list`      | `array<Vod>` | 影片卡片列表。詳見 [Vod](#vod--影片卡片物件)。             |
+| `page`      | `integer`    | 當前頁碼（`categoryContent` 使用）。                |
 | `pagecount` | `integer`    | 總頁數（`categoryContent`、`searchContent` 使用）。 |
+| `limit`     | `integer`    | 每頁筆數（`categoryContent` 使用）。                |
+| `total`     | `integer`    | 總筆數（`categoryContent` 使用）。                 |
 
 **playerContent：**
 
@@ -378,10 +390,9 @@ public void destroy()
 
 **通用欄位（所有 JSON 回傳方法）：**
 
-| JSON 欄位 | 類型        | 說明             |
-|---------|-----------|----------------|
-| `msg`   | `string`  | 錯誤或提示訊息。       |
-| `code`  | `integer` | 回應狀態碼（非零表示錯誤）。 |
+| JSON 欄位 | 類型       | 說明       |
+|---------|----------|----------|
+| `msg`   | `string` | 錯誤或提示訊息。 |
 
 ---
 
@@ -389,26 +400,23 @@ public void destroy()
 
 `list` 陣列中的每個元素。
 
-| JSON 欄位         | 類型        | 說明                                                       |
-|-----------------|-----------|----------------------------------------------------------|
-| `vod_id`        | `string`  | **影片唯一 ID**，傳入 `detailContent` 的 `ids` 參數。               |
-| `vod_name`      | `string`  | 影片顯示名稱（支援 HTML 編碼）。                                      |
-| `vod_pic`       | `string`  | 縮圖 URL。                                                  |
-| `vod_remarks`   | `string`  | 備註標籤，顯示在縮圖上（如 `"更新至12集"`、`"HD"`）。                        |
-| `type_name`     | `string`  | 所屬分類名稱（用於分類過濾）。                                          |
-| `vod_year`      | `string`  | 年份。                                                      |
-| `vod_area`      | `string`  | 地區。                                                      |
-| `vod_director`  | `string`  | 導演。                                                      |
-| `vod_actor`     | `string`  | 演員。                                                      |
-| `vod_content`   | `string`  | 簡介/描述。                                                   |
-| `vod_play_from` | `string`  | 播放來源名稱，多個來源以 `$$$` 分隔。                                   |
-| `vod_play_url`  | `string`  | 播放集數 URL，格式詳見[下方說明](#播放集數格式vod_play_from--vod_play_url)。 |
-| `vod_tag`       | `string`  | 特殊標記。`"folder"` 表示此項為資料夾，點擊後以 `action` 欄位的 URL 取得子列表。    |
-| `action`        | `string`  | 資料夾類型的子列表請求 URL，回傳格式同 `categoryContent`。                 |
-| `style`         | `Style`   | 此影片卡片的顯示樣式覆蓋，詳見 [CONFIG.md](CONFIG.md)。                  |
-| `land`          | `integer` | 強制橫向顯示旗標。                                                |
-| `circle`        | `integer` | 強制圓形顯示旗標。                                                |
-| `ratio`         | `float`   | 卡片寬高比覆蓋。                                                 |
+| JSON 欄位         | 類型       | 說明                                                       |
+|-----------------|----------|----------------------------------------------------------|
+| `vod_id`        | `string` | **影片唯一 ID**，傳入 `detailContent` 的 `ids` 參數。               |
+| `vod_name`      | `string` | 影片顯示名稱（支援 HTML 編碼）。                                      |
+| `vod_pic`       | `string` | 縮圖 URL。                                                  |
+| `vod_remarks`   | `string` | 備註標籤，顯示在縮圖上（如 `"更新至12集"`、`"HD"`）。                        |
+| `type_name`     | `string` | 所屬分類名稱（用於分類過濾）。                                          |
+| `vod_year`      | `string` | 年份。                                                      |
+| `vod_area`      | `string` | 地區。                                                      |
+| `vod_director`  | `string` | 導演。                                                      |
+| `vod_actor`     | `string` | 演員。                                                      |
+| `vod_content`   | `string` | 簡介/描述。                                                   |
+| `vod_play_from` | `string` | 播放來源名稱，多個來源以 `$$$` 分隔。                                   |
+| `vod_play_url`  | `string` | 播放集數 URL，格式詳見[下方說明](#播放集數格式vod_play_from--vod_play_url)。 |
+| `vod_tag`       | `string` | 特殊標記。`"folder"` 表示此項為資料夾，點擊後以 `action` 欄位的 URL 取得子列表。    |
+| `action`        | `string` | 資料夾類型的子列表請求 URL，回傳格式同 `categoryContent`。                 |
+| `style`         | `Style`  | 此影片卡片的顯示樣式覆蓋，詳見 [CONFIG.md](CONFIG.md)。                  |
 
 ---
 
@@ -461,6 +469,7 @@ public void destroy()
 |---------|----------|-------------------------------------------------|
 | `key`   | `string` | 篩選器 ID，作為 `categoryContent` 的 `extend` 參數的 key。 |
 | `name`  | `string` | 篩選器顯示名稱。                                        |
+| `init`  | `string` | 預設選中的選項 value（選填）。                              |
 | `value` | `array`  | 可選項目列表，每項含 `n`（顯示名稱）與 `v`（傳入值）。                 |
 
 使用者選擇後，`extend` 傳入格式為：
@@ -489,12 +498,13 @@ public void destroy()
 
 `subs` 陣列中的每個元素。
 
-| JSON 欄位  | 類型       | 說明                                                    |
-|----------|----------|-------------------------------------------------------|
-| `url`    | `string` | 字幕檔 URL（必填）。                                          |
-| `name`   | `string` | 顯示名稱（選填）。                                             |
-| `lang`   | `string` | 語言代碼（選填，如 `"zh-tw"`、`"en"`）。                          |
-| `format` | `string` | MIME 類型（選填，如 `"application/x-subrip"`），省略時框架依副檔名自動偵測。 |
+| JSON 欄位  | 類型        | 說明                                                                     |
+|----------|-----------|------------------------------------------------------------------------|
+| `url`    | `string`  | 字幕檔 URL（必填）。                                                           |
+| `name`   | `string`  | 顯示名稱（選填）。                                                              |
+| `lang`   | `string`  | 語言代碼（選填，如 `"zh-tw"`、`"en"`）。                                           |
+| `format` | `string`  | MIME 類型（選填），常用值：`"text/x-ssa"`、`"application/x-subrip"`。省略時框架依副檔名自動偵測。 |
+| `flag`   | `integer` | 字幕旗標（選填）。`2` = 強制字幕（forced subtitle）。                                  |
 
 ---
 
@@ -575,44 +585,20 @@ vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1
         "key": "area",
         "name": "地區",
         "value": [
-          {
-            "n": "全部",
-            "v": ""
-          },
-          {
-            "n": "大陸",
-            "v": "大陸"
-          },
-          {
-            "n": "香港",
-            "v": "香港"
-          },
-          {
-            "n": "台灣",
-            "v": "台灣"
-          },
-          {
-            "n": "美國",
-            "v": "美國"
-          }
+          {"n": "全部", "v": ""},
+          {"n": "大陸", "v": "大陸"},
+          {"n": "香港", "v": "香港"},
+          {"n": "台灣", "v": "台灣"},
+          {"n": "美國", "v": "美國"}
         ]
       },
       {
         "key": "year",
         "name": "年份",
         "value": [
-          {
-            "n": "全部",
-            "v": ""
-          },
-          {
-            "n": "2025",
-            "v": "2025"
-          },
-          {
-            "n": "2024",
-            "v": "2024"
-          }
+          {"n": "全部", "v": ""},
+          {"n": "2025", "v": "2025"},
+          {"n": "2024", "v": "2024"}
         ]
       }
     ]
@@ -624,7 +610,7 @@ vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1
 
 ### homeVideoContent / categoryContent 回傳範例
 
-> `categoryContent` 可額外回傳 `pagecount`；`homeVideoContent` 無此欄位。
+> `categoryContent` 可額外回傳 `page`、`pagecount`、`limit`、`total`；`homeVideoContent` 無此欄位。
 
 ```json
 {
@@ -644,7 +630,10 @@ vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1
       "type_name": "電視劇"
     }
   ],
-  "pagecount": 10
+  "page": 1,
+  "pagecount": 10,
+  "limit": 20,
+  "total": 200
 }
 ```
 
@@ -822,7 +811,6 @@ http://example.com/cctv1.m3u8
 **使用範例（Java）：**
 
 ```java
-
 @Override
 public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
     String proxyUrl = Proxy.getUrl(true) + "?url=" + URLEncoder.encode(id, "UTF-8") + "&token=xxx";
