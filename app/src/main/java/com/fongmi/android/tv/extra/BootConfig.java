@@ -6,6 +6,7 @@ import android.util.Log;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.bean.Config;
+import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.utils.Notify;
 
@@ -30,9 +31,8 @@ public class BootConfig {
             public void success() {
                 Log.d("BootConfig", "🚀 内置多仓源已刷新");
                 Notify.dismiss();
-                com.fongmi.android.tv.event.RefreshEvent.config();
-                com.fongmi.android.tv.event.RefreshEvent.live();
-                com.fongmi.android.tv.event.RefreshEvent.wall();
+                RefreshEvent.live();
+                RefreshEvent.home();
                 App.post(() -> Notify.show("🚀 内置多仓源已刷新"));
             }
 
