@@ -35,16 +35,8 @@
 -dontwarn java.awt.**
 -dontwarn com.sun.net.**
 -dontwarn org.ietf.jgss.**
--keep class org.fourthline.cling.** { *; }
 -keep class javax.xml.** { *; }
-
-# EXO
--dontwarn org.kxml2.io.**
--dontwarn org.xmlpull.v1.**
--dontwarn android.content.res.**
--dontwarn org.slf4j.impl.StaticLoggerBinder
--keep class org.xmlpull.** { *; }
--keepclassmembers class org.xmlpull.** { *; }
+-keep class org.fourthline.cling.** { *; }
 
 # Jianpian
 -keep class com.p2p.** { *; }
@@ -69,10 +61,6 @@
 
 # Sardine
 -keep class com.thegrizzlylabs.sardineandroid.** { *; }
-
-# Smbj
--keep class com.hierynomus.** { *; }
--keep class net.engio.mbassy.** { *; }
 
 # TVBus
 -keep class com.tvbus.engine.** { *; }
