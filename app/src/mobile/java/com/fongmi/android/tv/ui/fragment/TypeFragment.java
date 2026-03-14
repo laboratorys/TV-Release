@@ -161,8 +161,10 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
     }
 
     private void checkMore() {
-        if (mScroller.isDisable() || mBinding.recycler.canScrollVertically(1) || mBinding.recycler.getScrollState() != 0 || isHome()) return;
-        getVideo(getTypeId(), String.valueOf(mScroller.addPage()));
+        mBinding.recycler.post(() -> {
+            if (mScroller.isDisable() || mBinding.recycler.canScrollVertically(1) || mBinding.recycler.getScrollState() != 0 || isHome()) return;
+            getVideo(getTypeId(), String.valueOf(mScroller.addPage()));
+        });
     }
 
     public void scrollToTop() {
