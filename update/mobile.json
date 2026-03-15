@@ -1,5 +1,10 @@
 [
   {
+    "code": 529,
+    "name": "5.2.9",
+    "desc": "* 回看參數支持 timestamp\n* iso 的 TrueHD 支持直通"
+  },
+  {
     "code": 528,
     "name": "5.2.8",
     "desc": "* 優化 iso 播放\n* 優化 iso seek"
