@@ -59,7 +59,7 @@ public class CustomSeekView extends FrameLayout implements TimeBar.OnScrubListen
     }
 
     private void updateTimeline() {
-        if (!isAttachedToWindow || player == null) return;
+        if (!isAttached || player == null) return;
         long duration = player.getDuration();
         currentDuration = duration;
         setKeyTimeIncrement(duration);
@@ -105,7 +105,7 @@ public class CustomSeekView extends FrameLayout implements TimeBar.OnScrubListen
 
         if (player.isPlaying()) {
             postDelayed(runnable, delayMs(position));
-        } else if (!player.isEnded() && !player.isIdle()) {
+        } else {
             postDelayed(runnable, MAX_UPDATE_INTERVAL_MS);
         }
     }
