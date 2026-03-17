@@ -9,9 +9,12 @@ import com.fongmi.android.tv.event.ConfigEvent;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.Notify;
+import com.github.catvod.bean.Header;
+import com.github.catvod.bean.Proxy;
 import com.github.catvod.net.OkHttp;
 
 import java.io.InterruptedIOException;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,10 +25,10 @@ abstract class BaseConfig {
     public static final int WALL = 2;
 
     private final AtomicInteger taskId = new AtomicInteger(0);
-    private Future<?> future;
 
-    protected Config config;
     protected boolean sync;
+    protected Config config;
+    private volatile Future<?> future;
 
     protected abstract String getTag();
 
@@ -45,12 +48,17 @@ abstract class BaseConfig {
         return config == null ? defaultConfig() : config;
     }
 
-    public static String getUrl(BaseConfig instance) {
-        return instance.getConfig().getUrl();
+    protected void setHeaders(List<Header> headers) {
+        OkHttp.responseInterceptor().addAll(headers);
     }
 
-    public static String getDesc(BaseConfig instance) {
-        return instance.getConfig().getDesc();
+    protected void setProxy(List<Proxy> proxy) {
+        OkHttp.authenticator().addAll(proxy);
+        OkHttp.selector().addAll(proxy);
+    }
+
+    protected void setHosts(List<String> hosts) {
+        OkHttp.dns().addAll(hosts);
     }
 
     public void load(Callback callback) {
@@ -81,6 +89,9 @@ abstract class BaseConfig {
     }
 
     protected boolean isCanceled(Throwable e) {
-        return "Canceled".equals(e.getMessage()) || e instanceof InterruptedException || e instanceof InterruptedIOException || e.getCause() instanceof InterruptedIOException;
+        if ("Canceled".equals(e.getMessage())) return true;
+        if (e instanceof InterruptedException) return true;
+        if (e instanceof InterruptedIOException) return true;
+        return e.getCause() instanceof InterruptedIOException;
     }
 }
