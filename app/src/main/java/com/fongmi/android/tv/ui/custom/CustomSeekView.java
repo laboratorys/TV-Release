@@ -72,14 +72,8 @@ public class CustomSeekView extends FrameLayout implements TimeBar.OnScrubListen
         removeCallbacks(runnable);
         if (!isAttached || player == null) return;
         if (player.isEmpty()) {
-            if (currentPosition != 0 || currentDuration != 0 || currentBuffered != 0) {
-                positionView.setText("00:00");
-                durationView.setText("00:00");
-                timeBar.setPosition(currentPosition = 0);
-                timeBar.setDuration(currentDuration = 0);
-                timeBar.setBufferedPosition(currentBuffered = 0);
-            }
-            postDelayed(runnable, MIN_UPDATE_INTERVAL_MS);
+            resetView();
+            post(runnable);
             return;
         }
         long position = player.getPosition();
@@ -102,12 +96,19 @@ public class CustomSeekView extends FrameLayout implements TimeBar.OnScrubListen
             currentBuffered = buffered;
             timeBar.setBufferedPosition(buffered);
         }
-
         if (player.isPlaying()) {
             postDelayed(runnable, delayMs(position));
         } else {
             postDelayed(runnable, MAX_UPDATE_INTERVAL_MS);
         }
+    }
+
+    private void resetView() {
+        positionView.setText("00:00");
+        durationView.setText("00:00");
+        timeBar.setPosition(currentPosition = 0);
+        timeBar.setDuration(currentDuration = 0);
+        timeBar.setBufferedPosition(currentBuffered = 0);
     }
 
     private void setKeyTimeIncrement(long duration) {
