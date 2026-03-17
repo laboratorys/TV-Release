@@ -31,8 +31,8 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     private boolean changeSpeed;
     private boolean changeScale;
     private boolean changeTime;
-    private boolean animating;
     private boolean multiTouch;
+    private boolean animating;
     private boolean touch;
     private boolean lock;
     private float bright;
