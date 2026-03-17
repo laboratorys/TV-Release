@@ -17,7 +17,6 @@ import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Doh;
 import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
-import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
 import com.google.gson.JsonObject;
 
@@ -41,10 +40,6 @@ public class VodConfig extends BaseConfig {
     private List<String> ads;
     private List<String> flags;
     private List<Parse> parses;
-
-    private static class Loader {
-        static volatile VodConfig INSTANCE = new VodConfig();
-    }
 
     public static VodConfig get() {
         return Loader.INSTANCE;
@@ -133,6 +128,7 @@ public class VodConfig extends BaseConfig {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
         List<Config> configs = new ArrayList<>();
         for (Depot item : items) configs.add(Config.find(item, VOD));
+        if (configs.isEmpty()) throw new Exception("Depot urls is empty");
         load(this.config = configs.get(0));
         Config.delete(config.getUrl());
     }
@@ -233,25 +229,12 @@ public class VodConfig extends BaseConfig {
         return filter.isEmpty() ? items : filter;
     }
 
-    private void setHeaders(List<Header> headers) {
-        OkHttp.responseInterceptor().addAll(headers);
-    }
-
-    private void setProxy(List<Proxy> proxy) {
-        OkHttp.authenticator().addAll(proxy);
-        OkHttp.selector().addAll(proxy);
-    }
-
     public List<String> getFlags() {
         return flags == null ? Collections.emptyList() : flags;
     }
 
     private void setFlags(List<String> flags) {
         this.flags = flags;
-    }
-
-    private void setHosts(List<String> hosts) {
-        OkHttp.dns().addAll(hosts);
     }
 
     public List<String> getAds() {
@@ -266,8 +249,17 @@ public class VodConfig extends BaseConfig {
         return parse == null ? new Parse() : parse;
     }
 
+    public void setParse(Parse parse) {
+        setParse(getConfig(), parse, true);
+    }
+
     public Site getHome() {
         return home == null ? new Site() : home;
+    }
+
+    public void setHome(Site site) {
+        setHome(getConfig(), site, true);
+        RefreshEvent.home();
     }
 
     public String getWall() {
@@ -282,10 +274,6 @@ public class VodConfig extends BaseConfig {
         return getSites().stream().filter(item -> item.getKey().equals(key)).findFirst().orElse(new Site());
     }
 
-    public void setParse(Parse parse) {
-        setParse(getConfig(), parse, true);
-    }
-
     private void setParse(Config config, Parse parse, boolean save) {
         this.parse = parse;
         this.parse.setActivated(true);
@@ -294,16 +282,15 @@ public class VodConfig extends BaseConfig {
         if (save) config.save();
     }
 
-    public void setHome(Site site) {
-        setHome(getConfig(), site, true);
-        RefreshEvent.home();
-    }
-
     private void setHome(Config config, Site site, boolean save) {
         home = site;
         home.setActivated(true);
         config.setHome(home.getKey());
         if (save) config.save();
         getSites().forEach(item -> item.setActivated(home));
+    }
+
+    private static class Loader {
+        static volatile VodConfig INSTANCE = new VodConfig();
     }
 }
