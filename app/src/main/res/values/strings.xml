@@ -39,6 +39,7 @@
     <string name="play_reset">Reset</string>
     <string name="play_decode">Hard</string>
     <string name="play_timer">Timer</string>
+    <string name="play_title">Chapter</string>
     <string name="play_scale">Default</string>
     <string name="play_config">Config</string>
     <string name="play_change">Change</string>
@@ -120,6 +121,7 @@
     <string name="dialog_edit">Edit</string>
     <string name="dialog_positive">OK</string>
     <string name="dialog_negative">Cancel</string>
+    <string name="dialog_select_title">Select chapter</string>
     <string name="dialog_config_hint">Please enter the config…</string>
     <string name="dialog_config_name">Please enter the name…</string>
     <string name="dialog_config_url">Please enter the url…</string>

@@ -94,6 +94,7 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
         binding.loop.setActivated(parent.control.action.loop.isActivated());
         binding.timer.setActivated(Timer.get().isRunning());
         setTrackVisible();
+        setTitleVisible();
         setScaleText();
         setPlayer();
         setParse();
@@ -107,6 +108,7 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
         binding.text.setOnClickListener(v -> dismiss(parent.control.action.text));
         binding.audio.setOnClickListener(v -> dismiss(parent.control.action.audio));
         binding.video.setOnClickListener(v -> dismiss(parent.control.action.video));
+        binding.title.setOnClickListener(v -> dismiss(parent.control.action.title));
         binding.player.setOnClickListener(v -> dismiss(parent.control.action.player));
         binding.danmaku.setOnClickListener(v -> dismiss(parent.control.action.danmaku));
         binding.loop.setOnClickListener(v -> active(binding.loop, parent.control.action.loop));
@@ -191,6 +193,10 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
         binding.audio.setVisibility(parent.control.action.audio.getVisibility());
         binding.video.setVisibility(parent.control.action.video.getVisibility());
         binding.track.setVisibility(binding.text.getVisibility() == View.GONE && binding.audio.getVisibility() == View.GONE && binding.video.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
+    }
+
+    public void setTitleVisible() {
+        binding.title.setVisibility(parent.control.action.title.getVisibility());
     }
 
     @Override
