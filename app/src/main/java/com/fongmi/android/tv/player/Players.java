@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
+import androidx.media3.common.MediaTitle;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.common.Tracks;
@@ -192,6 +193,14 @@ public class Players implements Player.Listener, ParseCallback {
         setMediaItem();
     }
 
+    public void setTitle(MediaTitle title) {
+        Uri uri = UrlUtil.uri(url);
+        Uri newUri = uri.buildUpon().fragment("title=" + title.index).build();
+        url = newUri.toString();
+        setMediaItem();
+        seekTo(0);
+    }
+
     public String getKey() {
         return key != null ? key : url;
     }
@@ -256,6 +265,10 @@ public class Players implements Player.Listener, ParseCallback {
 
     public boolean haveTrack(int type) {
         return exoPlayer != null && TrackUtil.count(exoPlayer.getCurrentTracks(), type) > 0;
+    }
+
+    public boolean haveTitle() {
+        return exoPlayer != null && !exoPlayer.getCurrentMediaTitles().isEmpty();
     }
 
     public boolean haveDanmaku() {
@@ -661,6 +674,11 @@ public class Players implements Player.Listener, ParseCallback {
         setTrack(Track.find(getKey()));
         PlayerEvent.track(tag);
         initTrack = true;
+    }
+
+    @Override
+    public void onMediaTitlesChanged(@NonNull List<MediaTitle> titles) {
+        PlayerEvent.title(tag);
     }
 
     @Override

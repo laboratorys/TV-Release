@@ -7,7 +7,8 @@ public record PlayerEvent(String tag, int state) {
     public static final int PREPARE = 0;
     public static final int PLAYING = 10;
     public static final int TRACK = 11;
-    public static final int SIZE = 12;
+    public static final int TITLE = 12;
+    public static final int SIZE = 13;
 
     public static void prepare(String tag) {
         EventBus.getDefault().post(new PlayerEvent(tag, PREPARE));
@@ -19,6 +20,10 @@ public record PlayerEvent(String tag, int state) {
 
     public static void track(String tag) {
         EventBus.getDefault().post(new PlayerEvent(tag, TRACK));
+    }
+
+    public static void title(String tag) {
+        EventBus.getDefault().post(new PlayerEvent(tag, TITLE));
     }
 
     public static void size(String tag) {
