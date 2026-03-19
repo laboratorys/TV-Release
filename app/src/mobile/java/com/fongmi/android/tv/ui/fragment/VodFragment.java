@@ -243,6 +243,9 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
             case SIZE:
                 homeContent();
                 break;
+            case CATEGORY:
+                getFragment().onRefresh();
+                break;
         }
     }
 
