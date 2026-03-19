@@ -144,10 +144,10 @@ public class VodConfig extends BaseConfig {
     }
 
     private void initList(JsonObject object) {
-        setHeaders(Header.arrayFrom(object.getAsJsonArray("headers")));
-        setProxy(Proxy.arrayFrom(object.getAsJsonArray("proxy")));
-        setRules(Rule.arrayFrom(object.getAsJsonArray("rules")));
-        setDoh(Doh.arrayFrom(object.getAsJsonArray("doh")));
+        setHeaders(Header.arrayFrom(fetchArray(object, "headers")));
+        setProxy(Proxy.arrayFrom(fetchArray(object, "proxy")));
+        setRules(Rule.arrayFrom(fetchArray(object, "rules")));
+        setDoh(Doh.arrayFrom(fetchArray(object, "doh")));
         setFlags(Json.safeListString(object, "flags"));
         setHosts(Json.safeListString(object, "hosts"));
         setAds(Json.safeListString(object, "ads"));
