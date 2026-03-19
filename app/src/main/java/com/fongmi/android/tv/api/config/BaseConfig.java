@@ -9,9 +9,14 @@ import com.fongmi.android.tv.event.ConfigEvent;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.Notify;
+import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
 import com.github.catvod.net.OkHttp;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.InterruptedIOException;
 import java.util.List;
@@ -93,5 +98,21 @@ abstract class BaseConfig {
         if (e instanceof InterruptedException) return true;
         if (e instanceof InterruptedIOException) return true;
         return e.getCause() instanceof InterruptedIOException;
+    }
+
+    protected JsonArray fetchArray(JsonObject object, String key) {
+        if (!object.has(key)) return new JsonArray();
+        JsonElement element = object.get(key);
+        if (element.isJsonArray()) return element.getAsJsonArray();
+        if (!element.isJsonPrimitive()) return new JsonArray();
+        try {
+            String value = element.getAsString().trim();
+            String json = OkHttp.string(UrlUtil.convert(value));
+            if (TextUtils.isEmpty(json)) return new JsonArray();
+            JsonElement parsed = JsonParser.parseString(json);
+            return parsed.isJsonArray() ? parsed.getAsJsonArray() : new JsonArray();
+        } catch (Exception e) {
+            return new JsonArray();
+        }
     }
 }

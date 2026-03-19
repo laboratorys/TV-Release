@@ -158,9 +158,9 @@ public class LiveConfig extends BaseConfig {
     }
 
     private void initList(JsonObject object) {
-        setHeaders(Header.arrayFrom(object.getAsJsonArray("headers")));
-        setProxy(Proxy.arrayFrom(object.getAsJsonArray("proxy")));
-        setRules(Rule.arrayFrom(object.getAsJsonArray("rules")));
+        setHeaders(Header.arrayFrom(fetchArray(object, "headers")));
+        setProxy(Proxy.arrayFrom(fetchArray(object, "proxy")));
+        setRules(Rule.arrayFrom(fetchArray(object, "rules")));
         setHosts(Json.safeListString(object, "hosts"));
         setAds(Json.safeListString(object, "ads"));
     }
