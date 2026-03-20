@@ -103,13 +103,19 @@ abstract class BaseConfig {
     protected JsonArray fetchArray(JsonObject object, String key) {
         if (!object.has(key)) return new JsonArray();
         JsonElement element = object.get(key);
-        if (element.isJsonArray()) return element.getAsJsonArray();
-        if (!element.isJsonPrimitive()) return new JsonArray();
+        if (element.isJsonObject()) return new JsonArray();
+        if (element.isJsonPrimitive()) element = fetch(element.getAsString());
+        JsonArray result = new JsonArray();
+        for (JsonElement item : element.getAsJsonArray()) {
+            if (item.isJsonPrimitive()) result.addAll(fetch(item.getAsString()));
+            else if (item.isJsonObject()) result.add(item);
+        }
+        return result;
+    }
+
+    private JsonArray fetch(String url) {
         try {
-            String value = element.getAsString().trim();
-            String json = OkHttp.string(UrlUtil.convert(value));
-            if (TextUtils.isEmpty(json)) return new JsonArray();
-            JsonElement parsed = JsonParser.parseString(json);
+            JsonElement parsed = JsonParser.parseString(OkHttp.string(UrlUtil.convert(url)));
             return parsed.isJsonArray() ? parsed.getAsJsonArray() : new JsonArray();
         } catch (Exception e) {
             return new JsonArray();
