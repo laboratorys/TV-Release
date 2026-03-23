@@ -18,7 +18,6 @@ import java.util.Locale;
 
 public class TitleAdapter extends RecyclerView.Adapter<TitleAdapter.ViewHolder> {
 
-    private static final long MIN_DURATION = 3 * 60 * 1_000_000L;
     private final OnClickListener listener;
     private final List<MediaTitle> mItems;
     private final StringBuilder builder;
@@ -37,7 +36,7 @@ public class TitleAdapter extends RecyclerView.Adapter<TitleAdapter.ViewHolder> 
     }
 
     public TitleAdapter addAll(List<MediaTitle> items) {
-        mItems.addAll(items.stream().filter(item -> item.durationUs >= MIN_DURATION).toList());
+        mItems.addAll(items);
         notifyDataSetChanged();
         return this;
     }
