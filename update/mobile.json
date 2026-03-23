@@ -1,5 +1,10 @@
 [
   {
+    "code": 531,
+    "name": "5.3.1",
+    "desc": "* 回退 mkv 優化\n* 優化 flv 播放\n* 優化 aac 播放\n* 優化 iso 讀取\n* 支持 iso 杜比\n* 支持 iso sacd\n* 支持 rtsp mp2t\n* 優化軌道格式顯示\n* 支持 mpeg1、mjpeg\n* 支持 dsf、dff、dts"
+  },
+  {
     "code": 530,
     "name": "5.3.0",
     "desc": "* 修正 iso vc1\n* 優化 iso ac3\n* 優化 iso 起播\n* 優化 mkv 起播\n* 優化 hls 去廣告\n* 支持 iso 章節選擇\n* 優化 seek 手勢檢測\n* 優化 ffmpeg 軟解效能"
