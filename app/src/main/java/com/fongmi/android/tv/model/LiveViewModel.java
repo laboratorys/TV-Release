@@ -122,6 +122,7 @@ public class LiveViewModel extends ViewModel {
             Source.get().stop();
             Result result = item.result();
             result.setUrl(item.getCatchup().format(Source.get().fetch(result), data));
+            if (result.getRealUrl().startsWith("rtsp")) result.getHeader().put("rtsp_range", data.getRange());
             return result;
         });
     }
