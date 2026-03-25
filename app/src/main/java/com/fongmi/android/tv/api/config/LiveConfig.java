@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import java.time.ZoneId;
+
 public class LiveConfig extends BaseConfig {
 
     private static final String TAG = LiveConfig.class.getSimpleName();
@@ -233,6 +235,12 @@ public class LiveConfig extends BaseConfig {
 
     private void setAds(List<String> ads) {
         this.ads = ads;
+    }
+
+    public ZoneId getZoneId() {
+        String tz = getHome().getTimeZone();
+        if (tz.isEmpty()) return ZoneId.systemDefault();
+        try { return ZoneId.of(tz); } catch (Exception ignored) { return ZoneId.systemDefault(); }
     }
 
     public Live getHome() {

@@ -609,7 +609,7 @@ public class LiveActivity extends BaseActivity implements CustomKeyDown.Listener
     public void onItemClick(EpgData item) {
         if (item.isSelected()) {
             fetch(item);
-        } else if (mChannel.hasCatchup()) {
+        } else if (mChannel.hasCatchup() || mChannel.isRtsp()) {
             mBinding.control.title.setText(getString(R.string.detail_title, mChannel.getShow(), item.getTitle()));
             Notify.show(getString(R.string.play_ready, item.getTitle()));
             mEpgDataAdapter.setSelected(item);

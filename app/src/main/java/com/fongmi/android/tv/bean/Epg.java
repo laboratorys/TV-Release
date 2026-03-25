@@ -4,11 +4,12 @@ import android.text.TextUtils;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.api.EpgParser;
-import com.fongmi.android.tv.utils.Util;
+import com.fongmi.android.tv.utils.Formatters;
 import com.github.catvod.utils.Json;
 import com.google.gson.annotations.SerializedName;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -25,10 +26,10 @@ public class Epg {
 
     private int width;
 
-    public static Epg objectFrom(String str, String key, List<SimpleDateFormat> formats) throws Exception {
-        if (!Json.isObj(str)) return EpgParser.getEpg(str, key);
+    public static Epg objectFrom(String str, String key, ZoneId zoneId) throws Exception {
+        if (!Json.isObj(str)) return EpgParser.getEpg(str, key, zoneId);
         Epg item = App.gson().fromJson(str, Epg.class);
-        item.setTime(formats);
+        item.setTime(zoneId);
         item.setKey(key);
         return item;
     }
@@ -77,11 +78,11 @@ public class Epg {
         return getDate().equals(date);
     }
 
-    private void setTime(List<SimpleDateFormat> formats) {
+    private void setTime(ZoneId zoneId) {
         setList(new ArrayList<>(new LinkedHashSet<>(getList())));
         for (EpgData item : getList()) {
-            item.setStartTime(Util.parse(formats, getDate().concat(item.getStart())));
-            item.setEndTime(Util.parse(formats, getDate().concat(item.getEnd())));
+            item.setStartTime(parseEpgTime(getDate().concat(item.getStart()), zoneId));
+            item.setEndTime(parseEpgTime(getDate().concat(item.getEnd()), zoneId));
             if (item.getEndTime() < item.getStartTime()) item.checkDay();
             item.trans();
         }
@@ -105,5 +106,14 @@ public class Epg {
     public int getInRange() {
         for (int i = 0; i < getList().size(); i++) if (getList().get(i).isInRange()) return i;
         return -1;
+    }
+
+    private long parseEpgTime(String source, ZoneId zoneId) {
+        try {
+            var fmt = source.length() > 16 ? Formatters.EPG_DT_LONG : Formatters.EPG_DT_SHORT;
+            return LocalDateTime.parse(source, fmt).atZone(zoneId).toInstant().toEpochMilli();
+        } catch (Exception ignored) {
+            return 0L;
+        }
     }
 }

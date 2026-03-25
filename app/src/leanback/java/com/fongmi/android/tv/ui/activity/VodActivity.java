@@ -87,6 +87,7 @@ public class VodActivity extends BaseActivity implements TypePresenter.OnClickLi
             @Override
             public void onPageSelected(int position) {
                 mBinding.recycler.setSelectedPosition(position);
+                mBinding.recycler.requestFocus();
             }
         });
         mBinding.recycler.addOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {

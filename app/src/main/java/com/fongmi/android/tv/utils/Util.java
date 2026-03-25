@@ -28,9 +28,7 @@ import com.fongmi.android.tv.R;
 import com.github.catvod.utils.Shell;
 
 import java.net.NetworkInterface;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -166,18 +164,6 @@ public class Util {
     public static String substring(String text, int num) {
         if (text != null && text.length() > num) return text.substring(0, text.length() - num);
         return text;
-    }
-
-    public static Date parse(SimpleDateFormat format, String source) {
-        try {
-            return format.parse(source);
-        } catch (Exception e) {
-            return new Date(0);
-        }
-    }
-
-    public static long parse(List<SimpleDateFormat> formats, String source) {
-        return formats.stream().map(format -> parse(format, source)).map(Date::getTime).filter(time -> time > 0).findFirst().orElse(0L);
     }
 
     public static boolean isLeanback() {

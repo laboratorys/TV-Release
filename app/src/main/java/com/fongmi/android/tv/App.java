@@ -27,10 +27,11 @@ public class App extends Application implements Application.ActivityLifecycleCal
     private final ExecutorService searchExecutor;
     private final ExecutorService executor;
     private final Handler handler;
-    private static App instance;
-    private Activity activity;
     private final Gson gson;
     private final long time;
+
+    private static volatile App instance;
+    private Activity activity;
     private Hook hook;
 
     public App() {

@@ -5,7 +5,9 @@ import android.text.TextUtils;
 import com.google.gson.annotations.SerializedName;
 
 import java.net.URI;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -114,7 +116,7 @@ public class Catchup {
 
     private String formatTime(long millis, String fmt) {
         if (fmt.equals("timestamp")) return String.valueOf(millis / 1000);
-        return new SimpleDateFormat(fmt, Locale.getDefault()).format(millis);
+        return DateTimeFormatter.ofPattern(fmt, Locale.getDefault()).format(Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()));
     }
 
     private String format(String group, long start, long end) {
