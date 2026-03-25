@@ -7,8 +7,8 @@ import com.github.catvod.utils.Util;
 
 public class Server {
 
-    private Players player;
-    private Nano nano;
+    private volatile Players player;
+    private volatile Nano nano;
 
     private static class Loader {
         static volatile Server INSTANCE = new Server();

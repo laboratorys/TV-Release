@@ -17,7 +17,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
+import com.fongmi.android.tv.utils.Formatters;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -64,7 +68,7 @@ public class Channel {
     private Group group;
     private String show;
     private int index;
-    private Epg data;
+    private List<Epg> dataList;
 
     public static Channel objectFrom(JsonElement element) {
         return App.gson().fromJson(element, Channel.class);
@@ -234,11 +238,23 @@ public class Channel {
     }
 
     public Epg getData() {
-        return data == null ? new Epg() : data;
+        String today = LocalDate.now().format(Formatters.DATE);
+        if (dataList == null) return new Epg();
+        return dataList.stream().filter(e -> e.equal(today)).findFirst().orElse(new Epg());
+    }
+
+    public List<Epg> getDataList() {
+        return dataList == null ? Collections.emptyList() : dataList;
     }
 
     public void setData(Epg data) {
-        this.data = data;
+        if (dataList == null) dataList = new ArrayList<>();
+        dataList.removeIf(e -> e.equal(data.getDate()));
+        dataList.add(data);
+    }
+
+    public void setDataList(List<Epg> list) {
+        this.dataList = new ArrayList<>(list);
     }
 
     public int getIndex() {
@@ -289,6 +305,10 @@ public class Channel {
 
     public boolean isLast() {
         return getUrls().isEmpty() || getIndex() == getUrls().size() - 1;
+    }
+
+    public boolean isRtsp() {
+        return getCurrent().startsWith("rtsp");
     }
 
     public boolean hasCatchup() {
@@ -358,7 +378,7 @@ public class Channel {
         setName(item.getName());
         setShow(item.getShow());
         setUrls(item.getUrls());
-        setData(item.getData());
+        setDataList(item.getDataList());
         setDrm(item.getDrm());
         setEpg(item.getEpg());
         setUa(item.getUa());

@@ -32,7 +32,7 @@ abstract class BaseConfig {
     private final AtomicInteger taskId = new AtomicInteger(0);
 
     protected boolean sync;
-    protected Config config;
+    protected volatile Config config;
     private volatile Future<?> future;
 
     protected abstract String getTag();
