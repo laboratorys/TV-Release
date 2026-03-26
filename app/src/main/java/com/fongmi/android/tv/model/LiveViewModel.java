@@ -72,6 +72,10 @@ public class LiveViewModel extends ViewModel {
         return live;
     }
 
+    public ZoneId getZoneId() {
+        return formats.zoneId();
+    }
+
     public void getLive(Live item) {
         execute(TaskType.LIVE, () -> {
             LiveParser.start(item.recent());
