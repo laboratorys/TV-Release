@@ -14,6 +14,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
@@ -65,7 +66,7 @@ public class Util {
         try {
             if (TextUtils.isEmpty(src)) return "";
             MessageDigest digest = MessageDigest.getInstance("MD5");
-            byte[] bytes = digest.digest(src.getBytes());
+            byte[] bytes = digest.digest(src.getBytes(StandardCharsets.UTF_8));
             BigInteger no = new BigInteger(1, bytes);
             StringBuilder sb = new StringBuilder(no.toString(16));
             while (sb.length() < 32) sb.insert(0, "0");
