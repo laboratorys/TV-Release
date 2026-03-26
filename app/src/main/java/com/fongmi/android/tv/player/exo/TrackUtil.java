@@ -15,9 +15,6 @@ import java.util.Map;
 
 public class TrackUtil {
 
-    private record TrackInfo(Tracks.Group trackGroup, int trackIndex) {
-    }
-
     public static int count(Tracks tracks, int type) {
         return tracks.getGroups().stream().filter(trackGroup -> trackGroup.getType() == type).mapToInt(trackGroup -> trackGroup.length).sum();
     }
@@ -57,5 +54,8 @@ public class TrackUtil {
             builder.setOverrideForType(new TrackSelectionOverride(mediaGroup, indices));
         });
         player.setTrackSelectionParameters(builder.build());
+    }
+
+    private record TrackInfo(Tracks.Group trackGroup, int trackIndex) {
     }
 }

@@ -3,7 +3,6 @@ package com.fongmi.android.tv.player;
 import android.net.Uri;
 
 import com.fongmi.android.tv.bean.Episode;
-import com.fongmi.android.tv.utils.Task;
 import com.fongmi.android.tv.bean.Flag;
 import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.bean.Vod;
@@ -15,12 +14,13 @@ import com.fongmi.android.tv.player.extractor.TVBus;
 import com.fongmi.android.tv.player.extractor.Thunder;
 import com.fongmi.android.tv.player.extractor.Video;
 import com.fongmi.android.tv.player.extractor.Youtube;
+import com.fongmi.android.tv.utils.Task;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -29,14 +29,6 @@ import java.util.concurrent.TimeUnit;
 public class Source {
 
     private final List<Extractor> extractors;
-
-    private static class Loader {
-        static volatile Source INSTANCE = new Source();
-    }
-
-    public static Source get() {
-        return Loader.INSTANCE;
-    }
 
     public Source() {
         extractors = new ArrayList<>();
@@ -48,6 +40,10 @@ public class Source {
         extractors.add(new TVBus());
         extractors.add(new Video());
         extractors.add(new Youtube());
+    }
+
+    public static Source get() {
+        return Loader.INSTANCE;
     }
 
     private Extractor getExtractor(Uri uri) {
@@ -109,5 +105,9 @@ public class Source {
         void stop();
 
         void exit();
+    }
+
+    private static class Loader {
+        static volatile Source INSTANCE = new Source();
     }
 }

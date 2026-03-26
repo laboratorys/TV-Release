@@ -108,7 +108,7 @@ public class ExoUtil {
         return new MediaItem.RequestMetadata.Builder().setMediaUri(uri).setExtras(extras).build();
     }
 
-    private static List<MediaItem.SubtitleConfiguration> getSubtitleConfigs (List<Sub> subs) {
+    private static List<MediaItem.SubtitleConfiguration> getSubtitleConfigs(List<Sub> subs) {
         List<MediaItem.SubtitleConfiguration> configs = new ArrayList<>();
         if (subs != null) for (Sub sub : subs) configs.add(sub.config());
         return configs;

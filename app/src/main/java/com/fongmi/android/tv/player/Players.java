@@ -81,9 +81,8 @@ import master.flame.danmaku.ui.widget.DanmakuView;
 public class Players implements Player.Listener, ParseCallback {
 
     private static final String TAG = Players.class.getSimpleName();
-
-    public static final int SOFT = 0;
-    public static final int HARD = 1;
+    private static final int SOFT = 0;
+    private static final int HARD = 1;
 
     private final ErrorMsgProvider provider;
     private final AudioManager audioManager;
@@ -111,12 +110,6 @@ public class Players implements Player.Listener, ParseCallback {
     private int decode;
     private int retry;
 
-    public static Players create(Activity activity) {
-        Players player = new Players(activity);
-        Server.get().setPlayer(player);
-        return player;
-    }
-
     private Players(Activity activity) {
         decode = HARD;
         builder = new StringBuilder();
@@ -125,6 +118,12 @@ public class Players implements Player.Listener, ParseCallback {
         formatter = new Formatter(builder, Locale.getDefault());
         audioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
         createSession(activity);
+    }
+
+    public static Players create(Activity activity) {
+        Players player = new Players(activity);
+        Server.get().setPlayer(player);
+        return player;
     }
 
     private void createSession(Activity activity) {

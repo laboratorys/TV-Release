@@ -12,10 +12,6 @@ public class CacheManager {
 
     private SimpleCache cache;
 
-    private static class Loader {
-        static volatile CacheManager INSTANCE = new CacheManager();
-    }
-
     public static CacheManager get() {
         return Loader.INSTANCE;
     }
@@ -33,6 +29,10 @@ public class CacheManager {
         if (cache == null) return;
         cache.release();
         cache = null;
+    }
+
+    private static class Loader {
+        static volatile CacheManager INSTANCE = new CacheManager();
     }
 }
 
