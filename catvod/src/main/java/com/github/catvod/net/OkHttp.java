@@ -89,12 +89,12 @@ public class OkHttp {
         return get().selector = new OkProxySelector();
     }
 
-    public static OkHttpClient client() {
+    public static synchronized OkHttpClient client() {
         if (get().client != null) return get().client;
         return get().client = getBuilder().build();
     }
 
-    public static OkHttpClient player() {
+    public static synchronized OkHttpClient player() {
         if (get().player != null) return get().player;
         return get().player = getBuilder().build();
     }
