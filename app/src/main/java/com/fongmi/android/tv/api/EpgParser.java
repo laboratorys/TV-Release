@@ -161,10 +161,10 @@ public class EpgParser {
             OffsetDateTime startDate = parseFull(programme.getStart(), zoneId);
             OffsetDateTime endDate = parseFull(programme.getStop(), zoneId);
             String liveTvgId = targetChannel.getTvgId();
-            String programmeDate = startDate.format(Formatters.DATE);
+            String programmeDate = startDate.atZoneSameInstant(zoneId).format(Formatters.DATE);
             epgMap.computeIfAbsent(liveTvgId, k -> new HashMap<>())
                     .computeIfAbsent(programmeDate, d -> Epg.create(liveTvgId, d))
-                    .getList().add(getEpgData(startDate, endDate, programme));
+                    .getList().add(getEpgData(startDate, endDate, zoneId, programme));
             if (!srcMap.containsKey(liveTvgId)) {
                 List<Tv.Channel> xmlChannels = data.map.get(xmlChannelId);
                 if (xmlChannels != null) {
@@ -213,15 +213,15 @@ public class EpgParser {
     private static EpgData getEpgData(Tv.Programme programme, ZoneId zoneId) {
         OffsetDateTime startDate = parseFull(programme.getStart(), zoneId);
         OffsetDateTime endDate = parseFull(programme.getStop(), zoneId);
-        return getEpgData(startDate, endDate, programme);
+        return getEpgData(startDate, endDate, zoneId, programme);
     }
 
-    private static EpgData getEpgData(OffsetDateTime startDate, OffsetDateTime endDate, Tv.Programme programme) {
+    private static EpgData getEpgData(OffsetDateTime startDate, OffsetDateTime endDate, ZoneId zoneId, Tv.Programme programme) {
         try {
             EpgData epgData = new EpgData();
             epgData.setTitle(programme.getTitle());
-            epgData.setStart(startDate.format(Formatters.TIME));
-            epgData.setEnd(endDate.format(Formatters.TIME));
+            epgData.setStart(startDate.atZoneSameInstant(zoneId).format(Formatters.TIME));
+            epgData.setEnd(endDate.atZoneSameInstant(zoneId).format(Formatters.TIME));
             epgData.setStartTime(startDate.toInstant().toEpochMilli());
             epgData.setEndTime(endDate.toInstant().toEpochMilli());
             epgData.trans();

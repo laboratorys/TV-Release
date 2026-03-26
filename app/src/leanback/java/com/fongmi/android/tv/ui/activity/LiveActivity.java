@@ -623,23 +623,20 @@ public class LiveActivity extends BaseActivity implements GroupPresenter.OnClick
         mBinding.control.line.setVisibility(mChannel.getLineVisible());
     }
 
-    private void setEpg() {
-        EpgData data = mChannel.getData().getEpgData();
+    private void setEpg(Epg epg) {
+        if (mChannel == null || !mChannel.getTvgId().equals(epg.getKey())) return;
+        EpgData data = epg.getEpgData();
         boolean hasTitle = !data.getTitle().isEmpty();
-        mEpgDataAdapter.setItems(mChannel.getData().getList(), null);
+        mEpgDataAdapter.setItems(epg.getList(), null);
         if (hasTitle) mBinding.widget.title.setText(getString(R.string.detail_title, mChannel.getShow(), data.getTitle()));
         mBinding.widget.name.setMaxEms(hasTitle ? 12 : 48);
         mBinding.widget.play.setText(data.format());
-        setWidth(mChannel.getData());
+        setWidth(epg);
         setMetadata();
     }
 
     private void setEpg(boolean success) {
         if (mChannel != null && success) mViewModel.getEpg(mChannel);
-    }
-
-    private void setEpg(Epg epg) {
-        if (mChannel != null && mChannel.getTvgId().equals(epg.getKey())) setEpg();
     }
 
     private void fetch(EpgData item) {
