@@ -2,6 +2,7 @@ package com.github.catvod.utils;
 
 import android.util.Base64;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,11 +15,11 @@ import okhttp3.Request;
 
 public class Auth {
 
-    private static final Pattern DIGEST = Pattern.compile("(\\w+)=\\s*([^,]+)\\s*");
+    private static final Pattern DIGEST = Pattern.compile("(\\w+)=(?:\"([^\"]*)\"|([^,\\s\"]+))");
 
     public static String basic(String userInfo) {
         if (!userInfo.contains(":")) userInfo += ":";
-        return "Basic " + Base64.encodeToString(userInfo.getBytes(), Base64.NO_WRAP);
+        return "Basic " + Base64.encodeToString(userInfo.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
     }
 
     public static String digest(String userInfo, String header, Request request) {
@@ -77,7 +78,11 @@ public class Auth {
     private static Map<String, String> parseDigest(String header) {
         Map<String, String> params = new HashMap<>();
         Matcher matcher = DIGEST.matcher(header.trim());
-        while (matcher.find()) params.put(matcher.group(1), matcher.group(2).replaceAll("\"", "").trim());
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            String value = matcher.group(2) != null ? matcher.group(2) : matcher.group(3);
+            if (value != null) params.put(key, value.trim());
+        }
         return params;
     }
 }
