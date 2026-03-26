@@ -41,22 +41,8 @@ public class OkHttp {
     private OkHttpClient player;
     private OkDns dns;
 
-    private static class Loader {
-        static volatile OkHttp INSTANCE = new OkHttp();
-    }
-
     public static OkHttp get() {
         return Loader.INSTANCE;
-    }
-
-    public void clear() {
-        cancelAll();
-        dns().clear();
-        selector().clear();
-        authenticator().clear();
-        authInterceptor().clear();
-        requestInterceptor().clear();
-        responseInterceptor().clear();
     }
 
     public static OkDns dns() {
@@ -231,5 +217,19 @@ public class OkHttp {
                 return new X509Certificate[0];
             }
         };
+    }
+
+    public void clear() {
+        cancelAll();
+        dns().clear();
+        selector().clear();
+        authenticator().clear();
+        authInterceptor().clear();
+        requestInterceptor().clear();
+        responseInterceptor().clear();
+    }
+
+    private static class Loader {
+        static volatile OkHttp INSTANCE = new OkHttp();
     }
 }
