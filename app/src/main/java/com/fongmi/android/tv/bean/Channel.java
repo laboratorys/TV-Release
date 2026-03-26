@@ -20,6 +20,7 @@ import com.google.gson.annotations.SerializedName;
 import com.fongmi.android.tv.utils.Formatters;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -238,7 +239,11 @@ public class Channel {
     }
 
     public Epg getData() {
-        String today = LocalDate.now().format(Formatters.DATE);
+        return getData(ZoneId.systemDefault());
+    }
+
+    public Epg getData(ZoneId zoneId) {
+        String today = LocalDate.now(zoneId).format(Formatters.DATE);
         if (dataList == null) return new Epg();
         return dataList.stream().filter(e -> e.equal(today)).findFirst().orElse(new Epg());
     }
