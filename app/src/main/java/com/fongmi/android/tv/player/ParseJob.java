@@ -42,15 +42,15 @@ public class ParseJob implements ParseCallback {
     private ParseCallback callback;
     private Parse parse;
 
-    public static ParseJob create(ParseCallback callback) {
-        return new ParseJob(callback);
-    }
-
     public ParseJob(ParseCallback callback) {
         this.executor = Executors.newSingleThreadExecutor();
         this.infinite = Executors.newCachedThreadPool();
         this.webViews = new ArrayList<>();
         this.callback = callback;
+    }
+
+    public static ParseJob create(ParseCallback callback) {
+        return new ParseJob(callback);
     }
 
     public ParseJob start(Result result, boolean useParse) {
