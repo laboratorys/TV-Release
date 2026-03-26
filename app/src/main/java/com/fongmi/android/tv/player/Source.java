@@ -2,8 +2,8 @@ package com.fongmi.android.tv.player;
 
 import android.net.Uri;
 
-import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.bean.Episode;
+import com.fongmi.android.tv.utils.Task;
 import com.fongmi.android.tv.bean.Flag;
 import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.bean.Vod;
@@ -19,6 +19,7 @@ import com.fongmi.android.tv.player.extractor.Youtube;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -70,7 +71,12 @@ public class Source {
                 List<Callable<List<Episode>>> items = new ArrayList<>();
                 Iterator<Episode> iterator = flag.getEpisodes().iterator();
                 while (iterator.hasNext()) addCallable(iterator, items);
-                for (Future<List<Episode>> future : executor.invokeAll(items, 30, TimeUnit.SECONDS)) flag.getEpisodes().addAll(future.get());
+                for (Future<List<Episode>> future : executor.invokeAll(items, 30, TimeUnit.SECONDS)) {
+                    try {
+                        flag.getEpisodes().addAll(future.get());
+                    } catch (CancellationException ignored) {
+                    }
+                }
             }
         }
     }
@@ -91,7 +97,7 @@ public class Source {
 
     public void exit() {
         if (extractors == null) return;
-        App.execute(() -> extractors.forEach(Extractor::exit));
+        Task.execute(() -> extractors.forEach(Extractor::exit));
     }
 
     public interface Extractor {

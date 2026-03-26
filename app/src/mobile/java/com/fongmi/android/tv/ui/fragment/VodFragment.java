@@ -133,7 +133,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
 
     private void setViewModel() {
         mViewModel = new ViewModelProvider(this).get(SiteViewModel.class);
-        mViewModel.result.observe(getViewLifecycleOwner(), this::setAdapter);
+        mViewModel.getResult().observe(getViewLifecycleOwner(), this::setAdapter);
     }
 
     private void setAdapter(Result result) {

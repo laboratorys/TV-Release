@@ -60,6 +60,7 @@ import com.fongmi.android.tv.utils.FileUtil;
 import com.fongmi.android.tv.utils.ImgUtil;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ResUtil;
+import com.fongmi.android.tv.utils.Task;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.fongmi.android.tv.utils.Util;
 import com.github.catvod.utils.Path;
@@ -421,7 +422,7 @@ public class Players implements Player.Listener, ParseCallback {
         releaseSession();
         removeTimeoutCheck();
         Server.get().setPlayer(null);
-        App.execute(() -> Source.get().stop());
+        Task.execute(() -> Source.get().stop());
     }
 
     private void releasePlayer() {

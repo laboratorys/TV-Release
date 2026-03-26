@@ -17,20 +17,14 @@ import com.fongmi.hook.Hook;
 import com.github.catvod.Init;
 import com.google.gson.Gson;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 public class App extends Application implements Application.ActivityLifecycleCallbacks {
 
-    private final ExecutorService searchExecutor;
-    private final ExecutorService executor;
+    private static volatile App instance;
+
     private final Handler handler;
     private final Gson gson;
     private final long time;
 
-    private static volatile App instance;
     private Activity activity;
     private Hook hook;
 
@@ -38,9 +32,40 @@ public class App extends Application implements Application.ActivityLifecycleCal
         instance = this;
         gson = new Gson();
         time = System.currentTimeMillis();
-        executor = Executors.newFixedThreadPool(5);
-        searchExecutor = Executors.newFixedThreadPool(20);
         handler = HandlerCompat.createAsync(Looper.getMainLooper());
+    }
+
+    public static App get() {
+        return instance;
+    }
+
+    public static Gson gson() {
+        return get().gson;
+    }
+
+    public static long time() {
+        return get().time;
+    }
+
+    public static Activity activity() {
+        return get().activity;
+    }
+
+    public static void post(Runnable runnable) {
+        get().handler.post(runnable);
+    }
+
+    public static void post(Runnable runnable, long delayMillis) {
+        get().handler.removeCallbacks(runnable);
+        if (delayMillis >= 0) get().handler.postDelayed(runnable, delayMillis);
+    }
+
+    public static void removeCallbacks(Runnable runnable) {
+        get().handler.removeCallbacks(runnable);
+    }
+
+    public static void removeCallbacks(Runnable... runnable) {
+        for (Runnable r : runnable) get().handler.removeCallbacks(r);
     }
 
     public void setHook(Hook hook) {
@@ -98,54 +123,5 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
-    }
-
-    public static App get() {
-        return instance;
-    }
-
-    public static Gson gson() {
-        return get().gson;
-    }
-
-    public static long time() {
-        return get().time;
-    }
-
-    public static Activity activity() {
-        return get().activity;
-    }
-
-    public static <T> Future<T> submit(Callable<T> task) {
-        return get().executor.submit(task);
-    }
-
-    public static Future<?> submit(Runnable task) {
-        return get().executor.submit(task);
-    }
-
-    public static Future<?> submitSearch(Runnable task) {
-        return get().searchExecutor.submit(task);
-    }
-
-    public static void execute(Runnable runnable) {
-        get().executor.execute(runnable);
-    }
-
-    public static void post(Runnable runnable) {
-        get().handler.post(runnable);
-    }
-
-    public static void post(Runnable runnable, long delayMillis) {
-        get().handler.removeCallbacks(runnable);
-        if (delayMillis >= 0) get().handler.postDelayed(runnable, delayMillis);
-    }
-
-    public static void removeCallbacks(Runnable runnable) {
-        get().handler.removeCallbacks(runnable);
-    }
-
-    public static void removeCallbacks(Runnable... runnable) {
-        for (Runnable r : runnable) get().handler.removeCallbacks(r);
     }
 }

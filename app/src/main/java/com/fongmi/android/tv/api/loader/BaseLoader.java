@@ -2,8 +2,8 @@ package com.fongmi.android.tv.api.loader;
 
 import android.text.TextUtils;
 
-import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.api.config.LiveConfig;
+import com.fongmi.android.tv.utils.Task;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.bean.Live;
 import com.fongmi.android.tv.bean.Site;
@@ -48,7 +48,7 @@ public class BaseLoader {
     }
 
     public void clear() {
-        App.execute(() -> {
+        Task.execute(() -> {
             jarLoader.clear();
             pyLoader.clear();
             jsLoader.clear();
