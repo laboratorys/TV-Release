@@ -94,6 +94,7 @@ import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.PiP;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Sniffer;
+import com.fongmi.android.tv.utils.Task;
 import com.fongmi.android.tv.utils.Timer;
 import com.fongmi.android.tv.utils.Traffic;
 import com.fongmi.android.tv.utils.Util;
@@ -420,9 +421,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void setViewModel() {
         mViewModel = new ViewModelProvider(this).get(SiteViewModel.class);
-        mViewModel.result.observeForever(mObserveDetail);
-        mViewModel.player.observeForever(mObservePlayer);
-        mViewModel.search.observeForever(mObserveSearch);
+        mViewModel.getResult().observeForever(mObserveDetail);
+        mViewModel.getPlayer().observeForever(mObservePlayer);
+        mViewModel.getSearch().observeForever(mObserveSearch);
     }
 
     private void checkId() {
@@ -1076,7 +1077,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void saveHistory() {
         if (mHistory == null || Setting.isIncognito()) return;
         if (mHistory.getPosition() > 0 && mHistory.getDuration() > 0) {
-            App.execute(() -> mHistory.merge().save());
+            Task.execute(() -> mHistory.merge().save());
         }
     }
 
@@ -1703,9 +1704,9 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         RefreshEvent.history();
         PlaybackService.stop();
         App.removeCallbacks(mR1, mR2, mR3, mR4);
-        mViewModel.result.removeObserver(mObserveDetail);
-        mViewModel.player.removeObserver(mObservePlayer);
-        mViewModel.search.removeObserver(mObserveSearch);
+        mViewModel.getResult().removeObserver(mObserveDetail);
+        mViewModel.getPlayer().removeObserver(mObservePlayer);
+        mViewModel.getSearch().removeObserver(mObserveSearch);
         super.onDestroy();
     }
 }

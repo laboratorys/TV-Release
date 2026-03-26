@@ -26,12 +26,16 @@ public class Epg {
 
     private int width;
 
-    public static Epg objectFrom(String str, String key, ZoneId zoneId) throws Exception {
+    public static Epg objectFrom(String str, String key, ZoneId zoneId) {
         if (!Json.isObj(str)) return EpgParser.getEpg(str, key, zoneId);
-        Epg item = App.gson().fromJson(str, Epg.class);
-        item.setTime(zoneId);
-        item.setKey(key);
-        return item;
+        try {
+            Epg item = App.gson().fromJson(str, Epg.class);
+            item.setTime(zoneId);
+            item.setKey(key);
+            return item;
+        } catch (Exception e) {
+            return new Epg();
+        }
     }
 
     public static Epg create(String key, String date) {

@@ -1,6 +1,5 @@
 package com.fongmi.android.tv.service;
 
-import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.Service;
@@ -117,6 +116,11 @@ public class PlaybackService extends Service {
         builder.setColor(palette.getMutedColor(palette.getVibrantColor(white)));
     }
 
+    private void startForeground() {
+        int type = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK : 0;
+        ServiceCompat.startForeground(this, Notify.ID, buildNotification(), type);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onActionEvent(ActionEvent event) {
         if (event.isUpdate()) Notify.show(buildNotification());
@@ -126,14 +130,13 @@ public class PlaybackService extends Service {
     public void onCreate() {
         super.onCreate();
         EventBus.getDefault().register(this);
+        startForeground();
     }
 
     @Override
-    @SuppressLint("ForegroundServiceType")
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (nonNull()) MediaButtonReceiver.handleIntent(player.getSession(), intent);
-        int type = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK : 0;
-        ServiceCompat.startForeground(this, Notify.ID, buildNotification(), type);
+        startForeground();
         return START_NOT_STICKY;
     }
 

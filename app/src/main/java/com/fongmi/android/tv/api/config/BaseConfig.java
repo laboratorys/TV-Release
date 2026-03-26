@@ -9,6 +9,7 @@ import com.fongmi.android.tv.event.ConfigEvent;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.Notify;
+import com.fongmi.android.tv.utils.Task;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
@@ -69,7 +70,7 @@ abstract class BaseConfig {
     public void load(Callback callback) {
         int id = taskId.incrementAndGet();
         if (future != null && !future.isDone()) future.cancel(true);
-        future = App.submit(() -> loadConfig(id, config, callback));
+        future = Task.submit(() -> loadConfig(id, config, callback));
         callback.start();
     }
 

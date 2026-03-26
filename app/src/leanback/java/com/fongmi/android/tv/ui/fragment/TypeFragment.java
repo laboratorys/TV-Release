@@ -137,8 +137,8 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
 
     private void setViewModel() {
         mViewModel = new ViewModelProvider(this).get(SiteViewModel.class);
-        mViewModel.result.observe(getViewLifecycleOwner(), this::setAdapter);
-        mViewModel.action.observe(getViewLifecycleOwner(), result -> Notify.show(result.getMsg()));
+        mViewModel.getResult().observe(getViewLifecycleOwner(), this::setAdapter);
+        mViewModel.getAction().observe(getViewLifecycleOwner(), result -> Notify.show(result.getMsg()));
     }
 
     private void setFilters() {

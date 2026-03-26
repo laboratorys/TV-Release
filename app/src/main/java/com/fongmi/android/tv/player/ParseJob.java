@@ -11,6 +11,7 @@ import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.impl.ParseCallback;
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.ui.custom.CustomWebView;
+import com.fongmi.android.tv.utils.Task;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.fongmi.android.tv.utils.WebViewUtil;
 import com.github.catvod.net.OkHttp;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Response;
@@ -45,7 +47,7 @@ public class ParseJob implements ParseCallback {
     }
 
     public ParseJob(ParseCallback callback) {
-        this.executor = Executors.newFixedThreadPool(2);
+        this.executor = Executors.newSingleThreadExecutor();
         this.infinite = Executors.newCachedThreadPool();
         this.webViews = new ArrayList<>();
         this.callback = callback;
@@ -73,13 +75,10 @@ public class ParseJob implements ParseCallback {
     }
 
     private void execute(Result result) {
-        executor.execute(() -> {
-            try {
-                executor.submit(getTask(result)).get(Constant.TIMEOUT_PARSE_DEF, TimeUnit.MILLISECONDS);
-            } catch (Throwable e) {
-                onParseError();
-            }
-        });
+        Future<?> task = executor.submit(getTask(result));
+        Task.schedule(() -> {
+            if (task.cancel(true)) onParseError();
+        }, Constant.TIMEOUT_PARSE_DEF, TimeUnit.MILLISECONDS);
     }
 
     private Runnable getTask(Result result) {

@@ -6,6 +6,7 @@ import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.player.Players;
 import com.fongmi.android.tv.utils.ResUtil;
+import com.fongmi.android.tv.utils.Task;
 import com.github.catvod.net.OkHttp;
 
 import java.util.HashMap;
@@ -67,7 +68,7 @@ public class DanPlayer implements DrawHandler.Callback {
     }
 
     public void seekTo(long time) {
-        App.execute(() -> {
+        Task.execute(() -> {
             if (!isPrepared()) return;
             view.seekTo(time);
             view.hide();
@@ -75,34 +76,34 @@ public class DanPlayer implements DrawHandler.Callback {
     }
 
     public void play() {
-        App.execute(() -> {
+        Task.execute(() -> {
             if (isPrepared()) view.resume();
         });
     }
 
     public void pause() {
-        App.execute(() -> {
+        Task.execute(() -> {
             if (isPrepared()) view.pause();
         });
     }
 
     public void stop() {
         cancel();
-        App.execute(() -> {
+        Task.execute(() -> {
             if (view != null) view.stop();
         });
     }
 
     public void release() {
         cancel();
-        App.execute(() -> {
+        Task.execute(() -> {
             if (view != null) view.release();
         });
     }
 
     public void setDanmaku(Danmaku item) {
         cancel();
-        future = App.submit(() -> {
+        future = Task.submit(() -> {
             if (view != null) view.release();
             if (item.isEmpty() || view == null) return;
             view.prepare(new Parser().load(new Loader().load(item).getDataSource()), context);
@@ -123,7 +124,7 @@ public class DanPlayer implements DrawHandler.Callback {
         App.post(() -> {
             boolean playing = player.isPlaying();
             long position = player.getPosition();
-            App.execute(() -> {
+            Task.execute(() -> {
                 if (!isPrepared()) return;
                 if (playing) view.start(position);
                 else view.pause();

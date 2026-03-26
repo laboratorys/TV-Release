@@ -10,23 +10,9 @@ import com.github.catvod.utils.Trans;
 
 import java.util.concurrent.Callable;
 
-public class SearchTask implements Callable<Result> {
+public record SearchTask(SiteViewModel model, Site site, String keyword, boolean quick, String page) implements Callable<Result> {
 
-    private final SiteViewModel model;
-    private final String keyword;
-    private final boolean quick;
-    private final String page;
-    private final Site site;
-
-    public static SearchTask create(SiteViewModel model, Site site, String keyword, boolean quick) {
-        return new SearchTask(model, site, keyword, quick, "1");
-    }
-
-    public static SearchTask create(SiteViewModel model, Site site, String keyword, boolean quick, String page) {
-        return new SearchTask(model, site, keyword, quick, page);
-    }
-
-    private SearchTask(SiteViewModel model, Site site, String keyword, boolean quick, String page) {
+    public SearchTask(SiteViewModel model, Site site, String keyword, boolean quick, String page) {
         this.keyword = Trans.t2s(keyword);
         this.model = model;
         this.quick = quick;
@@ -34,13 +20,12 @@ public class SearchTask implements Callable<Result> {
         this.site = site;
     }
 
-    public Runnable run() {
-        return () -> {
-            try {
-                model.search.postValue(call());
-            } catch (Throwable ignored) {
-            }
-        };
+    public static SearchTask create(SiteViewModel model, Site site, String keyword, boolean quick) {
+        return new SearchTask(model, site, keyword, quick, "1");
+    }
+
+    public static SearchTask create(SiteViewModel model, Site site, String keyword, boolean quick, String page) {
+        return new SearchTask(model, site, keyword, quick, page);
     }
 
     @Override
