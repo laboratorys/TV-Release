@@ -90,7 +90,8 @@ public class LiveViewModel extends ViewModel {
 
     private boolean parseXml(Live item, String url) {
         try {
-            return EpgParser.start(item, url);
+            EpgParser.start(item, url);
+            return true;
         } catch (Exception ignored) {
             return false;
         }
