@@ -93,20 +93,20 @@ public class ParseJob implements ParseCallback {
 
     private void doInBackground(String key, String webUrl, String flag) throws Throwable {
         switch (parse.getType()) {
-            case 0: //嗅探
+            case 0:
                 startWeb(key, parse, webUrl);
                 break;
-            case 1: //Json
+            case 1:
                 jsonParse(parse, webUrl, true);
                 break;
-            case 2: //Json擴展
+            case 2:
                 jsonExtend(webUrl);
                 break;
-            case 3: //Json聚合
+            case 3:
                 jsonMix(webUrl, flag);
                 break;
-            case 4: //超級解析
-                godParse(webUrl, flag);
+            case 4:
+                superParse(webUrl, flag);
                 break;
         }
     }
@@ -133,7 +133,7 @@ public class ParseJob implements ParseCallback {
         checkResult(Result.fromObject(BaseLoader.get().jsonExtMix(flag, parse.getUrl(), parse.getName(), jxs, webUrl)));
     }
 
-    private void godParse(String webUrl, String flag) throws Exception {
+    private void superParse(String webUrl, String flag) throws Exception {
         List<Parse> json = VodConfig.get().getParses(1, flag);
         List<Parse> webs = VodConfig.get().getParses(0, flag);
         int count = json.size() + (webs.isEmpty() ? 0 : 1);
