@@ -67,7 +67,8 @@ public class Async {
     };
 
     private final JSCallFunction onError = args -> {
-        future.complete(null);
+        String msg = args != null && args.length > 0 && args[0] != null ? args[0].toString() : "";
+        future.completeExceptionally(new Exception(msg));
         return null;
     };
 }
