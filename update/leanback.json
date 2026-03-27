@@ -1,5 +1,10 @@
 [
   {
+    "code": 533,
+    "name": "5.3.3",
+    "desc": "* 更新 media3\n* 修正 sacd dst\n* 支持 rtsp 回看\n* 整體優化請求線程\n* 修正 mp4 無法播放"
+  },
+  {
     "code": 532,
     "name": "5.3.2",
     "desc": "* 修正 rtsp 播放\n* 修正 iso 杜比識別\n* 修正 mp4 無法播放"
