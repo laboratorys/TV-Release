@@ -82,14 +82,14 @@ public class LiveViewModel extends ViewModel {
             setTimeZone(item);
             verify(item);
             return item;
-        }, live::postValue, t -> {
-            if (t instanceof ExtractException) url.postValue(Result.error(t.getMessage()));
+        }, live::postValue, error -> {
+            if (error instanceof ExtractException) url.postValue(Result.error(error.getMessage()));
             else live.postValue(new Live());
         });
     }
 
     public void getXml(Live item) {
-        execute(TaskType.XML, () -> item.getEpgXml().stream().anyMatch(url -> parseXml(item, url)), xml::postValue, t -> xml.postValue(false));
+        execute(TaskType.XML, () -> item.getEpgXml().stream().anyMatch(url -> parseXml(item, url)), xml::postValue, error -> xml.postValue(false));
     }
 
     private boolean parseXml(Live item, String url) {
@@ -106,14 +106,14 @@ public class LiveViewModel extends ViewModel {
         String today = holder.formatDate(0);
         execute(TaskType.EPG, () -> {
             for (int offset : new int[]{-1, 0, 1}) fetchEpgDay(item, holder, offset);
-            return item.getDataList().stream().filter(e -> e.equal(today)).findFirst().orElseGet(Epg::new).selected();
-        }, epg::postValue, t -> epg.postValue(new Epg()));
+            return item.getDataList().stream().filter(epg -> epg.equal(today)).findFirst().orElseGet(Epg::new).selected();
+        }, epg::postValue, error -> epg.postValue(new Epg()));
     }
 
     private void fetchEpgDay(Channel item, FormatHolder holder, int offset) {
         String date = holder.formatDate(offset);
         String url = item.getEpg().replace("{date}", date);
-        boolean need = url.startsWith("http") && item.getDataList().stream().noneMatch(e -> e.equal(date));
+        boolean need = url.startsWith("http") && item.getDataList().stream().noneMatch(epg -> epg.equal(date));
         if (need) item.setData(Epg.objectFrom(OkHttp.string(url), item.getTvgId(), holder.zoneId));
     }
 

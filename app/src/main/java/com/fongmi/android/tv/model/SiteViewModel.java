@@ -241,8 +241,6 @@ public class SiteViewModel extends ViewModel {
             future.addCallback(Task.callback(
                     result -> {
                         if (searchEpoch.get() == epoch) search.postValue(result);
-                    },
-                    error -> {
                     }
             ), MoreExecutors.directExecutor());
         });
