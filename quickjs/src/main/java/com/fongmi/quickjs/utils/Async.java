@@ -10,6 +10,17 @@ public class Async {
 
     private CompletableFuture<Object> future;
 
+    private final JSCallFunction success = args -> {
+        future.complete(args != null && args.length > 0 ? args[0] : null);
+        return null;
+    };
+
+    private final JSCallFunction error = args -> {
+        String msg = args != null && args.length > 0 && args[0] != null ? args[0].toString() : "";
+        future.completeExceptionally(new Exception(msg));
+        return null;
+    };
+
     private Async() {
         this.future = new CompletableFuture<>();
     }
@@ -60,16 +71,5 @@ public class Async {
             func.release();
         }
     }
-
-    private final JSCallFunction success = args -> {
-        future.complete(args != null && args.length > 0 ? args[0] : null);
-        return null;
-    };
-
-    private final JSCallFunction error = args -> {
-        String msg = args != null && args.length > 0 && args[0] != null ? args[0].toString() : "";
-        future.completeExceptionally(new Exception(msg));
-        return null;
-    };
 
 }

@@ -1159,7 +1159,7 @@ public class VideoActivity extends BaseActivity implements CustomKeyDownVod.List
     private void setMetadata() {
         String title = mHistory.getVodName();
         String episode = getEpisode().getName();
-        boolean empty = title.equals(episode) || episode == null;
+        boolean empty = episode.isEmpty() || title.equals(episode);
         String artist = empty ? "" : getString(R.string.play_now, episode);
         mPlayers.setMetadata(title, artist, mHistory.getVodPic());
     }

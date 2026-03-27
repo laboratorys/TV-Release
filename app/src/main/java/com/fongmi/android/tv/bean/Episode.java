@@ -97,8 +97,8 @@ public class Episode implements Parcelable, Diffable<Episode> {
     public int getScore(String name, int number) {
         if (getName().equalsIgnoreCase(name)) return 100;
         if (number != -1 && getNumber() == number) return 80;
-        if (number == -1 && getName().toLowerCase().contains(name.toLowerCase())) return 70;
-        if (number == -1 && name.toLowerCase().contains(getName().toLowerCase())) return 60;
+        if (number == -1 && !name.isEmpty() && getName().toLowerCase().contains(name.toLowerCase())) return 70;
+        if (number == -1 && !getName().isEmpty() && name.toLowerCase().contains(getName().toLowerCase())) return 60;
         return 0;
     }
 
