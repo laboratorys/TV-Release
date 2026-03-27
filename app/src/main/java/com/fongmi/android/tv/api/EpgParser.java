@@ -75,7 +75,7 @@ public class EpgParser {
         try {
             Tv tv = new Persister().read(Tv.class, xml, false);
             String rawDate = tv.getDate();
-            String date = rawDate.isEmpty() ? LocalDate.now(zoneId).format(Formatters.DATE) : parseFull(rawDate, zoneId).format(Formatters.DATE);
+            String date = rawDate.isEmpty() ? LocalDate.now(zoneId).format(Formatters.DATE) : parseFull(rawDate, zoneId).atZoneSameInstant(zoneId).format(Formatters.DATE);
             Epg epg = Epg.create(key, date);
             tv.getProgramme().forEach(programme -> epg.getList().add(getEpgData(programme, zoneId)));
             return epg;

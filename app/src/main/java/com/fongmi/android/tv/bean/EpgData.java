@@ -102,8 +102,8 @@ public class EpgData {
         return "clock=" + Formatters.EPG_RANGE.format(Instant.ofEpochMilli(getStartTime())) + "-" + Formatters.EPG_RANGE.format(Instant.ofEpochMilli(getEndTime()));
     }
 
-    public void checkDay() {
-        setEndTime(Instant.ofEpochMilli(getEndTime()).atZone(ZoneId.systemDefault()).plusDays(1).toInstant().toEpochMilli());
+    public void checkDay(ZoneId zoneId) {
+        setEndTime(Instant.ofEpochMilli(getEndTime()).atZone(zoneId).plusDays(1).toInstant().toEpochMilli());
     }
 
     public void trans() {
