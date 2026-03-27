@@ -1,6 +1,7 @@
 package com.fongmi.android.tv.utils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -46,7 +47,11 @@ public class Task {
         scheduler.schedule(task, delay, unit);
     }
 
-    public static <T> FutureCallback<T> callback(Consumer<T> onSuccess, Consumer<Throwable> onFailure) {
+    public static <T> FutureCallback<T> callback(Consumer<T> onSuccess) {
+        return callback(onSuccess, null);
+    }
+
+    public static <T> FutureCallback<T> callback(Consumer<T> onSuccess, @Nullable Consumer<Throwable> onFailure) {
         return new FutureCallback<>() {
             @Override
             public void onSuccess(T result) {
@@ -55,7 +60,7 @@ public class Task {
 
             @Override
             public void onFailure(@NonNull Throwable error) {
-                onFailure.accept(error);
+                if (onFailure != null) onFailure.accept(error);
             }
         };
     }
