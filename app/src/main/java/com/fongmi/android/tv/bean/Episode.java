@@ -113,12 +113,12 @@ public class Episode implements Parcelable, Diffable<Episode> {
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Episode it)) return false;
-        return Objects.equals(getName(), it.getName()) && Objects.equals(getUrl(), it.getUrl());
+        return Objects.equals(getName(), it.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getUrl());
+        return Objects.hash(getName());
     }
 
     @Override
