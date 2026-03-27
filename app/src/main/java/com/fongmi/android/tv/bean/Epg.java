@@ -87,7 +87,7 @@ public class Epg {
         for (EpgData item : getList()) {
             item.setStartTime(parseEpgTime(getDate().concat(item.getStart()), zoneId));
             item.setEndTime(parseEpgTime(getDate().concat(item.getEnd()), zoneId));
-            if (item.getEndTime() < item.getStartTime()) item.checkDay();
+            if (item.getEndTime() < item.getStartTime()) item.checkDay(zoneId);
             item.trans();
         }
     }
