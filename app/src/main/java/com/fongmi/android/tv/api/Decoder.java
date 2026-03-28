@@ -27,7 +27,7 @@ public class Decoder {
             HttpUrl httpUrl = res.request().url();
             int size = HttpUrl.parse(url).querySize();
             if (httpUrl.querySize() == size) url = httpUrl.toString();
-            return verify(url, res.body().string());
+            return verify(url, res.body().string().replaceAll("\\s+", ""));
         }
     }
 
