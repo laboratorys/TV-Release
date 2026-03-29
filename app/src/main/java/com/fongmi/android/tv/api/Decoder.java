@@ -27,7 +27,7 @@ public class Decoder {
             HttpUrl httpUrl = res.request().url();
             int size = HttpUrl.parse(url).querySize();
             if (httpUrl.querySize() == size) url = httpUrl.toString();
-            return verify(url, res.body().string().replaceAll("\\s+", ""));
+            return verify(url, res.body().string());
         }
     }
 
@@ -35,7 +35,7 @@ public class Decoder {
         if (data.isEmpty()) throw new Exception();
         if (Json.isObj(data)) return fix(url, data);
         if (data.contains("**")) data = base64(data);
-        if (data.startsWith("2423")) data = cbc(data);
+        if (data.startsWith("2423")) data = cbc(data.replaceAll("\\s+", ""));
         return fix(url, data);
     }
 
