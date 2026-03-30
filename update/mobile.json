@@ -1,5 +1,10 @@
 [
   {
+    "code": 536,
+    "name": "5.3.6",
+    "desc": "* 優化 iso 解析\n* 修正 dts 軟解\n* 修正 truehd+atmos 直通"
+  },
+  {
     "code": 535,
     "name": "5.3.5",
     "desc": "* 修正配置讀取\n* 新增 dts-x 識別\n* 新增 dts-ma 識別"
