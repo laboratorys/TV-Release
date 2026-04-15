@@ -6,7 +6,7 @@ android {
     namespace 'com.east.android.zlive'
 
     compileSdk {
-        version = release(36) {
+        version = release(37) {
             it.minorApiLevel = 1
         }
     }
