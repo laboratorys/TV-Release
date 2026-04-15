@@ -171,12 +171,12 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASS: ${{ secrets.KEY_PASS }}
         run: |
-          echo "storeFile=keystore.jks" > local.properties
-          echo "keyAlias=dummy" >> local.properties
-          echo "storePassword=dummy" >> local.properties
           # 解码签名文件
           echo "🔑 Decoding keystore..."
           echo "$KEYSTORE" | base64 -d > keystore.jks
+          echo "storeFile=$(pwd)/keystore.jks" > local.properties
+          echo "keyAlias=$KEY_ALIAS" >> local.properties
+          echo "storePassword=$KEYSTORE_PASS" >> local.properties
           
           # 赋予 gradlew 执行权限
           chmod +x gradlew
