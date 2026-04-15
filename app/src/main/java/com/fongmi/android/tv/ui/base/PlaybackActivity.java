@@ -50,7 +50,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
 
     protected void setRedirect(boolean redirect) {
         this.redirect = redirect;
-        if (mService != null) mService.setNavigationCallback(redirect ? null : getNavigationCallback());
+        if (mService != null) mService.setNavigationCallback(redirect ? null : getNavigationCallback(), getPlaybackKey());
     }
 
     protected boolean isAudioOnly() {
@@ -136,8 +136,8 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     }
 
     private void releaseService(boolean owner) {
-        if (owner) mService.setNavigationCallback(null);
         mService.removePlayerCallback(mPlayerCallback);
+        if (owner) mService.setNavigationCallback(null, null);
         if (mService.hasExternalClient() || mService.hasPlayerCallback()) mService.resetSessionActivity();
         else if (owner) mService.shutdown();
     }
@@ -220,10 +220,13 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         }
 
         @Override
+        public void onPlayerRelease() {
+            if (isOwner()) detachSurface();
+        }
+
+        @Override
         public void onPlayerRebuild(Player player) {
-            if (!isOwner()) return;
-            detachSurface();
-            attachSurface();
+            if (isOwner()) attachSurface();
         }
     };
 
@@ -249,7 +252,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         mService = ((PlaybackService.LocalBinder) binder).getService();
         mService.replaceBinding(this::closePiP);
         mService.setSessionActivity(buildSessionIntent());
-        mService.setNavigationCallback(getNavigationCallback());
+        mService.setNavigationCallback(getNavigationCallback(), getPlaybackKey());
         mService.addPlayerCallback(mPlayerCallback);
         onServiceConnected();
     }

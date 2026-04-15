@@ -53,6 +53,7 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
     private Runnable onNewBinding;
     private boolean externalBound;
     private PlayerManager player;
+    private String navigationKey;
     private Player exoPlayer;
 
     public static boolean isRunning() {
@@ -228,8 +229,13 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
         setSessionActivity(buildDefaultIntent());
     }
 
-    public void setNavigationCallback(NavigationCallback navigationCallback) {
+    public void setNavigationCallback(NavigationCallback navigationCallback, String key) {
         this.navigationCallback = navigationCallback;
+        this.navigationKey = key;
+    }
+
+    private boolean isNavigationOwner() {
+        return navigationKey == null || navigationKey.equals(player.getKey());
     }
 
     public void addPlayerCallback(PlayerCallback callback) {
@@ -253,12 +259,12 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
     }
 
     private void dispatchNavigate(Consumer<NavigationCallback> action, int delta) {
-        if (navigationCallback != null) dispatch(action);
+        if (hasNavigationCallback() && isNavigationOwner()) dispatch(action);
         else navigateItem(delta);
     }
 
     public void dispatchStop() {
-        if (navigationCallback != null) dispatch(NavigationCallback::onStop);
+        if (hasNavigationCallback() && isNavigationOwner()) dispatch(NavigationCallback::onStop);
         else player.stop();
     }
 
@@ -267,7 +273,7 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
     }
 
     public void dispatchReplay() {
-        if (navigationCallback != null) dispatch(NavigationCallback::onReplay);
+        if (hasNavigationCallback() && isNavigationOwner()) dispatch(NavigationCallback::onReplay);
         else {
             exoPlayer.seekTo(0);
             exoPlayer.play();
@@ -411,10 +417,15 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
     }
 
     @Override
+    public void onPlayerRelease() {
+        playerCallbacks.forEach(PlayerCallback::onPlayerRelease);
+    }
+
+    @Override
     public void onPlayerRebuild(Player newPlayer) {
         exoPlayer = newPlayer;
         if (session != null) session.setPlayer(wrap(newPlayer));
-        for (PlayerCallback callback : playerCallbacks) callback.onPlayerRebuild(newPlayer);
+        playerCallbacks.forEach(callback -> callback.onPlayerRebuild(newPlayer));
     }
 
     @NonNull
@@ -476,6 +487,9 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
         }
 
         default void onError(String msg) {
+        }
+
+        default void onPlayerRelease() {
         }
 
         default void onPlayerRebuild(Player player) {

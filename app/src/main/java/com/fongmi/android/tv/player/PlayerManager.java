@@ -342,6 +342,8 @@ public class PlayerManager implements ParseCallback {
     }
 
     private void rebuildPlayer() {
+        callback.onPlayerRelease();
+        exoPlayer.clearVideoSurface();
         exoPlayer.release();
         exoPlayer = ExoUtil.buildExoPlayer(decode, playerListener);
         if (danPlayer != null) danPlayer.attachPlayer(exoPlayer);
@@ -460,6 +462,8 @@ public class PlayerManager implements ParseCallback {
         void onTitlesChanged();
 
         void onError(String msg);
+
+        void onPlayerRelease();
 
         void onPlayerRebuild(Player newPlayer);
     }
