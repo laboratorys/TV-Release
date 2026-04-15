@@ -16,7 +16,7 @@ tasks.register('buildAllRelease') {
             from fileTree("$rootDir/app/build/outputs/apk") { include '**/release/*.apk' }
             into "$rootDir/Release/apk"
             eachFile { it.path = it.name }
-            includeEmptyDirs false
+            includeEmptyDirs = false
         }
     }
 }
