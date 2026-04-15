@@ -17,7 +17,7 @@ import com.fongmi.android.tv.bean.History;
 import com.fongmi.android.tv.bean.Parse;
 import com.fongmi.android.tv.databinding.ActivityVideoBinding;
 import com.fongmi.android.tv.databinding.DialogControlBinding;
-import com.fongmi.android.tv.player.Players;
+import com.fongmi.android.tv.player.PlayerManager;
 import com.fongmi.android.tv.ui.adapter.ParseAdapter;
 import com.fongmi.android.tv.ui.base.ViewType;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
@@ -35,10 +35,10 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
     private ActivityVideoBinding parent;
     private FragmentActivity activity;
     private List<TextView> scales;
+    private PlayerManager player;
     private final String[] scale;
     private Listener listener;
     private History history;
-    private Players player;
     private boolean parse;
 
     public static ControlDialog create() {
@@ -59,13 +59,13 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
         return this;
     }
 
-    public ControlDialog player(Players player) {
-        this.player = player;
+    public ControlDialog parse(boolean parse) {
+        this.parse = parse;
         return this;
     }
 
-    public ControlDialog parse(boolean parse) {
-        this.parse = parse;
+    public ControlDialog player(PlayerManager player) {
+        this.player = player;
         return this;
     }
 
@@ -86,8 +86,6 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
 
     @Override
     protected void initView() {
-        if (player == null) dismiss();
-        if (player == null) return;
         binding.decode.setText(parent.control.action.decode.getText());
         binding.ending.setText(parent.control.action.ending.getText());
         binding.opening.setText(parent.control.action.opening.getText());
@@ -170,10 +168,6 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
     private void dismiss(View view) {
         App.post(view::performClick, 200);
         dismiss();
-    }
-
-    public void updateParse() {
-        binding.parse.getAdapter().notifyItemRangeChanged(0, binding.parse.getAdapter().getItemCount());
     }
 
     public void setPlayer() {

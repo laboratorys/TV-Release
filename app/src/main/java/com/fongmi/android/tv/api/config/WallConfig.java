@@ -81,6 +81,11 @@ public class WallConfig extends BaseConfig {
         setSnapshot(file);
     }
 
+    @Override
+    protected boolean isLoaded() {
+        return false;
+    }
+
     private void checkUrl(String url, File file) throws Throwable {
         if (url.startsWith("file")) Path.copy(Path.local(url), file);
         else Download.create(UrlUtil.convert(url), file).tag(TAG).get();

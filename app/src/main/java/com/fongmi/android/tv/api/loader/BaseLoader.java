@@ -3,10 +3,10 @@ package com.fongmi.android.tv.api.loader;
 import android.text.TextUtils;
 
 import com.fongmi.android.tv.api.config.LiveConfig;
-import com.fongmi.android.tv.utils.Task;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.bean.Live;
 import com.fongmi.android.tv.bean.Site;
+import com.fongmi.android.tv.utils.Task;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderNull;
 import com.github.catvod.utils.Util;

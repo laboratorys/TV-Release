@@ -42,12 +42,25 @@ abstract class BaseConfig {
 
     protected abstract void load(Config config) throws Throwable;
 
+    protected abstract boolean isLoaded();
+
+    public synchronized void ensureLoaded() {
+        try {
+            if (isLoaded()) return;
+            if (config == null) config = defaultConfig();
+            Server.get().start();
+            load(config);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
     protected void postEvent() {
         ConfigEvent.common();
     }
 
     public boolean needSync(String url) {
-        return sync || TextUtils.isEmpty(config.getUrl()) || url.equals(config.getUrl());
+        return sync || config == null || TextUtils.isEmpty(config.getUrl()) || url.equals(config.getUrl());
     }
 
     public Config getConfig() {

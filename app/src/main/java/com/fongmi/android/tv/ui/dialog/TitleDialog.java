@@ -12,7 +12,7 @@ import androidx.media3.common.MediaTitle;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.databinding.DialogTitleBinding;
-import com.fongmi.android.tv.player.Players;
+import com.fongmi.android.tv.player.PlayerManager;
 import com.fongmi.android.tv.ui.adapter.TitleAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -21,7 +21,7 @@ public final class TitleDialog extends BaseDialog implements TitleAdapter.OnClic
 
     private final TitleAdapter adapter;
     private DialogTitleBinding binding;
-    private Players player;
+    private PlayerManager player;
 
     public static TitleDialog create() {
         return new TitleDialog();
@@ -31,7 +31,7 @@ public final class TitleDialog extends BaseDialog implements TitleAdapter.OnClic
         this.adapter = new TitleAdapter(this);
     }
 
-    public TitleDialog player(Players player) {
+    public TitleDialog player(PlayerManager player) {
         this.player = player;
         return this;
     }
@@ -51,7 +51,7 @@ public final class TitleDialog extends BaseDialog implements TitleAdapter.OnClic
         binding.recycler.setItemAnimator(null);
         binding.recycler.setHasFixedSize(true);
         binding.recycler.addItemDecoration(new SpaceItemDecoration(1, 16));
-        binding.recycler.setAdapter(adapter.addAll(player.get().getCurrentMediaTitles()));
+        binding.recycler.setAdapter(adapter.addAll(player.getCurrentMediaTitles()));
         binding.recycler.post(() -> binding.recycler.scrollToPosition(adapter.getSelected()));
         binding.recycler.setVisibility(adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
     }

@@ -12,7 +12,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
-import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
@@ -69,8 +68,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         return view.getVisibility() == View.GONE;
     }
 
-    protected void notifyItemChanged(RecyclerView view, ArrayObjectAdapter adapter) {
-        view.post(() -> adapter.notifyArrayItemRangeChanged(0, adapter.size()));
+    protected void notifyItemChanged(RecyclerView view, RecyclerView.Adapter<?> adapter) {
+        view.post(() -> adapter.notifyDataSetChanged());
     }
 
     private void setBackCallback() {
@@ -118,7 +117,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 }

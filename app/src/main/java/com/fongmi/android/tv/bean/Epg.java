@@ -3,7 +3,7 @@ package com.fongmi.android.tv.bean;
 import android.text.TextUtils;
 
 import com.fongmi.android.tv.App;
-import com.fongmi.android.tv.api.EpgParser;
+import com.fongmi.android.tv.api.parser.EpgParser;
 import com.fongmi.android.tv.utils.Formatters;
 import com.github.catvod.utils.Json;
 import com.google.gson.annotations.SerializedName;

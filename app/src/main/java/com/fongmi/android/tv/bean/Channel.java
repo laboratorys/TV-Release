@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.gson.HeaderAdapter;
+import com.fongmi.android.tv.utils.Formatters;
 import com.fongmi.android.tv.utils.ImgUtil;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.github.catvod.utils.Trans;
@@ -16,8 +17,6 @@ import com.google.common.net.HttpHeaders;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-
-import com.fongmi.android.tv.utils.Formatters;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -71,6 +70,13 @@ public class Channel {
     private int index;
     private List<Epg> dataList;
 
+    public Channel() {
+    }
+
+    public Channel(String name) {
+        this.name = name;
+    }
+
     public static Channel objectFrom(JsonElement element) {
         return App.gson().fromJson(element, Channel.class);
     }
@@ -87,13 +93,6 @@ public class Channel {
         return new Channel().copy(channel);
     }
 
-    public Channel() {
-    }
-
-    public Channel(String name) {
-        this.name = name;
-    }
-
     public List<String> getUrls() {
         return urls = urls == null ? new ArrayList<>() : urls;
     }
@@ -108,6 +107,11 @@ public class Channel {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public Channel setNumber(int number) {
+        setNumber(String.format(Locale.getDefault(), "%03d", number));
+        return this;
     }
 
     public String getLogo() {
@@ -242,6 +246,12 @@ public class Channel {
         return getData(ZoneId.systemDefault());
     }
 
+    public void setData(Epg data) {
+        if (dataList == null) dataList = new ArrayList<>();
+        dataList.removeIf(e -> e.equal(data.getDate()));
+        dataList.add(data);
+    }
+
     public Epg getData(ZoneId zoneId) {
         String today = LocalDate.now(zoneId).format(Formatters.DATE);
         if (dataList == null) return new Epg();
@@ -250,12 +260,6 @@ public class Channel {
 
     public List<Epg> getDataList() {
         return dataList == null ? Collections.emptyList() : dataList;
-    }
-
-    public void setData(Epg data) {
-        if (dataList == null) dataList = new ArrayList<>();
-        dataList.removeIf(e -> e.equal(data.getDate()));
-        dataList.add(data);
     }
 
     public void setDataList(List<Epg> list) {
@@ -268,6 +272,16 @@ public class Channel {
 
     public void setIndex(int index) {
         this.index = Math.max(index, 0);
+    }
+
+    public void setIndex(String line) {
+        for (int i = 0; i < getUrls().size(); i++) {
+            String url = getUrls().get(i);
+            if (url.equals(line) || (url.contains("$") && line.equals(url.split("\\$")[0]))) {
+                setIndex(i);
+                break;
+            }
+        }
     }
 
     public boolean isSelected() {
@@ -329,11 +343,6 @@ public class Channel {
         return ResUtil.getString(R.string.live_line, getIndex() + 1);
     }
 
-    public Channel setNumber(int number) {
-        setNumber(String.format(Locale.getDefault(), "%03d", number));
-        return this;
-    }
-
     public Channel group(Group group) {
         setGroup(group);
         return this;
@@ -348,16 +357,6 @@ public class Channel {
         if (!live.getReferer().isEmpty() && getReferer().isEmpty()) setReferer(live.getReferer());
         if (live.getEpg().contains("{") && !getEpg().startsWith("http")) setEpg(live.getEpgApi().replace("{id}", getTvgId()).replace("{name}", getTvgName()).replace("{epg}", getEpg()));
         if (live.getLogo().contains("{") && !getLogo().startsWith("http")) setLogo(live.getLogo().replace("{id}", getTvgId()).replace("{name}", getTvgName()).replace("{logo}", getLogo()));
-    }
-
-    public void setIndex(String line) {
-        for (int i = 0; i < getUrls().size(); i++) {
-            String url = getUrls().get(i);
-            if (url.equals(line) || (url.contains("$") && line.equals(url.split("\\$")[0]))) {
-                setIndex(i);
-                break;
-            }
-        }
     }
 
     public Map<String, String> getHeaders() {

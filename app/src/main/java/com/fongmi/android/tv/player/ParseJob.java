@@ -31,18 +31,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Response;
 
 public class ParseJob implements ParseCallback {
 
+    private final AtomicBoolean done = new AtomicBoolean();
     private final List<CustomWebView> webViews;
     private ExecutorService executor;
     private ExecutorService infinite;
     private ParseCallback callback;
     private Parse parse;
 
-    public ParseJob(ParseCallback callback) {
+    private ParseJob(ParseCallback callback) {
         this.executor = Executors.newSingleThreadExecutor();
         this.infinite = Executors.newCachedThreadPool();
         this.webViews = new ArrayList<>();
@@ -111,13 +113,13 @@ public class ParseJob implements ParseCallback {
         }
     }
 
-    private void jsonParse(Parse item, String webUrl, boolean error) throws Exception {
+    private void jsonParse(Parse item, String webUrl, boolean fatal) throws Exception {
         try (Response res = OkHttp.newCall(item.getUrl() + webUrl, item.getHeader()).execute()) {
             JsonObject object = Json.parse(res.body().string()).getAsJsonObject();
             String url = Json.safeString(object, "url");
             JsonObject data = object.getAsJsonObject("data");
             if (url.isEmpty()) url = Json.safeString(data, "url");
-            checkResult(getHeader(object), url, item.getName(), error);
+            checkResult(getHeader(object), url, item.getName(), fatal);
         }
     }
 
@@ -154,12 +156,9 @@ public class ParseJob implements ParseCallback {
         }
     }
 
-    private void checkResult(Map<String, String> headers, String url, String from, boolean error) {
-        if (url.length() > 40) {
-            onParseSuccess(headers, url, from);
-        } else if (error) {
-            onParseError();
-        }
+    private void checkResult(Map<String, String> headers, String url, String from, boolean fatal) {
+        if (url.length() > 40) onParseSuccess(headers, url, from);
+        else if (fatal) onParseError();
     }
 
     private void checkResult(Result result) {
@@ -184,22 +183,22 @@ public class ParseJob implements ParseCallback {
     }
 
     private void startWeb(String key, String from, Map<String, String> headers, String url, String click) {
-        if (WebViewUtil.support()) {
-            App.post(() -> webViews.add(CustomWebView.create(App.get()).start(key, from, headers, url, click, this, !url.contains("player/?url="))));
-        } else {
+        if (!WebViewUtil.support()) {
             onParseError();
+        } else {
+            App.post(() -> webViews.add(CustomWebView.create(App.get()).start(key, from, headers, url, click, this, !url.contains("player/?url="))));
         }
     }
 
     private Map<String, String> getHeader(JsonObject object) {
         Map<String, String> headers = new HashMap<>();
         for (Map.Entry<String, JsonElement> entry : object.entrySet()) if (!entry.getValue().isJsonNull() && (entry.getKey().equalsIgnoreCase(HttpHeaders.USER_AGENT) || entry.getKey().equalsIgnoreCase(HttpHeaders.REFERER) || entry.getKey().equalsIgnoreCase(HttpHeaders.COOKIE) || entry.getKey().equalsIgnoreCase("ua"))) headers.put(UrlUtil.fixHeader(entry.getKey()), entry.getValue().getAsString());
-        if (headers.isEmpty()) return parse.getHeader();
-        return headers;
+        return headers.isEmpty() ? parse.getHeader() : headers;
     }
 
     @Override
     public void onParseSuccess(Map<String, String> headers, String url, String from) {
+        if (!done.compareAndSet(false, true)) return;
         App.post(() -> {
             if (callback != null) callback.onParseSuccess(headers, url, from);
             stop();
@@ -208,6 +207,7 @@ public class ParseJob implements ParseCallback {
 
     @Override
     public void onParseError() {
+        if (!done.compareAndSet(false, true)) return;
         App.post(() -> {
             if (callback != null) callback.onParseError();
             stop();
@@ -226,6 +226,7 @@ public class ParseJob implements ParseCallback {
         infinite = null;
         executor = null;
         callback = null;
+        done.set(true);
         stopWeb();
     }
 }
