@@ -1,5 +1,65 @@
 [
   {
+    "code": 537,
+    "name": "5.3.7",
+    "desc": "* 優化 DLNA 服務\n* 優化本地網頁頁面\n* 支持 android auto\n* 支持 media3 session"
+  },
+  {
+    "code": 536,
+    "name": "5.3.6",
+    "desc": "* 優化 iso 解析\n* 修正 dts 軟解\n* 修正 truehd+atmos 直通"
+  },
+  {
+    "code": 535,
+    "name": "5.3.5",
+    "desc": "* 修正配置讀取\n* 新增 dts-x 識別\n* 新增 dts-ma 識別"
+  },
+  {
+    "code": 534,
+    "name": "5.3.4",
+    "desc": "* 優化 eac3\n* 優化 dts-hd\n* 修正配置讀取"
+  },
+  {
+    "code": 533,
+    "name": "5.3.3",
+    "desc": "* 更新 media3\n* 修正 sacd dst\n* 支持 rtsp 回看\n* 整體優化請求線程\n* 修正 mp4 無法播放"
+  },
+  {
+    "code": 532,
+    "name": "5.3.2",
+    "desc": "* 修正 rtsp 播放\n* 修正 iso 杜比識別\n* 修正 mp4 無法播放"
+  },
+  {
+    "code": 531,
+    "name": "5.3.1",
+    "desc": "* 回退 mkv 優化\n* 優化 flv 播放\n* 優化 aac 播放\n* 優化 iso 讀取\n* 支持 iso 杜比\n* 支持 iso sacd\n* 支持 rtsp mp2t\n* 優化軌道格式顯示\n* 支持 mpeg1、mjpeg\n* 支持 dsf、dff、dts"
+  },
+  {
+    "code": 530,
+    "name": "5.3.0",
+    "desc": "* 修正 iso vc1\n* 優化 iso ac3\n* 優化 iso 起播\n* 優化 mkv 起播\n* 優化 hls 去廣告\n* 支持 iso 章節選擇\n* 優化 seek 手勢檢測\n* 優化 ffmpeg 軟解效能"
+  },
+  {
+    "code": 529,
+    "name": "5.2.9",
+    "desc": "* 回看參數支持 timestamp\n* iso 的 TrueHD 支持直通"
+  },
+  {
+    "code": 528,
+    "name": "5.2.8",
+    "desc": "* 優化 iso 播放\n* 優化 iso seek"
+  },
+  {
+    "code": 527,
+    "name": "5.2.7",
+    "desc": "* 優化 ts 同步\n* 支持 iso 播放\n* 優化圖像字幕顯示"
+  },
+  {
+    "code": 526,
+    "name": "5.2.6",
+    "desc": "* 優化智慧去廣\n* 修正播放類型判斷\n* 修正 DVB 字幕顯示\n* 修正 PGS 字幕顯示\n* 修正 DTS-HD 緩衝大小"
+  },
+  {
     "code": 525,
     "name": "5.2.5",
     "desc": "* 優化智慧去廣\n* 修正 DVB 字幕顯示\n* 修正 PGS 字幕顯示\n* 修正 DTS-HD 緩衝大小"
