@@ -8,7 +8,7 @@ tasks.register('clean', Delete) {
     delete rootProject.layout.buildDirectory
 }
 
-tasks.register('buildAllRelease') {
+tasks.register('buildRelease') {
     group = 'build'
     dependsOn project(':app').tasks.matching { it.name ==~ /assemble.+Release/ }
     doLast {
