@@ -4,8 +4,9 @@ import android.text.TextUtils;
 
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.api.Decoder;
-import com.fongmi.android.tv.api.LiveParser;
+import com.fongmi.android.tv.api.LiveApi;
 import com.fongmi.android.tv.api.loader.BaseLoader;
+import com.fongmi.android.tv.api.parser.LiveParser;
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.Config;
 import com.fongmi.android.tv.bean.Depot;
@@ -29,8 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import java.time.ZoneId;
 
 public class LiveConfig extends BaseConfig {
 
@@ -93,6 +92,7 @@ public class LiveConfig extends BaseConfig {
         home = null;
         lives = null;
         rules = null;
+        RuleConfig.get().invalidate();
         return this;
     }
 
@@ -117,6 +117,23 @@ public class LiveConfig extends BaseConfig {
         String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
         if (Json.isObj(json)) checkJson(config, Json.parse(json).getAsJsonObject());
         else parseText(config, json);
+    }
+
+    @Override
+    protected boolean isLoaded() {
+        return !getLives().isEmpty() && !getHome().getGroups().isEmpty();
+    }
+
+    @Override
+    public synchronized void ensureLoaded() {
+        try {
+            if (isLoaded()) return;
+            super.ensureLoaded();
+            LiveApi.parse(getHome());
+            LiveApi.parseXml(getHome());
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     public void load() {
@@ -227,6 +244,7 @@ public class LiveConfig extends BaseConfig {
 
     private void setRules(List<Rule> rules) {
         this.rules = rules;
+        RuleConfig.get().invalidate();
     }
 
     public List<String> getAds() {
@@ -235,12 +253,7 @@ public class LiveConfig extends BaseConfig {
 
     private void setAds(List<String> ads) {
         this.ads = ads;
-    }
-
-    public ZoneId getZoneId() {
-        String tz = getHome().getTimeZone();
-        if (tz.isEmpty()) return ZoneId.systemDefault();
-        try { return ZoneId.of(tz); } catch (Exception ignored) { return ZoneId.systemDefault(); }
+        RuleConfig.get().invalidate();
     }
 
     public Live getHome() {

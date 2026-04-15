@@ -1,13 +1,13 @@
 package com.fongmi.android.tv.server;
 
-import com.fongmi.android.tv.player.Players;
+import com.fongmi.android.tv.service.PlaybackService;
 import com.fongmi.android.tv.utils.Task;
 import com.github.catvod.Proxy;
 import com.github.catvod.utils.Util;
 
 public class Server {
 
-    private volatile Players player;
+    private volatile PlaybackService service;
     private volatile Nano nano;
 
     private static class Loader {
@@ -18,12 +18,12 @@ public class Server {
         return Loader.INSTANCE;
     }
 
-    public Players getPlayer() {
-        return player;
+    public PlaybackService getService() {
+        return service;
     }
 
-    public void setPlayer(Players player) {
-        this.player = player;
+    public void setService(PlaybackService service) {
+        this.service = service;
     }
 
     public String getAddress() {
@@ -59,7 +59,7 @@ public class Server {
     public void stop() {
         Task.execute(() -> {
             if (nano != null) nano.stop();
-            player = null;
+            service = null;
             nano = null;
         });
     }

@@ -30,7 +30,6 @@ import com.fongmi.android.tv.databinding.FragmentTypeBinding;
 import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.ui.activity.CollectActivity;
 import com.fongmi.android.tv.ui.activity.VideoActivity;
-import com.fongmi.android.tv.ui.adapter.BaseDiffCallback;
 import com.fongmi.android.tv.ui.base.BaseFragment;
 import com.fongmi.android.tv.ui.custom.CustomRowPresenter;
 import com.fongmi.android.tv.ui.custom.CustomScroller;
@@ -195,17 +194,18 @@ public class TypeFragment extends BaseFragment implements CustomScroller.Callbac
         int size = Product.getColumn(style) - mLast.size();
         if (size == 0) return false;
         size = Math.min(size, items.size());
-        mLast.addAll(mLast.size(), new ArrayList<>(items.subList(0, size)));
-        addGrid(new ArrayList<>(items.subList(size, items.size())), style);
+        mLast.addAll(mLast.size(), items.subList(0, size));
+        addGrid(items.subList(size, items.size()), style);
         return true;
     }
 
     private void addGrid(List<Vod> items, Style style) {
         if (checkLastSize(items, style)) return;
         List<ListRow> rows = new ArrayList<>();
+        VodPresenter presenter = new VodPresenter(this, style);
         for (List<Vod> part : Lists.partition(items, Product.getColumn(style))) {
-            mLast = new ArrayObjectAdapter(new VodPresenter(this, style));
-            mLast.setItems(part, new BaseDiffCallback<Vod>());
+            mLast = new ArrayObjectAdapter(presenter);
+            mLast.addAll(0, part);
             rows.add(new ListRow(mLast));
         }
         mAdapter.addAll(mAdapter.size(), rows);

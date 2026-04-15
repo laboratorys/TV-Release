@@ -141,6 +141,7 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
         mBinding.pager.getAdapter().notifyDataSetChanged();
         setFabVisible(0);
         hideProgress();
+        showContent();
     }
 
     private void setFabVisible(int position) {
@@ -278,14 +279,10 @@ public class VodFragment extends BaseFragment implements ConfigCallback, SiteCal
             }
 
             @Override
-            public void success() {
-                showContent();
-            }
-
-            @Override
             public void error(String msg) {
                 Notify.dismiss();
                 Notify.show(msg);
+                showContent();
             }
         });
     }

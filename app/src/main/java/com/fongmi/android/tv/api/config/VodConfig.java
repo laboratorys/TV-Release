@@ -89,6 +89,7 @@ public class VodConfig extends BaseConfig {
         rules = null;
         parses = null;
         BaseLoader.get().clear();
+        RuleConfig.get().invalidate();
         return this;
     }
 
@@ -112,6 +113,11 @@ public class VodConfig extends BaseConfig {
     protected void load(Config config) throws Throwable {
         String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
         checkJson(config, Json.parse(json).getAsJsonObject());
+    }
+
+    @Override
+    protected boolean isLoaded() {
+        return !getSites().isEmpty();
     }
 
     private void checkJson(Config config, JsonObject object) throws Throwable {
@@ -217,6 +223,7 @@ public class VodConfig extends BaseConfig {
 
     private void setRules(List<Rule> rules) {
         this.rules = rules;
+        RuleConfig.get().invalidate();
     }
 
     public List<Parse> getParses(int type) {
@@ -243,6 +250,7 @@ public class VodConfig extends BaseConfig {
 
     private void setAds(List<String> ads) {
         this.ads = ads;
+        RuleConfig.get().invalidate();
     }
 
     public Parse getParse() {

@@ -4,9 +4,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
-import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.utils.Formatters;
-import com.fongmi.android.tv.utils.ResUtil;
 import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.SerializedName;
 
@@ -89,7 +87,7 @@ public class EpgData {
 
     public String format() {
         if (getTitle().isEmpty()) return "";
-        if (getStart().isEmpty() && getEnd().isEmpty()) return ResUtil.getString(R.string.play_now, getTitle());
+        if (getStart().isEmpty() && getEnd().isEmpty()) return getTitle();
         return getStart() + " ~ " + getEnd() + "  " + getTitle();
     }
 

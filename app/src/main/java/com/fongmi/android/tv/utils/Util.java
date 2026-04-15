@@ -31,6 +31,7 @@ import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -180,6 +181,11 @@ public class Util {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public static String timeMs(long timeMs) {
+        StringBuilder sb = new StringBuilder();
+        return format(sb, new Formatter(sb, Locale.getDefault()), timeMs);
     }
 
     public static Intent getChooser(Intent intent) {
