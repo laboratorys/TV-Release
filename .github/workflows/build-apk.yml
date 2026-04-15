@@ -171,6 +171,9 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASS: ${{ secrets.KEY_PASS }}
         run: |
+          echo "storeFile=keystore.jks" > local.properties
+          echo "keyAlias=dummy" >> local.properties
+          echo "storePassword=dummy" >> local.properties
           # 解码签名文件
           echo "🔑 Decoding keystore..."
           echo "$KEYSTORE" | base64 -d > keystore.jks
@@ -185,6 +188,8 @@ jobs:
             -Pandroid.injected.signing.store.password="$KEYSTORE_PASS" \
             -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
             -Pandroid.injected.signing.key.password="$KEY_PASS" \
+            -Pandroid.compileSdk=34 \
+            -Pandroid.targetSdk=34 \
             --console=plain --no-daemon
           
           mkdir -p release_apks
