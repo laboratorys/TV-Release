@@ -19,4 +19,5 @@ dependencies {
     implementation "$group:lib-decoder-av1:$version"
     implementation "$group:lib-decoder-iamf:$version"
     implementation "$group:lib-decoder-mpegh:$version"
+    implementation "$group:lib-session:$version"
 }
