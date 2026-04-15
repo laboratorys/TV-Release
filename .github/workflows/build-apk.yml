@@ -20,7 +20,7 @@ jobs:
     steps:
       # 1. 拉取目标仓库代码
       - name: 🛒 Checkout TV project
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: laboratorys/TV-Release # 目标仓库
           ref: ${{ github.event.inputs.build_tag || 'lab' }} # 指定分支
