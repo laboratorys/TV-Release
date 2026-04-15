@@ -93,8 +93,8 @@ public class SearchActivity extends BaseActivity implements WordAdapter.OnClickL
         mBinding.mic.setListener(this, new CustomTextListener() {
             @Override
             public void onResults(String result) {
+                if (!result.isEmpty()) setKeyword(result);
                 mBinding.keyword.requestFocus();
-                setKeyword(result);
             }
         });
     }
@@ -299,8 +299,15 @@ public class SearchActivity extends BaseActivity implements WordAdapter.OnClickL
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        mBinding.mic.setFocusable(false);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        mBinding.mic.setFocusable(true);
         mBinding.keyword.requestFocus();
     }
 
