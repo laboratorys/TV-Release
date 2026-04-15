@@ -1,5 +1,10 @@
 [
   {
+    "code": 537,
+    "name": "5.3.7",
+    "desc": "* 優化搜尋介面\n* 優化 DLNA 服務\n* 優化本地網頁頁面\n* 支持 android auto\n* 支持 media3 session"
+  },
+  {
     "code": 536,
     "name": "5.3.6",
     "desc": "* 優化 iso 解析\n* 修正 dts 軟解\n* 修正 truehd+atmos 直通"
