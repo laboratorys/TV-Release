@@ -232,13 +232,8 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         }
 
         @Override
-        public void onPlayerRelease() {
-            if (isOwner()) detachSurface();
-        }
-
-        @Override
         public void onPlayerRebuild(Player player) {
-            if (isOwner()) attachSurface();
+            if (isOwner()) detachSurface();
         }
     };
 

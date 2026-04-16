@@ -264,6 +264,7 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
     }
 
     public void dispatchStop() {
+        if (exoPlayer.getPlaybackState() == Player.STATE_IDLE) return;
         if (hasNavigationCallback() && isNavigationOwner()) dispatch(NavigationCallback::onStop);
         else player.stop();
     }
@@ -417,11 +418,6 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
     }
 
     @Override
-    public void onPlayerRelease() {
-        playerCallbacks.forEach(PlayerCallback::onPlayerRelease);
-    }
-
-    @Override
     public void onPlayerRebuild(Player newPlayer) {
         exoPlayer = newPlayer;
         if (session != null) session.setPlayer(wrap(newPlayer));
@@ -487,9 +483,6 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
         }
 
         default void onError(String msg) {
-        }
-
-        default void onPlayerRelease() {
         }
 
         default void onPlayerRebuild(Player player) {

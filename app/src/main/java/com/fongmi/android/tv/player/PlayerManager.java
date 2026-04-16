@@ -338,11 +338,10 @@ public class PlayerManager implements ParseCallback {
     public void toggleDecode() {
         decode = isHard() ? SOFT : HARD;
         rebuildPlayer();
-        App.post(this::setMediaItem, 100);
+        setMediaItem();
     }
 
     private void rebuildPlayer() {
-        callback.onPlayerRelease();
         exoPlayer.clearVideoSurface();
         exoPlayer.release();
         exoPlayer = ExoUtil.buildExoPlayer(decode, playerListener);
@@ -462,8 +461,6 @@ public class PlayerManager implements ParseCallback {
         void onTitlesChanged();
 
         void onError(String msg);
-
-        void onPlayerRelease();
 
         void onPlayerRebuild(Player newPlayer);
     }

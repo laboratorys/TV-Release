@@ -799,6 +799,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     private void onDecode() {
+        mClock.setCallback(null);
         player().toggleDecode();
         setDecode();
     }

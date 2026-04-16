@@ -804,6 +804,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     }
 
     private void onDecode() {
+        mClock.setCallback(null);
         player().toggleDecode();
         setR1Callback();
         setDecode();
