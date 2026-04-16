@@ -9,17 +9,23 @@ import android.os.IBinder;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.Player;
 import androidx.media3.common.VideoSize;
+import androidx.media3.exoplayer.drm.FrameworkMediaDrm;
 import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionToken;
 import androidx.media3.ui.PlayerView;
 
+import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.Setting;
+import com.fongmi.android.tv.bean.Result;
+import com.fongmi.android.tv.player.PlayerHelper;
 import com.fongmi.android.tv.player.PlayerManager;
-import com.fongmi.android.tv.player.exo.ExoUtil;
+import com.fongmi.android.tv.player.engine.PlaySpec;
 import com.fongmi.android.tv.service.PlaybackService;
 import com.fongmi.android.tv.ui.custom.CustomSeekView;
+import com.fongmi.android.tv.utils.ResUtil;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public abstract class PlaybackActivity extends BaseActivity implements MediaController.Listener, Player.Listener, ServiceConnection {
@@ -124,6 +130,20 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     protected void onReclaim() {
     }
 
+    protected void startPlayer(String key, Result result, boolean useParse, long timeout, MediaMetadata metadata) {
+        if (result.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(result.getDrm().getUUID())) {
+            onError(ResUtil.getString(R.string.error_play_drm));
+        } else if (result.hasMsg()) {
+            onError(result.getMsg());
+        } else if (result.getParse() == 1 || result.getJx() == 1) {
+            player().startParse(key, result, useParse, metadata);
+        } else if (PlayerManager.isIllegal(result.getRealUrl())) {
+            onError(ResUtil.getString(R.string.error_play_url));
+        } else {
+            player().start(PlaySpec.from(result, key, metadata), timeout);
+        }
+    }
+
     private void bindPlaybackService() {
         startService(new Intent(this, PlaybackService.class));
         bindService(new Intent(this, PlaybackService.class).setAction(PlaybackService.LOCAL_BIND_ACTION), this, BIND_AUTO_CREATE);
@@ -148,7 +168,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
 
     private void initPlayerViews() {
         getExoView().setRender(Setting.getRender());
-        ExoUtil.setSubtitleView(getExoView());
+        PlayerHelper.setSubtitleView(getExoView());
         getSeekView().setPlayer(mController);
     }
 

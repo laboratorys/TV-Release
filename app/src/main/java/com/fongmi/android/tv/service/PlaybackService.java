@@ -25,6 +25,7 @@ import com.fongmi.android.tv.browse.BrowseTree;
 import com.fongmi.android.tv.event.ActionEvent;
 import com.fongmi.android.tv.event.ConfigEvent;
 import com.fongmi.android.tv.player.PlayerManager;
+import com.fongmi.android.tv.player.engine.PlaySpec;
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.Task;
 import com.google.common.collect.ImmutableList;
@@ -393,7 +394,7 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
     }
 
     private void startBrowse(PlayerManager manager, MediaItem item, Result result, long startPositionMs) {
-        manager.startBrowse(item.mediaId, item.mediaMetadata, result);
+        manager.startBrowse(PlaySpec.from(result, item.mediaId, item.mediaMetadata));
         if (startPositionMs > 0) manager.seekTo(startPositionMs);
     }
 

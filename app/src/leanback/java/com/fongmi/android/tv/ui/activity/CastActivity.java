@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import androidx.media3.common.C;
+import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.Player;
 import androidx.media3.common.VideoSize;
 import androidx.media3.ui.PlayerView;
@@ -25,6 +26,8 @@ import com.fongmi.android.tv.databinding.ActivityCastBinding;
 import com.fongmi.android.tv.dlna.CastAction;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.player.PlayerHelper;
+import com.fongmi.android.tv.player.PlayerManager;
+import com.fongmi.android.tv.player.engine.PlaySpec;
 import com.fongmi.android.tv.service.DLNARendererService;
 import com.fongmi.android.tv.service.PlaybackService;
 import com.fongmi.android.tv.ui.base.PlaybackActivity;
@@ -161,9 +164,7 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
     }
 
     private void start() {
-        player().setKey(getPlaybackKey());
-        player().setMediaItem(mAction.getHeaders(), mAction.getCurrentURI());
-        setMetadata();
+        player().start(new PlaySpec(getPlaybackKey(), mAction.getCurrentURI(), mAction.getHeaders(), buildMetadata()), Constant.TIMEOUT_PLAY);
     }
 
     private void setDecode() {
@@ -298,8 +299,8 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
         mBinding.control.action.video.setVisibility(player().haveTrack(C.TRACK_TYPE_VIDEO) ? View.VISIBLE : View.GONE);
     }
 
-    private void setMetadata() {
-        player().setMetadata(mBinding.widget.title.getText().toString(), "", "");
+    private MediaMetadata buildMetadata() {
+        return PlayerManager.buildMetadata(mBinding.widget.title.getText().toString(), "", "");
     }
 
     private void onPaused() {
@@ -348,7 +349,6 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
 
     @Override
     protected void onTracksChanged() {
-        setMetadata();
         setTrackVisible();
     }
 

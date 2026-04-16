@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.C;
+import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.Player;
 import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,6 +47,7 @@ import com.fongmi.android.tv.impl.LiveCallback;
 import com.fongmi.android.tv.impl.PassCallback;
 import com.fongmi.android.tv.model.LiveViewModel;
 import com.fongmi.android.tv.player.PlayerHelper;
+import com.fongmi.android.tv.player.PlayerManager;
 import com.fongmi.android.tv.player.Source;
 import com.fongmi.android.tv.service.PlaybackService;
 import com.fongmi.android.tv.ui.adapter.ChannelAdapter;
@@ -110,10 +112,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
 
     private Live getHome() {
         return LiveConfig.get().getHome();
-    }
-
-    private long getTimeout() {
-        return getHome().isEmpty() ? Constant.TIMEOUT_PLAY : getHome().getTimeout();
     }
 
     @Override
@@ -692,9 +690,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     }
 
     private void start(Result result) {
-        player().setKey(getPlaybackKey());
-        player().start(result, false, getTimeout());
-        setMetadata();
+        startPlayer(getPlaybackKey(), result, false, getHome().getTimeout(), buildMetadata());
     }
 
     private void checkControl() {
@@ -884,9 +880,13 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.control.action.speed.setVisibility(player().isVod() ? View.VISIBLE : View.GONE);
     }
 
-    private void setMetadata() {
+    private MediaMetadata buildMetadata() {
         String artist = mBinding.widget.play.getText().toString();
-        player().setMetadata(mChannel.getShow(), artist, mChannel.getLogo());
+        return PlayerManager.buildMetadata(mChannel.getShow(), artist, mChannel.getLogo());
+    }
+
+    private void setMetadata() {
+        player().setMetadata(buildMetadata());
     }
 
     private void startFlow() {
