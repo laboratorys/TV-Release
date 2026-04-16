@@ -124,42 +124,10 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     protected void onReclaim() {
     }
 
-    protected void bindPlaybackService() {
+    private void bindPlaybackService() {
         startService(new Intent(this, PlaybackService.class));
         bindService(new Intent(this, PlaybackService.class).setAction(PlaybackService.LOCAL_BIND_ACTION), this, BIND_AUTO_CREATE);
         buildControllerAsync();
-    }
-
-    protected void releasePlaybackService() {
-        if (mService != null) releaseService(isOwner());
-        detach();
-    }
-
-    private void releaseService(boolean owner) {
-        mService.removePlayerCallback(mPlayerCallback);
-        if (owner) mService.setNavigationCallback(null, null);
-        if (mService.hasExternalClient() || mService.hasPlayerCallback()) mService.resetSessionActivity();
-        else if (owner) mService.shutdown();
-    }
-
-    private void detach() {
-        if (isOwner()) detachSurface();
-        releaseController();
-        releaseBinding();
-    }
-
-    private void releaseController() {
-        if (mControllerFuture != null) MediaController.releaseFuture(mControllerFuture);
-        if (mController != null) mController.removeListener(this);
-        mControllerFuture = null;
-        mController = null;
-    }
-
-    private void releaseBinding() {
-        if (mService == null) return;
-        mService.removePlayerCallback(mPlayerCallback);
-        unbindService(this);
-        mService = null;
     }
 
     private void buildControllerAsync() {
@@ -191,10 +159,54 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    private boolean shouldReclaim() {
+        return mService != null && !isOwner();
+    }
+
     private void closePiP() {
         if (!isInPictureInPictureMode()) return;
         detach();
         finish();
+    }
+
+    private void attachSurface() {
+        getExoView().setPlayer(mController);
+    }
+
+    private void detachSurface() {
+        getExoView().setPlayer(null);
+    }
+
+    private void releasePlaybackService() {
+        if (mService != null) releaseService(isOwner());
+        detach();
+    }
+
+    private void releaseService(boolean owner) {
+        mService.removePlayerCallback(mPlayerCallback);
+        if (owner) mService.setNavigationCallback(null, null);
+        if (mService.hasExternalClient() || mService.hasPlayerCallback()) mService.resetSessionActivity();
+        else if (owner) mService.shutdown();
+    }
+
+    private void detach() {
+        if (isOwner()) detachSurface();
+        releaseController();
+        releaseBinding();
+    }
+
+    private void releaseController() {
+        if (mControllerFuture != null) MediaController.releaseFuture(mControllerFuture);
+        if (mController != null) mController.removeListener(this);
+        mControllerFuture = null;
+        mController = null;
+    }
+
+    private void releaseBinding() {
+        if (mService == null) return;
+        mService.removePlayerCallback(mPlayerCallback);
+        unbindService(this);
+        mService = null;
     }
 
     private final PlaybackService.PlayerCallback mPlayerCallback = new PlaybackService.PlayerCallback() {
@@ -231,6 +243,12 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     };
 
     @Override
+    protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
+        bindPlaybackService();
+    }
+
+    @Override
     public void onIsPlayingChanged(boolean isPlaying) {
         if (isOwner()) onPlayingChanged(isPlaying);
     }
@@ -262,18 +280,6 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         mService = null;
     }
 
-    private boolean shouldReclaim() {
-        return mService != null && !isOwner();
-    }
-
-    private void attachSurface() {
-        getExoView().setPlayer(mController);
-    }
-
-    private void detachSurface() {
-        getExoView().setPlayer(null);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -299,5 +305,11 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         if (isOwner()) detachSurface();
         if (Setting.isBackgroundOff() && isOwner() && mController != null) mController.pause();
         if (mController != null) mController.removeListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        releasePlaybackService();
     }
 }

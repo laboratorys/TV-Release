@@ -2,6 +2,7 @@ package com.fongmi.android.tv.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -70,7 +71,7 @@ public class SearchActivity extends BaseActivity implements WordAdapter.OnClickL
     }
 
     @Override
-    protected void initView() {
+    protected void initView(Bundle savedInstanceState) {
         CustomKeyboard.init(this, mBinding);
         setRecyclerView();
         checkKeyword();

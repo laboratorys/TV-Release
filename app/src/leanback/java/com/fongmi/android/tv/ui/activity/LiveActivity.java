@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -152,7 +153,8 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
     }
 
     @Override
-    protected void initView() {
+    protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
         mClock = Clock.create(mBinding.widget.clock);
         mKeyDown = CustomKeyDownLive.create(this);
         mObserveEpg = this::setEpg;
@@ -212,7 +214,6 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
     }
 
     private void setVideoView() {
-        bindPlaybackService();
         setScale(Setting.getLiveScale());
         findViewById(R.id.timeBar).setNextFocusUpId(R.id.config);
         mBinding.control.action.invert.setActivated(Setting.isInvert());
@@ -1060,7 +1061,6 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
     protected void onDestroy() {
         mClock.release();
         Source.get().exit();
-        releasePlaybackService();
         App.removeCallbacks(mR0, mR1, mR2, mR3, mR4);
         mViewModel.url().removeObserver(mObserveUrl);
         mViewModel.epg().removeObserver(mObserveEpg);

@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.view.KeyEvent;
 import android.view.View;
@@ -99,7 +100,8 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
     }
 
     @Override
-    protected void initView() {
+    protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
         bindService(new Intent(this, DLNARendererService.class), mRendererConnection, Context.BIND_AUTO_CREATE);
         mClock = Clock.create(mBinding.widget.clock);
         mKeyDown = CustomKeyDownVod.create(this);
@@ -129,7 +131,6 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
     }
 
     private void setVideoView() {
-        bindPlaybackService();
         setScale(scale = Setting.getScale());
         findViewById(R.id.timeBar).setNextFocusUpId(R.id.reset);
         mBinding.control.action.reset.setText(ResUtil.getStringArray(R.array.select_reset)[0]);
@@ -267,7 +268,6 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
     }
 
     private void hideControl() {
-        mBinding.control.action.text.setText(R.string.play_track_text);
         mBinding.control.getRoot().setVisibility(View.GONE);
         App.removeCallbacks(mR1);
     }
@@ -516,7 +516,6 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
     protected void onDestroy() {
         mClock.release();
         releaseRenderer();
-        releasePlaybackService();
         App.removeCallbacks(mR1, mR2);
         super.onDestroy();
     }

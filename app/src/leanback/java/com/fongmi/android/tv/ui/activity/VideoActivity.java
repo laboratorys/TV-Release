@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.KeyEvent;
@@ -242,7 +243,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     @Override
     protected void onServiceConnected() {
         player().setDanmakuView(mBinding.danmaku);
-        checkCast();
+        setDanmakuSize();
         checkId();
     }
 
@@ -258,7 +259,8 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     @Override
-    protected void initView() {
+    protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
         mFrameParams = mBinding.video.getLayoutParams();
         mClock = Clock.create(mBinding.widget.clock);
         mKeyDown = CustomKeyDownVod.create(this);
@@ -273,6 +275,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         setRecyclerView();
         setVideoView();
         setViewModel();
+        checkCast();
     }
 
     @Override
@@ -357,7 +360,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     private void setVideoView() {
-        bindPlaybackService();
         mBinding.control.action.danmaku.setVisibility(Setting.isDanmakuLoad() ? View.VISIBLE : View.GONE);
         mBinding.control.action.reset.setText(ResUtil.getStringArray(R.array.select_reset)[Setting.getReset()]);
     }
@@ -380,7 +382,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     private void checkCast() {
-        if (isCast()) onVideo();
+        if (isCast() && !isFullscreen()) enterFullscreen();
         else mBinding.progressLayout.showProgress();
     }
 
@@ -616,21 +618,26 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mBinding.video.setForeground(null);
         mBinding.video.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         mBinding.flag.setSelectedPosition(mFlagAdapter.getPosition());
-        player().setDanmakuSize(1.2f);
         mKeyDown.setFull(true);
         setFullscreen(true);
+        setDanmakuSize();
         mFocus2 = null;
     }
 
     private void exitFullscreen() {
         mBinding.video.setForeground(ResUtil.getDrawable(R.drawable.selector_video));
         mBinding.video.setLayoutParams(mFrameParams);
-        player().setDanmakuSize(0.8f);
         getFocus1().requestFocus();
         mKeyDown.setFull(false);
         setFullscreen(false);
+        setDanmakuSize();
         mFocus2 = null;
         hideInfo();
+    }
+
+    private void setDanmakuSize() {
+        if (service() == null) return;
+        player().setDanmakuSize(isFullscreen() ? 1.2f : 0.8f);
     }
 
     private void onContent() {
@@ -858,7 +865,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     private void hideControl() {
-        mBinding.control.action.text.setText(R.string.play_track_text);
         mBinding.control.getRoot().setVisibility(View.GONE);
         App.removeCallbacks(mR1);
     }
@@ -1445,7 +1451,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mClock.release();
         saveHistory(true);
         RefreshEvent.keep();
-        releasePlaybackService();
         App.removeCallbacks(mR1, mR2, mR3, mR4);
         mViewModel.getResult().removeObserver(mObserveDetail);
         mViewModel.getPlayer().removeObserver(mObservePlayer);

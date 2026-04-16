@@ -283,6 +283,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> setStatusBar(insets));
         mBinding.swipeLayout.setColorSchemeResources(R.color.accent);
         mKeyDown = CustomKeyDown.create(this, mBinding.exo);
@@ -384,7 +385,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     }
 
     private void setVideoView() {
-        bindPlaybackService();
         mBinding.control.action.danmaku.setVisibility(Setting.isDanmakuLoad() ? View.VISIBLE : View.GONE);
         mBinding.control.action.reset.setText(ResUtil.getStringArray(R.array.select_reset)[Setting.getReset()]);
         mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(this, view));
@@ -884,9 +884,9 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         setRequestedOrientation(player().isPortrait() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         mBinding.control.title.setVisibility(View.VISIBLE);
         setRotate(player().isPortrait());
-        player().setDanmakuSize(1.0f);
         mKeyDown.resetScale();
         App.post(mR3, 2000);
+        setDanmakuSize();
         hideControl();
     }
 
@@ -898,11 +898,16 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.episode.postDelayed(() -> mBinding.episode.scrollToPosition(mEpisodeAdapter.getPosition()), 100);
         mBinding.control.title.setVisibility(View.INVISIBLE);
         mBinding.video.setLayoutParams(mFrameParams);
-        player().setDanmakuSize(0.8f);
         mKeyDown.resetScale();
         App.post(mR3, 2000);
         setRotate(false);
+        setDanmakuSize();
         hideControl();
+    }
+
+    private void setDanmakuSize() {
+        if (service() == null) return;
+        player().setDanmakuSize(isFullscreen() ? 1.0f : 0.8f);
     }
 
     private void setTransition() {
@@ -1669,7 +1674,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         saveHistory(true);
         Timer.get().reset();
         RefreshEvent.keep();
-        releasePlaybackService();
         App.removeCallbacks(mR1, mR2, mR3, mR4);
         mViewModel.getResult().removeObserver(mObserveDetail);
         mViewModel.getPlayer().removeObserver(mObservePlayer);

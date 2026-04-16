@@ -161,6 +161,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
         mKeyDown = CustomKeyDown.create(this, mBinding.exo);
         setPadding(mBinding.control.getRoot());
         setPadding(mBinding.recycler, true);
@@ -216,7 +217,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     }
 
     private void setVideoView() {
-        bindPlaybackService();
         setScale(Setting.getLiveScale());
         mBinding.control.action.invert.setActivated(Setting.isInvert());
         mBinding.control.action.across.setActivated(Setting.isAcross());
@@ -1135,7 +1135,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     @Override
     protected void onDestroy() {
         Source.get().exit();
-        releasePlaybackService();
         App.removeCallbacks(mR1, mR2, mR3);
         mViewModel.url().removeObserver(mObserveUrl);
         mViewModel.epg().removeObserver(mObserveEpg);
