@@ -1,8 +1,11 @@
 package com.fongmi.android.tv.player;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.view.accessibility.CaptioningManager;
 
 import androidx.media3.common.Format;
 import androidx.media3.common.MimeTypes;
+import androidx.media3.common.util.Util;
 import androidx.media3.ui.CaptionStyleCompat;
 import androidx.media3.ui.PlayerView;
 
@@ -18,7 +22,6 @@ import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.BuildConfig;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.utils.FileUtil;
-import com.fongmi.android.tv.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +32,7 @@ import java.util.function.LongConsumer;
 public class PlayerHelper {
 
     public static String getDefaultUa() {
-        return androidx.media3.common.util.Util.getUserAgent(App.get(), BuildConfig.APPLICATION_ID);
+        return Util.getUserAgent(App.get(), BuildConfig.APPLICATION_ID);
     }
 
     public static CaptionStyleCompat getCaptionStyle() {
@@ -77,7 +80,7 @@ public class PlayerHelper {
             intent.putExtra("extra_headers", bundle);
             intent.putExtra("title", title).putExtra("name", title);
             intent.setType("text/plain");
-            activity.startActivity(Util.getChooser(intent));
+            activity.startActivity(getChooser(intent));
         } catch (Exception ignored) {
         }
     }
@@ -97,7 +100,7 @@ public class PlayerHelper {
             intent.putExtra("title", title).putExtra("return_result", isVod);
             intent.putExtra("headers", list.toArray(String[]::new));
             if (isVod) intent.putExtra("position", (int) position);
-            activity.startActivityForResult(Util.getChooser(intent), 1001);
+            activity.startActivityForResult(getChooser(intent), 1001);
         } catch (Exception ignored) {
         }
     }
@@ -111,5 +114,16 @@ public class PlayerHelper {
             if ("user".equals(endBy)) seekTo.accept(position);
         } catch (Exception ignored) {
         }
+    }
+
+    private static Intent getChooser(Intent intent) {
+        List<ComponentName> components = new ArrayList<>();
+        for (ResolveInfo resolveInfo : App.get().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)) {
+            String pkgName = resolveInfo.activityInfo.packageName;
+            if (pkgName.equals(App.get().getPackageName())) {
+                components.add(new ComponentName(pkgName, resolveInfo.activityInfo.name));
+            }
+        }
+        return Intent.createChooser(intent, null).putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, components.toArray(new ComponentName[0]));
     }
 }
