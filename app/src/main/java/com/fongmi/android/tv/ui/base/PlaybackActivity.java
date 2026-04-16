@@ -278,7 +278,6 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     @Override
     protected void onResume() {
         super.onResume();
-        if (mController != null) mController.addListener(this);
         setRedirect(false);
         if (shouldReclaim()) {
             detachSurface();
@@ -299,7 +298,6 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         super.onStop();
         if (isOwner()) detachSurface();
         if (Setting.isBackgroundOff() && isOwner() && mController != null) mController.pause();
-        if (mController != null) mController.removeListener(this);
     }
 
     @Override
