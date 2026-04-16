@@ -48,6 +48,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         checkToAdd(item);
         notifyDataSetChanged();
         listener.onDataChanged(getItemCount());
+        com.fongmi.android.tv.extra.KeywordCloudSync.get().push(item);
     }
 
     @Override
@@ -80,10 +81,12 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
 
         @Override
         public boolean onLongClick(View v) {
+            String text = mItems.get(getLayoutPosition());
             mItems.remove(getLayoutPosition());
             notifyItemRemoved(getLayoutPosition());
             listener.onDataChanged(getItemCount());
             Setting.putKeyword(App.gson().toJson(mItems));
+            com.fongmi.android.tv.extra.KeywordCloudSync.get().delete(text);
             return true;
         }
     }
