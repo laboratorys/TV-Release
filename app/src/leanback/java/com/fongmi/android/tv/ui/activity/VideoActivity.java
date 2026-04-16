@@ -479,7 +479,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     private void getPlayer(Flag flag, Episode episode) {
         mBinding.widget.title.setText(getString(R.string.detail_title, mBinding.name.getText(), episode.getName()));
         mViewModel.playerContent(getKey(), flag.getFlag(), episode.getUrl());
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mBinding.widget.title.setSelected(true);
         updateHistory(episode);
         showProgress();
@@ -1105,9 +1104,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     protected void onPlayingChanged(boolean isPlaying) {
         if (isPlaying) {
             hideCenter();
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else if (isPaused()) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             if (isFullscreen()) showInfo();
             else hideInfo();
         }
@@ -1279,12 +1276,14 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     private void onPaused() {
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         controller().pause();
     }
 
     private void onPlay() {
         if (mHistory != null && player().getPlaybackState() == Player.STATE_ENDED) controller().seekTo(mHistory.getOpening());
         if (!player().isEmpty() && player().getPlaybackState() == Player.STATE_IDLE) controller().prepare();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         controller().play();
     }
 

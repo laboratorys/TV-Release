@@ -304,12 +304,14 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
     }
 
     private void onPaused() {
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         controller().pause();
     }
 
     private void onPlay() {
         if (player().getPlaybackState() == Player.STATE_ENDED) controller().seekTo(0);
         if (!player().isEmpty() && player().getPlaybackState() == Player.STATE_IDLE) controller().prepare();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         controller().play();
     }
 

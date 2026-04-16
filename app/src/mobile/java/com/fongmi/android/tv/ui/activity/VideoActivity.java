@@ -539,7 +539,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     private void getPlayer(Flag flag, Episode episode) {
         mBinding.control.title.setText(getString(R.string.detail_title, mBinding.name.getText(), episode.getName()));
         mViewModel.playerContent(getKey(), flag.getFlag(), episode.getUrl());
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mBinding.control.title.setSelected(true);
         updateHistory(episode);
         showProgress();
@@ -1232,11 +1231,9 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     protected void onPlayingChanged(boolean isPlaying) {
         if (isPlaying) {
             mPiP.update(this, true);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             mBinding.control.play.setImageResource(androidx.media3.ui.R.drawable.exo_icon_pause);
         } else if (isPaused()) {
             mPiP.update(this, false);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             mBinding.control.play.setImageResource(androidx.media3.ui.R.drawable.exo_icon_play);
         }
     }
@@ -1434,12 +1431,14 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     }
 
     private void onPaused() {
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         controller().pause();
     }
 
     private void onPlay() {
         if (mHistory != null && player().getPlaybackState() == Player.STATE_ENDED) controller().seekTo(mHistory.getOpening());
         if (!player().isEmpty() && player().getPlaybackState() == Player.STATE_IDLE) controller().prepare();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         controller().play();
     }
 
