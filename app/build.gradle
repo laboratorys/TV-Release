@@ -98,7 +98,7 @@ androidComponents {
         }
     }
 }
-
+apply from: 'media3.gradle'
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.aar"])
     implementation project(':catvod')

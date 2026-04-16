@@ -17,6 +17,9 @@ dependencyResolutionManagement {
         google()
         flatDir { dirs "$rootDir/app/libs" }
         maven { url = "https://jitpack.io" }
+        maven {
+            url = uri("https://raw.githubusercontent.com/laboratorys/Media3-Release/maven/")
+        }
     }
 }
 
