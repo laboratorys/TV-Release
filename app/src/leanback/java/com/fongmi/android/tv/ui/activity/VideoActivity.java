@@ -952,14 +952,14 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     private void saveHistory(boolean exit) {
-        if (mHistory != null && mHistory.canSave()) Task.execute(() -> {
+        if (mHistory != null && mHistory.canSave() && !Setting.isIncognito()) Task.execute(() -> {
             mHistory.merge().save();
             if (exit) RefreshEvent.history();
         });
     }
 
     private void syncHistory() {
-        if (mHistory != null) Task.execute(() -> mHistory.save());
+        if (mHistory != null && !Setting.isIncognito()) Task.execute(() -> mHistory.save());
     }
 
     private void updateHistory(Episode item) {
