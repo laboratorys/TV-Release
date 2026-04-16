@@ -35,7 +35,6 @@
 
 | 渠道 | 说明        | 链接 |
 | :--- |:----------| :--- |
-| **Github Release** | 历史版本      | [👉 点击前往下载](https://github.com/laboratorys/TV-Release/releases) |
-| **最新构建版** | 包含最新提交的特性 | [⚡ 立即获取](https://github.com/laboratorys/TV-Release/latest) |
+| **Github Release** | 历史版本      | [👉 点击前往下载](https://github.com/laboratorys/TV-Release/releases) 
 
 ---
