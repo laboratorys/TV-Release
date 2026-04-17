@@ -1,5 +1,6 @@
 package com.fongmi.android.tv.player.engine;
 
+import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.MediaTitle;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
@@ -30,6 +31,12 @@ public interface PlayerEngine {
     String getDecodeText();
 
     void start(PlaySpec spec);
+
+    void setMetadata(MediaMetadata data);
+
+    boolean isLive();
+
+    boolean isVod();
 
     void setTrack(List<Track> tracks);
 

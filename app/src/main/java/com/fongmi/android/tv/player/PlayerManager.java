@@ -133,10 +133,6 @@ public class PlayerManager implements ParseCallback {
         return spec == null || TextUtils.isEmpty(spec.getUrl());
     }
 
-    public boolean isHard() {
-        return engine.isHard();
-    }
-
     public boolean isPortrait() {
         return getVideoHeight() > getVideoWidth();
     }
@@ -146,11 +142,11 @@ public class PlayerManager implements ParseCallback {
     }
 
     public boolean isLive() {
-        return player.isCurrentMediaItemLive();
+        return engine.isLive();
     }
 
     public boolean isVod() {
-        return !player.isCurrentMediaItemLive();
+        return engine.isVod();
     }
 
     public boolean haveTrack(int type) {
@@ -233,8 +229,7 @@ public class PlayerManager implements ParseCallback {
 
     public void setMetadata(MediaMetadata data) {
         if (spec != null) spec.setMetadata(data);
-        MediaItem current = player.getCurrentMediaItem();
-        if (current != null) player.replaceMediaItem(player.getCurrentMediaItemIndex(), current.buildUpon().setMediaMetadata(data).build());
+        engine.setMetadata(data);
     }
 
     public void setDanmakuView(DanmakuView view) {
