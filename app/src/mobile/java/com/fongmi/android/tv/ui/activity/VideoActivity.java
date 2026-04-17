@@ -1563,8 +1563,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     @Override
     public void onSeekEnd(long time) {
         controller().seekTo(player().getPosition() + time);
-        showProgress();
-        onPlay();
+        controller().play();
     }
 
     @Override

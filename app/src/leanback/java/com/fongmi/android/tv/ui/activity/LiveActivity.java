@@ -927,10 +927,9 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
 
     private void seek(long time) {
         controller().seekTo(player().getPosition() + time);
+        controller().play();
         mKeyDown.reset();
-        showProgress();
         hideCenter();
-        onPlay();
     }
 
     private void onPaused() {
