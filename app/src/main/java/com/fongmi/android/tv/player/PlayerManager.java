@@ -41,8 +41,6 @@ import master.flame.danmaku.ui.widget.DanmakuView;
 
 public class PlayerManager implements ParseCallback {
 
-    public static final String TAG = PlayerManager.class.getSimpleName();
-
     private final Runnable runnable;
     private final Callback callback;
     private PlayerEngine engine;

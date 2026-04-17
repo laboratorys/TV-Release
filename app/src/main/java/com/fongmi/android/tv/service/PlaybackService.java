@@ -80,6 +80,7 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
         running = true;
         player = new PlayerManager(this);
         exoPlayer = player.getPlayer();
+        exoPlayer.addListener(listener);
         session = new MediaLibrarySession.Builder(this, wrap(exoPlayer), this).build();
         session.setSessionActivity(buildDefaultIntent());
         EventBus.getDefault().register(this);
@@ -420,10 +421,19 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
 
     @Override
     public void onPlayerRebuild(Player newPlayer) {
+        exoPlayer.removeListener(listener);
         exoPlayer = newPlayer;
+        exoPlayer.addListener(listener);
         if (session != null) session.setPlayer(wrap(newPlayer));
         playerCallbacks.forEach(callback -> callback.onPlayerRebuild(newPlayer));
     }
+
+    private final Player.Listener listener = new Player.Listener() {
+        @Override
+        public void onPlaybackStateChanged(int state) {
+            if (state == Player.STATE_ENDED && !(hasNavigationCallback() && isNavigationOwner())) navigateItem(1);
+        }
+    };
 
     @NonNull
     @Override
