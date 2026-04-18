@@ -95,9 +95,8 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     }
 
     protected boolean isOwner() {
-        if (mService == null) return false;
-        String playerKey = mService.player().getKey();
-        return playerKey == null || getPlaybackKey().equals(playerKey);
+        String key = getPlaybackKey();
+        return key == null || (mService != null && key.equals(mService.player().getKey()));
     }
 
     protected boolean isIdle() {
