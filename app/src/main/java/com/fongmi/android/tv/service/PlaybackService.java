@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.media3.common.ForwardingPlayer;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.Player;
+import androidx.media3.session.CommandButton;
 import androidx.media3.session.DefaultMediaNotificationProvider;
 import androidx.media3.session.LibraryResult;
 import androidx.media3.session.MediaLibraryService;
@@ -96,8 +97,13 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
 
     private void setupNotification() {
         DefaultMediaNotificationProvider provider = new DefaultMediaNotificationProvider.Builder(this).build();
+        session.setMediaButtonPreferences(ImmutableList.of(buildStopButton()));
         provider.setSmallIcon(R.drawable.ic_notification);
         setMediaNotificationProvider(provider);
+    }
+
+    private CommandButton buildStopButton() {
+        return new CommandButton.Builder(CommandButton.ICON_STOP).setPlayerCommand(Player.COMMAND_STOP).setDisplayName(getString(androidx.media3.ui.R.string.exo_controls_stop_description)).build();
     }
 
     @Override
