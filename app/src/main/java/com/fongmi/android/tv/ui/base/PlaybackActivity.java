@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -98,9 +99,20 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         return key == null || (mService != null && key.equals(mService.player().getKey()));
     }
 
+    protected boolean isIdle() {
+        return controller().getPlaybackState() == Player.STATE_IDLE;
+    }
+
+    protected boolean isEnded() {
+        return controller().getPlaybackState() == Player.STATE_ENDED;
+    }
+
+    protected boolean isBuffering() {
+        return controller().getPlaybackState() == Player.STATE_BUFFERING;
+    }
+
     protected boolean isPaused() {
-        int state = controller().getPlaybackState();
-        return state != Player.STATE_BUFFERING && state != Player.STATE_IDLE;
+        return !isBuffering() && !isIdle();
     }
 
     protected void onServiceConnected() {
@@ -266,7 +278,10 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
 
     @Override
     public void onIsPlayingChanged(boolean isPlaying) {
-        if (isOwner()) onPlayingChanged(isPlaying);
+        if (!isOwner()) return;
+        if (isPlaying) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else if (!isBuffering()) getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        onPlayingChanged(isPlaying);
     }
 
     @Override

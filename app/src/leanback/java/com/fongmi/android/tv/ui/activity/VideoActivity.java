@@ -11,7 +11,6 @@ import android.text.style.ClickableSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -1152,7 +1151,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         if (mBinding.control.action.loop.isActivated()) {
             onReplay();
         } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             checkNext(notify);
         }
     }
@@ -1276,14 +1274,12 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     private void onPaused() {
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         controller().pause();
     }
 
     private void onPlay() {
-        if (mHistory != null && player().getPlaybackState() == Player.STATE_ENDED) controller().seekTo(mHistory.getOpening());
-        if (!player().isEmpty() && player().getPlaybackState() == Player.STATE_IDLE) controller().prepare();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (mHistory != null && isEnded()) controller().seekTo(mHistory.getOpening());
+        if (!player().isEmpty() && isIdle()) controller().prepare();
         controller().play();
     }
 
