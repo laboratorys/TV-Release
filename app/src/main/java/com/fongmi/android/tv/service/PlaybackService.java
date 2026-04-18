@@ -141,6 +141,7 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
     @Override
     public boolean onUnbind(Intent intent) {
         if (isExternalBind(intent)) releaseExternal();
+        if (isLocalBind(intent)) tryShutdown();
         return super.onUnbind(intent);
     }
 
@@ -166,10 +167,20 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
         super.onDestroy();
     }
 
+    private void stopAndClear() {
+        player.stop();
+        exoPlayer.clearMediaItems();
+    }
+
+    public void suspend() {
+        stopAndClear();
+        removeForeground();
+    }
+
     public void shutdown() {
         if (!running) return;
         running = false;
-        player.stop();
+        stopAndClear();
         stopSelf();
     }
 
@@ -274,7 +285,7 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
     public void dispatchStop() {
         if (exoPlayer.getPlaybackState() == Player.STATE_IDLE) return;
         if (hasNavigationCallback() && isNavigationOwner()) dispatch(NavigationCallback::onStop);
-        else player.stop();
+        else stopAndClear();
     }
 
     public void dispatchLoop() {

@@ -36,6 +36,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     private PlaybackService mService;
     private boolean audioOnly;
     private boolean redirect;
+    private boolean bound;
     private boolean stop;
     private boolean lock;
 
@@ -160,6 +161,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         startService(new Intent(this, PlaybackService.class));
         bindService(new Intent(this, PlaybackService.class).setAction(PlaybackService.LOCAL_BIND_ACTION), this, BIND_AUTO_CREATE);
         buildControllerAsync();
+        bound = true;
     }
 
     private void buildControllerAsync() {
@@ -221,8 +223,12 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     private void releaseService(boolean owner) {
         mService.removePlayerCallback(mPlayerCallback);
         if (owner) mService.setNavigationCallback(null, null);
-        if (mService.hasExternalClient() || mService.hasPlayerCallback()) mService.resetSessionActivity();
-        else if (owner) mService.shutdown();
+        if (mService.hasExternalClient() || mService.hasPlayerCallback()) {
+            if (owner) mService.suspend();
+            mService.resetSessionActivity();
+        } else if (owner) {
+            mService.shutdown();
+        }
     }
 
     private void detach() {
@@ -239,8 +245,9 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     }
 
     private void releaseBinding() {
-        if (mService == null) return;
-        mService.removePlayerCallback(mPlayerCallback);
+        if (!bound) return;
+        bound = false;
+        if (mService != null) mService.removePlayerCallback(mPlayerCallback);
         unbindService(this);
         mService = null;
     }
@@ -338,7 +345,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     protected void onStop() {
         super.onStop();
         if (isOwner()) detachSurface();
-        if (Setting.isBackgroundOff() && isOwner() && mController != null) mController.pause();
+        if (isOwner() && Setting.isBackgroundOff() && mController != null) mController.pause();
     }
 
     @Override
