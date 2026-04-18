@@ -254,6 +254,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         @Override
         public void onPlayerRebuild(Player player) {
             if (isOwner()) detachSurface();
+            if (isOwner()) getExoView().setRender(Setting.getRender());
         }
     };
 
