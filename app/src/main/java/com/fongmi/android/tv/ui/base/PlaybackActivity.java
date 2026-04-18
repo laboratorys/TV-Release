@@ -179,9 +179,9 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     }
 
     private void initPlayerViews() {
-        getExoView().setRender(Setting.getRender());
         PlayerHelper.setSubtitleView(getExoView());
         getSeekView().setPlayer(mController);
+        setRender();
     }
 
     private PendingIntent buildSessionIntent() {
@@ -207,6 +207,10 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
 
     private void detachSurface() {
         getExoView().setPlayer(null);
+    }
+
+    private void setRender() {
+        getExoView().setRender(Setting.getRender());
     }
 
     private void releasePlaybackService() {
@@ -265,8 +269,9 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
 
         @Override
         public void onPlayerRebuild(Player player) {
-            if (isOwner()) detachSurface();
-            if (isOwner()) getExoView().setRender(Setting.getRender());
+            if (!isOwner()) return;
+            detachSurface();
+            setRender();
         }
     };
 
