@@ -41,7 +41,6 @@ public class ExoPlayerEngine implements PlayerEngine {
 
     @Override
     public Player rebuild(Player.Listener listener) {
-        player.clearVideoSurface();
         player.release();
         return player = ExoUtil.buildPlayer(decode, listener);
     }

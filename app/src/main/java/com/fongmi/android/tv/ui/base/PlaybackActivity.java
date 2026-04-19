@@ -87,9 +87,9 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
 
     protected abstract PlaybackService.NavigationCallback getNavigationCallback();
 
-    protected abstract PlayerView getExoView();
-
     protected abstract CustomSeekView getSeekView();
+
+    protected abstract PlayerView getExoView();
 
     protected abstract String getPlaybackKey();
 
@@ -151,11 +151,11 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
             onError(ResUtil.getString(R.string.error_play_drm));
         } else if (result.hasMsg()) {
             onError(result.getMsg());
-        } else if (result.getParse() == 1 || result.getJx() == 1) {
-            player().startParse(key, result, useParse, metadata);
-        } else if (PlayerManager.isIllegal(result.getRealUrl())) {
-            onError(ResUtil.getString(R.string.error_play_url));
+        } else if (result.needParse() || useParse) {
+            attachSurface();
+            player().parse(key, result, useParse, metadata);
         } else {
+            attachSurface();
             player().start(PlaySpec.from(result, key, metadata), timeout);
         }
     }
@@ -200,7 +200,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     }
 
     private void attachSurface() {
-        getExoView().setPlayer(mController);
+        if (mService != null && getExoView().getPlayer() == null) getExoView().setPlayer(player().getPlayer());
     }
 
     private void detachSurface() {
@@ -209,6 +209,8 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
 
     private void setRender() {
         getExoView().setRender(Setting.getRender());
+        detachSurface();
+        attachSurface();
     }
 
     private void releasePlaybackService() {
@@ -228,7 +230,6 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     }
 
     private void detach() {
-        if (isOwner()) detachSurface();
         releaseController();
         releaseBinding();
     }
@@ -272,9 +273,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
 
         @Override
         public void onPlayerRebuild(Player player) {
-            if (!isOwner()) return;
-            detachSurface();
-            setRender();
+            if (isOwner()) setRender();
         }
     };
 
@@ -295,14 +294,12 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
 
     @Override
     public void onPlaybackStateChanged(int state) {
-        if (!isOwner()) return;
-        if (state == Player.STATE_READY && getExoView().getPlayer() == null) attachSurface();
-        onStateChanged(state);
+        if (isOwner()) onStateChanged(state);
     }
 
     @Override
     public void onVideoSizeChanged(@NonNull VideoSize size) {
-        onSizeChanged(size);
+        if (isOwner()) onSizeChanged(size);
     }
 
     @Override
@@ -327,8 +324,6 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         if (shouldReclaim()) {
             detachSurface();
             onReclaim();
-        } else {
-            attachSurface();
         }
     }
 
@@ -341,7 +336,6 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     @Override
     protected void onStop() {
         super.onStop();
-        if (isOwner()) detachSurface();
         if (isOwner() && Setting.isBackgroundOff() && mController != null) mController.pause();
     }
 

@@ -27,9 +27,7 @@ import com.fongmi.android.tv.player.engine.PlaySpec;
 import com.fongmi.android.tv.player.engine.PlayerEngine;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ResUtil;
-import com.fongmi.android.tv.utils.UrlUtil;
 import com.fongmi.android.tv.utils.Util;
-import com.github.catvod.utils.Path;
 import com.google.common.net.HttpHeaders;
 
 import java.util.HashMap;
@@ -58,14 +56,6 @@ public class PlayerManager implements ParseCallback {
         this.engine = new ExoPlayerEngine(PlayerEngine.HARD, listener);
         this.player = engine.getPlayer();
         this.callback = callback;
-    }
-
-    public static boolean isIllegal(String url) {
-        Uri uri = UrlUtil.uri(url);
-        String host = UrlUtil.host(uri);
-        String scheme = UrlUtil.scheme(uri);
-        if ("data".equals(scheme)) return false;
-        return scheme.isEmpty() || "file".equals(scheme) ? !Path.exists(url) : host.isEmpty();
     }
 
     public void release() {
@@ -320,7 +310,7 @@ public class PlayerManager implements ParseCallback {
         setMediaItem(timeout);
     }
 
-    public void startParse(String key, Result result, boolean useParse, MediaMetadata metadata) {
+    public void parse(String key, Result result, boolean useParse, MediaMetadata metadata) {
         stopParse();
         spec = PlaySpec.fromParse(result, key, metadata);
         parseJob = ParseJob.create(this).start(result, useParse);

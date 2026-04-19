@@ -27,7 +27,6 @@ import com.fongmi.android.tv.dlna.CastAction;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.player.PlayerHelper;
 import com.fongmi.android.tv.player.PlayerManager;
-import com.fongmi.android.tv.player.engine.PlaySpec;
 import com.fongmi.android.tv.service.DLNARendererService;
 import com.fongmi.android.tv.service.PlaybackService;
 import com.fongmi.android.tv.ui.base.PlaybackActivity;
@@ -166,7 +165,7 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
 
     private void start() {
         mPlaybackKey = mAction.getCurrentURI();
-        player().start(PlaySpec.from(mPlaybackKey, mPlaybackKey, mAction.getHeaders(), buildMetadata()), Constant.TIMEOUT_PLAY);
+        startPlayer(mPlaybackKey, mAction.result(), false, Constant.TIMEOUT_PLAY, buildMetadata());
     }
 
     private void setDecode() {
@@ -232,6 +231,7 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
     private void showProgress() {
         mBinding.progress.getRoot().setVisibility(View.VISIBLE);
         App.post(mR2, 0);
+        hideCenter();
         hideError();
     }
 
@@ -437,7 +437,6 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
     public void onSeekEnd(long time) {
         if (player().isEmpty()) return;
         mKeyDown.reset();
-        hideCenter();
         seekTo(time);
     }
 

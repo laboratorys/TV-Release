@@ -538,6 +538,7 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
     private void showProgress() {
         mBinding.progress.getRoot().setVisibility(View.VISIBLE);
         App.post(mR2, 0);
+        hideCenter();
         hideError();
     }
 
@@ -928,7 +929,6 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
 
     private void seek(long time) {
         mKeyDown.reset();
-        hideCenter();
         seekTo(time);
     }
 
