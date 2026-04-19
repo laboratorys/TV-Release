@@ -217,7 +217,7 @@ public class PlayerManager implements ParseCallback {
     public void setTitle(MediaTitle title) {
         if (spec != null) spec.setUrl(spec.getUri().buildUpon().fragment("title=" + title.index).build().toString());
         setMediaItem();
-        player.seekTo(0);
+        seekTo(0);
     }
 
     public static MediaMetadata buildMetadata(String title, String artist, String artUri) {
