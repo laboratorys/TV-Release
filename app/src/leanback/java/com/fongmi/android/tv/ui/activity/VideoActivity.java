@@ -996,7 +996,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         boolean pic = !item.getPic().isEmpty();
         boolean name = !item.getName().isEmpty();
         if (id) getIntent().putExtra("id", item.getId());
-        if (id) mHistory.setKey(getHistoryKey());
+        if (id) mHistory.replace(getHistoryKey());
         if (name) mHistory.setVodName(item.getName());
         if (name) mBinding.name.setText(item.getName());
         if (name) mBinding.widget.title.setText(item.getName());
