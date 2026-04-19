@@ -434,10 +434,9 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
     @Override
     public void onSeekEnd(long time) {
         if (player().isEmpty()) return;
-        controller().seekTo(player().getPosition() + time);
-        controller().play();
         mKeyDown.reset();
         hideCenter();
+        seekTo(time);
     }
 
     @Override

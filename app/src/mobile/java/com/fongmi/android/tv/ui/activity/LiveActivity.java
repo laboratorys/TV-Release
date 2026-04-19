@@ -1041,8 +1041,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     @Override
     public void onSeekEnd(long time) {
         if (player().isLive()) return;
-        controller().seekTo(player().getPosition() + time);
-        controller().play();
+        seekTo(time);
     }
 
     @Override

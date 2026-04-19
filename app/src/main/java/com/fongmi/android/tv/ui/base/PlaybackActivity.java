@@ -143,6 +143,11 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     protected void onReclaim() {
     }
 
+    protected void seekTo(long time) {
+        controller().seekTo(player().getPosition() + time);
+        controller().play();
+    }
+
     protected void startPlayer(String key, Result result, boolean useParse, long timeout, MediaMetadata metadata) {
         if (result.getDrm() != null && !FrameworkMediaDrm.isCryptoSchemeSupported(result.getDrm().getUUID())) {
             onError(ResUtil.getString(R.string.error_play_drm));
@@ -159,9 +164,9 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
 
     private void bindPlaybackService() {
         startService(new Intent(this, PlaybackService.class));
+        bound = true;
         bindService(new Intent(this, PlaybackService.class).setAction(PlaybackService.LOCAL_BIND_ACTION), this, BIND_AUTO_CREATE);
         buildControllerAsync();
-        bound = true;
     }
 
     private void buildControllerAsync() {

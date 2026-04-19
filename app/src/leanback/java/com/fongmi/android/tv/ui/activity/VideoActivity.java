@@ -1355,10 +1355,9 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
 
     @Override
     public void onSeekEnd(long time) {
-        controller().seekTo(player().getPosition() + time);
-        controller().play();
         mKeyDown.reset();
         hideCenter();
+        seekTo(time);
     }
 
     @Override
