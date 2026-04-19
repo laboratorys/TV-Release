@@ -1068,7 +1068,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
 
     @Override
     protected void onError(String msg) {
-        Track.delete(player().getUrl());
+        Track.delete(player().getKey());
         mClock.setCallback(null);
         player().resetTrack();
         player().reset();

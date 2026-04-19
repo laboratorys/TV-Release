@@ -1194,7 +1194,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     @Override
     protected void onError(String msg) {
         mBinding.swipeLayout.setEnabled(true);
-        Track.delete(player().getUrl());
+        Track.delete(player().getKey());
         mClock.setCallback(null);
         player().resetTrack();
         player().reset();

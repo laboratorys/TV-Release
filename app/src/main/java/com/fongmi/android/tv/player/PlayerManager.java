@@ -322,8 +322,8 @@ public class PlayerManager implements ParseCallback {
 
     public void startParse(String key, Result result, boolean useParse, MediaMetadata metadata) {
         stopParse();
+        spec = PlaySpec.fromParse(result, key, metadata);
         parseJob = ParseJob.create(this).start(result, useParse);
-        spec = new PlaySpec(key, result.getFormat(), result.getDrm(), result.getSubs(), result.getDanmaku(), metadata);
     }
 
     private void stopParse() {

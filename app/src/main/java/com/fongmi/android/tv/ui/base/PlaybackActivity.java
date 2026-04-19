@@ -91,9 +91,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
 
     protected abstract CustomSeekView getSeekView();
 
-    protected String getPlaybackKey() {
-        return null;
-    }
+    protected abstract String getPlaybackKey();
 
     protected boolean isOwner() {
         String key = getPlaybackKey();
