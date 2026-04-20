@@ -109,6 +109,10 @@ public class PlayerManager implements ParseCallback {
         return spec != null ? spec.getDanmakus() : null;
     }
 
+    public MediaMetadata getMetadata() {
+        return spec != null ? spec.getMetadata() : null;
+    }
+
     public Map<String, String> getHeaders() {
         return spec == null || spec.getHeaders() == null ? new HashMap<>() : spec.getHeaders();
     }

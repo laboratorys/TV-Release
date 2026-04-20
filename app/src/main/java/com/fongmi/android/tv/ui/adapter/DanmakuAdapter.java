@@ -28,10 +28,16 @@ public class DanmakuAdapter extends RecyclerView.Adapter<DanmakuAdapter.ViewHold
         void onItemClick(Danmaku item);
     }
 
+    public void clear() {
+        int size = mItems.size();
+        mItems.clear();
+        notifyItemRangeRemoved(0, size);
+    }
+
     public DanmakuAdapter addAll(List<Danmaku> items) {
         if (items == null) return this;
         mItems.addAll(items);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0, mItems.size());
         return this;
     }
 

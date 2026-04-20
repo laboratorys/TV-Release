@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewbinding.ViewBinding;
 
+import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.databinding.DialogDanmakuBinding;
 import com.fongmi.android.tv.player.PlayerManager;
@@ -59,14 +60,21 @@ public final class DanmakuDialog extends BaseDialog implements DanmakuAdapter.On
         binding.recycler.addItemDecoration(new SpaceItemDecoration(1, 16));
         binding.recycler.post(() -> binding.recycler.scrollToPosition(adapter.getSelected()));
         binding.recycler.setVisibility(adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
+        binding.search.setVisibility(player.getMetadata() == null || VodConfig.get().getConfig().getDanmaku().isEmpty() ? View.GONE : View.VISIBLE);
     }
 
     @Override
     protected void initEvent() {
-        binding.choose.setOnClickListener(this::showChooser);
+        binding.search.setOnClickListener(this::onSearch);
+        binding.choose.setOnClickListener(this::onChoose);
     }
 
-    private void showChooser(View view) {
+    private void onSearch(View view) {
+        DanmakuSearchDialog.create().player(player).show(getActivity());
+        dismiss();
+    }
+
+    private void onChoose(View view) {
         FileChooser.from(launcher).show(new String[]{"text/*"});
         player.pause();
     }
