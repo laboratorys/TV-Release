@@ -7,11 +7,11 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatEditText;
 
 import com.fongmi.android.tv.utils.KeyUtil;
+import com.google.android.material.textfield.TextInputEditText;
 
-public class CustomEditText extends AppCompatEditText {
+public class CustomEditText extends TextInputEditText {
 
     public CustomEditText(@NonNull Context context) {
         super(context);

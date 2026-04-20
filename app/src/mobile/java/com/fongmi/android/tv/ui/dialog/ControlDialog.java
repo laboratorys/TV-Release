@@ -33,7 +33,6 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
 
     private DialogControlBinding binding;
     private ActivityVideoBinding parent;
-    private FragmentActivity activity;
     private List<TextView> scales;
     private PlayerManager player;
     private final String[] scale;
@@ -73,7 +72,6 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
         for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof BottomSheetDialogFragment) return this;
         show(activity.getSupportFragmentManager(), null);
         this.listener = (Listener) activity;
-        this.activity = activity;
         return this;
     }
 
@@ -119,7 +117,7 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
     }
 
     private void onTimer(View view) {
-        App.post(() -> TimerDialog.create().show(activity), 200);
+        TimerDialog.create().show(getActivity());
         dismiss();
     }
 

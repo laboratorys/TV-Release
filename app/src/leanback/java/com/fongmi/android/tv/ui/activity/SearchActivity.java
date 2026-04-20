@@ -192,15 +192,14 @@ public class SearchActivity extends BaseActivity implements WordAdapter.OnClickL
     }
 
     private boolean findFocus(KeyEvent event) {
-        int keyCode = event.getKeyCode();
         View current = getCurrentFocus();
-        if (current == mBinding.keyword) return handleKeywordKey(keyCode);
+        if (current == mBinding.keyword) return handleKeywordKey(event);
         View inKeyboard = mBinding.keyboard.findContainingItemView(current);
         View inWord = mBinding.wordRecycler.findContainingItemView(current);
         View inRecord = mBinding.recordRecycler.findContainingItemView(current);
-        if (inKeyboard != null) return handleKeyboardKey(keyCode, inKeyboard);
-        if (inWord != null) return handleWordKey(keyCode, inWord);
-        if (inRecord != null) return handleRecordKey(keyCode, inRecord);
+        if (inKeyboard != null) return handleKeyboardKey(event, inKeyboard);
+        if (inRecord != null) return handleRecordKey(event, inRecord);
+        if (inWord != null) return handleWordKey(event, inWord);
         return false;
     }
 
@@ -252,26 +251,26 @@ public class SearchActivity extends BaseActivity implements WordAdapter.OnClickL
         return true;
     }
 
-    private boolean handleKeywordKey(int keyCode) {
-        if (keyCode != KeyEvent.KEYCODE_DPAD_RIGHT) return false;
+    private boolean handleKeywordKey(KeyEvent event) {
+        if (!KeyUtil.isRightKey(event)) return false;
         if (mBinding.keyword.getSelectionEnd() < mBinding.keyword.getText().length()) return false;
         boolean hasRecord = mBinding.recordLayout.getVisibility() == View.VISIBLE;
         return focusFirst(hasRecord ? mBinding.recordRecycler : mBinding.wordRecycler);
     }
 
-    private boolean handleKeyboardKey(int keyCode, View item) {
-        if (keyCode == KeyEvent.KEYCODE_DPAD_UP && isFirstRow(mBinding.keyboard, item)) {
+    private boolean handleKeyboardKey(KeyEvent event, View item) {
+        if (KeyUtil.isUpKey(event) && isFirstRow(mBinding.keyboard, item)) {
             mBinding.keyword.requestFocus();
             return true;
         }
-        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && isFirstInRow(mBinding.keyboard, item)) return true;
-        return keyCode == KeyEvent.KEYCODE_DPAD_DOWN && isLastRow(mBinding.keyboard, item);
+        if (KeyUtil.isLeftKey(event) && isFirstInRow(mBinding.keyboard, item)) return true;
+        return KeyUtil.isDownKey(event) && isLastRow(mBinding.keyboard, item);
     }
 
-    private boolean handleWordKey(int keyCode, View item) {
-        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) return isLastInRow(mBinding.wordRecycler, item);
-        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) return isLastRow(mBinding.wordRecycler, item);
-        if (keyCode == KeyEvent.KEYCODE_DPAD_UP && isFirstRow(mBinding.wordRecycler, item)) {
+    private boolean handleWordKey(KeyEvent event, View item) {
+        if (KeyUtil.isRightKey(event)) return isLastInRow(mBinding.wordRecycler, item);
+        if (KeyUtil.isDownKey(event)) return isLastRow(mBinding.wordRecycler, item);
+        if (KeyUtil.isUpKey(event) && isFirstRow(mBinding.wordRecycler, item)) {
             if (mBinding.recordLayout.getVisibility() == View.VISIBLE) {
                 View child = findNearestInLastRow(mBinding.recordRecycler, item.getLeft());
                 if (child != null) {
@@ -285,10 +284,10 @@ public class SearchActivity extends BaseActivity implements WordAdapter.OnClickL
         return false;
     }
 
-    private boolean handleRecordKey(int keyCode, View item) {
-        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) return isLastInRow(mBinding.recordRecycler, item);
-        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) return isFirstRow(mBinding.recordRecycler, item);
-        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && isLastRow(mBinding.recordRecycler, item)) return focusFirst(mBinding.wordRecycler);
+    private boolean handleRecordKey(KeyEvent event, View item) {
+        if (KeyUtil.isRightKey(event)) return isLastInRow(mBinding.recordRecycler, item);
+        if (KeyUtil.isUpKey(event)) return isFirstRow(mBinding.recordRecycler, item);
+        if (KeyUtil.isDownKey(event) && isLastRow(mBinding.recordRecycler, item)) return focusFirst(mBinding.wordRecycler);
         return false;
     }
 
