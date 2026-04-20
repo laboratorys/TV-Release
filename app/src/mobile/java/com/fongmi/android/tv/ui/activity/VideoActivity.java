@@ -883,9 +883,9 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         setRequestedOrientation(player().isPortrait() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         mBinding.control.title.setVisibility(View.VISIBLE);
         setRotate(player().isPortrait());
+        player().setDanmakuSize(1.0f);
         mKeyDown.resetScale();
         App.post(mR3, 2000);
-        setDanmakuSize();
         hideControl();
     }
 
@@ -897,16 +897,11 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.episode.postDelayed(() -> mBinding.episode.scrollToPosition(mEpisodeAdapter.getPosition()), 100);
         mBinding.control.title.setVisibility(View.INVISIBLE);
         mBinding.video.setLayoutParams(mFrameParams);
+        player().setDanmakuSize(0.8f);
         mKeyDown.resetScale();
         App.post(mR3, 2000);
         setRotate(false);
-        setDanmakuSize();
         hideControl();
-    }
-
-    private void setDanmakuSize() {
-        if (service() == null) return;
-        player().setDanmakuSize(isFullscreen() ? 1.0f : 0.8f);
     }
 
     private void setTransition() {
@@ -1569,8 +1564,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     @Override
     public void onDoubleTap() {
-        if (isLock())
-            return;
+        if (isLock()) return;
         if (!isFullscreen()) {
             enterFullscreen();
         } else if (player().isPlaying()) {
@@ -1607,7 +1601,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         super.onUserLeaveHint();
         if (isRedirect()) return;
         if (isLock()) App.post(this::onLock, 500);
-        if (player().haveTrack(C.TRACK_TYPE_VIDEO)) mPiP.enter(this, player().getVideoWidth(), player().getVideoHeight(), getScale());
+        if (service() != null && player().haveTrack(C.TRACK_TYPE_VIDEO)) mPiP.enter(this, player().getVideoWidth(), player().getVideoHeight(), getScale());
     }
 
     @Override

@@ -1077,7 +1077,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         super.onUserLeaveHint();
         if (isRedirect()) return;
         if (isLock()) App.post(this::onLock, 500);
-        if (player().haveTrack(C.TRACK_TYPE_VIDEO)) mPiP.enter(this, player().getVideoWidth(), player().getVideoHeight(), Setting.getLiveScale());
+        if (service() != null && player().haveTrack(C.TRACK_TYPE_VIDEO)) mPiP.enter(this, player().getVideoWidth(), player().getVideoHeight(), Setting.getLiveScale());
     }
 
     @Override
