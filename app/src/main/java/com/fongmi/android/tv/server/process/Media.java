@@ -6,6 +6,7 @@ import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.Player;
 
+import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.player.PlayerManager;
 import com.fongmi.android.tv.server.Nano;
 import com.fongmi.android.tv.server.Server;
@@ -14,6 +15,9 @@ import com.fongmi.android.tv.service.PlaybackService;
 import com.google.gson.JsonObject;
 
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
@@ -29,7 +33,21 @@ public class Media implements Process {
     public Response doResponse(IHTTPSession session, String url, Map<String, String> files) {
         PlaybackService service = Server.get().getService();
         if (service == null) return Nano.ok("{}");
-        PlayerManager player = service.player();
+        AtomicReference<JsonObject> result = new AtomicReference<>();
+        CountDownLatch latch = new CountDownLatch(1);
+        App.post(() -> {
+            result.set(build(service.player()));
+            latch.countDown();
+        });
+        try {
+            if (latch.await(500, TimeUnit.MILLISECONDS)) return Nano.ok(result.get().toString());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return Nano.ok("{}");
+    }
+
+    private JsonObject build(PlayerManager player) {
         MediaItem item = player.getCurrentMediaItem();
         MediaMetadata meta = item != null ? item.mediaMetadata : MediaMetadata.EMPTY;
         JsonObject result = new JsonObject();
@@ -41,7 +59,7 @@ public class Media implements Process {
         result.addProperty("title", getString(meta.title));
         result.addProperty("artist", getString(meta.artist));
         result.addProperty("artwork", getString(meta.artworkUri));
-        return Nano.ok(result.toString());
+        return result;
     }
 
     private int getState(PlayerManager player) {
