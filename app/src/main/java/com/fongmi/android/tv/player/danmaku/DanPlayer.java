@@ -91,8 +91,9 @@ public class DanPlayer implements DrawHandler.Callback, Player.Listener {
     public void setDanmaku(Danmaku item) {
         cancel();
         future = Task.submit(() -> {
-            if (item.isEmpty()) view.stop();
-            else view.prepare(new Parser().load(new Loader().load(item).getDataSource()), context);
+            view.release();
+            if (item.isEmpty()) return;
+            view.prepare(new Parser().load(new Loader().load(item).getDataSource()), context);
         });
     }
 
