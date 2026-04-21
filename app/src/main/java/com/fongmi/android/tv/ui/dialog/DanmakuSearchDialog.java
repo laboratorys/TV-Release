@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.App;
+import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.databinding.DialogDanmakuSearchBinding;
@@ -22,6 +23,7 @@ import com.fongmi.android.tv.ui.adapter.DanmakuAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.Notify;
+import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Util;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Trans;
@@ -120,7 +122,7 @@ public final class DanmakuSearchDialog extends BaseDialog implements DanmakuAdap
     private void onSuccess(List<Danmaku> items) {
         adapter.addAll(items);
         hideProgress(items.isEmpty());
-        if (!items.isEmpty()) binding.recycler.requestFocus();
+        binding.recycler.requestFocus();
     }
 
     private void onError(Exception e) {
@@ -132,7 +134,8 @@ public final class DanmakuSearchDialog extends BaseDialog implements DanmakuAdap
     public void onResponse(@NonNull Call call, @NonNull Response response) {
         try {
             List<Danmaku> items = Danmaku.arrayFrom(response.body().string());
-            App.post(() -> onSuccess(items));
+            if (items.isEmpty()) throw new Exception(ResUtil.getString(R.string.error_empty));
+            else App.post(() -> onSuccess(items));
         } catch (Exception e) {
             App.post(() -> onError(e));
         }
