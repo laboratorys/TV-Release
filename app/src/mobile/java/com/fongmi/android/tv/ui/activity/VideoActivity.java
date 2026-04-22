@@ -448,6 +448,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.swipeLayout.setEnabled(false);
         mBinding.scroll.scrollTo(0, 0);
         mClock.setCallback(null);
+        updateNavigationKey();
         player().reset();
         player().stop();
         saveHistory();
@@ -1120,6 +1121,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         if (pic || name) setMetadata();
         if (pic || name) syncHistory();
         if (pic || name) updateKeep();
+        if (id) updateNavigationKey();
         setText(item);
     }
 

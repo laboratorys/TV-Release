@@ -403,6 +403,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         getIntent().putExtra("id", item.getId());
         mBinding.scroll.scrollTo(0, 0);
         mClock.setCallback(null);
+        updateNavigationKey();
         player().reset();
         player().stop();
         saveHistory();
@@ -1005,6 +1006,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         if (pic || name) setMetadata();
         if (pic || name) syncHistory();
         if (pic || name) updateKeep();
+        if (id) updateNavigationKey();
         if (name) setPartAdapter();
         setText(item);
     }

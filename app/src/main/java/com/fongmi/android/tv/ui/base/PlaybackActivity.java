@@ -61,6 +61,10 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
         if (mService != null) mService.setNavigationCallback(redirect ? null : getNavigationCallback(), getPlaybackKey());
     }
 
+    protected void updateNavigationKey() {
+        if (mService != null) mService.setNavigationCallback(getNavigationCallback(), getPlaybackKey());
+    }
+
     protected boolean isAudioOnly() {
         return audioOnly;
     }
