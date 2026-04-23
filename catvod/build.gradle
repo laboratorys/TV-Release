@@ -23,7 +23,7 @@ android {
 
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
-    api 'androidx.annotation:annotation:1.9.1'
+    api 'androidx.annotation:annotation:1.10.0'
     api 'androidx.preference:preference:1.2.1'
     api 'androidx.startup:startup-runtime:1.2.0'
     api 'com.github.thegrizzlylabs:sardine-android:0.9'
@@ -35,7 +35,8 @@ dependencies {
     api 'com.squareup.okhttp3:okhttp:' + okhttpVersion
     api 'com.squareup.okhttp3:okhttp-dnsoverhttps:' + okhttpVersion
     api 'com.squareup.okhttp3:logging-interceptor:' + okhttpVersion
-    api('com.google.guava:guava:33.5.0-android') {
+    api 'org.brotli:dec:0.1.2'
+    api('com.google.guava:guava:33.6.0-android') {
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
         exclude group: 'org.checkerframework', module: 'checker-compat-qual'
         exclude group: 'org.checkerframework', module: 'checker-qual'
