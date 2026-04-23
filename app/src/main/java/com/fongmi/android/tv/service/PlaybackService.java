@@ -97,13 +97,17 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
 
     private void setupNotification() {
         DefaultMediaNotificationProvider provider = new DefaultMediaNotificationProvider.Builder(this).build();
-        session.setMediaButtonPreferences(ImmutableList.of(buildStopButton()));
         provider.setSmallIcon(R.drawable.ic_notification);
         setMediaNotificationProvider(provider);
+        updateButtons();
     }
 
-    private CommandButton buildStopButton() {
-        return new CommandButton.Builder(CommandButton.ICON_STOP).setPlayerCommand(Player.COMMAND_STOP).setDisplayName(getString(androidx.media3.ui.R.string.exo_controls_stop_description)).build();
+    private void updateButtons() {
+        if (session == null) return;
+        int repeatIcon = exoPlayer.getRepeatMode() == Player.REPEAT_MODE_ONE ? CommandButton.ICON_REPEAT_ONE : CommandButton.ICON_REPEAT_OFF;
+        CommandButton repeat = new CommandButton.Builder(repeatIcon).setPlayerCommand(Player.COMMAND_SET_REPEAT_MODE).setDisplayName(getString(R.string.play_repeat)).setSlots(CommandButton.SLOT_BACK_SECONDARY).build();
+        CommandButton stop = new CommandButton.Builder(CommandButton.ICON_STOP).setPlayerCommand(Player.COMMAND_STOP).setDisplayName(getString(R.string.play_stop)).setSlots(CommandButton.SLOT_FORWARD_SECONDARY).build();
+        session.setMediaButtonPreferences(ImmutableList.of(repeat, stop));
     }
 
     @Override
@@ -118,8 +122,8 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
         else if (ActionEvent.PREV.equals(action)) dispatchPrev();
         else if (ActionEvent.NEXT.equals(action)) dispatchNext();
         else if (ActionEvent.STOP.equals(action)) dispatchStop();
-        else if (ActionEvent.LOOP.equals(action)) dispatchLoop();
         else if (ActionEvent.AUDIO.equals(action)) dispatchAudio();
+        else if (ActionEvent.REPEAT.equals(action)) dispatchRepeat();
         else if (ActionEvent.REPLAY.equals(action)) dispatchReplay();
     }
 
@@ -288,8 +292,8 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
         else stopAndClear();
     }
 
-    public void dispatchLoop() {
-        dispatch(NavigationCallback::onLoop);
+    public void dispatchRepeat() {
+        exoPlayer.setRepeatMode(exoPlayer.getRepeatMode() == Player.REPEAT_MODE_ONE ? Player.REPEAT_MODE_OFF : Player.REPEAT_MODE_ONE);
     }
 
     public void dispatchReplay() {
@@ -397,10 +401,20 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
                 dispatchStop();
             }
 
+            @Override
+            public void setRepeatMode(int repeatMode) {
+                exoPlayer.setRepeatMode(repeatMode);
+            }
+
+            @Override
+            public int getRepeatMode() {
+                return exoPlayer.getRepeatMode();
+            }
+
             @NonNull
             @Override
             public Commands getAvailableCommands() {
-                return super.getAvailableCommands().buildUpon().add(COMMAND_SEEK_TO_PREVIOUS).add(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM).add(COMMAND_SEEK_TO_NEXT).add(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM).add(COMMAND_SEEK_BACK).add(COMMAND_SEEK_FORWARD).add(COMMAND_STOP).build();
+                return super.getAvailableCommands().buildUpon().add(COMMAND_SEEK_TO_PREVIOUS).add(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM).add(COMMAND_SEEK_TO_NEXT).add(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM).add(COMMAND_SEEK_BACK).add(COMMAND_SEEK_FORWARD).add(COMMAND_STOP).add(COMMAND_SET_REPEAT_MODE).build();
             }
         };
     }
@@ -449,6 +463,11 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
         @Override
         public void onPlaybackStateChanged(int state) {
             if (state == Player.STATE_ENDED && !(hasNavigationCallback() && isNavigationOwner())) navigateItem(1);
+        }
+
+        @Override
+        public void onRepeatModeChanged(int repeatMode) {
+            updateButtons();
         }
     };
 
@@ -526,9 +545,6 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
         }
 
         default void onStop() {
-        }
-
-        default void onLoop() {
         }
 
         default void onReplay() {

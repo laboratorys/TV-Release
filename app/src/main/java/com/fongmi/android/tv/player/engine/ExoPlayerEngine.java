@@ -46,6 +46,16 @@ public class ExoPlayerEngine implements PlayerEngine {
     }
 
     @Override
+    public boolean isRepeatOne() {
+        return player.getRepeatMode() == Player.REPEAT_MODE_ONE;
+    }
+
+    @Override
+    public void setRepeatOne(boolean repeat) {
+        player.setRepeatMode(repeat ? Player.REPEAT_MODE_ONE : Player.REPEAT_MODE_OFF);
+    }
+
+    @Override
     public int getDecode() {
         return decode;
     }

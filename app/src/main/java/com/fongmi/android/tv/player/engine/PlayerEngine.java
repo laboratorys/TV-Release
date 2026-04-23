@@ -50,6 +50,13 @@ public interface PlayerEngine {
         return false;
     }
 
+    default boolean isRepeatOne() {
+        return false;
+    }
+
+    default void setRepeatOne(boolean repeat) {
+    }
+
     default List<MediaTitle> getCurrentMediaTitles() {
         return Collections.emptyList();
     }

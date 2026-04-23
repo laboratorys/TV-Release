@@ -269,8 +269,12 @@ public class PlayerManager implements ParseCallback {
         stopParse();
     }
 
+    public boolean isRepeatOne() {
+        return engine.isRepeatOne();
+    }
+
     public void setRepeatOne(boolean repeat) {
-        player.setRepeatMode(repeat ? Player.REPEAT_MODE_ONE : Player.REPEAT_MODE_OFF);
+        engine.setRepeatOne(repeat);
     }
 
     public void seekTo(long time) {

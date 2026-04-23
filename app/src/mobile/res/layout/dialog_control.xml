@@ -286,12 +286,12 @@
             tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/loop"
+            android:id="@+id/repeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="@drawable/shape_accent"
-            android:text="@string/play_loop"
+            android:text="@string/play_repeat"
             android:textColor="@color/control"
             android:textSize="14sp" />
 

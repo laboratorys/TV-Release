@@ -69,7 +69,7 @@ http://127.0.0.1:9978/action?do=control&type={type}
 | `replay` | 重新播放     |
 | `prev`   | 上一集      |
 | `next`   | 下一集      |
-| `loop`   | 切換循環播放模式 |
+| `repeat` | 切換循環播放模式 |
 
 **範例：**
 
@@ -450,7 +450,7 @@ GET http://127.0.0.1:9978/delFile?path={path}
 
 ## /parse — 解析頁面
 
-將解析器腳本與目標 URL 嵌入 HTML 範本後回傳，通常供 WebView 內部使用。
+將解析器腳本與目標 URL 嵌入 HTML 範本後回傳，通常供 WebView 內使用。
 
 ```
 GET http://127.0.0.1:9978/parse?jxs={jxs}&url={url}
@@ -506,25 +506,25 @@ GET http://127.0.0.1:9978/device
 
 ## 端點總覽
 
-| 端點                   | 方法       | 主要參數                              | 說明                                          |
-|----------------------|----------|-----------------------------------|---------------------------------------------|
-| `/action?do=control` | GET/POST | `type`                            | 播放控制（play/pause/stop/prev/next/loop/replay） |
-| `/action?do=refresh` | GET/POST | `type`, `path`, `json`            | 刷新頁面或推送字幕/彈幕                                |
-| `/action?do=push`    | GET/POST | `url`                             | 推送 URL 播放                                   |
-| `/action?do=file`    | GET/POST | `path`                            | 開啟本地檔案                                      |
-| `/action?do=search`  | GET/POST | `word`                            | 觸發關鍵字搜尋                                     |
-| `/action?do=setting` | GET/POST | `text`, `name`                    | 載入配置                                        |
-| `/action?do=cast`    | GET/POST | `config`, `device`, `history`     | 投放媒體至遠端裝置                                   |
-| `/action?do=sync`    | POST     | `type`, `device`, `force`, `mode` | 多裝置資料同步                                     |
-| `/cache?do=get`      | GET/POST | `key`, `rule`                     | 讀取快取值                                       |
-| `/cache?do=set`      | GET/POST | `key`, `value`, `rule`            | 寫入快取值                                       |
-| `/cache?do=del`      | GET/POST | `key`, `rule`                     | 刪除快取值                                       |
-| `/media`             | GET      | —                                 | 取得播放狀態 JSON                                 |
-| `/file/{path}`       | GET      | —                                 | 瀏覽目錄或下載檔案（支援 Range）                         |
-| `/upload`            | POST     | `path`（multipart）                 | 上傳檔案（支援 .zip 解壓）                            |
-| `/newFolder`         | GET      | `path`, `name`                    | 建立資料夾                                       |
-| `/delFolder`         | GET      | `path`                            | 刪除資料夾                                       |
-| `/delFile`           | GET      | `path`                            | 刪除檔案                                        |
-| `/parse`             | GET      | `jxs`, `url`                      | 取得渲染後的解析 HTML 頁面                            |
-| `/proxy`             | GET/POST | 自訂（轉發至爬蟲）                         | 爬蟲代理轉發                                      |
-| `/device`            | GET      | —                                 | 取得裝置資訊                                      |
+| 端點                   | 方法       | 主要參數                              | 說明                                            |
+|----------------------|----------|-----------------------------------|-----------------------------------------------|
+| `/action?do=control` | GET/POST | `type`                            | 播放控制（play/pause/stop/prev/next/repeat/replay） |
+| `/action?do=refresh` | GET/POST | `type`, `path`, `json`            | 刷新頁面或推送字幕/彈幕                                  |
+| `/action?do=push`    | GET/POST | `url`                             | 推送 URL 播放                                     |
+| `/action?do=file`    | GET/POST | `path`                            | 開啟本地檔案                                        |
+| `/action?do=search`  | GET/POST | `word`                            | 觸發關鍵字搜尋                                       |
+| `/action?do=setting` | GET/POST | `text`, `name`                    | 載入配置                                          |
+| `/action?do=cast`    | GET/POST | `config`, `device`, `history`     | 投放媒體至遠端裝置                                     |
+| `/action?do=sync`    | POST     | `type`, `device`, `force`, `mode` | 多裝置資料同步                                       |
+| `/cache?do=get`      | GET/POST | `key`, `rule`                     | 讀取快取值                                         |
+| `/cache?do=set`      | GET/POST | `key`, `value`, `rule`            | 寫入快取值                                         |
+| `/cache?do=del`      | GET/POST | `key`, `rule`                     | 刪除快取值                                         |
+| `/media`             | GET      | —                                 | 取得播放狀態 JSON                                   |
+| `/file/{path}`       | GET      | —                                 | 瀏覽目錄或下載檔案（支援 Range）                           |
+| `/upload`            | POST     | `path`（multipart）                 | 上傳檔案（支援 .zip 解壓）                              |
+| `/newFolder`         | GET      | `path`, `name`                    | 建立資料夾                                         |
+| `/delFolder`         | GET      | `path`                            | 刪除資料夾                                         |
+| `/delFile`           | GET      | `path`                            | 刪除檔案                                          |
+| `/parse`             | GET      | `jxs`, `url`                      | 取得渲染後的解析 HTML 頁面                              |
+| `/proxy`             | GET/POST | 自訂（轉發至爬蟲）                         | 爬蟲代理轉發                                        |
+| `/device`            | GET      | —                                 | 取得裝置資訊                                        |

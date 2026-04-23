@@ -244,6 +244,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     @Override
     protected void onServiceConnected() {
         player().setDanmakuController(mBinding.exo.getDanmakuController());
+        player().setDanmakuEnabled(Setting.isDanmakuLoad());
         checkId();
     }
 
@@ -296,7 +297,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mBinding.control.action.opening.setDownListener(this::onOpeningSub);
         mBinding.control.action.text.setUpListener(this::onSubtitleClick);
         mBinding.control.action.text.setDownListener(this::onSubtitleClick);
-        mBinding.control.action.loop.setOnClickListener(view -> onLoop());
         mBinding.control.action.next.setOnClickListener(view -> checkNext());
         mBinding.control.action.prev.setOnClickListener(view -> checkPrev());
         mBinding.control.action.scale.setOnClickListener(view -> onScale());
@@ -306,6 +306,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mBinding.control.action.player.setOnClickListener(view -> onChoose());
         mBinding.control.action.decode.setOnClickListener(view -> onDecode());
         mBinding.control.action.ending.setOnClickListener(view -> onEnding());
+        mBinding.control.action.repeat.setOnClickListener(view -> onRepeat());
         mBinding.control.action.change2.setOnClickListener(view -> onChange());
         mBinding.control.action.danmaku.setOnClickListener(view -> onDanmaku());
         mBinding.control.action.opening.setOnClickListener(view -> onOpening());
@@ -651,8 +652,14 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         checkSearch(true);
     }
 
-    private void onLoop() {
-        mBinding.control.action.loop.setActivated(!mBinding.control.action.loop.isActivated());
+    private void onRepeat() {
+        player().setRepeatOne(!player().isRepeatOne());
+        mBinding.control.action.repeat.setActivated(player().isRepeatOne());
+    }
+
+    @Override
+    public void onRepeatModeChanged(int repeatMode) {
+        mBinding.control.action.repeat.setActivated(player().isRepeatOne());
     }
 
     private void checkNext() {
@@ -1028,11 +1035,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         }
 
         @Override
-        public void onLoop() {
-            VideoActivity.this.onLoop();
-        }
-
-        @Override
         public void onReplay() {
             VideoActivity.this.onReplay();
         }
@@ -1142,11 +1144,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     private void checkEnded(boolean notify) {
-        if (mBinding.control.action.loop.isActivated()) {
-            onReplay();
-        } else {
-            checkNext(notify);
-        }
+        checkNext(notify);
     }
 
     private void setTrackVisible() {

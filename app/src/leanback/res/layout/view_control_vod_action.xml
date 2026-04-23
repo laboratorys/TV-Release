@@ -16,7 +16,7 @@
             android:id="@+id/next"
             style="@style/Control"
             android:layout_marginEnd="12dp"
-            android:nextFocusLeft="@id/loop"
+            android:nextFocusLeft="@id/repeat"
             android:text="@string/play_next" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -112,10 +112,10 @@
             tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/loop"
+            android:id="@+id/repeat"
             style="@style/Control"
             android:nextFocusRight="@id/next"
-            android:text="@string/play_loop" />
+            android:text="@string/play_repeat" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </HorizontalScrollView>

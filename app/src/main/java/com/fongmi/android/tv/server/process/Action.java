@@ -103,7 +103,7 @@ public class Action implements Process {
             else if ("stop".equals(type)) service.dispatchStop();
             else if ("prev".equals(type)) service.dispatchPrev();
             else if ("next".equals(type)) service.dispatchNext();
-            else if ("loop".equals(type)) service.dispatchLoop();
+            else if ("repeat".equals(type)) service.dispatchRepeat();
             else if ("replay".equals(type)) service.dispatchReplay();
         });
     }

@@ -87,7 +87,7 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
         binding.decode.setText(parent.control.action.decode.getText());
         binding.ending.setText(parent.control.action.ending.getText());
         binding.opening.setText(parent.control.action.opening.getText());
-        binding.loop.setActivated(parent.control.action.loop.isActivated());
+        binding.repeat.setActivated(parent.control.action.repeat.isActivated());
         binding.timer.setActivated(Timer.get().isRunning());
         setTrackVisible();
         setTitleVisible();
@@ -107,7 +107,7 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
         binding.title.setOnClickListener(v -> dismiss(parent.control.action.title));
         binding.player.setOnClickListener(v -> dismiss(parent.control.action.player));
         binding.danmaku.setOnClickListener(v -> dismiss(parent.control.action.danmaku));
-        binding.loop.setOnClickListener(v -> active(binding.loop, parent.control.action.loop));
+        binding.repeat.setOnClickListener(v -> active(binding.repeat, parent.control.action.repeat));
         binding.decode.setOnClickListener(v -> click(binding.decode, parent.control.action.decode));
         binding.ending.setOnClickListener(v -> click(binding.ending, parent.control.action.ending));
         binding.opening.setOnClickListener(v -> click(binding.opening, parent.control.action.opening));
