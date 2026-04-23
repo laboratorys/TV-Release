@@ -97,17 +97,14 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
 
     private void setupNotification() {
         DefaultMediaNotificationProvider provider = new DefaultMediaNotificationProvider.Builder(this).build();
+        session.setMediaButtonPreferences(ImmutableList.of(buildStopButton()));
         provider.setSmallIcon(R.drawable.ic_notification);
         setMediaNotificationProvider(provider);
-        updateButtons();
+
     }
 
-    private void updateButtons() {
-        if (session == null) return;
-        int repeatIcon = exoPlayer.getRepeatMode() == Player.REPEAT_MODE_ONE ? CommandButton.ICON_REPEAT_ONE : CommandButton.ICON_REPEAT_OFF;
-        CommandButton repeat = new CommandButton.Builder(repeatIcon).setPlayerCommand(Player.COMMAND_SET_REPEAT_MODE).setDisplayName(getString(R.string.play_repeat)).setSlots(CommandButton.SLOT_BACK_SECONDARY).build();
-        CommandButton stop = new CommandButton.Builder(CommandButton.ICON_STOP).setPlayerCommand(Player.COMMAND_STOP).setDisplayName(getString(R.string.play_stop)).setSlots(CommandButton.SLOT_FORWARD_SECONDARY).build();
-        session.setMediaButtonPreferences(ImmutableList.of(repeat, stop));
+    private CommandButton buildStopButton() {
+        return new CommandButton.Builder(CommandButton.ICON_STOP).setPlayerCommand(Player.COMMAND_STOP).setDisplayName(getString(R.string.play_stop)).build();
     }
 
     @Override
@@ -463,11 +460,6 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
         @Override
         public void onPlaybackStateChanged(int state) {
             if (state == Player.STATE_ENDED && !(hasNavigationCallback() && isNavigationOwner())) navigateItem(1);
-        }
-
-        @Override
-        public void onRepeatModeChanged(int repeatMode) {
-            updateButtons();
         }
     };
 
