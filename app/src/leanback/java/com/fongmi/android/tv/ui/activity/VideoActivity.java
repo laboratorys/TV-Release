@@ -243,8 +243,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
 
     @Override
     protected void onServiceConnected() {
-        player().setDanmakuView(mBinding.danmaku);
-        setDanmakuSize();
+        player().setDanmakuController(mBinding.exo.getDanmakuController());
         checkId();
     }
 
@@ -618,7 +617,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mBinding.flag.setSelectedPosition(mFlagAdapter.getPosition());
         mKeyDown.setFull(true);
         setFullscreen(true);
-        setDanmakuSize();
         mFocus2 = null;
     }
 
@@ -628,14 +626,8 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         getFocus1().requestFocus();
         mKeyDown.setFull(false);
         setFullscreen(false);
-        setDanmakuSize();
         mFocus2 = null;
         hideInfo();
-    }
-
-    private void setDanmakuSize() {
-        if (service() == null) return;
-        player().setDanmakuSize(isFullscreen() ? 1.2f : 0.8f);
     }
 
     private void onContent() {

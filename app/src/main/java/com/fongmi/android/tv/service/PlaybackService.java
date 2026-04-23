@@ -412,7 +412,7 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
     }
 
     private void startBrowse(PlayerManager manager, MediaItem item, Result result, long startPositionMs) {
-        manager.startBrowse(PlaySpec.from(result, item.mediaId, item.mediaMetadata));
+        manager.browse(PlaySpec.from(result, item.mediaId, item.mediaMetadata));
         if (startPositionMs > 0) manager.seekTo(startPositionMs);
     }
 

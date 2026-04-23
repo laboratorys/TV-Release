@@ -264,7 +264,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     @Override
     protected void onServiceConnected() {
-        player().setDanmakuView(mBinding.danmaku);
+        player().setDanmakuController(mBinding.exo.getDanmakuController());
+        showDanmaku();
         checkLand();
         checkId();
     }
@@ -306,7 +307,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         setVideoView();
         setViewModel();
         showProgress();
-        showDanmaku();
         setAnimator();
     }
 
@@ -884,7 +884,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         setRequestedOrientation(player().isPortrait() ? ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         mBinding.control.title.setVisibility(View.VISIBLE);
         setRotate(player().isPortrait());
-        player().setDanmakuSize(1.0f);
         mKeyDown.resetScale();
         App.post(mR3, 2000);
         hideControl();
@@ -898,7 +897,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.episode.postDelayed(() -> mBinding.episode.scrollToPosition(mEpisodeAdapter.getPosition()), 100);
         mBinding.control.title.setVisibility(View.INVISIBLE);
         mBinding.video.setLayoutParams(mFrameParams);
-        player().setDanmakuSize(0.8f);
         mKeyDown.resetScale();
         App.post(mR3, 2000);
         setRotate(false);
@@ -948,11 +946,11 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     }
 
     private void showDanmaku() {
-        mBinding.danmaku.setVisibility(Setting.isDanmakuShow() ? View.VISIBLE : View.INVISIBLE);
+        player().setDanmakuEnabled(Setting.isDanmakuShow());
     }
 
     private void hideDanmaku() {
-        mBinding.danmaku.setVisibility(View.INVISIBLE);
+        player().setDanmakuEnabled(false);
     }
 
     private void showControl() {

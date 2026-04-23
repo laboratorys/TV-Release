@@ -11,6 +11,7 @@ import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.common.Tracks;
 import androidx.media3.common.VideoSize;
+import androidx.media3.ui.danmaku.DanmakuController;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
@@ -21,13 +22,13 @@ import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.bean.Sub;
 import com.fongmi.android.tv.bean.Track;
 import com.fongmi.android.tv.impl.ParseCallback;
-import com.fongmi.android.tv.player.danmaku.DanPlayer;
 import com.fongmi.android.tv.player.engine.ExoPlayerEngine;
 import com.fongmi.android.tv.player.engine.PlaySpec;
 import com.fongmi.android.tv.player.engine.PlayerEngine;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Util;
+import com.github.catvod.net.OkHttp;
 import com.google.common.net.HttpHeaders;
 
 import java.util.HashMap;
@@ -35,14 +36,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import master.flame.danmaku.ui.widget.DanmakuView;
-
 public class PlayerManager implements ParseCallback {
 
     private final Runnable runnable;
     private final Callback callback;
+    private DanmakuController danmakuController;
     private PlayerEngine engine;
-    private DanPlayer danPlayer;
     private VideoSize videoSize;
     private ParseJob parseJob;
     private PlaySpec spec;
@@ -61,16 +60,11 @@ public class PlayerManager implements ParseCallback {
     public void release() {
         stopParse();
         App.removeCallbacks(runnable);
-        if (danPlayer != null) {
-            danPlayer.release();
-            danPlayer = null;
-        }
-        if (engine != null) {
-            player.removeListener(listener);
-            engine.release();
-            engine = null;
-            player = null;
-        }
+        if (engine == null) return;
+        player.removeListener(listener);
+        engine.release();
+        engine = null;
+        player = null;
     }
 
     public Player getPlayer() {
@@ -224,13 +218,13 @@ public class PlayerManager implements ParseCallback {
         engine.setMetadata(data);
     }
 
-    public void setDanmakuView(DanmakuView view) {
-        danPlayer = new DanPlayer(view);
-        danPlayer.attachPlayer(player);
+    public void setDanmakuController(DanmakuController controller) {
+        danmakuController = controller;
+        danmakuController.setOkHttpClient(OkHttp.player());
     }
 
-    public void setDanmakuSize(float size) {
-        danPlayer.setTextSize(size);
+    public void setDanmakuEnabled(boolean enabled) {
+        if (danmakuController != null) danmakuController.setEnabled(enabled);
     }
 
     public String setSpeed(float speed) {
@@ -271,7 +265,6 @@ public class PlayerManager implements ParseCallback {
     }
 
     public void stop() {
-        if (danPlayer != null) danPlayer.stop();
         player.stop();
         stopParse();
     }
@@ -305,8 +298,14 @@ public class PlayerManager implements ParseCallback {
 
     private void rebuildPlayer() {
         player = engine.rebuild(listener);
-        if (danPlayer != null) danPlayer.attachPlayer(player);
         callback.onPlayerRebuild(player);
+    }
+
+    public void browse(PlaySpec spec) {
+        reset();
+        clear();
+        stopParse();
+        start(spec, Constant.TIMEOUT_PLAY);
     }
 
     public void start(PlaySpec spec, long timeout) {
@@ -338,20 +337,15 @@ public class PlayerManager implements ParseCallback {
         initTrack = false;
     }
 
-    public void startBrowse(PlaySpec spec) {
-        reset();
-        clear();
-        stopParse();
-        start(spec, Constant.TIMEOUT_PLAY);
-    }
-
     private void setDanmakus(List<Danmaku> items) {
-        if (danPlayer != null) setDanmaku(items == null || items.isEmpty() ? Danmaku.empty() : items.get(0));
+        setDanmaku(items == null || items.isEmpty() ? Danmaku.empty() : items.get(0));
     }
 
     public void setDanmaku(Danmaku item) {
+        if (danmakuController == null) return;
         if (spec != null) spec.setDanmaku(item);
-        if (danPlayer != null) danPlayer.setDanmaku(item);
+        if (item.isEmpty()) danmakuController.clearItems();
+        else danmakuController.setDataSource(Uri.parse(item.getRealUrl()));
     }
 
     @Override

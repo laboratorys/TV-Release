@@ -8,7 +8,10 @@ import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Util;
 import com.google.common.net.HttpHeaders;
 
+import org.brotli.dec.BrotliInputStream;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -47,7 +50,9 @@ public class ResponseInterceptor implements Interceptor {
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request request = check(chain.request());
         Response response = chain.proceed(request);
-        if ("deflate".equals(response.header(HttpHeaders.CONTENT_ENCODING))) return deflate(response);
+        String encoding = response.header(HttpHeaders.CONTENT_ENCODING);
+        if ("br".equalsIgnoreCase(encoding)) return brotli(response);
+        if ("deflate".equalsIgnoreCase(encoding)) return deflate(response);
         if (response.code() == 406 && redirectMap.containsKey(request.url().toString())) return redirect(request, response);
         if (response.code() == 302 && response.header(HttpHeaders.LOCATION) != null) redirectMap.put(response.header(HttpHeaders.LOCATION), request.url().toString());
         return response;
@@ -64,9 +69,18 @@ public class ResponseInterceptor implements Interceptor {
         return new Response.Builder().request(request).protocol(response.protocol()).code(302).message("Found").header(HttpHeaders.LOCATION, redirectMap.get(request.url().toString())).build();
     }
 
+    private Response brotli(Response response) throws IOException {
+        InputStream is = new BrotliInputStream(response.body().byteStream());
+        return response.newBuilder().headers(response.headers()).body(getBody(response, is)).build();
+    }
+
     private Response deflate(Response response) {
-        InflaterInputStream is = new InflaterInputStream(response.body().byteStream(), new Inflater(true));
-        return response.newBuilder().headers(response.headers()).body(new ResponseBody() {
+        InputStream is = new InflaterInputStream(response.body().byteStream(), new Inflater(true));
+        return response.newBuilder().headers(response.headers()).body(getBody(response, is)).build();
+    }
+
+    private ResponseBody getBody(Response response, InputStream is) {
+        return new ResponseBody() {
             @Nullable
             @Override
             public MediaType contentType() {
@@ -75,7 +89,7 @@ public class ResponseInterceptor implements Interceptor {
 
             @Override
             public long contentLength() {
-                return response.body().contentLength();
+                return -1;
             }
 
             @NonNull
@@ -83,6 +97,6 @@ public class ResponseInterceptor implements Interceptor {
             public BufferedSource source() {
                 return Okio.buffer(Okio.source(is));
             }
-        }).build();
+        };
     }
 }
