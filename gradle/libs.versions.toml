@@ -1,5 +1,5 @@
 [versions]
-agp = "9.2.0"
+agp = "9.1.1"
 python = "17.0.0"
 minSdk = "24"
 targetSdk = "28"
@@ -8,14 +8,14 @@ compileSdk = "37"
 annotation = "1.10.0"
 appcompat = "1.7.1"
 biometric = "1.1.0"
-coreSplashscreen = "1.2.0"
+desugar = "2.1.5"
 leanback = "1.2.0"
 lifecycleService = "2.10.0"
 media = "1.7.1"
-palette = "1.0.0"
 preference = "1.2.1"
 recyclerview = "1.4.0"
 room = "2.8.4"
+splashscreen = "1.2.0"
 startup = "1.2.0"
 swiperefreshlayout = "1.2.0"
 viewpager2 = "1.1.0"
@@ -24,7 +24,6 @@ androidGifDrawable = "1.2.31"
 androidautosize = "1.2.1"
 brotli = "0.1.2"
 customactivityoncrash = "2.4.0"
-desugar_jdk_libs_nio = "2.1.5"
 flexbox = "3.0.0"
 glide = "5.0.7"
 greenrobot = "3.3.1"
@@ -33,7 +32,6 @@ guava = "33.6.0-android"
 jna = "5.18.1"
 jupnp = "3.0.4"
 juniversalchardet = "1.0.3"
-librtmpClient = "v3.2.0.m2"
 logger = "2.2.0"
 lottie = "6.7.1"
 material = "1.14.0-beta01"
@@ -43,6 +41,7 @@ newpipeextractor = "v0.26.1"
 okhttp = "5.3.2"
 permissionx = "1.8.1"
 quickjs = "3.2.3"
+rtmpClient = "v3.2.0.m2"
 sardine = "0.9"
 simpleXml = "2.7.1"
 smbj = "0.14.0"
@@ -54,15 +53,15 @@ zxingCore = "3.5.4"
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
+desugar = { group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "desugar" }
 leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
 lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycleService" }
 media = { group = "androidx.media", name = "media", version.ref = "media" }
-palette = { group = "androidx.palette", name = "palette", version.ref = "palette" }
 preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
 swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
@@ -71,7 +70,6 @@ android-gif-drawable = { group = "pl.droidsonroids.gif", name = "android-gif-dra
 androidautosize = { group = "com.github.JessYanCoding", name = "AndroidAutoSize", version.ref = "androidautosize" }
 brotli = { group = "org.brotli", name = "dec", version.ref = "brotli" }
 customactivityoncrash = { group = "cat.ereza", name = "customactivityoncrash", version.ref = "customactivityoncrash" }
-desugar_jdk_libs_nio = { group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "desugar_jdk_libs_nio" }
 eventbus = { group = "org.greenrobot", name = "eventbus", version.ref = "greenrobot" }
 eventbus-annotation-processor = { group = "org.greenrobot", name = "eventbus-annotation-processor", version.ref = "greenrobot" }
 flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }
@@ -84,7 +82,7 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna" }
 juniversalchardet = { group = "com.googlecode.juniversalchardet", name = "juniversalchardet", version.ref = "juniversalchardet" }
-librtmp-client = { group = "com.github.mcxinyu", name = "LibRtmp-Client-for-Android", version.ref = "librtmpClient" }
+rtmp-client = { group = "com.github.mcxinyu", name = "LibRtmp-Client-for-Android", version.ref = "rtmpClient" }
 logger = { group = "com.orhanobut", name = "logger", version.ref = "logger" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }

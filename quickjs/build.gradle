@@ -14,8 +14,8 @@ android {
 
     compileOptions {
         coreLibraryDesugaringEnabled = true
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 }
 
@@ -23,5 +23,5 @@ dependencies {
     implementation project(':catvod')
     implementation libs.quickjs.android
     implementation libs.quickjs.java
-    coreLibraryDesugaring libs.desugar.jdk.libs.nio
+    coreLibraryDesugaring libs.desugar
 }

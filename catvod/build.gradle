@@ -14,8 +14,8 @@ android {
 
     compileOptions {
         coreLibraryDesugaringEnabled = true
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 }
 
@@ -32,5 +32,5 @@ dependencies {
     api libs.smbj
     api libs.startup
     api libs.zxing.core
-    coreLibraryDesugaring libs.desugar.jdk.libs.nio
+    coreLibraryDesugaring libs.desugar
 }

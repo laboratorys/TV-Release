@@ -15,8 +15,7 @@ android {
     defaultConfig {
         applicationId "com.fongmi.android.tv"
         minSdk libs.versions.minSdk.get().toInteger()
-        //noinspection ExpiredTargetSdkVersion
-        targetSdk 28
+        targetSdk libs.versions.targetSdk.get().toInteger()
         versionCode 542
         versionName "5.4.2"
         javaCompileOptions {
@@ -68,17 +67,10 @@ android {
         }
     }
 
-    packagingOptions {
-        resources {
-            exclude 'META-INF/beans.xml'
-            exclude 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
-        }
-    }
-
     configurations.configureEach {
-        exclude group: 'com.android.support'
         exclude group: 'stax', module: 'stax-api'
         exclude group: 'xpp3', module: 'xpp3'
+        exclude group: 'com.android.support'
         resolutionStrategy {
             force libs.okhttp
         }
@@ -86,12 +78,13 @@ android {
 
     lint {
         disable 'UnsafeOptInUsageError'
+        disable 'ExpiredTargetSdkVersion'
     }
 
     compileOptions {
         coreLibraryDesugaringEnabled = true
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 }
 
@@ -112,12 +105,11 @@ dependencies {
     implementation project(':chaquo')
     implementation project(':quickjs')
     implementation libs.appcompat
-    implementation libs.core.splashscreen
     implementation libs.lifecycle.service
     implementation libs.media
-    implementation libs.palette
     implementation libs.recyclerview
     implementation libs.room.runtime
+    implementation libs.splashscreen
     implementation libs.swiperefreshlayout
     implementation libs.viewpager2
     implementation libs.android.gif.drawable
@@ -126,7 +118,7 @@ dependencies {
     implementation libs.customactivityoncrash
     implementation libs.eventbus
     implementation libs.flexbox
-    implementation libs.librtmp.client
+    implementation libs.rtmp.client
     implementation libs.lottie
     implementation libs.material
     implementation libs.materialdesigncolors
@@ -142,5 +134,5 @@ dependencies {
     annotationProcessor libs.room.compiler
     annotationProcessor libs.eventbus.annotation.processor
     annotationProcessor libs.glide.compiler
-    coreLibraryDesugaring libs.desugar.jdk.libs.nio
+    coreLibraryDesugaring libs.desugar
 }
