@@ -111,35 +111,36 @@ dependencies {
     implementation project(':catvod')
     implementation project(':chaquo')
     implementation project(':quickjs')
-    implementation libs.android.gif.drawable
     implementation libs.appcompat
+    implementation libs.core.splashscreen
+    implementation libs.lifecycle.service
+    implementation libs.media
+    implementation libs.palette
+    implementation libs.recyclerview
+    implementation libs.room.runtime
+    implementation libs.swiperefreshlayout
+    implementation libs.viewpager2
+    implementation libs.android.gif.drawable
     implementation libs.bundles.glide
     implementation libs.bundles.jupnp
-    implementation libs.core.splashscreen
     implementation libs.customactivityoncrash
     implementation libs.eventbus
     implementation libs.flexbox
     implementation libs.librtmp.client
-    implementation libs.lifecycle.service
     implementation libs.lottie
     implementation libs.material
     implementation libs.materialdesigncolors
     implementation libs.nanohttpd
     implementation libs.newpipeextractor
-    implementation libs.palette
     implementation libs.permissionx
-    implementation libs.recyclerview
-    implementation libs.room.runtime
     implementation libs.simple.xml
-    implementation libs.swiperefreshlayout
     implementation libs.textdrawable
-    implementation libs.viewpager2
-    leanbackImplementation libs.androidautosize
     leanbackImplementation libs.leanback
+    leanbackImplementation libs.androidautosize
     mobileImplementation libs.biometric
     mobileImplementation libs.zxing.android.embedded
+    annotationProcessor libs.room.compiler
     annotationProcessor libs.eventbus.annotation.processor
     annotationProcessor libs.glide.compiler
-    annotationProcessor libs.room.compiler
     coreLibraryDesugaring libs.desugar.jdk.libs.nio
 }

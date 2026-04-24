@@ -1,14 +1,28 @@
 [versions]
 agp = "9.2.0"
-androidGifDrawable = "1.2.31"
-androidautosize = "1.2.1"
+python = "17.0.0"
+minSdk = "24"
+targetSdk = "28"
+compileSdk = "37"
+
 annotation = "1.10.0"
 appcompat = "1.7.1"
 biometric = "1.1.0"
-brotli = "0.1.2"
-chaquoPython = "17.0.0"
-compileSdk = "37"
 coreSplashscreen = "1.2.0"
+leanback = "1.2.0"
+lifecycleService = "2.10.0"
+media = "1.7.1"
+palette = "1.0.0"
+preference = "1.2.1"
+recyclerview = "1.4.0"
+room = "2.8.4"
+startup = "1.2.0"
+swiperefreshlayout = "1.2.0"
+viewpager2 = "1.1.0"
+
+androidGifDrawable = "1.2.31"
+androidautosize = "1.2.1"
+brotli = "0.1.2"
 customactivityoncrash = "2.4.0"
 desugar_jdk_libs_nio = "2.1.5"
 flexbox = "3.0.0"
@@ -19,43 +33,43 @@ guava = "33.6.0-android"
 jna = "5.18.1"
 jupnp = "3.0.4"
 juniversalchardet = "1.0.3"
-leanback = "1.2.0"
 librtmpClient = "v3.2.0.m2"
-lifecycleService = "2.10.0"
 logger = "2.2.0"
 lottie = "6.7.1"
 material = "1.14.0-beta01"
 materialdesigncolors = "1.0.0"
-media = "1.7.1"
-minSdk = "24"
 nanohttpd = "2.3.1"
 newpipeextractor = "v0.26.1"
 okhttp = "5.3.2"
-palette = "1.0.0"
 permissionx = "1.8.1"
-preference = "1.2.1"
 quickjs = "3.2.3"
-recyclerview = "1.4.0"
-room = "2.8.4"
 sardine = "0.9"
 simpleXml = "2.7.1"
 smbj = "0.14.0"
-startup = "1.2.0"
-swiperefreshlayout = "1.2.0"
-targetSdk = "28"
 textdrawable = "1.0.3"
-viewpager2 = "1.1.0"
 zxingAndroidEmbedded = "4.3.0"
 zxingCore = "3.5.4"
 
 [libraries]
-android-gif-drawable = { group = "pl.droidsonroids.gif", name = "android-gif-drawable", version.ref = "androidGifDrawable" }
-androidautosize = { group = "com.github.JessYanCoding", name = "AndroidAutoSize", version.ref = "androidautosize" }
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
-brotli = { group = "org.brotli", name = "dec", version.ref = "brotli" }
 core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
+leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
+lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycleService" }
+media = { group = "androidx.media", name = "media", version.ref = "media" }
+palette = { group = "androidx.palette", name = "palette", version.ref = "palette" }
+preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
+swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
+viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
+
+android-gif-drawable = { group = "pl.droidsonroids.gif", name = "android-gif-drawable", version.ref = "androidGifDrawable" }
+androidautosize = { group = "com.github.JessYanCoding", name = "AndroidAutoSize", version.ref = "androidautosize" }
+brotli = { group = "org.brotli", name = "dec", version.ref = "brotli" }
 customactivityoncrash = { group = "cat.ereza", name = "customactivityoncrash", version.ref = "customactivityoncrash" }
 desugar_jdk_libs_nio = { group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "desugar_jdk_libs_nio" }
 eventbus = { group = "org.greenrobot", name = "eventbus", version.ref = "greenrobot" }
@@ -70,14 +84,11 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna" }
 juniversalchardet = { group = "com.googlecode.juniversalchardet", name = "juniversalchardet", version.ref = "juniversalchardet" }
-leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
 librtmp-client = { group = "com.github.mcxinyu", name = "LibRtmp-Client-for-Android", version.ref = "librtmpClient" }
-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycleService" }
 logger = { group = "com.orhanobut", name = "logger", version.ref = "logger" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 materialdesigncolors = { group = "com.github.bassaer", name = "materialdesigncolors", version.ref = "materialdesigncolors" }
-media = { group = "androidx.media", name = "media", version.ref = "media" }
 nanohttpd = { group = "org.nanohttpd", name = "nanohttpd", version.ref = "nanohttpd" }
 newpipeextractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version.ref = "newpipeextractor" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
@@ -86,28 +97,20 @@ okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-i
 org-jupnp = { group = "org.jupnp", name = "org.jupnp", version.ref = "jupnp" }
 org-jupnp-android = { group = "org.jupnp", name = "org.jupnp.android", version.ref = "jupnp" }
 org-jupnp-support = { group = "org.jupnp", name = "org.jupnp.support", version.ref = "jupnp" }
-palette = { group = "androidx.palette", name = "palette", version.ref = "palette" }
 permissionx = { group = "com.guolindev.permissionx", name = "permissionx", version.ref = "permissionx" }
-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 quickjs-android = { group = "wang.harlon.quickjs", name = "wrapper-android", version.ref = "quickjs" }
 quickjs-java = { group = "wang.harlon.quickjs", name = "wrapper-java", version.ref = "quickjs" }
-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 sardine = { group = "com.github.thegrizzlylabs", name = "sardine-android", version.ref = "sardine" }
 simple-xml = { group = "org.simpleframework", name = "simple-xml", version.ref = "simpleXml" }
 smbj = { group = "com.hierynomus", name = "smbj", version.ref = "smbj" }
-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 textdrawable = { group = "com.github.jahirfiquitiva", name = "TextDrawable", version.ref = "textdrawable" }
-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 zxing-android-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxingCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-chaquo-python = { id = "com.chaquo.python", version.ref = "chaquoPython" }
+chaquo-python = { id = "com.chaquo.python", version.ref = "python" }
 
 [bundles]
 glide = ["glide", "glide-annotations", "glide-avif-integration", "glide-okhttp3-integration"]
