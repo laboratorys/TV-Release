@@ -1,17 +1,15 @@
 plugins {
-    id 'com.android.library'
+    alias libs.plugins.android.library
 }
 
 android {
     namespace = 'com.p2p'
 
-    compileSdk {
-        version = release(37)
-    }
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        minSdk 24
-        targetSdk 37
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
     }
 }
 

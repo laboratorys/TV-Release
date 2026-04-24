@@ -1,17 +1,15 @@
 plugins {
-    id 'com.android.library'
+    alias libs.plugins.android.library
 }
 
 android {
     namespace = 'com.fongmi.hook'
 
-    compileSdk {
-        version = release(37)
-    }
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        minSdk 24
-        targetSdk 37
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
     }
 
     compileOptions {
@@ -22,6 +20,6 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.9.1'
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
+    implementation libs.annotation
+    coreLibraryDesugaring libs.desugar.jdk.libs.nio
 }

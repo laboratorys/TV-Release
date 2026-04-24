@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    alias libs.plugins.android.application
 }
 
 def localProps = new Properties()
@@ -10,13 +10,11 @@ rootProject.file('local.properties').withInputStream {
 android {
     namespace = 'com.fongmi.android.tv'
 
-    compileSdk {
-        version = release(37)
-    }
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
         applicationId "com.fongmi.android.tv"
-        minSdk 24
+        minSdk libs.versions.minSdk.get().toInteger()
         //noinspection ExpiredTargetSdkVersion
         targetSdk 28
         versionCode 542
@@ -79,8 +77,10 @@ android {
 
     configurations.configureEach {
         exclude group: 'com.android.support'
+        exclude group: 'stax', module: 'stax-api'
+        exclude group: 'xpp3', module: 'xpp3'
         resolutionStrategy {
-            force 'com.squareup.okhttp3:okhttp:' + okhttpVersion
+            force libs.okhttp
         }
     }
 
@@ -111,41 +111,35 @@ dependencies {
     implementation project(':catvod')
     implementation project(':chaquo')
     implementation project(':quickjs')
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'androidx.core:core-splashscreen:1.2.0'
-    implementation 'androidx.lifecycle:lifecycle-service:2.10.0'
-    implementation 'androidx.media:media:1.7.1'
-    implementation 'androidx.palette:palette:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.4.0'
-    implementation 'androidx.room:room-runtime:2.8.4'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0'
-    implementation 'androidx.viewpager2:viewpager2:1.1.0'
-    implementation 'cat.ereza:customactivityoncrash:2.4.0'
-    implementation 'com.airbnb.android:lottie:6.7.1'
-    implementation 'com.github.bassaer:materialdesigncolors:1.0.0'
-    implementation 'com.github.bumptech.glide:glide:' + glideVersion
-    implementation 'com.github.bumptech.glide:annotations:' + glideVersion
-    implementation 'com.github.bumptech.glide:avif-integration:' + glideVersion
-    implementation 'com.github.bumptech.glide:okhttp3-integration:' + glideVersion
-    implementation 'com.github.jahirfiquitiva:TextDrawable:1.0.3'
-    implementation 'com.github.mcxinyu:LibRtmp-Client-for-Android:v3.2.0.m2'
-    implementation 'com.github.TeamNewPipe:NewPipeExtractor:v0.26.1'
-    implementation 'com.google.android.flexbox:flexbox:3.0.0'
-    implementation 'com.google.android.material:material:1.14.0-beta01'
-    implementation 'com.guolindev.permissionx:permissionx:1.8.1'
-    implementation 'org.jupnp:org.jupnp:3.0.4'
-    implementation 'org.jupnp:org.jupnp.android:3.0.4'
-    implementation 'org.jupnp:org.jupnp.support:3.0.4'
-    implementation 'org.greenrobot:eventbus:3.3.1'
-    implementation 'org.nanohttpd:nanohttpd:2.3.1'
-    implementation('org.simpleframework:simple-xml:2.7.1') { exclude group: 'stax', module: 'stax-api' exclude group: 'xpp3', module: 'xpp3' }
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.31'
-    leanbackImplementation 'androidx.leanback:leanback:1.2.0'
-    leanbackImplementation 'com.github.JessYanCoding:AndroidAutoSize:1.2.1'
-    mobileImplementation 'androidx.biometric:biometric:1.1.0'
-    mobileImplementation 'com.journeyapps:zxing-android-embedded:4.3.0'
-    annotationProcessor 'androidx.room:room-compiler:2.8.4'
-    annotationProcessor 'com.github.bumptech.glide:compiler:' + glideVersion
-    annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.3.1'
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
+    implementation libs.android.gif.drawable
+    implementation libs.appcompat
+    implementation libs.bundles.glide
+    implementation libs.bundles.jupnp
+    implementation libs.core.splashscreen
+    implementation libs.customactivityoncrash
+    implementation libs.eventbus
+    implementation libs.flexbox
+    implementation libs.librtmp.client
+    implementation libs.lifecycle.service
+    implementation libs.lottie
+    implementation libs.material
+    implementation libs.materialdesigncolors
+    implementation libs.nanohttpd
+    implementation libs.newpipeextractor
+    implementation libs.palette
+    implementation libs.permissionx
+    implementation libs.recyclerview
+    implementation libs.room.runtime
+    implementation libs.simple.xml
+    implementation libs.swiperefreshlayout
+    implementation libs.textdrawable
+    implementation libs.viewpager2
+    leanbackImplementation libs.androidautosize
+    leanbackImplementation libs.leanback
+    mobileImplementation libs.biometric
+    mobileImplementation libs.zxing.android.embedded
+    annotationProcessor libs.eventbus.annotation.processor
+    annotationProcessor libs.glide.compiler
+    annotationProcessor libs.room.compiler
+    coreLibraryDesugaring libs.desugar.jdk.libs.nio
 }

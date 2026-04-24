@@ -1,21 +1,19 @@
 plugins {
-    id 'com.android.library'
+    alias libs.plugins.android.library
 }
 
 android {
     namespace = 'com.east.android.zlive'
 
-    compileSdk {
-        version = release(37)
-    }
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        minSdk 24
-        targetSdk 37
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
         ndk { abiFilters "armeabi-v7a" }
     }
 }
 
 dependencies {
-    api 'net.java.dev.jna:jna:5.2.0'
+    api libs.jna
 }

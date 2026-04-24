@@ -6,13 +6,11 @@ plugins {
 android {
     namespace = 'com.fongmi.chaquo'
 
-    compileSdk {
-        version = release(37)
-    }
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        minSdk 24
-        targetSdk 37
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
         python {
             version = "3.10"
             pip {
@@ -41,6 +39,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled = true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -48,4 +47,5 @@ android {
 
 dependencies {
     implementation project(':catvod')
+    coreLibraryDesugaring libs.desugar.jdk.libs.nio
 }

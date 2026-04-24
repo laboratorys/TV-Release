@@ -1,17 +1,15 @@
 plugins {
-    id 'com.android.library'
+    alias libs.plugins.android.library
 }
 
 android {
     namespace = 'com.fongmi.android.tv.quickjs'
 
-    compileSdk {
-        version = release(37)
-    }
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        minSdk 24
-        targetSdk 37
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
     }
 
     compileOptions {
@@ -23,7 +21,7 @@ android {
 
 dependencies {
     implementation project(':catvod')
-    implementation 'wang.harlon.quickjs:wrapper-java:3.2.3'
-    implementation 'wang.harlon.quickjs:wrapper-android:3.2.3'
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
+    implementation libs.quickjs.android
+    implementation libs.quickjs.java
+    coreLibraryDesugaring libs.desugar.jdk.libs.nio
 }
