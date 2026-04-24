@@ -69,6 +69,7 @@ public class ExoUtil {
         builder.setSubtitleConfigurations(buildSubtitleConfigs(spec.getSubs()));
         builder.setDrmConfiguration(buildDrmConfig(spec.getDrm()));
         builder.setRequestMetadata(buildRequestMetadata(spec));
+        builder.setLiveConfiguration(buildLiveConfig());
         builder.setMediaMetadata(spec.getMetadata());
         builder.setAdblock(Setting.isAdblock());
         builder.setMimeType(spec.getFormat());
@@ -123,6 +124,10 @@ public class ExoUtil {
 
     private static MediaItem.RequestMetadata buildRequestMetadata(PlaySpec spec) {
         return new MediaItem.RequestMetadata.Builder().setMediaUri(spec.getUri()).setExtras(PlayerHelper.toBundle(spec.getHeaders())).build();
+    }
+
+    private static MediaItem.LiveConfiguration buildLiveConfig() {
+        return new MediaItem.LiveConfiguration.Builder().setTargetOffsetMs(3000).setMinPlaybackSpeed(0.97f).setMaxPlaybackSpeed(1.03f).build();
     }
 
     private static List<MediaItem.SubtitleConfiguration> buildSubtitleConfigs(List<Sub> subs) {
