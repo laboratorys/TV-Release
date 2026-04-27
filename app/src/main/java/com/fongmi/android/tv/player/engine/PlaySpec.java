@@ -4,12 +4,12 @@ import android.net.Uri;
 
 import androidx.media3.common.MediaMetadata;
 
-import com.fongmi.android.tv.setting.Setting;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.bean.Drm;
 import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.bean.Sub;
 import com.fongmi.android.tv.player.PlayerHelper;
+import com.fongmi.android.tv.setting.Setting;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.google.common.net.HttpHeaders;
 

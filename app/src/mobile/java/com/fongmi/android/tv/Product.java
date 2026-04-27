@@ -1,11 +1,10 @@
 package com.fongmi.android.tv;
 
-import com.fongmi.android.tv.PlayerSetting;
-
 import android.content.Context;
 import android.os.Build;
 import android.view.DisplayCutout;
 
+import com.fongmi.android.tv.PlayerSetting;
 import com.fongmi.android.tv.bean.Style;
 import com.fongmi.android.tv.utils.ResUtil;
 

@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.appcompat.app.AlertDialog;
 
 import com.fongmi.android.tv.databinding.DialogUpdateBinding;
+import com.fongmi.android.tv.setting.Setting;
 import com.fongmi.android.tv.utils.Download;
 import com.fongmi.android.tv.utils.FileUtil;
 import com.fongmi.android.tv.utils.Github;

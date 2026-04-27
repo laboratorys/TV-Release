@@ -12,8 +12,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.media3.ui.SubtitleView;
 import androidx.viewbinding.ViewBinding;
 
-import com.fongmi.android.tv.setting.PlayerSetting;
 import com.fongmi.android.tv.databinding.DialogSubtitleBinding;
+import com.fongmi.android.tv.setting.PlayerSetting;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Util;
 import com.github.bassaer.library.MDColor;

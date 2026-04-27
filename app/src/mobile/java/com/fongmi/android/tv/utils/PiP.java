@@ -17,7 +17,6 @@ import androidx.media3.ui.R;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.PlayerSetting;
-import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.event.ActionEvent;
 import com.fongmi.android.tv.receiver.ActionReceiver;
 
