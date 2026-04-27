@@ -24,7 +24,7 @@
 
 ## ✨ 魔改特性 🌟
 
-* **🔗 跨端联动**：支持与 **[LunaTV](https://github.com/laboratorys/LunaTV) (Lab版)** 同步播放记录、收藏夹及搜索历史，实现观影进度的无缝切换。
+* **🔗 跨端联动**：支持与 **[LunaTV](https://github.com/laboratorys/LunaTV) (Lab版)**、**[tvbox-sync-server](https://github.com/laboratorys/tvbox-sync-server)** 同步播放记录、收藏夹及搜索历史，实现观影进度的无缝切换。
 * **🎁 内置彩蛋**：集成多仓配置彩蛋（双击点播配置收获惊喜），无需复杂操作，安装即可直接开启视听盛宴。
 * **🛠️ 极简优化**：深度同步上游更新，仅进行核心功能的小范围魔改，确保系统的纯净、流畅与稳定。
 * **⚡ 自动演进**：完全依托 GitHub 工作流驱动，版本号自动管理，始终保持与最新技术栈同步。
