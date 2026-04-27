@@ -10,6 +10,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -29,22 +31,13 @@ public abstract class CloudSync<T> {
     protected String getApiUrl(String action) {
         String configUrl = VodConfig.getUrl();
         if (TextUtils.isEmpty(configUrl) || !Boolean.TRUE.equals(supportCache.get(configUrl))) return null;
-
-        String baseUrl = configUrl;
-        String query = "";
-        if (configUrl.contains("?")) {
-            int index = configUrl.indexOf("?");
-            baseUrl = configUrl.substring(0, index);
-            query = configUrl.substring(index);
-        }
-        return baseUrl + action + query;
+        SyncUrlConfig urlConfig = this.getBaseInfo(configUrl);
+        return urlConfig.getBaseUrl() + action + urlConfig.getQuery();
     }
 
     public void checkSupport(String configUrl) {
-        String baseUrl = configUrl.contains("?") ? configUrl.substring(0, configUrl.indexOf("?")) : configUrl;
-        String query = configUrl.contains("?") ? configUrl.substring(configUrl.indexOf("?")) : "";
-        String url = baseUrl + "/check" + query;
-
+        SyncUrlConfig urlConfig = this.getBaseInfo(configUrl);
+        String url = urlConfig.getBaseUrl() + "/check" + urlConfig.getQuery();
         Log.d(TAG, "Checking support: " + url);
         client.newCall(new Request.Builder().url(url).get().build()).enqueue(new Callback() {
             @Override
@@ -142,5 +135,22 @@ public abstract class CloudSync<T> {
                 response.close();
             }
         });
+    }
+
+    public SyncUrlConfig getBaseInfo(String originalUrl) {
+        try {
+            if (originalUrl != null && !originalUrl.trim().isEmpty()) {
+                SyncUrlConfig urlConfig = new SyncUrlConfig();
+                URI uri = new URI(originalUrl);
+                String base = uri.getScheme() + "://" + uri.getAuthority();
+                String query = uri.getQuery();
+                urlConfig.setBaseUrl(base + "/api/tvbox");
+                urlConfig.setQuery(query != null ? "?" + query : "");
+                return urlConfig;
+            }
+        } catch (URISyntaxException e) {
+            Log.d(TAG, "无效的 URL 格式: " + originalUrl);
+        }
+        return null;
     }
 }
