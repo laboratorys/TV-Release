@@ -35,7 +35,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public final class DanmakuSearchDialog extends BaseDialog implements DanmakuAdapter.OnClickListener, Callback {
+public final class DanmakuSearchDialog extends BaseBottomSheetDialog implements DanmakuAdapter.OnClickListener, Callback {
 
     private final String TAG = DanmakuSearchDialog.class.getSimpleName();
     private final DanmakuAdapter adapter;

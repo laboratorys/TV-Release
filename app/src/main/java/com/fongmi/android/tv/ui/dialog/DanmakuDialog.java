@@ -21,9 +21,8 @@ import com.fongmi.android.tv.player.PlayerManager;
 import com.fongmi.android.tv.ui.adapter.DanmakuAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 import com.fongmi.android.tv.utils.FileChooser;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-public final class DanmakuDialog extends BaseDialog implements DanmakuAdapter.OnClickListener {
+public final class DanmakuDialog extends BaseBottomSheetDialog implements DanmakuAdapter.OnClickListener {
 
     private final DanmakuAdapter adapter;
     private DialogDanmakuBinding binding;
@@ -43,7 +42,7 @@ public final class DanmakuDialog extends BaseDialog implements DanmakuAdapter.On
     }
 
     public void show(FragmentActivity activity) {
-        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof BottomSheetDialogFragment) return;
+        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof DanmakuDialog) return;
         show(activity.getSupportFragmentManager(), null);
     }
 
@@ -67,6 +66,7 @@ public final class DanmakuDialog extends BaseDialog implements DanmakuAdapter.On
     protected void initEvent() {
         binding.search.setOnClickListener(this::onSearch);
         binding.choose.setOnClickListener(this::onChoose);
+        binding.setting.setOnClickListener(this::onSetting);
     }
 
     private void onSearch(View view) {
@@ -77,6 +77,11 @@ public final class DanmakuDialog extends BaseDialog implements DanmakuAdapter.On
     private void onChoose(View view) {
         FileChooser.from(launcher).show(new String[]{"text/*"});
         player.pause();
+    }
+
+    private void onSetting(View view) {
+        DanmakuSettingDialog.create().player(player).show(getActivity());
+        dismiss();
     }
 
     @Override

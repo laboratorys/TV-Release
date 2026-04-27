@@ -38,6 +38,14 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_action_choose" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_danmaku_setting" />
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <com.fongmi.android.tv.ui.custom.CustomRecyclerView

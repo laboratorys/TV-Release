@@ -18,7 +18,7 @@ import java.util.Formatter;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-public class TimerDialog extends BaseDialog implements Timer.Callback {
+public class TimerDialog extends BaseBottomSheetDialog implements Timer.Callback {
 
     private DialogTimerBinding binding;
     private StringBuilder builder;

@@ -23,13 +23,12 @@ import com.fongmi.android.tv.ui.base.ViewType;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Timer;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.slider.Slider;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickListener {
+public class ControlDialog extends BaseBottomSheetDialog implements ParseAdapter.OnClickListener {
 
     private DialogControlBinding binding;
     private ActivityVideoBinding parent;
@@ -69,7 +68,7 @@ public class ControlDialog extends BaseDialog implements ParseAdapter.OnClickLis
     }
 
     public ControlDialog show(FragmentActivity activity) {
-        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof BottomSheetDialogFragment) return this;
+        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof ControlDialog) return this;
         show(activity.getSupportFragmentManager(), null);
         this.listener = (Listener) activity;
         return this;

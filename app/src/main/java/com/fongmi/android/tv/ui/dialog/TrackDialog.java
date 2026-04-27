@@ -31,13 +31,12 @@ import com.fongmi.android.tv.ui.adapter.TrackAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 import com.fongmi.android.tv.utils.FileChooser;
 import com.fongmi.android.tv.utils.ResUtil;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class TrackDialog extends BaseDialog implements TrackAdapter.OnClickListener {
+public final class TrackDialog extends BaseBottomSheetDialog implements TrackAdapter.OnClickListener {
 
     private final TrackNameProvider provider;
     private final TrackAdapter adapter;
@@ -66,7 +65,7 @@ public final class TrackDialog extends BaseDialog implements TrackAdapter.OnClic
     }
 
     public void show(FragmentActivity activity) {
-        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof BottomSheetDialogFragment) return;
+        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof TrackDialog) return;
         show(activity.getSupportFragmentManager(), null);
         this.listener = (Listener) activity;
     }

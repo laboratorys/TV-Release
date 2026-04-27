@@ -1112,8 +1112,8 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
 
     @Override
     public void onSubtitleClick() {
-        SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).full(isFullscreen()).show(this);
-        App.post(this::hideControl, 100);
+        SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).show(this);
+        hideControl();
     }
 
     @Override

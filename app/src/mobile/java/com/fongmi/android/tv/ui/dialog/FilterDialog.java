@@ -12,11 +12,10 @@ import com.fongmi.android.tv.bean.Filter;
 import com.fongmi.android.tv.databinding.DialogFilterBinding;
 import com.fongmi.android.tv.impl.FilterCallback;
 import com.fongmi.android.tv.ui.adapter.FilterAdapter;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.List;
 
-public class FilterDialog extends BaseDialog {
+public class FilterDialog extends BaseBottomSheetDialog {
 
     private DialogFilterBinding binding;
     private FilterCallback callback;
@@ -32,7 +31,7 @@ public class FilterDialog extends BaseDialog {
     }
 
     public void show(Fragment fragment) {
-        for (Fragment f : fragment.getChildFragmentManager().getFragments()) if (f instanceof BottomSheetDialogFragment) return;
+        for (Fragment f : fragment.getChildFragmentManager().getFragments()) if (f instanceof FilterDialog) return;
         show(fragment.getChildFragmentManager(), null);
         this.callback = (FilterCallback) fragment;
     }

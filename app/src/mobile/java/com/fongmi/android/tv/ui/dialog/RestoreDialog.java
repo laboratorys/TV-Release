@@ -15,11 +15,10 @@ import com.fongmi.android.tv.db.AppDatabase;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.ui.adapter.RestoreAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.io.File;
 
-public class RestoreDialog extends BaseDialog implements RestoreAdapter.OnClickListener {
+public class RestoreDialog extends BaseBottomSheetDialog implements RestoreAdapter.OnClickListener {
 
     private DialogRestoreBinding binding;
     private RestoreAdapter adapter;
@@ -30,7 +29,7 @@ public class RestoreDialog extends BaseDialog implements RestoreAdapter.OnClickL
     }
 
     public void show(FragmentActivity activity, Callback callback) {
-        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof BottomSheetDialogFragment) return;
+        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof RestoreDialog) return;
         show(activity.getSupportFragmentManager(), null);
         this.callback = callback;
     }

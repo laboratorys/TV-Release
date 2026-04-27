@@ -411,8 +411,8 @@ public class CastActivity extends PlaybackActivity implements CustomKeyDownVod.L
 
     @Override
     public void onSubtitleClick() {
-        SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).full(true).show(this);
-        App.post(this::hideControl, 100);
+        SubtitleDialog.create().view(mBinding.exo.getSubtitleView()).show(this);
+        hideControl();
     }
 
     @Override

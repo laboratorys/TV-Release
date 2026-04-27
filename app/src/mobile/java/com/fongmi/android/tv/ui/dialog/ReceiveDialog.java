@@ -18,9 +18,8 @@ import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.ui.activity.VideoActivity;
 import com.fongmi.android.tv.utils.ImgUtil;
 import com.fongmi.android.tv.utils.Notify;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-public class ReceiveDialog extends BaseDialog {
+public class ReceiveDialog extends BaseBottomSheetDialog {
 
     private DialogReceiveBinding binding;
     private CastEvent event;
@@ -35,12 +34,12 @@ public class ReceiveDialog extends BaseDialog {
     }
 
     public void show(FragmentActivity activity) {
-        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof BottomSheetDialogFragment) return;
+        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof ReceiveDialog) return;
         show(activity.getSupportFragmentManager(), null);
     }
 
     public void show(Fragment fragment) {
-        for (Fragment f : fragment.getChildFragmentManager().getFragments()) if (f instanceof BottomSheetDialogFragment) return;
+        for (Fragment f : fragment.getChildFragmentManager().getFragments()) if (f instanceof ReceiveDialog) return;
         show(fragment.getChildFragmentManager(), null);
     }
 

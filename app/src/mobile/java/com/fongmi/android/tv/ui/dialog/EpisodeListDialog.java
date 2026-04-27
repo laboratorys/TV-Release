@@ -2,36 +2,29 @@ package com.fongmi.android.tv.ui.dialog;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.bean.Episode;
 import com.fongmi.android.tv.databinding.DialogEpisodeListBinding;
 import com.fongmi.android.tv.ui.adapter.EpisodeAdapter;
 import com.fongmi.android.tv.ui.base.ViewType;
 import com.fongmi.android.tv.utils.ResUtil;
-import com.google.android.material.sidesheet.SideSheetDialog;
 
 import java.util.List;
 
-public class EpisodeListDialog implements EpisodeAdapter.OnClickListener {
+public class EpisodeListDialog extends BaseSideSheetDialog implements EpisodeAdapter.OnClickListener {
 
-    private final EpisodeAdapter.OnClickListener listener;
-    private final FragmentActivity activity;
     private DialogEpisodeListBinding binding;
-    private SideSheetDialog dialog;
     private EpisodeAdapter adapter;
     private List<Episode> episodes;
 
-    public static EpisodeListDialog create(FragmentActivity activity) {
-        return new EpisodeListDialog(activity);
-    }
-
-    public EpisodeListDialog(FragmentActivity activity) {
-        this.listener = (EpisodeAdapter.OnClickListener) activity;
-        this.activity = activity;
+    public static EpisodeListDialog create() {
+        return new EpisodeListDialog();
     }
 
     public EpisodeListDialog episodes(List<Episode> episodes) {
@@ -39,35 +32,29 @@ public class EpisodeListDialog implements EpisodeAdapter.OnClickListener {
         return this;
     }
 
-    public void show() {
-        initDialog();
-        initView();
+    public void show(FragmentActivity activity) {
+        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof EpisodeListDialog) return;
+        show(activity.getSupportFragmentManager(), null);
     }
 
-    private void initDialog() {
-        binding = DialogEpisodeListBinding.inflate(LayoutInflater.from(activity));
-        dialog = new SideSheetDialog(activity);
-        dialog.setContentView(binding.getRoot());
-        dialog.getBehavior().setDraggable(false);
-        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        dialog.getWindow().setDimAmount(0);
-        dialog.show();
-        setWidth();
+    @Override
+    protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
+        return binding = DialogEpisodeListBinding.inflate(inflater, container, false);
     }
 
-    private void setWidth() {
+    @Override
+    protected int getWidth() {
         int minWidth = ResUtil.dp2px(200);
         int maxWidth = ResUtil.getScreenWidth() / 3;
         for (Episode item : episodes) minWidth = Math.max(minWidth, ResUtil.getTextWidth(item.getName(), 14));
-        FrameLayout sheet = dialog.findViewById(com.google.android.material.R.id.m3_side_sheet);
-        ViewGroup.LayoutParams params = sheet.getLayoutParams();
-        params.width = Math.min(minWidth, maxWidth);
-        sheet.setLayoutParams(params);
+        return Math.min(minWidth, maxWidth);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         setRecyclerView();
-        setEpisode();
+        adapter.addAll(episodes);
+        binding.recycler.scrollToPosition(adapter.getPosition());
     }
 
     private void setRecyclerView() {
@@ -76,14 +63,9 @@ public class EpisodeListDialog implements EpisodeAdapter.OnClickListener {
         binding.recycler.setAdapter(adapter = new EpisodeAdapter(this, ViewType.GRID));
     }
 
-    private void setEpisode() {
-        adapter.addAll(episodes);
-        binding.recycler.scrollToPosition(adapter.getPosition());
-    }
-
     @Override
     public void onItemClick(Episode item) {
-        listener.onItemClick(item);
-        dialog.dismiss();
+        ((EpisodeAdapter.OnClickListener) requireActivity()).onItemClick(item);
+        dismiss();
     }
 }

@@ -8,8 +8,6 @@ import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Util;
 import com.google.common.net.HttpHeaders;
 
-import org.brotli.dec.BrotliInputStream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -51,7 +49,6 @@ public class ResponseInterceptor implements Interceptor {
         Request request = check(chain.request());
         Response response = chain.proceed(request);
         String encoding = response.header(HttpHeaders.CONTENT_ENCODING);
-        if ("br".equalsIgnoreCase(encoding)) return brotli(response);
         if ("deflate".equalsIgnoreCase(encoding)) return deflate(response);
         if (response.code() == 406 && redirectMap.containsKey(request.url().toString())) return redirect(request, response);
         if (response.code() == 302 && response.header(HttpHeaders.LOCATION) != null) redirectMap.put(response.header(HttpHeaders.LOCATION), request.url().toString());
@@ -67,11 +64,6 @@ public class ResponseInterceptor implements Interceptor {
 
     private Response redirect(Request request, Response response) {
         return new Response.Builder().request(request).protocol(response.protocol()).code(302).message("Found").header(HttpHeaders.LOCATION, redirectMap.get(request.url().toString())).build();
-    }
-
-    private Response brotli(Response response) throws IOException {
-        InputStream is = new BrotliInputStream(response.body().byteStream());
-        return response.newBuilder().headers(response.headers()).body(getBody(response, is)).build();
     }
 
     private Response deflate(Response response) {

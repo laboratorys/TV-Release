@@ -15,9 +15,8 @@ import com.fongmi.android.tv.databinding.DialogTitleBinding;
 import com.fongmi.android.tv.player.PlayerManager;
 import com.fongmi.android.tv.ui.adapter.TitleAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-public final class TitleDialog extends BaseDialog implements TitleAdapter.OnClickListener {
+public final class TitleDialog extends BaseBottomSheetDialog implements TitleAdapter.OnClickListener {
 
     private final TitleAdapter adapter;
     private DialogTitleBinding binding;
@@ -37,7 +36,7 @@ public final class TitleDialog extends BaseDialog implements TitleAdapter.OnClic
     }
 
     public void show(FragmentActivity activity) {
-        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof BottomSheetDialogFragment) return;
+        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof TitleDialog) return;
         show(activity.getSupportFragmentManager(), null);
     }
 

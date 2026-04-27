@@ -15,13 +15,12 @@ import com.fongmi.android.tv.databinding.DialogEpisodeGridBinding;
 import com.fongmi.android.tv.ui.adapter.EpisodeAdapter;
 import com.fongmi.android.tv.ui.fragment.EpisodeFragment;
 import com.fongmi.android.tv.utils.ResUtil;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EpisodeGridDialog extends BaseDialog {
+public class EpisodeGridDialog extends BaseBottomSheetDialog {
 
     private final List<String> titles;
     private EpisodeAdapter.OnClickListener listener;
@@ -51,7 +50,7 @@ public class EpisodeGridDialog extends BaseDialog {
     }
 
     public void show(FragmentActivity activity) {
-        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof BottomSheetDialogFragment) return;
+        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof EpisodeGridDialog) return;
         this.listener = (EpisodeAdapter.OnClickListener) activity;
         show(activity.getSupportFragmentManager(), null);
     }

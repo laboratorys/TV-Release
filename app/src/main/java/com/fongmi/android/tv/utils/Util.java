@@ -3,11 +3,7 @@ package com.fongmi.android.tv.utils;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.IBinder;
 import android.provider.Settings;
@@ -28,9 +24,7 @@ import com.fongmi.android.tv.R;
 import com.github.catvod.utils.Shell;
 
 import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.Formatter;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -173,6 +167,15 @@ public class Util {
 
     public static boolean isMobile() {
         return "mobile".equals(BuildConfig.FLAVOR_mode);
+    }
+
+    public static boolean isFullscreen(Activity activity) {
+        if (activity == null || activity.getWindow() == null) return false;
+        return isLeanback() || (activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
+    }
+
+    public static boolean isFullscreenLand(Activity activity) {
+        return isFullscreen(activity) && !isLeanback() && ResUtil.isLand(activity);
     }
 
     public static String format(StringBuilder builder, Formatter formatter, long timeMs) {
