@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.media3.ui.SubtitleView;
 import androidx.viewbinding.ViewBinding;
 
-import com.fongmi.android.tv.Setting;
+import com.fongmi.android.tv.setting.PlayerSetting;
 import com.fongmi.android.tv.databinding.DialogSubtitleBinding;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Util;
@@ -68,27 +68,27 @@ public final class SubtitleDialog extends BaseBottomSheetDialog {
 
     private void onUp(View view) {
         subtitleView.addPosition(0.005f);
-        Setting.putSubtitlePosition(subtitleView.getPosition());
+        PlayerSetting.putSubtitlePosition(subtitleView.getPosition());
     }
 
     private void onDown(View view) {
         subtitleView.subPosition(0.005f);
-        Setting.putSubtitlePosition(subtitleView.getPosition());
+        PlayerSetting.putSubtitlePosition(subtitleView.getPosition());
     }
 
     private void onLarge(View view) {
         subtitleView.addTextSize(0.002f);
-        Setting.putSubtitleTextSize(subtitleView.getTextSize());
+        PlayerSetting.putSubtitleTextSize(subtitleView.getTextSize());
     }
 
     private void onSmall(View view) {
         subtitleView.subTextSize(0.002f);
-        Setting.putSubtitleTextSize(subtitleView.getTextSize());
+        PlayerSetting.putSubtitleTextSize(subtitleView.getTextSize());
     }
 
     private void onReset(View view) {
-        Setting.putSubtitleTextSize(0.0f);
-        Setting.putSubtitlePosition(0.0f);
+        PlayerSetting.putSubtitleTextSize(0.0f);
+        PlayerSetting.putSubtitlePosition(0.0f);
         subtitleView.setBottomPosition(0.0f);
         subtitleView.setUserDefaultTextSize();
     }

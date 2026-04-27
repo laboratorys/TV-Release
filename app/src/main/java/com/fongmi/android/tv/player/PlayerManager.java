@@ -17,7 +17,8 @@ import androidx.media3.ui.danmaku.DanmakuController;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.R;
-import com.fongmi.android.tv.Setting;
+import com.fongmi.android.tv.setting.DanmakuSetting;
+import com.fongmi.android.tv.setting.PlayerSetting;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.bean.Sub;
@@ -222,7 +223,7 @@ public class PlayerManager implements ParseCallback {
     public void setDanmakuController(DanmakuController controller) {
         danmakuController = controller;
         danmakuController.setOkHttpClient(OkHttp.player());
-        danmakuController.setConfig(Setting.getDanmakuConfig());
+        danmakuController.setConfig(DanmakuSetting.getConfig());
     }
 
     public void setDanmakuConfig(DanmakuConfig config) {
@@ -255,7 +256,7 @@ public class PlayerManager implements ParseCallback {
     }
 
     public String toggleSpeed() {
-        return setSpeed(getSpeed() == 1 ? Setting.getSpeed() : 1);
+        return setSpeed(getSpeed() == 1 ? PlayerSetting.getSpeed() : 1);
     }
 
     public void setTrack(List<Track> tracks) {

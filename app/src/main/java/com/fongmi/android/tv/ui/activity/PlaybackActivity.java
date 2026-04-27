@@ -19,7 +19,7 @@ import androidx.media3.session.SessionToken;
 import androidx.media3.ui.PlayerView;
 
 import com.fongmi.android.tv.R;
-import com.fongmi.android.tv.Setting;
+import com.fongmi.android.tv.setting.PlayerSetting;
 import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.player.PlayerManager;
 import com.fongmi.android.tv.player.engine.PlaySpec;
@@ -213,7 +213,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     }
 
     private void setRender() {
-        getExoView().setRender(Setting.getRender());
+        getExoView().setRender(PlayerSetting.getRender());
         detachSurface();
         attachSurface();
     }
@@ -341,7 +341,7 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
     @Override
     protected void onStop() {
         super.onStop();
-        if (isOwner() && Setting.isBackgroundOff() && mController != null) mController.pause();
+        if (isOwner() && PlayerSetting.isBackgroundOff() && mController != null) mController.pause();
     }
 
     @Override

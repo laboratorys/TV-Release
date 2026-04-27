@@ -26,6 +26,8 @@ import com.bumptech.glide.request.transition.Transition;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.R;
+import com.fongmi.android.tv.PlayerSetting;
+import com.fongmi.android.tv.LiveSetting;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.api.config.LiveConfig;
 import com.fongmi.android.tv.bean.CastVideo;
@@ -215,10 +217,10 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     }
 
     private void setVideoView() {
-        setScale(Setting.getLiveScale());
-        mBinding.control.action.invert.setActivated(Setting.isInvert());
-        mBinding.control.action.across.setActivated(Setting.isAcross());
-        mBinding.control.action.change.setActivated(Setting.isChange());
+        setScale(LiveSetting.getScale());
+        mBinding.control.action.invert.setActivated(LiveSetting.isInvert());
+        mBinding.control.action.across.setActivated(LiveSetting.isAcross());
+        mBinding.control.action.change.setActivated(LiveSetting.isChange());
         mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(this, view));
     }
 
@@ -227,7 +229,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     }
 
     private void setScale(int scale) {
-        Setting.putLiveScale(scale);
+        LiveSetting.putScale(scale);
         mBinding.exo.setResizeMode(scale);
         mBinding.control.action.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
     }
@@ -381,7 +383,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     }
 
     private void onScale() {
-        int index = Setting.getLiveScale();
+        int index = LiveSetting.getScale();
         String[] array = ResUtil.getStringArray(R.array.select_scale);
         if (mKeyDown.getScale() != 1.0f) mKeyDown.resetScale();
         else setScale(index == array.length - 1 ? 0 : ++index);
@@ -406,20 +408,20 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
 
     private void onInvert() {
         setR1Callback();
-        Setting.putInvert(!Setting.isInvert());
-        mBinding.control.action.invert.setActivated(Setting.isInvert());
+        LiveSetting.putInvert(!LiveSetting.isInvert());
+        mBinding.control.action.invert.setActivated(LiveSetting.isInvert());
     }
 
     private void onAcross() {
         setR1Callback();
-        Setting.putAcross(!Setting.isAcross());
-        mBinding.control.action.across.setActivated(Setting.isAcross());
+        LiveSetting.putAcross(!LiveSetting.isAcross());
+        mBinding.control.action.across.setActivated(LiveSetting.isAcross());
     }
 
     private void onChange() {
         setR1Callback();
-        Setting.putChange(!Setting.isChange());
-        mBinding.control.action.change.setActivated(Setting.isChange());
+        LiveSetting.putChange(!LiveSetting.isChange());
+        mBinding.control.action.change.setActivated(LiveSetting.isChange());
     }
 
     private void onDecode() {
@@ -891,7 +893,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     }
 
     private void startFlow() {
-        if (!Setting.isChange()) return;
+        if (!LiveSetting.isChange()) return;
         if (!mChannel.isLast()) nextLine(true);
     }
 
@@ -923,7 +925,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         if (mGroup == null) return;
         int position = mGroup.getPosition() - 1;
         boolean limit = position < 0;
-        if (Setting.isAcross() & limit) prevGroup();
+        if (LiveSetting.isAcross() & limit) prevGroup();
         else mGroup.setPosition(limit ? mChannelAdapter.getItemCount() - 1 : position);
         if (!mGroup.isEmpty()) onItemClick(mGroup.current());
     }
@@ -932,7 +934,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         if (mGroup == null) return;
         int position = mGroup.getPosition() + 1;
         boolean limit = position > mChannelAdapter.getItemCount() - 1;
-        if (Setting.isAcross() && limit) nextGroup();
+        if (LiveSetting.isAcross() && limit) nextGroup();
         else mGroup.setPosition(limit ? 0 : position);
         if (!mGroup.isEmpty()) onItemClick(mGroup.current());
     }
@@ -991,7 +993,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         if (!player().isPlaying()) return;
         mBinding.widget.speed.setVisibility(View.VISIBLE);
         mBinding.widget.speed.startAnimation(ResUtil.getAnim(R.anim.forward));
-        mBinding.control.action.speed.setText(player().setSpeed(Setting.getSpeed()));
+        mBinding.control.action.speed.setText(player().setSpeed(PlayerSetting.getSpeed()));
     }
 
     @Override
@@ -1020,13 +1022,13 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
 
     @Override
     public void onFlingUp() {
-        if (Setting.isInvert()) nextChannel();
+        if (LiveSetting.isInvert()) nextChannel();
         else prevChannel();
     }
 
     @Override
     public void onFlingDown() {
-        if (Setting.isInvert()) prevChannel();
+        if (LiveSetting.isInvert()) prevChannel();
         else nextChannel();
     }
 
@@ -1076,7 +1078,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         super.onUserLeaveHint();
         if (isRedirect()) return;
         if (isLock()) App.post(this::onLock, 500);
-        if (service() != null && player().haveTrack(C.TRACK_TYPE_VIDEO)) mPiP.enter(this, player().getVideoWidth(), player().getVideoHeight(), Setting.getLiveScale());
+        if (service() != null && player().haveTrack(C.TRACK_TYPE_VIDEO)) mPiP.enter(this, player().getVideoWidth(), player().getVideoHeight(), LiveSetting.getScale());
     }
 
     @Override

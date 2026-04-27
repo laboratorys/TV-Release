@@ -26,7 +26,8 @@ import com.bumptech.glide.request.transition.Transition;
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.R;
-import com.fongmi.android.tv.Setting;
+import com.fongmi.android.tv.setting.PlayerSetting;
+import com.fongmi.android.tv.setting.LiveSetting;
 import com.fongmi.android.tv.api.config.LiveConfig;
 import com.fongmi.android.tv.bean.Channel;
 import com.fongmi.android.tv.bean.Config;
@@ -52,7 +53,6 @@ import com.fongmi.android.tv.service.PlaybackService;
 import com.fongmi.android.tv.ui.adapter.ChannelAdapter;
 import com.fongmi.android.tv.ui.adapter.EpgDataAdapter;
 import com.fongmi.android.tv.ui.adapter.GroupAdapter;
-import com.fongmi.android.tv.ui.base.PlaybackActivity;
 import com.fongmi.android.tv.ui.custom.CustomKeyDownLive;
 import com.fongmi.android.tv.ui.custom.CustomLiveListView;
 import com.fongmi.android.tv.ui.custom.CustomSeekView;
@@ -213,11 +213,11 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
     }
 
     private void setVideoView() {
-        setScale(Setting.getLiveScale());
+        setScale(LiveSetting.getScale());
         findViewById(R.id.timeBar).setNextFocusUpId(R.id.config);
-        mBinding.control.action.invert.setActivated(Setting.isInvert());
-        mBinding.control.action.across.setActivated(Setting.isAcross());
-        mBinding.control.action.change.setActivated(Setting.isChange());
+        mBinding.control.action.invert.setActivated(LiveSetting.isInvert());
+        mBinding.control.action.across.setActivated(LiveSetting.isAcross());
+        mBinding.control.action.change.setActivated(LiveSetting.isChange());
     }
 
     private void setDecode() {
@@ -225,7 +225,7 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
     }
 
     private void setScale(int scale) {
-        Setting.putLiveScale(scale);
+        LiveSetting.putScale(scale);
         mBinding.exo.setResizeMode(scale);
         mBinding.control.action.scale.setText(ResUtil.getStringArray(R.array.select_scale)[scale]);
     }
@@ -373,7 +373,7 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
     }
 
     private void onScale() {
-        int index = Setting.getLiveScale();
+        int index = LiveSetting.getScale();
         String[] array = ResUtil.getStringArray(R.array.select_scale);
         setScale(index == array.length - 1 ? 0 : ++index);
     }
@@ -405,18 +405,18 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
     }
 
     private void onInvert() {
-        Setting.putInvert(!Setting.isInvert());
-        mBinding.control.action.invert.setActivated(Setting.isInvert());
+        LiveSetting.putInvert(!LiveSetting.isInvert());
+        mBinding.control.action.invert.setActivated(LiveSetting.isInvert());
     }
 
     private void onAcross() {
-        Setting.putAcross(!Setting.isAcross());
-        mBinding.control.action.across.setActivated(Setting.isAcross());
+        LiveSetting.putAcross(!LiveSetting.isAcross());
+        mBinding.control.action.across.setActivated(LiveSetting.isAcross());
     }
 
     private void onChange() {
-        Setting.putChange(!Setting.isChange());
-        mBinding.control.action.change.setActivated(Setting.isChange());
+        LiveSetting.putChange(!LiveSetting.isChange());
+        mBinding.control.action.change.setActivated(LiveSetting.isChange());
     }
 
     private void onChoose() {
@@ -858,7 +858,7 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
     }
 
     private void startFlow() {
-        if (!Setting.isChange()) return;
+        if (!LiveSetting.isChange()) return;
         if (!mChannel.isLast()) nextLine(true);
     }
 
@@ -866,7 +866,7 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
         if (mGroup == null) return;
         int position = mGroup.getPosition() - 1;
         boolean limit = position < 0;
-        if (Setting.isAcross() & limit) prevGroup();
+        if (LiveSetting.isAcross() & limit) prevGroup();
         else mGroup.setPosition(limit ? mChannelAdapter.getItemCount() - 1 : position);
         if (!mGroup.isEmpty()) setChannel(mGroup.current());
     }
@@ -875,7 +875,7 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
         if (mGroup == null) return;
         int position = mGroup.getPosition() + 1;
         boolean limit = position > mChannelAdapter.getItemCount() - 1;
-        if (Setting.isAcross() && limit) nextGroup();
+        if (LiveSetting.isAcross() && limit) nextGroup();
         else mGroup.setPosition(limit ? 0 : position);
         if (!mGroup.isEmpty()) setChannel(mGroup.current());
     }
@@ -986,13 +986,13 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
 
     @Override
     public void onKeyUp() {
-        if (Setting.isInvert()) nextChannel();
+        if (LiveSetting.isInvert()) nextChannel();
         else prevChannel();
     }
 
     @Override
     public void onKeyDown() {
-        if (Setting.isInvert()) prevChannel();
+        if (LiveSetting.isInvert()) prevChannel();
         else nextChannel();
     }
 
@@ -1040,7 +1040,7 @@ public class LiveActivity extends PlaybackActivity implements GroupAdapter.OnCli
     @Override
     protected void onStop() {
         super.onStop();
-        if (Setting.isBackgroundOff()) mClock.stop();
+        if (PlayerSetting.isBackgroundOff()) mClock.stop();
     }
 
     @Override

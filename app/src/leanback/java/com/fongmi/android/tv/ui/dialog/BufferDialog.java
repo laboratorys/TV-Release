@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
 
-import com.fongmi.android.tv.Setting;
+import com.fongmi.android.tv.setting.PlayerSetting;
 import com.fongmi.android.tv.databinding.DialogBufferBinding;
 import com.fongmi.android.tv.impl.BufferCallback;
 import com.fongmi.android.tv.utils.KeyUtil;
@@ -39,7 +39,7 @@ public class BufferDialog {
     }
 
     private void initView() {
-        binding.slider.setValue(Setting.getBuffer());
+        binding.slider.setValue(PlayerSetting.getBuffer());
     }
 
     private void initEvent() {

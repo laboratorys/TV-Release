@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
-import com.fongmi.android.tv.Setting;
+import com.fongmi.android.tv.setting.LiveSetting;
 import com.fongmi.android.tv.api.config.LiveConfig;
 import com.fongmi.android.tv.bean.Core;
 import com.fongmi.android.tv.exception.ExtractException;
@@ -64,7 +64,7 @@ public class TVBus implements Source.Extractor, Listener {
     }
 
     private void change() throws Exception {
-        Setting.putBootLive(true);
+        LiveSetting.putBoot(true);
         App.post(() -> System.exit(0), 100);
         throw new ExtractException(ResUtil.getString(R.string.error_play_url));
     }

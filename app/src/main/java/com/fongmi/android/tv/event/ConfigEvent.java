@@ -1,6 +1,6 @@
 package com.fongmi.android.tv.event;
 
-import com.fongmi.android.tv.Setting;
+import com.fongmi.android.tv.setting.LiveSetting;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -24,7 +24,7 @@ public record ConfigEvent(Type type) {
 
     public static void boot() {
         EventBus.getDefault().post(new ConfigEvent(Type.BOOT));
-        Setting.putBootLive(false);
+        LiveSetting.putBoot(false);
     }
 
     public boolean isVod() {

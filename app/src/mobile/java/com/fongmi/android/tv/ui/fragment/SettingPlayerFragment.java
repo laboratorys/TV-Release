@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.R;
+import com.fongmi.android.tv.DanmakuSetting;
+import com.fongmi.android.tv.PlayerSetting;
 import com.fongmi.android.tv.Setting;
 import com.fongmi.android.tv.databinding.FragmentSettingPlayerBinding;
 import com.fongmi.android.tv.impl.BufferCallback;
@@ -51,19 +53,19 @@ public class SettingPlayerFragment extends BaseFragment implements UaCallback, B
     protected void initView() {
         format = new DecimalFormat("0.#");
         mBinding.uaText.setText(Setting.getUa());
-        mBinding.aacText.setText(getSwitch(Setting.isPreferAAC()));
-        mBinding.tunnelText.setText(getSwitch(Setting.isTunnel()));
+        mBinding.aacText.setText(getSwitch(PlayerSetting.isPreferAAC()));
+        mBinding.tunnelText.setText(getSwitch(PlayerSetting.isTunnel()));
         mBinding.adblockText.setText(getSwitch(Setting.isAdblock()));
-        mBinding.speedText.setText(format.format(Setting.getSpeed()));
-        mBinding.bufferText.setText(String.valueOf(Setting.getBuffer()));
-        mBinding.audioDecodeText.setText(getSwitch(Setting.isAudioPrefer()));
-        mBinding.videoDecodeText.setText(getSwitch(Setting.isVideoPrefer()));
-        mBinding.danmakuLoadText.setText(getSwitch(Setting.isDanmakuLoad()));
-        mBinding.caption.setVisibility(Setting.hasCaption() ? View.VISIBLE : View.GONE);
-        mBinding.scaleText.setText((scale = ResUtil.getStringArray(R.array.select_scale))[Setting.getScale()]);
-        mBinding.renderText.setText((render = ResUtil.getStringArray(R.array.select_render))[Setting.getRender()]);
-        mBinding.captionText.setText((caption = ResUtil.getStringArray(R.array.select_caption))[Setting.isCaption() ? 1 : 0]);
-        mBinding.backgroundText.setText((background = ResUtil.getStringArray(R.array.select_background))[Setting.getBackground()]);
+        mBinding.speedText.setText(format.format(PlayerSetting.getSpeed()));
+        mBinding.bufferText.setText(String.valueOf(PlayerSetting.getBuffer()));
+        mBinding.audioDecodeText.setText(getSwitch(PlayerSetting.isAudioPrefer()));
+        mBinding.videoDecodeText.setText(getSwitch(PlayerSetting.isVideoPrefer()));
+        mBinding.danmakuLoadText.setText(getSwitch(DanmakuSetting.isLoad()));
+        mBinding.caption.setVisibility(PlayerSetting.hasCaption() ? View.VISIBLE : View.GONE);
+        mBinding.scaleText.setText((scale = ResUtil.getStringArray(R.array.select_scale))[PlayerSetting.getScale()]);
+        mBinding.renderText.setText((render = ResUtil.getStringArray(R.array.select_render))[PlayerSetting.getRender()]);
+        mBinding.captionText.setText((caption = ResUtil.getStringArray(R.array.select_caption))[PlayerSetting.isCaption() ? 1 : 0]);
+        mBinding.backgroundText.setText((background = ResUtil.getStringArray(R.array.select_background))[PlayerSetting.getBackground()]);
     }
 
     @Override
@@ -95,14 +97,14 @@ public class SettingPlayerFragment extends BaseFragment implements UaCallback, B
     }
 
     private void setAAC(View view) {
-        Setting.putPreferAAC(!Setting.isPreferAAC());
-        mBinding.aacText.setText(getSwitch(Setting.isPreferAAC()));
+        PlayerSetting.putPreferAAC(!PlayerSetting.isPreferAAC());
+        mBinding.aacText.setText(getSwitch(PlayerSetting.isPreferAAC()));
     }
 
     private void onScale(View view) {
-        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.player_scale).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(scale, Setting.getScale(), (dialog, which) -> {
+        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.player_scale).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(scale, PlayerSetting.getScale(), (dialog, which) -> {
             mBinding.scaleText.setText(scale[which]);
-            Setting.putScale(which);
+            PlayerSetting.putScale(which);
             dialog.dismiss();
         }).show();
     }
@@ -114,7 +116,7 @@ public class SettingPlayerFragment extends BaseFragment implements UaCallback, B
     @Override
     public void setSpeed(float speed) {
         mBinding.speedText.setText(format.format(speed));
-        Setting.putSpeed(speed);
+        PlayerSetting.putSpeed(speed);
     }
 
     private void onBuffer(View view) {
@@ -124,30 +126,30 @@ public class SettingPlayerFragment extends BaseFragment implements UaCallback, B
     @Override
     public void setBuffer(int times) {
         mBinding.bufferText.setText(String.valueOf(times));
-        Setting.putBuffer(times);
+        PlayerSetting.putBuffer(times);
     }
 
     private void setRender(View view) {
-        if (Setting.isTunnel() && Setting.getRender() == 0) setTunnel(view);
-        int index = (Setting.getRender() + 1) % render.length;
+        if (PlayerSetting.isTunnel() && PlayerSetting.getRender() == 0) setTunnel(view);
+        int index = (PlayerSetting.getRender() + 1) % render.length;
         mBinding.renderText.setText(render[index]);
-        Setting.putRender(index);
+        PlayerSetting.putRender(index);
     }
 
     private void setTunnel(View view) {
-        Setting.putTunnel(!Setting.isTunnel());
-        mBinding.tunnelText.setText(getSwitch(Setting.isTunnel()));
-        if (Setting.isTunnel() && Setting.getRender() == 1) setRender(view);
+        PlayerSetting.putTunnel(!PlayerSetting.isTunnel());
+        mBinding.tunnelText.setText(getSwitch(PlayerSetting.isTunnel()));
+        if (PlayerSetting.isTunnel() && PlayerSetting.getRender() == 1) setRender(view);
     }
 
     private void setCaption(View view) {
-        Setting.putCaption(!Setting.isCaption());
-        mBinding.captionText.setText(caption[Setting.isCaption() ? 1 : 0]);
+        PlayerSetting.putCaption(!PlayerSetting.isCaption());
+        mBinding.captionText.setText(caption[PlayerSetting.isCaption() ? 1 : 0]);
     }
 
     private boolean onCaption(View view) {
-        if (Setting.isCaption()) startActivity(new Intent(Settings.ACTION_CAPTIONING_SETTINGS));
-        return Setting.isCaption();
+        if (PlayerSetting.isCaption()) startActivity(new Intent(Settings.ACTION_CAPTIONING_SETTINGS));
+        return PlayerSetting.isCaption();
     }
 
     private void setAdblock(View view) {
@@ -156,26 +158,26 @@ public class SettingPlayerFragment extends BaseFragment implements UaCallback, B
     }
 
     private void onBackground(View view) {
-        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.player_background).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(background, Setting.getBackground(), (dialog, which) -> {
+        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.player_background).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(background, PlayerSetting.getBackground(), (dialog, which) -> {
             mBinding.backgroundText.setText(background[which]);
-            Setting.putBackground(which);
+            PlayerSetting.putBackground(which);
             dialog.dismiss();
         }).show();
     }
 
     private void setAudioDecode(View view) {
-        Setting.putAudioPrefer(!Setting.isAudioPrefer());
-        mBinding.audioDecodeText.setText(getSwitch(Setting.isAudioPrefer()));
+        PlayerSetting.putAudioPrefer(!PlayerSetting.isAudioPrefer());
+        mBinding.audioDecodeText.setText(getSwitch(PlayerSetting.isAudioPrefer()));
     }
 
     private void setVideoDecode(View view) {
-        Setting.putVideoPrefer(!Setting.isVideoPrefer());
-        mBinding.videoDecodeText.setText(getSwitch(Setting.isVideoPrefer()));
+        PlayerSetting.putVideoPrefer(!PlayerSetting.isVideoPrefer());
+        mBinding.videoDecodeText.setText(getSwitch(PlayerSetting.isVideoPrefer()));
     }
 
     private void setDanmakuLoad(View view) {
-        Setting.putDanmakuLoad(!Setting.isDanmakuLoad());
-        mBinding.danmakuLoadText.setText(getSwitch(Setting.isDanmakuLoad()));
+        DanmakuSetting.putLoad(!DanmakuSetting.isLoad());
+        mBinding.danmakuLoadText.setText(getSwitch(DanmakuSetting.isLoad()));
     }
 
     @Override

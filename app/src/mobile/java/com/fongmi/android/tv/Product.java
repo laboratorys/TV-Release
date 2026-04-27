@@ -1,5 +1,7 @@
 package com.fongmi.android.tv;
 
+import com.fongmi.android.tv.PlayerSetting;
+
 import android.content.Context;
 import android.os.Build;
 import android.view.DisplayCutout;
@@ -16,7 +18,7 @@ public class Product {
     public static int getColumn(Context context) {
         int count = ResUtil.isLand(context) ? 7 : 5;
         count = count + (ResUtil.isPad() ? 1 : 0);
-        return Math.abs(Setting.getSize() - count);
+        return Math.abs(PlayerSetting.getSize() - count);
     }
 
     public static int getColumn(Context context, Style style) {
