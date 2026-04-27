@@ -16,9 +16,9 @@ import androidx.annotation.StringRes;
 import androidx.media3.ui.R;
 
 import com.fongmi.android.tv.App;
-import com.fongmi.android.tv.PlayerSetting;
 import com.fongmi.android.tv.event.ActionEvent;
 import com.fongmi.android.tv.receiver.ActionReceiver;
+import com.fongmi.android.tv.setting.PlayerSetting;
 
 import java.util.ArrayList;
 import java.util.List;

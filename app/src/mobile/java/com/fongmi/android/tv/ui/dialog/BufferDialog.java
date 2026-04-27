@@ -6,10 +6,10 @@ import android.view.LayoutInflater;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.fongmi.android.tv.PlayerSetting;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.databinding.DialogBufferBinding;
 import com.fongmi.android.tv.impl.BufferCallback;
+import com.fongmi.android.tv.setting.PlayerSetting;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class BufferDialog {

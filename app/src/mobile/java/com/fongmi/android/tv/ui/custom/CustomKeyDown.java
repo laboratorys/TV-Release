@@ -12,7 +12,7 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 
 import com.fongmi.android.tv.App;
-import com.fongmi.android.tv.LiveSetting;
+import com.fongmi.android.tv.setting.LiveSetting;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Util;
 
