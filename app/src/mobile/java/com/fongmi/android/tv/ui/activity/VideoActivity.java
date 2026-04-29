@@ -266,7 +266,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     @Override
     protected void onServiceConnected() {
         player().setDanmakuController(mBinding.exo.getDanmakuController());
-        player().setDanmakuEnabled(DanmakuSetting.isLoad());
+        player().setDanmakuEnabled(DanmakuSetting.isShow());
         checkLand();
         checkId();
     }
