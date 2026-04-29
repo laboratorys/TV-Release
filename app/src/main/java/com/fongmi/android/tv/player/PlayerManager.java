@@ -234,6 +234,10 @@ public class PlayerManager implements ParseCallback {
         danmakuController.setEnabled(enabled);
     }
 
+    public void sendDanmaku(String text) {
+        danmakuController.sendNow(text);
+    }
+
     public String setSpeed(float speed) {
         if (!player.isCommandAvailable(Player.COMMAND_SET_SPEED_AND_PITCH)) return getSpeedText();
         player.setPlaybackParameters(player.getPlaybackParameters().withSpeed(speed));

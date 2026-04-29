@@ -80,7 +80,7 @@ html, body {
 
 .tab-panel { display: none; }
 .tab-panel.active { display: flex; flex-direction: column; justify-content: center; min-height: 100%; padding: 20px 16px; }
-#panel4.tab-panel.active { display: block; justify-content: unset; padding: 16px; }
+#panel5.tab-panel.active { display: block; justify-content: unset; padding: 16px; }
 .panel-content { display: flex; flex-direction: column; gap: 20px; width: 100%; }
 
 #file_uploader { display: none; }

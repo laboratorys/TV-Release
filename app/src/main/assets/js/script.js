@@ -20,6 +20,13 @@ function setting() {
     doAction('setting', { text: $('#setting_text').val(), name: $('#setting_name').val() });
 }
 
+function sendDanmaku() {
+    const text = $('#danmaku_text').val().trim();
+    if (!text) return;
+    doAction('danmaku', { text });
+    $('#danmaku_text').val('');
+}
+
 function doAction(action, kv) {
     $.post('/action', { ...kv, do: action });
 }
@@ -216,11 +223,11 @@ function warnToast(msg) {
 }
 
 function showPanel(id) {
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 5; i++) {
         document.getElementById('panel' + i).classList.toggle('active', i === id);
         document.getElementById('tab' + i).classList.toggle('active', i === id);
     }
-    if (id === 4 && document.getElementById('file_list').innerHTML === '') listFile('');
+    if (id === 5 && document.getElementById('file_list').innerHTML === '') listFile('');
 }
 
 const tab = parseInt(new URLSearchParams(window.location.search).get('tab')) || 1;

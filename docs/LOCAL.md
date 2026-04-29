@@ -81,6 +81,26 @@ http://127.0.0.1:9978/action?do=control&type=next
 
 ---
 
+### do=danmaku — 發送彈幕
+
+即時發送一條彈幕文字至目前播放器（需播放器支援彈幕）。
+
+```
+http://127.0.0.1:9978/action?do=danmaku&text={text}
+```
+
+| 參數     | 說明          |
+|--------|-------------|
+| `text` | 要發送的彈幕文字內容。 |
+
+**範例：**
+
+```
+http://127.0.0.1:9978/action?do=danmaku&text=Hello
+```
+
+---
+
 ### do=refresh — 刷新指令
 
 觸發應用程式重新載入指定頁面資料，或推送內容至播放器。
@@ -509,6 +529,7 @@ GET http://127.0.0.1:9978/device
 | 端點                   | 方法       | 主要參數                              | 說明                                            |
 |----------------------|----------|-----------------------------------|-----------------------------------------------|
 | `/action?do=control` | GET/POST | `type`                            | 播放控制（play/pause/stop/prev/next/repeat/replay） |
+| `/action?do=danmaku` | GET/POST | `text`                            | 即時發送一條彈幕至目前播放器                                |
 | `/action?do=refresh` | GET/POST | `type`, `path`, `json`            | 刷新頁面或推送字幕/彈幕                                  |
 | `/action?do=push`    | GET/POST | `url`                             | 推送 URL 播放                                     |
 | `/action?do=file`    | GET/POST | `path`                            | 開啟本地檔案                                        |

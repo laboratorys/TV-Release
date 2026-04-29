@@ -42,15 +42,22 @@ public class Action implements Process {
     public Response doResponse(IHTTPSession session, String url, Map<String, String> files) {
         Map<String, String> params = session.getParms();
         String param = params.get("do");
-        if ("file".equals(param)) onFile(params);
-        else if ("push".equals(param)) onPush(params);
-        else if ("cast".equals(param)) onCast(params);
-        else if ("sync".equals(param)) onSync(params);
-        else if ("search".equals(param)) onSearch(params);
-        else if ("setting".equals(param)) onSetting(params);
-        else if ("refresh".equals(param)) onRefresh(params);
-        else if ("control".equals(param)) onControl(params);
+        if (!TextUtils.isEmpty(param)) doJob(param, params);
         return Nano.ok();
+    }
+
+    private void doJob(String param, Map<String, String> params) {
+        switch (param) {
+            case "file" -> onFile(params);
+            case "push" -> onPush(params);
+            case "cast" -> onCast(params);
+            case "sync" -> onSync(params);
+            case "search" -> onSearch(params);
+            case "setting" -> onSetting(params);
+            case "refresh" -> onRefresh(params);
+            case "control" -> onControl(params);
+            case "danmaku" -> onDanmaku(params);
+        }
     }
 
     private void onFile(Map<String, String> params) {
@@ -84,28 +91,38 @@ public class Action implements Process {
         String type = params.get("type");
         String path = params.get("path");
         String json = params.get("json");
-        if ("live".equals(type)) RefreshEvent.live();
-        else if ("detail".equals(type)) RefreshEvent.detail();
-        else if ("player".equals(type)) RefreshEvent.player();
-        else if ("category".equals(type)) RefreshEvent.category();
-        else if ("danmaku".equals(type)) RefreshEvent.danmaku(path);
-        else if ("subtitle".equals(type)) RefreshEvent.subtitle(path);
-        else if ("vod".equals(type)) RefreshEvent.vod(Vod.objectFrom(json));
+        if (TextUtils.isEmpty(type)) return;
+        switch (type) {
+            case "live" -> RefreshEvent.live();
+            case "detail" -> RefreshEvent.detail();
+            case "player" -> RefreshEvent.player();
+            case "category" -> RefreshEvent.category();
+            case "danmaku" -> RefreshEvent.danmaku(path);
+            case "subtitle" -> RefreshEvent.subtitle(path);
+            case "vod" -> RefreshEvent.vod(Vod.objectFrom(json));
+        }
     }
 
     private void onControl(Map<String, String> params) {
-        PlaybackService service = Server.get().getService();
         String type = params.get("type");
-        if (service == null) return;
-        App.post(() -> {
-            if ("play".equals(type)) service.player().play();
-            else if ("pause".equals(type)) service.player().pause();
-            else if ("stop".equals(type)) service.dispatchStop();
-            else if ("prev".equals(type)) service.dispatchPrev();
-            else if ("next".equals(type)) service.dispatchNext();
-            else if ("repeat".equals(type)) service.dispatchRepeat();
-            else if ("replay".equals(type)) service.dispatchReplay();
-        });
+        PlaybackService service = Server.get().getService();
+        if (service == null || TextUtils.isEmpty(type)) return;
+        switch (type) {
+            case "play" -> App.post(() -> service.player().play());
+            case "pause" -> App.post(() -> service.player().pause());
+            case "stop" -> App.post(service::dispatchStop);
+            case "prev" -> App.post(service::dispatchPrev);
+            case "next" -> App.post(service::dispatchNext);
+            case "repeat" -> App.post(service::dispatchRepeat);
+            case "replay" -> App.post(service::dispatchReplay);
+        }
+    }
+
+    private void onDanmaku(Map<String, String> params) {
+        String text = params.get("text");
+        PlaybackService service = Server.get().getService();
+        if (service == null || TextUtils.isEmpty(text)) return;
+        App.post(() -> service.player().sendDanmaku(text));
     }
 
     private void onCast(Map<String, String> params) {
