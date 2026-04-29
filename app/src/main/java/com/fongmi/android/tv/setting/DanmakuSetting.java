@@ -102,27 +102,27 @@ public class DanmakuSetting {
         Prefers.put("danmaku_projection_transparency", value);
     }
 
-    public static int getDurationMs() {
-        return Prefers.getInt("danmaku_duration", 8000);
+    public static long getDurationMs() {
+        return Prefers.getLong("danmaku_duration", 8000L);
     }
 
-    public static void putDurationMs(int value) {
+    public static void putDurationMs(long value) {
         Prefers.put("danmaku_duration", value);
     }
 
-    public static int getFixedDurationMs() {
-        return Prefers.getInt("danmaku_fixed_duration", 5000);
+    public static long getFixedDurationMs() {
+        return Prefers.getLong("danmaku_fixed_duration", 5000L);
     }
 
-    public static void putFixedDurationMs(int value) {
+    public static void putFixedDurationMs(long value) {
         Prefers.put("danmaku_fixed_duration", value);
     }
 
-    public static int getTimeOffsetMs() {
-        return Prefers.getInt("danmaku_time_offset", 0);
+    public static long getTimeOffsetMs() {
+        return Prefers.getLong("danmaku_time_offset", 0L);
     }
 
-    public static void putTimeOffsetMs(int value) {
+    public static void putTimeOffsetMs(long value) {
         Prefers.put("danmaku_time_offset", value);
     }
 
@@ -228,6 +228,36 @@ public class DanmakuSetting {
 
     public static void putShowSpecial(boolean value) {
         Prefers.put("danmaku_show_special", value);
+    }
+
+    public static void reset() {
+        DanmakuConfig config = DanmakuConfig.DEFAULT;
+        putTextScale(config.textScale);
+        putTransparency(config.transparency);
+        putTextBold(config.textBold);
+        putStyleMode(config.styleMode);
+        putShadowTransparency(config.shadowTransparency);
+        putStrokeWidthMultiplier(config.strokeWidthMultiplier);
+        putProjectionOffsetX(config.projectionOffsetXMultiplier);
+        putProjectionOffsetY(config.projectionOffsetYMultiplier);
+        putProjectionTransparency(config.projectionTransparency);
+        putColorMode(config.colorMode);
+        putDurationMs(config.durationMs);
+        putFixedDurationMs(config.fixedDurationMs);
+        putTimeOffsetMs(config.timeOffsetMs);
+        putMaxOnScreen(config.maxOnScreen);
+        putScrollAreaRatio(config.scrollAreaRatio);
+        putMaxScrollLines(config.maxScrollLines);
+        putMaxTopLines(config.maxTopLines);
+        putMaxBottomLines(config.maxBottomLines);
+        putLineSpacing(config.lineSpacing);
+        putShowScroll(config.showScroll);
+        putShowTop(config.showTop);
+        putShowBottom(config.showBottom);
+        putShowReverse(config.showReverse);
+        putShowPositioned(config.showPositioned);
+        putShowSubtitle(config.showSubtitle);
+        putShowSpecial(config.showSpecial);
     }
 
     public static DanmakuConfig getConfig() {

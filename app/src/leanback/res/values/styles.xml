@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="Theme.Base" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.Base" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorAccent">@color/accent</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
@@ -48,7 +48,7 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+    <style name="BottomSheetDialog" parent="Theme.Material3.DayNight.BottomSheetDialog">
         <item name="colorAccent">@color/accent</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
@@ -57,7 +57,7 @@
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
     </style>
 
-    <style name="ModalBottomSheetDialog" parent="Widget.Design.BottomSheet.Modal">
+    <style name="ModalBottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
         <item name="android:background">@drawable/shape_bottom_sheet</item>
     </style>
 

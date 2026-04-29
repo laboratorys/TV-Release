@@ -60,6 +60,47 @@
     <!-- Danmaku -->
     <string name="danmaku">Danmaku</string>
     <string name="danmaku_select">Select danmaku</string>
+    <string name="danmaku_setting">Danmaku setting</string>
+    <string name="danmaku_text_size">Text scale</string>
+    <string name="danmaku_transparency">Opacity</string>
+    <string name="danmaku_text_bold">Bold</string>
+    <string name="danmaku_style_mode">Text style</string>
+    <string name="danmaku_style_none">None</string>
+    <string name="danmaku_style_shadow">Shadow</string>
+    <string name="danmaku_style_stroke">Stroke</string>
+    <string name="danmaku_style_projection">Projection</string>
+    <string name="danmaku_shadow_transparency">Shadow opacity</string>
+    <string name="danmaku_stroke_width">Stroke width</string>
+    <string name="danmaku_projection_offset_x">Projection offset X</string>
+    <string name="danmaku_projection_offset_y">Projection offset Y</string>
+    <string name="danmaku_projection_transparency">Projection opacity</string>
+    <string name="danmaku_color_mode">Color mode</string>
+    <string name="danmaku_color_default">Default</string>
+    <string name="danmaku_color_colorful">Colorful</string>
+    <string name="danmaku_color_gradient">Gradient</string>
+    <string name="danmaku_color_override_hint">Original colors will be ignored</string>
+    <string name="danmaku_auto">Auto</string>
+    <string name="danmaku_duration">Scroll duration</string>
+    <string name="danmaku_fixed_duration">Fixed duration</string>
+    <string name="danmaku_time_offset">Time offset</string>
+    <string name="danmaku_max_on_screen">Max on screen</string>
+    <string name="danmaku_scroll_area_ratio">Scroll area</string>
+    <string name="danmaku_max_scroll_lines">Max scroll rows</string>
+    <string name="danmaku_max_top_lines">Max top rows</string>
+    <string name="danmaku_max_bottom_lines">Max bottom rows</string>
+    <string name="danmaku_line_spacing">Line spacing</string>
+    <string name="danmaku_show_scroll">Scrolling</string>
+    <string name="danmaku_show_top">Top pinned</string>
+    <string name="danmaku_show_bottom">Bottom pinned</string>
+    <string name="danmaku_show_reverse">Reverse scroll</string>
+    <string name="danmaku_show_positioned">Positioned</string>
+    <string name="danmaku_show_subtitle">Subtitle type</string>
+    <string name="danmaku_show_special">Special type</string>
+    <string name="danmaku_section_appearance">Appearance</string>
+    <string name="danmaku_section_display">Display</string>
+    <string name="danmaku_section_timing">Timing</string>
+    <string name="danmaku_section_density">Density</string>
+    <string name="danmaku_reset">Reset</string>
 
     <!-- Parse -->
     <string name="parse">Parse</string>

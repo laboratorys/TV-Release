@@ -60,6 +60,47 @@
     <!-- Danmaku -->
     <string name="danmaku">彈幕</string>
     <string name="danmaku_select">選擇彈幕</string>
+    <string name="danmaku_setting">彈幕設定</string>
+    <string name="danmaku_text_size">字體縮放</string>
+    <string name="danmaku_transparency">透明度</string>
+    <string name="danmaku_text_bold">粗體</string>
+    <string name="danmaku_style_mode">字體效果</string>
+    <string name="danmaku_style_none">無</string>
+    <string name="danmaku_style_shadow">陰影</string>
+    <string name="danmaku_style_stroke">描邊</string>
+    <string name="danmaku_style_projection">投影</string>
+    <string name="danmaku_shadow_transparency">陰影透明度</string>
+    <string name="danmaku_stroke_width">描邊寬度</string>
+    <string name="danmaku_projection_offset_x">投影水平偏移</string>
+    <string name="danmaku_projection_offset_y">投影垂直偏移</string>
+    <string name="danmaku_projection_transparency">投影透明度</string>
+    <string name="danmaku_color_mode">顏色模式</string>
+    <string name="danmaku_color_default">原色</string>
+    <string name="danmaku_color_colorful">彩色</string>
+    <string name="danmaku_color_gradient">漸層</string>
+    <string name="danmaku_color_override_hint">彈幕原始顏色將被忽略</string>
+    <string name="danmaku_auto">自動</string>
+    <string name="danmaku_duration">滾動時間</string>
+    <string name="danmaku_fixed_duration">固定顯示時間</string>
+    <string name="danmaku_time_offset">時間偏移</string>
+    <string name="danmaku_max_on_screen">最多同時顯示</string>
+    <string name="danmaku_scroll_area_ratio">滾動區域比例</string>
+    <string name="danmaku_max_scroll_lines">最大滾動行數</string>
+    <string name="danmaku_max_top_lines">最大頂部行數</string>
+    <string name="danmaku_max_bottom_lines">最大底部行數</string>
+    <string name="danmaku_line_spacing">行距倍率</string>
+    <string name="danmaku_show_scroll">滾動彈幕</string>
+    <string name="danmaku_show_top">頂部固定</string>
+    <string name="danmaku_show_bottom">底部固定</string>
+    <string name="danmaku_show_reverse">反向滾動</string>
+    <string name="danmaku_show_positioned">定位彈幕</string>
+    <string name="danmaku_show_subtitle">字幕型</string>
+    <string name="danmaku_show_special">特效型</string>
+    <string name="danmaku_section_appearance">外觀</string>
+    <string name="danmaku_section_display">顯示</string>
+    <string name="danmaku_section_timing">時間</string>
+    <string name="danmaku_section_density">密度</string>
+    <string name="danmaku_reset">重設</string>
 
     <!-- Parse -->
     <string name="parse">解析</string>
