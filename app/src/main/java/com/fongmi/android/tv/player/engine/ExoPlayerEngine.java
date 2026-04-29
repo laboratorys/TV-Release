@@ -1,5 +1,6 @@
 package com.fongmi.android.tv.player.engine;
 
+import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.MediaTitle;
@@ -143,7 +144,11 @@ public class ExoPlayerEngine implements PlayerEngine {
     }
 
     private void startInternal() {
-        player.setMediaItem(ExoUtil.getMediaItem(spec, decode));
+        startInternal(C.TIME_UNSET);
+    }
+
+    private void startInternal(long position) {
+        player.setMediaItem(ExoUtil.getMediaItem(spec, decode), position);
         player.prepare();
         player.play();
     }
@@ -156,7 +161,7 @@ public class ExoPlayerEngine implements PlayerEngine {
 
     private ErrorAction retryFormat(int errorCode) {
         spec.setFormat(ExoUtil.getMimeType(errorCode));
-        startInternal();
+        startInternal(player.getCurrentPosition());
         return ErrorAction.RECOVERED;
     }
 }

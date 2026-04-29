@@ -414,7 +414,10 @@ public class PlayerManager implements ParseCallback {
         @Override
         public void onPlayerError(@NonNull PlaybackException e) {
             PlayerEngine.ErrorAction action = engine.handleError(e);
-            if (action == PlayerEngine.ErrorAction.RECOVERED) return;
+            if (action == PlayerEngine.ErrorAction.RECOVERED) {
+                setDanmakus(spec.getDanmakus());
+                return;
+            }
             if (++retry > 2) {
                 callback.onError(engine.getErrorMessage(e));
                 return;

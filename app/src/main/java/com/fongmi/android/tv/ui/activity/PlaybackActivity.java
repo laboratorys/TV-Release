@@ -156,6 +156,8 @@ public abstract class PlaybackActivity extends BaseActivity implements MediaCont
             onError(ResUtil.getString(R.string.error_play_drm));
         } else if (result.hasMsg()) {
             onError(result.getMsg());
+        } else if (result.getRealUrl().isEmpty()) {
+            onError(ResUtil.getString(R.string.error_play_url));
         } else if (result.needParse() || useParse) {
             attachSurface();
             player().parse(key, result, useParse, metadata);
