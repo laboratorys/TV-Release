@@ -7,6 +7,9 @@ let longPressTimer = null;
 let longPressTriggered = false;
 let pendingDelFolder = null;
 let warnToastTimer = null;
+let danmakuMode = 1;
+let danmakuSize = 25;
+let dialogClosing = false;
 
 function search() {
     doAction('search', { word: $('#keyword').val() });
@@ -23,12 +26,47 @@ function setting() {
 function sendDanmaku() {
     const text = $('#danmaku_text').val().trim();
     if (!text) return;
-    doAction('danmaku', { text });
+    doAction('danmaku', { text: `[0.0,${danmakuMode},${danmakuSize},16777215]${text}` });
     $('#danmaku_text').val('');
+}
+
+function showDanmakuModeDialog() {
+    $('#danmakuModeDialog .md-dialog-list-item').removeClass('active');
+    $(`#danmakuModeDialog .md-dialog-list-item[data-val="${danmakuMode}"]`).addClass('active');
+    openDialog('danmakuModeDialog');
+}
+
+function setDanmakuMode(val, label) {
+    danmakuMode = val;
+    $('#danmaku_mode_label').text(label);
+    closeDialog('danmakuModeDialog');
+}
+
+function showDanmakuSizeDialog() {
+    $('#danmakuSizeDialog .md-dialog-list-item').removeClass('active');
+    $(`#danmakuSizeDialog .md-dialog-list-item[data-val="${danmakuSize}"]`).addClass('active');
+    openDialog('danmakuSizeDialog');
+}
+
+function setDanmakuSize(val, label) {
+    danmakuSize = val;
+    $('#danmaku_size_label').text(label);
+    closeDialog('danmakuSizeDialog');
 }
 
 function doAction(action, kv) {
     $.post('/action', { ...kv, do: action });
+}
+
+function openDialog(id) {
+    $('#' + id).show();
+    history.pushState({ dialog: id }, '');
+}
+
+function closeDialog(id) {
+    dialogClosing = true;
+    $('#' + id).hide();
+    history.back();
 }
 
 function startLongPress(callback) {
@@ -81,11 +119,11 @@ function addFile(node) {
 function selectFile(path) {
     currentFile = path;
     $("#fileUrl").text("file:/" + path);
-    $("#fileInfoDialog").show();
+    openDialog('fileInfoDialog');
 }
 
 function pushFile(yes) {
-    $("#fileInfoDialog").hide();
+    closeDialog('fileInfoDialog');
     if (yes === 1) doAction('file', { path: "file:/" + currentFile });
 }
 
@@ -130,11 +168,11 @@ function onFileSelected() {
     if (files.length === 0) return;
     const tip = Array.from(files).map(f => f.name).join(', ');
     $('#uploadTipContent').text(tip);
-    $('#uploadTip').show();
+    openDialog('uploadTip');
 }
 
 function confirmUpload(yes) {
-    $('#uploadTip').hide();
+    closeDialog('uploadTip');
     if (yes !== 1) return;
     const files = $('#file_uploader')[0].files;
     if (files.length === 0) return;
@@ -157,11 +195,11 @@ function confirmUpload(yes) {
 }
 
 function showNewFolderDialog() {
-    $('#newFolder').show();
+    openDialog('newFolder');
 }
 
 function confirmNewFolder(yes) {
-    $('#newFolder').hide();
+    closeDialog('newFolder');
     const name = $('#newFolderContent').val().trim();
     $('#newFolderContent').val('');
     if (yes !== 1 || name.length === 0) return;
@@ -178,11 +216,11 @@ function confirmNewFolder(yes) {
 function showDelFolderDialog(path, refreshPath) {
     pendingDelFolder = { path, refreshPath };
     $('#delFolderContent').text('是否刪除 ' + path);
-    $('#delFolder').show();
+    openDialog('delFolder');
 }
 
 function confirmDelFolder(yes) {
-    $('#delFolder').hide();
+    closeDialog('delFolder');
     if (yes !== 1 || !pendingDelFolder) { pendingDelFolder = null; return; }
     const { path, refreshPath } = pendingDelFolder;
     pendingDelFolder = null;
@@ -199,11 +237,11 @@ function confirmDelFolder(yes) {
 function showDelFileDialog(path) {
     currentFile = path;
     $('#delFileContent').text('是否刪除 ' + path);
-    $('#delFile').show();
+    openDialog('delFile');
 }
 
 function confirmDelFile(yes) {
-    $('#delFile').hide();
+    closeDialog('delFile');
     if (yes !== 1) return;
     $('#loadingToast').show();
     $.post('/delFile', { path: currentFile }, function () {
@@ -235,5 +273,8 @@ history.replaceState(null, '');
 showPanel(tab);
 
 window.addEventListener('popstate', function () {
+    if (dialogClosing) { dialogClosing = false; return; }
+    const visible = $('.md-dialog-overlay:visible');
+    if (visible.length) { visible.first().hide(); return; }
     listFile(currentParent);
 });

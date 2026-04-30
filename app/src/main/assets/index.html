@@ -36,6 +36,20 @@
             <!-- 彈幕 -->
             <div id="panel3" class="tab-panel">
                 <div class="panel-content">
+                    <div class="field-row">
+                        <div class="md-field">
+                            <button class="md-btn md-btn-tonal md-btn-full" onclick="showDanmakuModeDialog()">
+                                <span id="danmaku_mode_label">滾動</span>
+                                <svg style="margin-left:auto;flex-shrink:0" width="18" height="18" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7 10l5 5 5-5z" fill="currentColor"/></svg>
+                            </button>
+                        </div>
+                        <div class="md-field">
+                            <button class="md-btn md-btn-tonal md-btn-full" onclick="showDanmakuSizeDialog()">
+                                <span id="danmaku_size_label">預設</span>
+                                <svg style="margin-left:auto;flex-shrink:0" width="18" height="18" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7 10l5 5 5-5z" fill="currentColor"/></svg>
+                            </button>
+                        </div>
+                    </div>
                     <div class="md-field">
                         <input id="danmaku_text" class="md-input" type="text" placeholder="請輸入彈幕內容..." />
                     </div>
@@ -99,6 +113,29 @@
                 <span class="md-nav-label">本地</span>
             </div>
         </nav>
+    </div>
+    <!-- Dialog: 彈幕模式 -->
+    <div id="danmakuModeDialog" class="md-dialog-overlay">
+        <div class="md-dialog">
+            <div class="md-dialog-title">模式</div>
+            <div class="md-dialog-list">
+                <div class="md-dialog-list-item active" data-val="1" onclick="setDanmakuMode(1,'滾動')"><span>滾動</span></div>
+                <div class="md-dialog-list-item" data-val="5" onclick="setDanmakuMode(5,'頂部')"><span>頂部</span></div>
+                <div class="md-dialog-list-item" data-val="4" onclick="setDanmakuMode(4,'底部')"><span>底部</span></div>
+                <div class="md-dialog-list-item" data-val="6" onclick="setDanmakuMode(6,'反向')"><span>反向</span></div>
+            </div>
+        </div>
+    </div>
+    <!-- Dialog: 彈幕大小 -->
+    <div id="danmakuSizeDialog" class="md-dialog-overlay">
+        <div class="md-dialog">
+            <div class="md-dialog-title">大小</div>
+            <div class="md-dialog-list">
+                <div class="md-dialog-list-item" data-val="18" onclick="setDanmakuSize(18,'小')"><span>小</span></div>
+                <div class="md-dialog-list-item active" data-val="25" onclick="setDanmakuSize(25,'預設')"><span>預設</span></div>
+                <div class="md-dialog-list-item" data-val="36" onclick="setDanmakuSize(36,'大')"><span>大</span></div>
+            </div>
+        </div>
     </div>
     <!-- Dialog: 本地路徑 -->
     <div id="fileInfoDialog" class="md-dialog-overlay">
