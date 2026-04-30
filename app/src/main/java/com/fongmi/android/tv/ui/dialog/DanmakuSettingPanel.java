@@ -26,6 +26,7 @@ final class DanmakuSettingPanel {
 
     private final DialogDanmakuSettingBinding binding;
     private final PlayerManager player;
+    private int currentTab;
 
     DanmakuSettingPanel(DialogDanmakuSettingBinding binding, PlayerManager player) {
         this.binding = binding;
@@ -39,7 +40,6 @@ final class DanmakuSettingPanel {
         bindDisplay();
         bindTabs();
         showTab(0);
-        updateDependentControls();
         binding.tabAppearance.requestFocus();
         binding.reset.setOnClickListener(this::onReset);
         binding.tabGroup.check(binding.tabAppearance.getId());
@@ -76,6 +76,7 @@ final class DanmakuSettingPanel {
         setupInt(density.maxScrollLinesSlider, density.maxScrollLinesValue, DanmakuSetting.getMaxScrollLines(), this::linesText, DanmakuSetting::putMaxScrollLines);
         setupInt(density.maxTopLinesSlider, density.maxTopLinesValue, DanmakuSetting.getMaxTopLines(), this::linesText, DanmakuSetting::putMaxTopLines);
         setupInt(density.maxBottomLinesSlider, density.maxBottomLinesValue, DanmakuSetting.getMaxBottomLines(), this::linesText, DanmakuSetting::putMaxBottomLines);
+        updateDependentControls();
     }
 
     private void bindDisplay() {
@@ -105,16 +106,36 @@ final class DanmakuSettingPanel {
     }
 
     private void onReset(View view) {
-        DanmakuSetting.reset();
-        bind();
-        applyConfig();
+        switch (currentTab) {
+            case 0:
+                DanmakuSetting.resetAppearance();
+                bindAppearance();
+                applyConfig();
+                break;
+            case 1:
+                DanmakuSetting.resetTiming();
+                bindTiming();
+                applyConfig();
+                break;
+            case 2:
+                DanmakuSetting.resetDensity();
+                bindDensity();
+                applyConfig();
+                break;
+            case 3:
+                DanmakuSetting.resetDisplay();
+                bindDisplay();
+                updateDependentControls();
+                applyConfig();
+                break;
+        }
     }
 
     private void showTab(int index) {
         View[] roots = {binding.appearance.getRoot(), binding.timing.getRoot(), binding.density.getRoot(), binding.display.getRoot()};
         MaterialButton[] tabs = {binding.tabAppearance, binding.tabTiming, binding.tabDensity, binding.tabDisplay};
         for (int i = 0; i < roots.length; i++) roots[i].setVisibility(visibleIf(index == i));
-        binding.reset.setNextFocusDownId(tabs[index].getId());
+        binding.reset.setNextFocusDownId(tabs[currentTab = index].getId());
     }
 
     private void updateStyleSubSettings(int mode) {

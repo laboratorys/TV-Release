@@ -230,7 +230,7 @@ public class DanmakuSetting {
         Prefers.put("danmaku_show_special", value);
     }
 
-    public static void reset() {
+    public static void resetAppearance() {
         DanmakuConfig config = DanmakuConfig.DEFAULT;
         putTextScale(config.textScale);
         putTransparency(config.transparency);
@@ -242,15 +242,27 @@ public class DanmakuSetting {
         putProjectionOffsetY(config.projectionOffsetYMultiplier);
         putProjectionTransparency(config.projectionTransparency);
         putColorMode(config.colorMode);
+    }
+
+    public static void resetTiming() {
+        DanmakuConfig config = DanmakuConfig.DEFAULT;
         putDurationMs(config.durationMs);
         putFixedDurationMs(config.fixedDurationMs);
         putTimeOffsetMs(config.timeOffsetMs);
+    }
+
+    public static void resetDensity() {
+        DanmakuConfig config = DanmakuConfig.DEFAULT;
         putMaxOnScreen(config.maxOnScreen);
         putScrollAreaRatio(config.scrollAreaRatio);
         putMaxScrollLines(config.maxScrollLines);
         putMaxTopLines(config.maxTopLines);
         putMaxBottomLines(config.maxBottomLines);
         putLineSpacing(config.lineSpacing);
+    }
+
+    public static void resetDisplay() {
+        DanmakuConfig config = DanmakuConfig.DEFAULT;
         putShowScroll(config.showScroll);
         putShowTop(config.showTop);
         putShowBottom(config.showBottom);
