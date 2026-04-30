@@ -41,6 +41,7 @@ import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.Constant;
 import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.api.SiteApi;
+import com.fongmi.android.tv.api.DanmakuApi;
 import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.bean.CastVideo;
 import com.fongmi.android.tv.bean.Danmaku;
@@ -556,6 +557,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         if (result.hasDesc()) setText(mBinding.content, 0, result.getDesc());
         mBinding.control.parse.setVisibility(isUseParse() ? View.VISIBLE : View.GONE);
         startPlayer(getHistoryKey(), result, isUseParse(), getSite().getTimeout(), buildMetadata());
+        if (DanmakuApi.canSearch(result)) DanmakuApi.search(mHistory.getVodName(), getEpisode().getName(), danmaku -> player().setDanmaku(danmaku));
     }
 
     @Override
@@ -1663,6 +1665,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mClock.release();
         saveHistory(true);
         Timer.get().reset();
+        DanmakuApi.cancel();
         RefreshEvent.keep();
         App.removeCallbacks(mR1, mR2, mR3, mR4);
         mViewModel.getResult().removeObserver(mObserveDetail);

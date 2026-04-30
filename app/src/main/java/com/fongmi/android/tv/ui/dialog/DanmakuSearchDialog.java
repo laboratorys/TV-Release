@@ -15,7 +15,7 @@ import androidx.viewbinding.ViewBinding;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.R;
-import com.fongmi.android.tv.api.config.VodConfig;
+import com.fongmi.android.tv.api.DanmakuApi;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.databinding.DialogDanmakuSearchBinding;
 import com.fongmi.android.tv.player.PlayerManager;
@@ -25,8 +25,6 @@ import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.Util;
-import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Trans;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,7 +35,6 @@ import okhttp3.Response;
 
 public final class DanmakuSearchDialog extends BaseBottomSheetDialog implements DanmakuAdapter.OnClickListener, Callback {
 
-    private final String TAG = DanmakuSearchDialog.class.getSimpleName();
     private final DanmakuAdapter adapter;
     private DialogDanmakuSearchBinding binding;
     private PlayerManager player;
@@ -111,12 +108,8 @@ public final class DanmakuSearchDialog extends BaseBottomSheetDialog implements 
     private void search() {
         showProgress();
         adapter.clear();
-        OkHttp.cancel(TAG);
         Util.hideKeyboard(binding.keyword);
-        String name = binding.keyword.getText().toString().trim();
-        String episode = player.getMetadata().artist.toString().trim();
-        String url = VodConfig.get().getConfig().getDanmaku().replace("{name}", Trans.t2s(name)).replace("{episode}", Trans.t2s(episode));
-        OkHttp.newCall(url, TAG).enqueue(this);
+        DanmakuApi.newCall(binding.keyword.getText().toString().trim(), player.getMetadata().artist.toString().trim()).enqueue(this);
     }
 
     private void onSuccess(List<Danmaku> items) {
@@ -149,6 +142,6 @@ public final class DanmakuSearchDialog extends BaseBottomSheetDialog implements 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        OkHttp.cancel(TAG);
+        DanmakuApi.cancel();
     }
 }
