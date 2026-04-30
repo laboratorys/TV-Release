@@ -15,9 +15,7 @@ import com.fongmi.android.tv.service.PlaybackService;
 import com.google.gson.JsonObject;
 
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CompletableFuture;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
@@ -33,21 +31,17 @@ public class Media implements Process {
     public Response doResponse(IHTTPSession session, String url, Map<String, String> files) {
         PlaybackService service = Server.get().getService();
         if (service == null) return Nano.ok("{}");
-        AtomicReference<JsonObject> result = new AtomicReference<>();
-        CountDownLatch latch = new CountDownLatch(1);
-        App.post(() -> {
-            result.set(build(service.player()));
-            latch.countDown();
-        });
+        CompletableFuture<String> future = new CompletableFuture<>();
+        App.post(() -> future.complete(build(service.player()).toString()));
         try {
-            if (latch.await(500, TimeUnit.MILLISECONDS)) return Nano.ok(result.get().toString());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            return Nano.ok(future.get());
+        } catch (Exception ignored) {
+            return Nano.ok("{}");
         }
-        return Nano.ok("{}");
     }
 
     private JsonObject build(PlayerManager player) {
+        if (player.isReleased()) return new JsonObject();
         MediaItem item = player.getCurrentMediaItem();
         MediaMetadata meta = item != null ? item.mediaMetadata : MediaMetadata.EMPTY;
         JsonObject result = new JsonObject();

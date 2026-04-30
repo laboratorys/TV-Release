@@ -161,6 +161,7 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
     public void onDestroy() {
         running = false;
         releaseSession();
+        player.stop();
         player.release();
         removeForeground();
         Server.get().setService(null);

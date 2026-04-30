@@ -60,7 +60,6 @@ public class PlayerManager implements ParseCallback {
     }
 
     public void release() {
-        stopParse();
         App.removeCallbacks(runnable);
         if (engine == null) return;
         player.removeListener(listener);
@@ -91,6 +90,10 @@ public class PlayerManager implements ParseCallback {
 
     public boolean isPlaying() {
         return player.isPlaying();
+    }
+
+    public boolean isReleased() {
+        return player == null;
     }
 
     public String getUrl() {
