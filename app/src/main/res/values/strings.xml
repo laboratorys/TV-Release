@@ -57,7 +57,7 @@
     <string name="play_switch_site">Switching site to <xliff:g name="name">%s</xliff:g></string>
     <string name="play_switch_parse">Switching parse to <xliff:g name="name">%s</xliff:g></string>
 
-    <!-- Danmaku -->
+    <!-- Danmaku Setting -->
     <string name="danmaku">Danmaku</string>
     <string name="danmaku_select">Select danmaku</string>
     <string name="danmaku_setting">Danmaku setting</string>
@@ -116,6 +116,7 @@
     <string name="setting_live">Live</string>
     <string name="setting_wall">Wallpaper</string>
     <string name="setting_player">Player setting</string>
+    <string name="setting_danmaku">Danmaku setting</string>
     <string name="setting_incognito">Incognito mode</string>
     <string name="setting_size">Image size</string>
     <string name="setting_doh">DoH</string>
@@ -145,12 +146,16 @@
     <string name="player_audio_decode">Audio software decode</string>
     <string name="player_video_decode">Video software decode</string>
     <string name="player_aac_track">Prefer aac track</string>
-    <string name="player_danmaku_load">Danmaku load</string>
     <string name="player_adblock">Remove ads</string>
     <string name="player_tunnel">Tunnel mode</string>
     <string name="player_buffer">Buffer time</string>
     <string name="player_speed">Press speed</string>
     <string name="player_ua">User-Agent</string>
+
+    <!-- Danmaku -->
+    <string name="danmaku_load">Danmaku load</string>
+    <string name="danmaku_api">Danmaku API</string>
+    <string name="danmaku_auto_load">Auto load</string>
 
     <!-- Search -->
     <string name="search_keyword">Keywords…</string>

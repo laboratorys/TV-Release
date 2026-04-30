@@ -57,7 +57,7 @@
     <string name="play_switch_site">正在切换站源至「<xliff:g name="name">%s</xliff:g>」</string>
     <string name="play_switch_parse">正在切换解析至「<xliff:g name="name">%s</xliff:g>」</string>
 
-    <!-- Danmaku -->
+    <!-- Danmaku Setting -->
     <string name="danmaku">弹幕</string>
     <string name="danmaku_select">选择弹幕</string>
     <string name="danmaku_setting">弹幕设置</string>
@@ -115,6 +115,7 @@
     <string name="setting_live">直播</string>
     <string name="setting_wall">壁纸</string>
     <string name="setting_player">播放设置</string>
+    <string name="setting_danmaku">弹幕设置</string>
     <string name="setting_incognito">无痕模式</string>
     <string name="setting_size">图片尺寸</string>
     <string name="setting_doh">DoH</string>
@@ -144,12 +145,16 @@
     <string name="player_audio_decode">音频软解</string>
     <string name="player_video_decode">视频软解</string>
     <string name="player_aac_track">AAC优先</string>
-    <string name="player_danmaku_load">弹幕加载</string>
     <string name="player_adblock">智能去广</string>
     <string name="player_tunnel">隧道模式</string>
     <string name="player_buffer">缓冲时间</string>
     <string name="player_speed">长按倍速</string>
     <string name="player_ua">User-Agent</string>
+
+    <!-- Danmaku -->
+    <string name="danmaku_load">弹幕加载</string>
+    <string name="danmaku_api">弹幕接口</string>
+    <string name="danmaku_auto_load">自动加载</string>
 
     <!-- Search -->
     <string name="search_keyword">关键字…</string>

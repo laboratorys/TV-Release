@@ -124,6 +124,7 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
         mBinding.cache.setOnClickListener(this::onCache);
         mBinding.backup.setOnClickListener(this::onBackup);
         mBinding.player.setOnClickListener(this::onPlayer);
+        mBinding.danmaku.setOnClickListener(this::onDanmaku);
         mBinding.restore.setOnClickListener(this::onRestore);
         mBinding.version.setOnClickListener(this::onVersion);
         mBinding.vod.setOnLongClickListener(this::onVodEdit);
@@ -239,6 +240,10 @@ public class SettingFragment extends BaseFragment implements ConfigCallback, Sit
 
     private void onPlayer(View view) {
         getRoot().change(2);
+    }
+
+    private void onDanmaku(View view) {
+        getRoot().change(3);
     }
 
     private void onVersion(View view) {

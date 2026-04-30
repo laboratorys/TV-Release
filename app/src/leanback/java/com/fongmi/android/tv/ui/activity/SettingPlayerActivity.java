@@ -13,7 +13,6 @@ import com.fongmi.android.tv.databinding.ActivitySettingPlayerBinding;
 import com.fongmi.android.tv.impl.BufferCallback;
 import com.fongmi.android.tv.impl.SpeedCallback;
 import com.fongmi.android.tv.impl.UaCallback;
-import com.fongmi.android.tv.setting.DanmakuSetting;
 import com.fongmi.android.tv.setting.PlayerSetting;
 import com.fongmi.android.tv.setting.Setting;
 import com.fongmi.android.tv.ui.base.BaseActivity;
@@ -59,7 +58,6 @@ public class SettingPlayerActivity extends BaseActivity implements UaCallback, B
         mBinding.backgroundText.setText(getSwitch(PlayerSetting.isBackgroundOn()));
         mBinding.audioDecodeText.setText(getSwitch(PlayerSetting.isAudioPrefer()));
         mBinding.videoDecodeText.setText(getSwitch(PlayerSetting.isVideoPrefer()));
-        mBinding.danmakuLoadText.setText(getSwitch(DanmakuSetting.isLoad()));
         mBinding.scaleText.setText((scale = ResUtil.getStringArray(R.array.select_scale))[PlayerSetting.getScale()]);
         mBinding.renderText.setText((render = ResUtil.getStringArray(R.array.select_render))[PlayerSetting.getRender()]);
         mBinding.captionText.setText((caption = ResUtil.getStringArray(R.array.select_caption))[PlayerSetting.isCaption() ? 1 : 0]);
@@ -80,7 +78,6 @@ public class SettingPlayerActivity extends BaseActivity implements UaCallback, B
         mBinding.background.setOnClickListener(this::onBackground);
         mBinding.audioDecode.setOnClickListener(this::setAudioDecode);
         mBinding.videoDecode.setOnClickListener(this::setVideoDecode);
-        mBinding.danmakuLoad.setOnClickListener(this::setDanmakuLoad);
     }
 
     private void setVisible() {
@@ -165,11 +162,6 @@ public class SettingPlayerActivity extends BaseActivity implements UaCallback, B
     private void setVideoDecode(View view) {
         PlayerSetting.putVideoPrefer(!PlayerSetting.isVideoPrefer());
         mBinding.videoDecodeText.setText(getSwitch(PlayerSetting.isVideoPrefer()));
-    }
-
-    private void setDanmakuLoad(View view) {
-        DanmakuSetting.putLoad(!DanmakuSetting.isLoad());
-        mBinding.danmakuLoadText.setText(getSwitch(DanmakuSetting.isLoad()));
     }
 
     private void onBackground(View view) {

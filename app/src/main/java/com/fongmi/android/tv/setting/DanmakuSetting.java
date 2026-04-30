@@ -1,7 +1,10 @@
 package com.fongmi.android.tv.setting;
 
+import android.text.TextUtils;
+
 import androidx.media3.ui.danmaku.DanmakuConfig;
 
+import com.fongmi.android.tv.api.config.VodConfig;
 import com.github.catvod.utils.Prefers;
 
 public class DanmakuSetting {
@@ -12,6 +15,22 @@ public class DanmakuSetting {
 
     public static void putLoad(boolean danmakuLoad) {
         Prefers.put("danmaku_load", danmakuLoad);
+    }
+
+    public static boolean isAuto() {
+        return Prefers.getBoolean("danmaku_auto");
+    }
+
+    public static void putAuto(boolean auto) {
+        Prefers.put("danmaku_auto", auto);
+    }
+
+    public static String getApiUrl() {
+        return Prefers.getString("danmaku_api_url", "");
+    }
+
+    public static void putApiUrl(String url) {
+        Prefers.put("danmaku_api_url", url);
     }
 
     public static boolean isShow() {
@@ -228,6 +247,12 @@ public class DanmakuSetting {
 
     public static void putShowSpecial(boolean value) {
         Prefers.put("danmaku_show_special", value);
+    }
+
+    public static String getEffectiveApiUrl() {
+        String userUrl = getApiUrl();
+        if (!TextUtils.isEmpty(userUrl)) return userUrl;
+        return VodConfig.get().getConfig().getDanmaku();
     }
 
     public static void resetAppearance() {

@@ -14,10 +14,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewbinding.ViewBinding;
 
-import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.bean.Danmaku;
 import com.fongmi.android.tv.databinding.DialogDanmakuBinding;
 import com.fongmi.android.tv.player.PlayerManager;
+import com.fongmi.android.tv.setting.DanmakuSetting;
 import com.fongmi.android.tv.ui.adapter.DanmakuAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 import com.fongmi.android.tv.utils.FileChooser;
@@ -59,7 +59,7 @@ public final class DanmakuDialog extends BaseBottomSheetDialog implements Danmak
         binding.recycler.addItemDecoration(new SpaceItemDecoration(1, 16));
         binding.recycler.post(() -> binding.recycler.scrollToPosition(adapter.getSelected()));
         binding.recycler.setVisibility(adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
-        binding.search.setVisibility(player.getMetadata() == null || VodConfig.get().getConfig().getDanmaku().isEmpty() ? View.GONE : View.VISIBLE);
+        binding.search.setVisibility(player.getMetadata() == null || DanmakuSetting.getEffectiveApiUrl().isEmpty() ? View.GONE : View.VISIBLE);
     }
 
     @Override
