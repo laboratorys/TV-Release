@@ -149,6 +149,10 @@ public class OkHttp {
         return client().newCall(new Request.Builder().url(url).headers(Headers.of(headers)).post(body).build());
     }
 
+    public static Call newCall(String url, RequestBody body, String tag) {
+        return client().newCall(new Request.Builder().url(url).post(body).tag(tag).build());
+    }
+
     public static Call newCall(OkHttpClient client, String url, RequestBody body) {
         return client.newCall(new Request.Builder().url(url).post(body).build());
     }

@@ -3,10 +3,10 @@ package com.fongmi.android.tv.api;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.collection.ArrayMap;
 
 import com.fongmi.android.tv.App;
 import com.fongmi.android.tv.bean.Danmaku;
-import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.setting.DanmakuSetting;
 import com.github.catvod.net.OkHttp;
@@ -26,7 +26,18 @@ public class DanmakuApi {
     }
 
     public static Call newCall(String name, String episode) {
-        return OkHttp.newCall(DanmakuSetting.getEffectiveApiUrl().replace("{name}", Trans.t2s(name)).replace("{episode}", Trans.t2s(episode)), TAG);
+        OkHttp.cancel(TAG);
+        name = Trans.t2s(name);
+        episode = Trans.t2s(episode);
+        String url = DanmakuSetting.getEffectiveApiUrl();
+        if (url.contains("{name}") || url.contains("{episode}")) {
+            return OkHttp.newCall(url.replace("{name}", name).replace("{episode}", episode), TAG);
+        } else {
+            ArrayMap<String, String> params = new ArrayMap<>();
+            params.put("name", name);
+            params.put("episode", episode);
+            return OkHttp.newCall(url, OkHttp.toBody(params), TAG);
+        }
     }
 
     public static void search(String name, String episode, Consumer<Danmaku> found) {
