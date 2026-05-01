@@ -579,16 +579,16 @@ scheme://username:password@host:port
 
 ## danmaku — 彈幕 API
 
-`danmaku` 為 VodConfig 頂層字串欄位，指定彈幕自動搜尋的 API URL。
+`danmaku` 為 VodConfig 頂層字串欄位，指定彈幕搜尋接口。
 
 ### GET 模式（含佔位符）
 
 URL 含 `{name}` 或 `{episode}` 時，以 GET 請求發送，佔位符在請求前替換：
 
-| 佔位符        | 說明                   |
-|------------|----------------------|
-| `{name}`   | 劇集名稱（自動轉簡體）          |
-| `{episode}` | 集數名稱（自動轉簡體）          |
+| 佔位符         | 說明   |
+|-------------|------|
+| `{name}`    | 劇集名稱 |
+| `{episode}` | 集數名稱 |
 
 ```
 https://example.com/danmaku?name={name}&episode={episode}
@@ -606,15 +606,15 @@ POST body：`name=劇集名稱&episode=集數名稱`
 
 ### 回應格式
 
-API 須回傳 JSON 陣列，每個元素為一個彈幕來源物件。
+接口須回傳 JSON 陣列，每個元素為一個彈幕來源物件。
 
 ### 自動搜尋條件
 
 - 設定中「彈幕載入」已開啟（`DanmakuSetting.isLoad()`）
 - 設定中「自動載入」已開啟（`DanmakuSetting.isAuto()`）
-- 彈幕 API URL 不為空（使用者自訂 URL 優先，否則取此欄位）
+- 彈幕接口不為空（使用者自訂優先，否則取此欄位）
 
-> **提示：** 使用者也可在設定頁自訂彈幕 API URL，會優先覆蓋此處的設定。
+> **提示：** 使用者也可在設定頁自訂彈幕接口，會優先覆蓋此處的設定。
 
 ---
 
