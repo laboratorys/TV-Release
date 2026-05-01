@@ -17,6 +17,7 @@
 - [爬蟲引擎](#爬蟲引擎)
 - [網路功能](#網路功能)
 - [DLNA 投放](#dlna-投放)
+- [Android Auto](#android-auto)
 - [遠端控制](#遠端控制)
 - [配置說明](#配置說明)
 - [延伸閱讀](#延伸閱讀)
@@ -103,7 +104,18 @@ TV/
 - **DMC（投放端）**：手機版，掃描區域網路 DLNA 設備並投放媒體
 - **DMR（被投放端）**：電視版，作為 DLNA Renderer 接收其他設備投放
 
-使用 Cling 2.1.1（UPnP），支援 play / pause / stop / seek 控制。
+使用 JUPnP 3.0.4（UPnP），支援 play / pause / stop / seek / next / repeat 控制，可傳遞自訂 HTTP 標頭（User-Agent、Referer 等）至目標串流。
+
+---
+
+## Android Auto
+
+電視版支援 Android Auto，PlaybackService 實作 MediaLibraryService，可在車機上瀏覽播放記錄與直播頻道：
+
+- **點播**：歷史記錄條目可直接續播，恢復上次進度
+- **直播**：依分組瀏覽頻道，可直接選台
+- **播放控制**：支援車機端 play / pause / prev / next / stop
+- **懶加載**：App 退出後 Auto 仍保持連線，配置自動重新載入
 
 ---
 
