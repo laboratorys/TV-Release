@@ -154,8 +154,8 @@
 
     <!-- Danmaku -->
     <string name="danmaku_load">Danmaku load</string>
-    <string name="danmaku_api">Danmaku API</string>
-    <string name="danmaku_auto_load">Auto load</string>
+    <string name="danmaku_api">Search API</string>
+    <string name="danmaku_auto_load">Auto search</string>
 
     <!-- Search -->
     <string name="search_keyword">Keywords…</string>
@@ -202,6 +202,7 @@
 
     <!-- UNIT -->
     <string name="all">All</string>
+    <string name="yes">Yes</string>
     <string name="none">None</string>
     <string name="times">times</string>
     <string name="lines">lines</string>

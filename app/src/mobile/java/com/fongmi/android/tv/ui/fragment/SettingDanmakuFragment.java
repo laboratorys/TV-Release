@@ -28,6 +28,10 @@ public class SettingDanmakuFragment extends BaseFragment implements DanmakuCallb
         return getString(value ? R.string.setting_on : R.string.setting_off);
     }
 
+    private String getApiStatus() {
+        return getString(TextUtils.isEmpty(DanmakuSetting.getEffectiveApiUrl()) ? R.string.none : R.string.yes);
+    }
+
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         return mBinding = FragmentSettingDanmakuBinding.inflate(inflater, container, false);
@@ -35,7 +39,7 @@ public class SettingDanmakuFragment extends BaseFragment implements DanmakuCallb
 
     @Override
     protected void initView() {
-        mBinding.danmakuApiText.setText(DanmakuSetting.getEffectiveApiUrl());
+        mBinding.danmakuApiText.setText(getApiStatus());
         mBinding.danmakuAutoText.setText(getSwitch(DanmakuSetting.isAuto()));
         mBinding.danmakuLoadText.setText(getSwitch(DanmakuSetting.isLoad()));
         updateApiVisibility();
@@ -72,7 +76,7 @@ public class SettingDanmakuFragment extends BaseFragment implements DanmakuCallb
     @Override
     public void setDanmakuApi(String url) {
         DanmakuSetting.putApiUrl(url);
-        mBinding.danmakuApiText.setText(DanmakuSetting.getEffectiveApiUrl());
+        mBinding.danmakuApiText.setText(getApiStatus());
         updateAutoVisibility();
     }
 
