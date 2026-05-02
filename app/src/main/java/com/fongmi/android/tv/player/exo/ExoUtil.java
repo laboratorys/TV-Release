@@ -128,7 +128,7 @@ public class ExoUtil {
     }
 
     private static MediaItem.LiveConfiguration buildLiveConfig() {
-        return new MediaItem.LiveConfiguration.Builder().setTargetOffsetMs(3000).setMinPlaybackSpeed(0.97f).setMaxPlaybackSpeed(1.03f).build();
+        return new MediaItem.LiveConfiguration.Builder().setTargetOffsetMs(5000).setMinPlaybackSpeed(0.97f).setMaxPlaybackSpeed(1.03f).build();
     }
 
     private static List<MediaItem.SubtitleConfiguration> buildSubtitleConfigs(List<Sub> subs) {
