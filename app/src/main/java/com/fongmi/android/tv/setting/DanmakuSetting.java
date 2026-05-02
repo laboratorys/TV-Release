@@ -154,7 +154,7 @@ public class DanmakuSetting {
     }
 
     public static float getScrollAreaRatio() {
-        return Prefers.getFloat("danmaku_scroll_area_ratio", 0.75f);
+        return Prefers.getFloat("danmaku_scroll_area_ratio", 0.5f);
     }
 
     public static void putScrollAreaRatio(float value) {
@@ -191,6 +191,14 @@ public class DanmakuSetting {
 
     public static void putLineSpacing(float value) {
         Prefers.put("danmaku_line_spacing", value);
+    }
+
+    public static float getScrollGapRatio() {
+        return Prefers.getFloat("danmaku_scroll_gap_ratio", 0f);
+    }
+
+    public static void putScrollGapRatio(float value) {
+        Prefers.put("danmaku_scroll_gap_ratio", value);
     }
 
     public static boolean isShowScroll() {
@@ -280,10 +288,11 @@ public class DanmakuSetting {
         DanmakuConfig config = DanmakuConfig.DEFAULT;
         putMaxOnScreen(config.maxOnScreen);
         putScrollAreaRatio(config.scrollAreaRatio);
+        putScrollGapRatio(config.scrollGapRatio);
+        putLineSpacing(config.lineSpacing);
         putMaxScrollLines(config.maxScrollLines);
         putMaxTopLines(config.maxTopLines);
         putMaxBottomLines(config.maxBottomLines);
-        putLineSpacing(config.lineSpacing);
     }
 
     public static void resetDisplay() {
@@ -314,10 +323,11 @@ public class DanmakuSetting {
                 .setTimeOffsetMs(getTimeOffsetMs())
                 .setMaxOnScreen(getMaxOnScreen())
                 .setScrollAreaRatio(getScrollAreaRatio())
+                .setScrollGapRatio(getScrollGapRatio())
+                .setLineSpacing(getLineSpacing())
                 .setMaxScrollLines(getMaxScrollLines())
                 .setMaxTopLines(getMaxTopLines())
                 .setMaxBottomLines(getMaxBottomLines())
-                .setLineSpacing(getLineSpacing())
                 .setShowScroll(isShowScroll())
                 .setShowTop(isShowTop())
                 .setShowBottom(isShowBottom())

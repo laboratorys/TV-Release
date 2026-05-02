@@ -84,11 +84,12 @@
     <string name="danmaku_fixed_duration">固定显示时间</string>
     <string name="danmaku_time_offset">时间偏移</string>
     <string name="danmaku_max_on_screen">最多同时显示</string>
-    <string name="danmaku_scroll_area_ratio">滚动区域比例</string>
+    <string name="danmaku_scroll_area_ratio">滚动区域</string>
     <string name="danmaku_max_scroll_lines">最大滚动行数</string>
     <string name="danmaku_max_top_lines">最大顶部行数</string>
     <string name="danmaku_max_bottom_lines">最大底部行数</string>
-    <string name="danmaku_line_spacing">行距倍率</string>
+    <string name="danmaku_line_spacing">垂直间距</string>
+    <string name="danmaku_scroll_gap_ratio">水平间距</string>
     <string name="danmaku_show_scroll">滚动弹幕</string>
     <string name="danmaku_show_top">顶部固定</string>
     <string name="danmaku_show_bottom">底部固定</string>

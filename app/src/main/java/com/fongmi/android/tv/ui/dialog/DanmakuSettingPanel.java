@@ -72,6 +72,7 @@ final class DanmakuSettingPanel {
         var density = binding.density;
         setupInt(density.maxOnScreenSlider, density.maxOnScreenValue, DanmakuSetting.getMaxOnScreen(), String::valueOf, DanmakuSetting::putMaxOnScreen);
         setupFloat(density.scrollAreaSlider, density.scrollAreaValue, DanmakuSetting.getScrollAreaRatio(), "%.2f", DanmakuSetting::putScrollAreaRatio);
+        setupFloat(density.scrollGapSlider, density.scrollGapValue, DanmakuSetting.getScrollGapRatio(), "%.1f", DanmakuSetting::putScrollGapRatio);
         setupFloat(density.lineSpacingSlider, density.lineSpacingValue, DanmakuSetting.getLineSpacing(), "%.1f", DanmakuSetting::putLineSpacing);
         setupInt(density.maxScrollLinesSlider, density.maxScrollLinesValue, DanmakuSetting.getMaxScrollLines(), this::linesText, DanmakuSetting::putMaxScrollLines);
         setupInt(density.maxTopLinesSlider, density.maxTopLinesValue, DanmakuSetting.getMaxTopLines(), this::linesText, DanmakuSetting::putMaxTopLines);
