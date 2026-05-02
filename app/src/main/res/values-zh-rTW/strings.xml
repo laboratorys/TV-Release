@@ -156,6 +156,7 @@
     <string name="danmaku_load">彈幕載入</string>
     <string name="danmaku_api">搜尋接口</string>
     <string name="danmaku_auto_load">自動搜尋</string>
+    <string name="danmaku_spider_first">爬蟲優先</string>
 
     <!-- Search -->
     <string name="search_keyword">關鍵字…</string>

@@ -366,6 +366,11 @@ public class PlayerManager implements ParseCallback {
         else danmakuController.setDataSource(Uri.parse(item.getRealUrl()));
     }
 
+    public void addDanmaku(Danmaku item) {
+        if (danmakuController == null || item.isEmpty()) return;
+        if (spec != null) spec.addDanmaku(item);
+    }
+
     @Override
     public void onParseSuccess(Map<String, String> headers, String url, String from) {
         if (!TextUtils.isEmpty(from)) Notify.show(ResUtil.getString(R.string.parse_from, from));

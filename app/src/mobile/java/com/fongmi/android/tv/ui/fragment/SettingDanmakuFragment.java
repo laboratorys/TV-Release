@@ -42,6 +42,7 @@ public class SettingDanmakuFragment extends BaseFragment implements DanmakuCallb
         mBinding.danmakuApiText.setText(getApiStatus());
         mBinding.danmakuAutoText.setText(getSwitch(DanmakuSetting.isAuto()));
         mBinding.danmakuLoadText.setText(getSwitch(DanmakuSetting.isLoad()));
+        mBinding.danmakuSpiderText.setText(getSwitch(DanmakuSetting.isSpiderFirst()));
         updateApiVisibility();
     }
 
@@ -50,6 +51,7 @@ public class SettingDanmakuFragment extends BaseFragment implements DanmakuCallb
         mBinding.danmakuApi.setOnClickListener(this::onDanmakuApi);
         mBinding.danmakuAuto.setOnClickListener(this::setDanmakuAuto);
         mBinding.danmakuLoad.setOnClickListener(this::setDanmakuLoad);
+        mBinding.danmakuSpider.setOnClickListener(this::setDanmakuSpider);
     }
 
     private void setDanmakuLoad(View view) {
@@ -67,6 +69,12 @@ public class SettingDanmakuFragment extends BaseFragment implements DanmakuCallb
     private void updateAutoVisibility() {
         boolean show = DanmakuSetting.isLoad() && !TextUtils.isEmpty(DanmakuSetting.getEffectiveApiUrl());
         mBinding.danmakuAuto.setVisibility(show ? View.VISIBLE : View.GONE);
+        updateSpiderVisibility();
+    }
+
+    private void updateSpiderVisibility() {
+        boolean show = DanmakuSetting.isLoad() && !TextUtils.isEmpty(DanmakuSetting.getEffectiveApiUrl()) && DanmakuSetting.isAuto();
+        mBinding.danmakuSpider.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private void onDanmakuApi(View view) {
@@ -83,6 +91,12 @@ public class SettingDanmakuFragment extends BaseFragment implements DanmakuCallb
     private void setDanmakuAuto(View view) {
         DanmakuSetting.putAuto(!DanmakuSetting.isAuto());
         mBinding.danmakuAutoText.setText(getSwitch(DanmakuSetting.isAuto()));
+        updateSpiderVisibility();
+    }
+
+    private void setDanmakuSpider(View view) {
+        DanmakuSetting.putSpiderFirst(!DanmakuSetting.isSpiderFirst());
+        mBinding.danmakuSpiderText.setText(getSwitch(DanmakuSetting.isSpiderFirst()));
     }
 
     @Override

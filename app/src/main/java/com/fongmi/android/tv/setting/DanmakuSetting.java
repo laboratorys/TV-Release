@@ -25,6 +25,14 @@ public class DanmakuSetting {
         Prefers.put("danmaku_auto", auto);
     }
 
+    public static boolean isSpiderFirst() {
+        return Prefers.getBoolean("danmaku_spider_first");
+    }
+
+    public static void putSpiderFirst(boolean spiderFirst) {
+        Prefers.put("danmaku_spider_first", spiderFirst);
+    }
+
     public static String getApiUrl() {
         return Prefers.getString("danmaku_api_url", "");
     }

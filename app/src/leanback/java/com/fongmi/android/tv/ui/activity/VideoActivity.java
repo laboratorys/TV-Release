@@ -495,7 +495,10 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         if (result.hasPosition()) mHistory.setPosition(result.getPosition());
         mBinding.control.parse.setVisibility(isUseParse() ? View.VISIBLE : View.GONE);
         startPlayer(getHistoryKey(), result, isUseParse(), getSite().getTimeout(), buildMetadata());
-        if (DanmakuApi.canSearch()) DanmakuApi.search(mHistory.getVodName(), getEpisode().getName(), danmaku -> player().setDanmaku(danmaku));
+        if (DanmakuApi.canSearch()) DanmakuApi.search(mHistory.getVodName(), getEpisode().getName(), danmaku -> {
+            if (DanmakuSetting.isSpiderFirst() && !result.getDanmaku().isEmpty()) player().addDanmaku(danmaku);
+            else player().setDanmaku(danmaku);
+        });
     }
 
     @Override

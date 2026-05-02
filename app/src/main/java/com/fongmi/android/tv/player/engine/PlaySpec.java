@@ -124,4 +124,9 @@ public class PlaySpec {
         if (!item.isEmpty() && !danmakus.contains(item)) danmakus.add(0, item);
         danmakus.forEach(danmaku -> danmaku.setSelected(danmaku.getUrl().equals(item.getUrl())));
     }
+
+    public void addDanmaku(Danmaku item) {
+        if (danmakus == null) danmakus = new ArrayList<>();
+        if (!item.isEmpty() && !danmakus.contains(item)) danmakus.add(item);
+    }
 }
