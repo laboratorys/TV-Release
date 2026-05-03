@@ -48,7 +48,7 @@ public class Value implements Parcelable, Diffable<Value> {
     }
 
     public String getV() {
-        return TextUtils.isEmpty(v) ? "" : v;
+        return TextUtils.isEmpty(v) ? "" : v.trim();
     }
 
     public void setV(String v) {
