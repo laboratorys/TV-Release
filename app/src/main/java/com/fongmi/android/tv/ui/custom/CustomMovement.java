@@ -12,7 +12,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.utils.KeyUtil;
+import com.fongmi.android.tv.utils.ResUtil;
 
 public class CustomMovement extends ScrollingMovementMethod {
 
@@ -31,6 +33,7 @@ public class CustomMovement extends ScrollingMovementMethod {
         CharSequence text = view.getText();
         boolean hasLinks = text instanceof Spannable && ((Spannable) text).getSpans(0, text.length(), ClickableSpan.class).length > 0;
         view.setMovementMethod(hasLinks ? CustomMovement.getInstance() : null);
+        if (hasLinks) view.setHighlightColor(ResUtil.getColor(R.color.text_highlight));
     }
 
     @Override

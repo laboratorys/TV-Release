@@ -1,7 +1,8 @@
 <resources>
 
-    <color name="primary">@color/black</color>
-    <color name="primaryDark">@color/black</color>
+    <color name="primary">@color/blue_500</color>
+    <color name="primaryDark">@color/blue_700</color>
     <color name="accent">@color/blue_500</color>
+    <color name="text_highlight">@color/white_30</color>
 
 </resources>
