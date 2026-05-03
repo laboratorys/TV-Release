@@ -27,6 +27,7 @@ import com.fongmi.android.tv.api.config.VodConfig;
 import com.fongmi.android.tv.impl.CustomTarget;
 import com.github.catvod.utils.Json;
 import com.google.common.net.HttpHeaders;
+import com.google.gson.JsonParser;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -94,7 +95,7 @@ public class ImgUtil {
     }
 
     private static void addHeader(LazyHeaders.Builder builder, String header) {
-        Map<String, String> map = Json.toMap(Json.parse(header));
+        Map<String, String> map = Json.toMap(JsonParser.parseString(header));
         for (Map.Entry<String, String> entry : map.entrySet()) builder.addHeader(UrlUtil.fixHeader(entry.getKey()), entry.getValue());
     }
 

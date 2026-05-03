@@ -22,6 +22,7 @@ import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
 import com.github.catvod.utils.Json;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -115,7 +116,7 @@ public class LiveConfig extends BaseConfig {
     @Override
     protected void load(Config config) throws Throwable {
         String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
-        if (Json.isObj(json)) checkJson(config, Json.parse(json).getAsJsonObject());
+        if (Json.isObj(json)) checkJson(config, JsonParser.parseString(json).getAsJsonObject());
         else parseText(config, json);
     }
 

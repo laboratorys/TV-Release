@@ -11,6 +11,7 @@ import com.fongmi.android.tv.bean.Live;
 import com.fongmi.android.tv.utils.UrlUtil;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
+import com.google.gson.JsonParser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -302,8 +303,8 @@ public class LiveParser {
 
         private void header(String line) {
             try {
-                if (line.contains("#EXTHTTP:")) header.putAll(Json.toMap(Json.parse(line.split("#EXTHTTP:")[1].trim())));
-                if (line.contains("header=")) header.putAll(Json.toMap(Json.parse(line.split("header=")[1].trim())));
+                if (line.contains("#EXTHTTP:")) header.putAll(Json.toMap(JsonParser.parseString(line.split("#EXTHTTP:")[1].trim())));
+                if (line.contains("header=")) header.putAll(Json.toMap(JsonParser.parseString(line.split("header=")[1].trim())));
             } catch (Exception e) {
                 e.printStackTrace();
             }

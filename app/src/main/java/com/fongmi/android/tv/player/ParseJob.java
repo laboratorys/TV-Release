@@ -20,6 +20,7 @@ import com.github.catvod.utils.Util;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,7 +116,7 @@ public class ParseJob implements ParseCallback {
 
     private void jsonParse(Parse item, String webUrl, boolean fatal) throws Exception {
         try (Response res = OkHttp.newCall(item.getUrl() + webUrl, item.getHeader()).execute()) {
-            JsonObject object = Json.parse(res.body().string()).getAsJsonObject();
+            JsonObject object = JsonParser.parseString(res.body().string()).getAsJsonObject();
             String url = Json.safeString(object, "url");
             JsonObject data = object.getAsJsonObject("data");
             if (url.isEmpty()) url = Json.safeString(data, "url");
