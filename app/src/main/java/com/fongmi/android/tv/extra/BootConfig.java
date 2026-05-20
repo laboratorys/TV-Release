@@ -39,6 +39,9 @@ public class BootConfig {
             @Override
             public void error(String msg) {
                 Log.d("BootConfig", "❌ 刷新失败: " + msg);
+                Notify.dismiss();
+                RefreshEvent.live();
+                RefreshEvent.home();
                 App.post(() -> Notify.show("❌ 刷新失败: " + msg));
             }
         });

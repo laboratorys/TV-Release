@@ -48,8 +48,6 @@ public abstract class CloudSync<T> {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
-
-
                 boolean supported = response.isSuccessful();
                 boolean checkResult = false;
                 try{
