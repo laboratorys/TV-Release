@@ -3,7 +3,7 @@ package com.fongmi.android.tv.extra;
 import android.util.Log;
 
 import com.fongmi.android.tv.App;
-import com.fongmi.android.tv.Setting;
+import com.fongmi.android.tv.setting.Setting;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
