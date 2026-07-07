@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/github/last-commit/laboratorys/TV-Release/lab?style=flat-square&label=Updated" alt="Last Commit">
 </p>
 
-> **基于 Fongmi 核心的自动化增强版本，追求极致的同步体验与开箱即用。**
+> 由于蜂蜜不再开源，所以自动魔改的版本也没办法同步更新。 ~~**基于 Fongmi 核心的自动化增强版本，追求极致的同步体验与开箱即用。**~~
 
 ---
 
